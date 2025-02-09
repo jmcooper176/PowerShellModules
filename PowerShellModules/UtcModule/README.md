@@ -1,7 +1,9 @@
 # README - UtcModule
 
 ## Author
-John Merryweather Cooper <john.cooper2@opm.gov>
+
+John Merryweather Cooper <jmcooper8654@gmail.com>
 
 ## Owner
-U.S. Office of Personnel Management - SkyOps
+
+John Merryweather Cooper

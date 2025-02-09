@@ -13,14 +13,12 @@ project), see how to [Get Involved](https://opensource.microsoft.com/collaborate
 ### Onboarding
 
 All users must sign the
-[U.S. Office of Personnel Management Contributor License Agreement (CLA)](https://cla.opensource.microsoft.com/) before making
-any code contributions. For U.S. Office of Personnel Management employees, make sure that your GitHub account is part of the
-Azure organization. [Use this page](http://aka.ms/azuregithub) to link your account.
+[U.S. Office of Personnel Management Contributor License Agreement (CLA)](https://cla.opensource.microsoft.com/) before making any code contributions.
 
 ### Code of Conduct
 
 This project has adopted the
-[U.S. Office of Personnel Management Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more
+[Microsoft Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more
 information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or
 comments.
@@ -45,37 +43,17 @@ GitHub repo.
 
 ## Filing Issues
 
-You can find all of the issues that have been filed for Azure PowerShell in the
-[Issues](https://github.com/Azure/azure-powershell/issues) section of this repository.
-
-To file an issue, select one of the
-[templates](https://github.com/Azure/azure-powershell/issues/new/choose). This ensures that all of
-the necessary information is provided. The following are a few of the templates we provide:
-
-- [_Az module bug report_](https://github.com/Azure/azure-powershell/issues/new?assignees=&labels=needs-triage%2Cbug&template=1-AZ-BUG-REPORT.yml)
-- [_Feature request_](https://github.com/Azure/azure-powershell/issues/new?assignees=&labels=feature-request%2Cneeds-triage&template=2-FEATURE-REQUEST.yml&title=%5BFeature%5D%3A+)
-- [_Az module question or discussion_](https://github.com/Azure/azure-powershell/issues/new?assignees=&labels=needs-triage%2Cquestion&template=3-AZ-QUESTION.yml)
-
-You can find the code complete and release dates of the next three Azure PowerShell releases in the
-[Milestones](https://github.com/Azure/azure-powershell/milestones) section of the _Issues_ page.
-Each milestone will display the issues that are being worked on for the corresponding release.
-
 ## Submitting Changes
 
 ### Pull Requests
-
-You can find all of the pull requests that have been opened in the
-[Pull Requests](https://github.com/Azure/azure-powershell/pulls) section of this repository.
 
 When creating a pull request, keep the following in mind:
 
 - Verify you are pointing to the fork and branch that your changes were made in.
 - Choose the correct branch you want your pull request to be merged into.
   - The **main** branch is for active development; changes in this branch will be in the next Azure
-    PowerShell release.
-  - The **release-X.X.X** branch is for active development during a release.
-  - The **preview** branch is a snapshot of the last `AzureRM` release and _should not_ be used for
-    active development.
+    PowerShell release.  However, it is not a proper target for pull requests.
+  - The **Development** branch is for active development during a release and is an appropriate target for pull requests.
 - The pull request template that is provided **must be filled out**. Do not delete or ignore it when
   the pull request is created.
   - **_IMPORTANT:_** Deleting or ignoring the pull request template will delay the PR review process.
@@ -92,25 +70,6 @@ PowerShell repository.
 
 #### Target Release Types
 
-Here are all types of releases of **Azure PowerShell**. Note that the type of release isn't necessarily aligned to the state of the swagger or service feature.
-
-- **General** release
-  - This PR targets an [official general release](https://github.com/Azure/azure-powershell/milestones) of Azure PowerShell.
-  - Target version is `x.y.z`, no suffix.
-    - Note: versions < 1.0.0 are also included in this category.
-  - Target branch should be `main` or `generation` depending on the development approach.
-- **Preview** release
-  - **Public preview**
-    - This PR targets a preview release of Azure PowerShell. It is independent to the normal release cycle.
-    - Target version is `x.y.z-preview`.
-      - Note: if the major version is 0, it is considered a general release rather than preview.
-    - Target branch should not be `main` nor `generation`. Please contact [sprint master](https://github.com/Azure/azure-powershell/milestones) if you are unsure about which branch to target.
-  - **Private preview** / **Embargoed preview**
-    - This PR is related to some business secret. It should not be submitted to this repository. Contact [sprint master](https://github.com/Azure/azure-powershell/milestones) for more details.
-- **Engineering build**
-  - This PR does not require any kind of releases. It's for internal or private distribution.
-  - Target branch should not be `main` nor `generation`. Please contact [sprint master](https://github.com/Azure/azure-powershell/milestones) if you are unsure about which branch to target.
-
 #### General guidelines
 
 The following guidelines must be followed for **every** pull request that is opened.
@@ -122,17 +81,7 @@ The following guidelines must be followed for **every** pull request that is ope
   - A snippet outlining the change(s) made in the PR should be written under the
     `## Upcoming Release` header -- no new version header should be added.
 - There are a small number of commits in your PR and each commit has an informative commit message.
-  - For more information, see
-    [Cleaning up commits](documentation/development-docs/cleaning-up-commits.md).
-- All files shipped with a module should contain a proper U.S. Office of Personnel Management license header.
-- For public API changes to cmdlets:
-  - A [cmdlet design review](https://github.com/Azure/azure-powershell-cmdlet-review-pr) has been
-    approved for the changes in this repository. (_U.S. Office of Personnel Management internal only_).
-  - The Markdown help files have been regenerated using the commands listed
-    [here](documentation/development-docs/help-generation.md#updating-all-markdown-files-in-a-module).
-
-For a comprehensive list of Azure PowerShell design guidelines and best practices, see
-[Azure PowerShell Design Guidelines](documentation/development-docs/design-guidelines).
+- All files shipped with a module should contain a proper John Merryweather Cooper license header.
 
 #### Testing guidelines
 
@@ -145,17 +94,8 @@ The following guidelines must be followed in **every** pull request that is open
 
 #### Cmdlet guidelines
 
-- [Cmdlet Best Practices](./documentation/development-docs/design-guidelines/cmdlet-best-practices.md)
-- [Examples of standard Azure PowerShell cmdlets](./documentation/development-docs/examples).
-
 #### Parameter guidelines
-
-- [Parameter Best Practices](./documentation/development-docs/design-guidelines/parameter-best-practices.md).
 
 #### Piping guidelines
 
-- [Piping Best Practices](./documentation/development-docs/design-guidelines/piping-best-practices.md).
-
 #### Module guidelines
-
-- [Module Best Practices](./documentation/development-docs/design-guidelines/module-best-practices.md).

@@ -1,4 +1,3 @@
-
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
@@ -18,30 +17,30 @@ diverse, inclusive, and healthy community.
 Examples of behavior that contributes to a positive environment for our
 community include:
 
-* Demonstrating empathy and kindness toward other people
-* Being respectful of differing opinions, viewpoints, and experiences
-* Giving and gracefully accepting constructive feedback
-* Accepting responsibility and apologizing to those affected by our mistakes,
+- Demonstrating empathy and kindness toward other people
+- Being respectful of differing opinions, viewpoints, and experiences
+- Giving and gracefully accepting constructive feedback
+- Accepting responsibility and apologizing to those affected by our mistakes,
   and learning from the experience
-* Focusing on what is best not just for us as individuals, but for the overall
+- Focusing on what is best not just for us as individuals, but for the overall
   community
 
 Examples of unacceptable behavior include:
 
-* The use of sexualized language or imagery, and sexual attention or advances of
+- The use of sexualized language or imagery, and sexual attention or advances of
   any kind
-* Other actions concering a person's age, body size, visible or invisible
+- Other actions concering a person's age, body size, visible or invisible
   disability, ethnicity, sex characteristics, gender identity and expression,
   level of experience, education, socio-economic status, nationality, personal
   appearance, race, caste, color, religion, sexual identity and orientation, or
   other protected characteristic
-* Trolling, insulting or derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as, but not limited to, a
+- Trolling, insulting or derogatory comments, and personal or political attacks
+- Public or private harassment
+- Publishing others' private information, such as, but not limited to, a
   physical address, email address, or other information that, taken together,
   could lead to their identifcation and harassment, without their explicit
   permission
-* Other conduct unbecoming of a professional in a professional setting
+- Other conduct unbecoming of a professional in a professional setting
 
 ## Enforcement Responsibilities
 
@@ -67,10 +66,8 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement with
-Christopher Inman <christopher.inman@opm.gov> or John Merryweather Cooper
-<john.cooper2@opm.gov>.  All complaints will be reviewed and investigated
-promptly and fairly in accordance with U.S. Office of Personnel Management
-policy.
+John Merryweather Cooper <jmcooper8654@gmail.com>. All complaints will be reviewed
+and investigated promptly and fairly in accordance with my policy.
 
 All community leaders are obligated to respect the privacy and security of the
 reporter of any incident.
@@ -125,13 +122,10 @@ community.
 
 This Code of Conduct is adapted from the [Contributor Covenant][homepage],
 version 2.1, available at
-[https://www.contributor-covenant.org/version/2/1/code_of_conduct.html][v2.1]
-and adapted for U.S. Office of Personnel Management use by John Merryweather
-Cooper <john.cooper2@opm.gov>.
+[https://www.contributor-covenant.org/version/2/1/code_of_conduct.html][v2.1].
 
 Community Impact Guidelines were inspired by
-[Mozilla's code of conduct enforcement ladder][Mozilla CoC] and modified for
-use with the U.S. Office of Personnel Management.
+[Mozilla's code of conduct enforcement ladder][Mozilla CoC].
 
 For answers to common questions about this code of conduct, see the FAQ at
 [https://www.contributor-covenant.org/faq][FAQ]. Translations are available at

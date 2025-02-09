@@ -82,6 +82,8 @@ StyleCopReport.xml
 *.pgc
 *.pgd
 *.rsp
+# but not Directory.Build.rsp, as it configures directory-level build defaults
+!Directory.Build.rsp
 *.sbr
 *.tlb
 *.tli
@@ -97,8 +99,6 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
-*.g.cs
-*.AssemblyAttributes.cs
 
 # Chutzpah Test files
 _Chutzpah*
@@ -303,7 +303,7 @@ node_modules/
 *.dsw
 *.dsp
 
-# Visual Studio 6 technical files 
+# Visual Studio 6 technical files
 *.ncb
 *.aps
 
@@ -395,8 +395,19 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
-*.msu
 
 # JetBrains Rider
 *.sln.iml
-*.bak
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix

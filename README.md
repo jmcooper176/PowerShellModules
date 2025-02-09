@@ -1,21 +1,21 @@
 # PSInstallCom
 PowerShell wrappers around Windows Installer COM
 
-![GitHub Workflow Status](https://github.com/OPM-OCIO-DEVSECOPS/PSInstallCom/actions/workflows/codeql.yml/badge.svg)
+![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/codeql.yml/badge.svg)
 
-![GitHub Workflow Status](https://github.com/OPM-OCIO-DEVSECOPS/PSInstallCom/actions/workflows/msbuild-CI-Build.yml/badge.svg)
+![GitHub Workflow Status](https://github.com//actions/workflows/msbuild-CI-Build.yml/badge.svg)
 
-![GitHub Workflow Status](https://github.com/OPM-OCIO-DEVSECOPS/PSInstallCom/actions/workflows/powershell.yml/badge.svg)
+![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/powershell.yml/badge.svg)
 
-![GitHub Workflow Status](https://github.com/OPM-OCIO-DEVSECOPS/PSInstallCom/actions/workflows/yaml-CI-Build.yml/badge.svg)
+![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/yaml-CI-Build.yml/badge.svg)
 
 ## Author
 
-John Merryweather Cooper <john.cooper2@opm.gov>
+John Merryweather Cooper <jmcooper8654@gmail.com>
 
 ## Owner
 
-U.S. Office of Personnel Management.  DevSecOps.
+John Merryweather Cooper
 
 ## Contents
 

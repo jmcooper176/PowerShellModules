@@ -1,0 +1,45 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{590be99a-adee-4fd0-acfb-16b96ea2fee3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.NuGetModule</RootNamespace>
+    <AssemblyName>NuGetModule</AssemblyName>
+    <Name>NuGetModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToExport>'Clear-NuGetCache', 'Push-NuGetPackage', 'Restore-NuGetPackage', 'Test-ApiKey', 'Test-Source', 'Update-NuGet'</CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>Cmdlets for automating NuGet</Description>
+    <FunctionsToProcess>'Clear-NuGetCache', 'Push-NuGetPackage', 'Restore-NuGetPackage', 'Test-ApiKey', 'Test-Source', 'Update-NuGet'</FunctionsToProcess>
+    <NestedModules>'PowerShellModule.psd1', 'CommandLine.psm1', 'Process.psm1'</NestedModules>
+    <Title>NuGet Automation Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="NuGetModule.psd1" />
+    <Compile Include="NuGetModule.psm1" />
+    <Compile Include="NuGetModule.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

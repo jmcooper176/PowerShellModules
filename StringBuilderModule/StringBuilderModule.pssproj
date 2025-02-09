@@ -1,0 +1,56 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3b9b7bb7-ee41-4eb8-a82f-4eb8e3592f77}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.StringBuilderModule</RootNamespace>
+    <AssemblyName>StringBuilderModule</AssemblyName>
+    <Name>StringBuilderModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToExport>
+          'Add-Begin', 'Add-End', 'Clear-Buffer', 'ConvertTo-String',
+          'Edit-Buffer', 'Find-Replace', 'Format-End', 'Get-Character', 'Join-Objects', 'Join-String',
+          'New-StringBuilder', 'Remove-Substring', 'Set-Character'
+      </CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>PowerShell wrappers around System.Text.StringBuilder</Description>
+    <FunctionsToProcess>
+          'Add-Begin', 'Add-End', 'Clear-Buffer', 'ConvertTo-String',
+          'Edit-Buffer', 'Find-Replace', 'Format-End', 'Get-Character', 'Join-Objects', 'Join-String',
+          'New-StringBuilder', 'Remove-Substring', 'Set-Character'
+      </FunctionsToProcess>
+    <NestedModules>'ErrorRecordModule.psd1', 'PowerShellModule.psd1'</NestedModules>
+    <Title>StringBuilder PowerShell Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="StringBuilder.psd1" />
+    <Compile Include="StringBuilder.psm1" />
+    <Compile Include="StringBuilder.tests.ps1" />
+    <Compile Include="StringBuilderModule.psd1" />
+    <Compile Include="StringBuilderModule.psm1" />
+    <Compile Include="StringBuilderModule.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

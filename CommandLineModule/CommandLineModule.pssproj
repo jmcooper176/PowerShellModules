@@ -1,0 +1,51 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{82873437-206e-46a6-b96b-8a225e62a131}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.CmdLineModule</RootNamespace>
+    <AssemblyName>CmdLineModule</AssemblyName>
+    <Name>CommandLineModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <Author>John Merryweather Cooper</Author>
+    <CmdletsToProcess />
+    <CompanyName>U.S. Office of Personnel Management</CompanyName>
+    <Copyright>Copyright (c) 2023, 2024, U.S. Office of Personnel Mnaagement.  All Rights Reserved.</Copyright>
+    <Description>Implemention of CommandLineBuilder from MSBuild for PowerShell</Description>
+    <FunctionsToProcess />
+    <NestedModules>'CommandLine.psm1', 'Process.psm1', 'StringBuilderModule.psd1'</NestedModules>
+    <PostBuildScript>Write-Information -MessageData "Post-Build Script" -InformationAction Continue</PostBuildScript>
+    <PowerShellVersion>5.1</PowerShellVersion>
+    <PreBuildScript>Write-Information -MessageData "Pre-Build Script" -InformationAction Continue</PreBuildScript>
+    <Title>Command Line Module</Title>
+    <ProjectHome />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="CommandLineModule.psd1" />
+    <Compile Include="CommandLineModule.psm1" />
+    <Compile Include="CommandLine.Module.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

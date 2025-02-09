@@ -1,0 +1,53 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{47d23349-8c55-4119-aab7-7f7a18f4ea88}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.PathModule</RootNamespace>
+    <AssemblyName>PathModule</AssemblyName>
+    <Name>PathModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToExport>
+          'Get-Alias', 'Get-Cmdlet', 'Get-Executable',
+          'Get-Filter', 'Get-Function', 'Get-ModuleExecutable',
+          'Get-Script'
+      </CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>Provides cmdlets to search for executables</Description>
+    <FunctionsToProcess>
+          'Get-Alias', 'Get-Cmdlet', 'Get-Executable',
+          'Get-Filter', 'Get-Function', 'Get-ModuleExecutable',
+          'Get-Script'
+      </FunctionsToProcess>
+    <NestedModules>PowerShellModule.psd1</NestedModules>
+    <Title>Path Utility Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="PathModule.psd1" />
+    <Compile Include="PathModule.psm1" />
+    <Compile Include="PathModule.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

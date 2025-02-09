@@ -1,0 +1,47 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{abe86a4c-16d1-4a81-bf30-e6b42346eab2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.MessageModule</RootNamespace>
+    <AssemblyName>MessageModule</AssemblyName>
+    <Name>MessageModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToExport>
+    </CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>Object-Oriented Microsoft-style Messages</Description>
+    <FunctionsToProcess>
+    </FunctionsToProcess>
+    <NestedModules>'PowerShellModule.psd1', 'UtcModule.psd1', 'Message.psm1', 'Metadata.psm1', 'Origin.psm1', 'MessageSource.psm1', 'MessageType.psm1'</NestedModules>
+    <Title>Object-Oriented Message Classes</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MessageModule.psd1" />
+    <Compile Include="MessageModule.psm1" />
+    <Compile Include="MessageModule.tests.ps1" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

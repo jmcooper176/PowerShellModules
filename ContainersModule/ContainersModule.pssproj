@@ -1,0 +1,59 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0716e5ba-74d7-493a-bee6-ab91ba850ad9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MyApplication</RootNamespace>
+    <AssemblyName>MyApplication</AssemblyName>
+    <Name>ContainersModule</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ArrayList.psd1" />
+    <Compile Include="ArrayList.psm1" />
+    <Compile Include="ArrayList.tests.ps1" />
+    <Compile Include="BitArray.psd1" />
+    <Compile Include="BitArray.psm1" />
+    <Compile Include="BitArray.tests.ps1" />
+    <Compile Include="CommandLineBuilder.psd1" />
+    <Compile Include="CommandLineBuilder.psm1" />
+    <Compile Include="CommandLineBuilder.tests.ps1" />
+    <Compile Include="HybridDictionary.psd1" />
+    <Compile Include="HybridDictionary.psm1" />
+    <Compile Include="HybridDictionary.tests.ps1" />
+    <Compile Include="ListDictionary.psd1" />
+    <Compile Include="ListDictionary.psm1" />
+    <Compile Include="NameValueCollection.psd1" />
+    <Compile Include="NameValueCollection.psm1" />
+    <Compile Include="OrderedDictionary.psd1" />
+    <Compile Include="OrderedDictionary.psm1" />
+    <Compile Include="Queue.psd1" />
+    <Compile Include="Queue.psm1" />
+    <Compile Include="SortedList.psd1" />
+    <Compile Include="SortedList.psm1" />
+    <Compile Include="Stack.psd1" />
+    <Compile Include="Stack.psm1" />
+    <Compile Include="StringCollection.psd1" />
+    <Compile Include="StringCollection.psm1" />
+    <Compile Include="StringDictionary.psd1" />
+    <Compile Include="StringDictionary.psm1" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" />
+</Project>

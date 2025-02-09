@@ -1,0 +1,885 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <Import Project=".\PowerShell.targets"/>
+
+    <!--
+    ==============================================================================
+    PowerShellProject File Properties
+    ==============================================================================
+    -->
+    <PropertyGroup Condition=" '$(PowerShellProject)' == 'true' ">
+        <BuildDependsOn>
+            BeforeBuild;
+            Clean;
+            ResolvePSProjectReferences;
+            Build;
+            AfterBuild
+        </BuildDependsOn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(PowerShellProject)' == 'true' ">
+        <CleanDependsOn>
+            BeforeClean;
+            AfterClean
+        </CleanDependsOn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(PowerShellProject)' == 'true' ">
+        <CoreBuildDependsOn>
+            BuildOnlySettings;
+            PrepareForBuild;
+            PreBuildEvent;
+            IncrementalClean;
+            PostBuildEvent
+        </CoreBuildDependsOn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(PowerShellProject)' == 'true' ">
+        <PublishDependsOn>
+            BeforePublish;
+            CreateLocalRepository;
+            PublishToLocalRepository;
+            AfterPublish
+        </PublishDependsOn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(PowerShellProject)' == 'true' ">
+        <RebuildDependsOn>
+            BeforeRebuild;
+            Clean;
+            ResolvePSProjectReferences;
+            Build;
+            AfterRebuild
+        </RebuildDependsOn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(PowerShellProject)' == 'true' ">
+        <TestDependsOn>
+            BeforeTest;
+            PreTestEvent;
+            StaticTest;
+            StaticTestModuleManifest;
+            PostTestEvent;
+            AfterTest
+        </TestDependsOn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <MSBuildAllProjects>
+            $(MSBuildAllProjects);
+            Directory.Build.props;
+            Directory.Build.targets
+        </MSBuildAllProjects>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(PowerShellProject)' == 'true' ">
+        <LocalRepositoryPath Condition=" '$(LocalRepositoryPath)' == '' ">
+            .\Local
+        </LocalRepositoryPath>
+        <RepositoryName Condition=" '$(RepositoryName)' == '' ">
+            LocalRepository
+        </RepositoryName>
+        <RepositoryApiKey Condition=" '$(RepositoryApiKey)' == '' ">
+            NO-API-KEY-NEEDED-FOR-LOCAL-REPOSITORY
+        </RepositoryApiKey>
+        <Now>$([System.DateTime]::UtcNow.ToString())</Now>
+        <Year>$([System.DateTime]::UtcNow.Year.ToString())</Year>
+        <Month>$([System.DateTime]::UtcNow.Month.ToString())</Month>
+        <Day>$([System.DateTime]::UtcNow.Day.ToString())</Day>
+        <Hour>$([System.DateTime]::UtcNow.Hour.ToString())</Hour>
+        <Minute>$([System.DateTime]::UtcNow.Minute.ToString())</Minute>
+        <Second>$([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds.ToString("f0"))</Second>
+        <Millisecond>$([System.DateTime]::UtcNow.Millisecond.ToString())</Millisecond>
+        <TotalDays>$([System.DateTime]::UtcNow.TimeOfDay.TotalDays.ToString())</TotalDays>
+        <DaysSinceZeroDay>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("01/01/2000"))).Days)</DaysSinceZeroDay>
+        <Major Condition=" '$(Major)' == '' ">1</Major>
+        <Minor Condition=" '$(Minor)' == '' ">2</Minor>
+        <Build>$(DaysSinceZeroDay)</Build>
+        <Patch>$(Build)</Patch>
+        <Revision>$(Second)</Revision>
+        <ReleaseLabel></ReleaseLabel>
+        <BuildLabel>BuildLabel-$([System.DateTime]::UtcNow.ToString("yyyy.MM.dd.HH.mm.ss.ffff.fffffff"))</BuildLabel>
+        <Version>$(Major).$(Minor).$(Build).$(Revision)</Version>
+        <ModuleVersion>$(Major).$(Minor).$(Patch)</ModuleVersion>
+        <SemanticVersion Condition=" '$(ReleaseLable)' == '' ">$(ModuleVersion)+$(BuildLabel)</SemanticVersion>
+        <SemanticVersion Condition=" '$(ReleaseLable)' != '' ">$(ModuleVersion)-$(ReleaseLabel)+$(BuildLabel)</SemanticVersion>
+        <AssemblyVersion>$(Major).$(Minor).$(Build).0</AssemblyVersion>
+        <FileVersion>$(Version)</FileVersion>
+        <ProductVersion>$(Major).$(Minor).0.0</ProductVersion>
+    </PropertyGroup>
+
+    <!--
+    ==============================================================================
+    BeforeClean
+
+    Performs Pre-Clean Operations before deleting intermediate and final build
+    outputs.
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="BeforeClean">
+        <Message Importance="high" Text="Before Cleaning PowerShell Project:  $(MSBuildProjectName)" />
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(BeforeCleanScript)" />
+    </Target>
+
+    <!--
+    ==============================================================================
+    Clean
+
+    Delete all intermediate and final build outputs.
+
+    Condition:  PowerShellProject must be true
+    DependsOnTargets:  $(CleanDependsOn) - The list
+    ==============================================================================
+    -->
+    <Target
+        Condition=" '$(PowerShellProject)' == 'true' "
+        Name="Clean"
+        DependsOnTargets="$(CleanDependsOn)">
+        <ItemGroup>
+            <!-- Files to remove -->
+            <DeleteFile Include="*.ps1" Exclude="@(Compile);@(Content);@(None)" />
+            <DeleteFile Include="*.psd1" Exclude="@(Compile);@(Content);@(None)" />
+            <DeleteFile Include="*.psm1" Exclude="@(Compile);@(Content);@(None)" />
+            <DeleteFile Include="*.nupkg" Exclude="@(Compile);@(Content);@(None)" />
+            <DeleteFile Include="*.snupkg" Exclude="@(Compile);@(Content);@(None)" />
+            <DeleteFile Include="$(OutDir)\**\*.*" />
+            <DeleteFile Include="$(IntermediateOutputPath)\**\*.*" />
+            <!-- Directories to remove -->
+            <RemoveDirectory Include="$(OutDir)" />
+            <RemoveDirectory Include="$(IntermediateOutputPath)" />
+            <RemoveDirectory Include="ArrayList" />
+            <RemoveDirectory Include="BitArray" />
+            <RemoveDirectory Include="CommandLine" />
+            <RemoveDirectory Include="CommandLineBuilder" />
+            <RemoveDirectory Include="EnvironmentModule" />
+            <RemoveDirectory Include="ErrorRecordModule" />
+            <RemoveDirectory Include="ErrorResponseType" />
+            <RemoveDirectory Include="HybridDictionary" />
+            <RemoveDirectory Include="LinqModule" />
+            <RemoveDirectory Include="ListDictionary" />
+            <RemoveDirectory Include="LocalRepository" />
+            <RemoveDirectory Include="NameValueCollection" />
+            <RemoveDirectory Include="OrderedDictionary" />
+            <RemoveDirectory Include="PowerShellModule" />
+            <RemoveDirectory Include="ProcessLauncher" />
+            <RemoveDirectory Include="Queue" />
+            <RemoveDirectory Include="SortedList" />
+            <RemoveDirectory Include="Stack" />
+            <RemoveDirectory Include="StringBuilder" />
+            <RemoveDirectory Include="StringCollection" />
+            <RemoveDirectory Include="StringDictionary" />
+            <RemoveDirectory Include="TypeAccelerator" />
+            <RemoveDirectory Include="UtcModule" />
+        </ItemGroup>
+        <!-- Task to delete files -->
+        <Message Importance="normal" Text="Cleaning PowerShell Project:  $(MSBuildProjectName)" />
+        <Delete Files="@(DeleteFile)">
+            <Output TaskParameter="DeletedFiles" ItemName="OutDirDeletedList" />
+        </Delete>
+        <Message Importance="normal" Text="Deleted File:  '%(OutDirDeletedList.Identity)'" />
+        <!-- Task to delete directories -->
+        <RemoveDir Directories="@(RemoveDirectory)">
+            <Output TaskParameter="RemovedDirectories" ItemName="OutDirTree" />
+        </RemoveDir>
+        <Message Importance="normal" Text="Deleted Directory:  '%(OutDirTree.Identity)'" />
+    </Target>
+
+    <!--
+    ==============================================================================
+    AfterClean
+
+    Performs Post Clean Operations after deleting intermediate and final build
+    outputs.
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="AfterClean">
+        <Message Importance="high" Text="Post Cleaning PowerShell Project:  $(MSBuildProjectName)" />
+        <MSBuild Condition="'$(AfterCleanScript)' != '' "
+                 Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(AfterCleanScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    BeforeBuild
+
+    Runs before Build
+
+    Condition:  PowerShellProject must be true
+    ManifestPath:  Path of the PowerShell Module Manifest to update
+    ModuleVersion:  The three-quad version to update ManifestPath with
+
+    Error:  Error will be throw if ManifestPath does not exist
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="BeforeBuild">
+        <PropertyGroup>
+            <ManifestPath>$(MSBuildProjectDirectory)\$(MSBuildProjectName).psd1</ManifestPath>
+        </PropertyGroup>
+        <PropertyGroup>
+            <BeforeBuildScript>
+                Update-ModuleManifest -Path $(ManifestPath) -ModuleVersion $(ModuleVersion) -Verbose
+            </BeforeBuildScript>
+        </PropertyGroup>
+        <Message Importance="high" Text="Before Building PowerShell Project:  '$(MSBuildProjectName)' v$(ModuleVersion)" />
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(BeforeBuildScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    BeforeRebuild
+
+    Runs before Rebuild
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="BeforeRebuild">
+        <Message Importance="high" Text="Before Re-building PowerShell Project:  $(MSBuildProjectName)" />
+        <CallTarget Targets="BeforeBuild" />
+    </Target>
+
+    <!--
+    ==============================================================================
+    ResolvePSProjectReferences
+
+    Resolves and Copies all PowerShell Module Dependencies
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="ResolvePSProjectReferences"
+        Inputs="@(Compile)"
+        Outputs="$(OutputPath)$(OutputName)">
+        <Message Importance="high" Text="Resolve PowerShell Project References:  $(MSBuildProjectName)" />
+        <ItemGroup>
+            <Compile Include="%(ProjectReference.RootDir)%(ProjectReference.Directory)\*.psd1" />
+            <Compile Include="%(ProjectReference.RootDir)%(ProjectReference.Directory)\*.psm1" />
+        </ItemGroup>
+        <ItemGroup>
+            <ArrayList Include="@(Compile)" Condition=" '%(Compile.FileName)' == 'ArrayList' " />
+            <BitArray Include="@(Compile)" Condition=" '%(Compile.FileName)' == 'BitArray' " />
+            <CommandLineBuilder Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'CommandLineBuilder' " />
+            <Environment Include="@(Compile)" Condition=" '%(Compile.FileName)' == 'EnvironmentModule' " />
+            <ErrorRecord Include="@(Compile)" Condition=" '%(Compile.FileName)' == 'ErrorRecordModule' " />
+            <ErrorResponseType Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'ErrorResponseType' " />
+            <HybridDictionary Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'HybridDictionary' " />
+            <ListDictionary Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'ListDictionary' " />
+            <Message Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'Message' " />
+            <MessageSource Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'MessageSource' " />
+            <MessageType Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'MessageType' " />
+            <Metadata Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'Metadata' " />
+            <NameValueCollection Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'NameValueCollection' " />
+            <OrderedDictionary Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'OrderedDictionary' " />
+            <Origin Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'Origin' " />
+            <PowerShellModule Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'PowerShellModule' " />
+            <ProcessLauncher Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'ProcessLauncher' " />
+            <Queue Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'Queue' " />
+            <SortedList Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'SortedList' " />
+            <Stack Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'Stack' " />
+            <StringBuilder Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'StringBuilder' " />
+            <StringCollection Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'StringCollection' " />
+            <StringDictionary Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'StringDictionary' " />
+            <TypeAccelerator Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'TypeAccelerator' " />
+            <Utc Include="@(Compile)" Condition=" '%(Compile.Filename)' == 'UtcModule' " />
+        </ItemGroup>
+
+        <!-- Root -->
+        <Copy SourceFiles="@(Compile)" DestinationFolder="." SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="RootDir" />
+        </Copy>
+        <Copy SourceFiles="@(ArrayList)" DestinationFolder="ArrayList" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ArrayListRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(BitArray)" DestinationFolder="BitArray" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="BitArrayRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(CommandLineBuilder)" DestinationFolder="CommandLineBuilder" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="CmdLineBuilderRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(Environment)" DestinationFolder="EnvironmentModule" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="EnvironmentRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(ErrorRecord)" DestinationFolder="ErrorRecordModule" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ErrorRecordRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(ErrorResponseType)" DestinationFolder="ErrorResponseType" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ErrorResponseTypeRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(HybridDictionary)" DestinationFolder="HybridDictionary" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="HybridDictionaryRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(ListDictionary)" DestinationFolder="ListDictionary" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ListDictionaryRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(Message)" DestinationFolder="Message" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="MessageRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(MessageSource)" DestinationFolder="MessageSource" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="MessageRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(MessageType)" DestinationFolder="MessageType" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="MessageTypeRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(Metadata)" DestinationFolder="Metadata" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="MetadataRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(NameValueCollection)" DestinationFolder="NameValueCollection" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="NameValueCollectionRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(OrderedDictionary)" DestinationFolder="OrderedDictionary" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="OrderedDictionaryRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(Origin)" DestinationFolder="Origin" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="OriginRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(PowerShellModule)" DestinationFolder="PowerShellModule" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="PowerShellModuleRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(ProcessLauncher)" DestinationFolder="ProcessLauncher" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ProcessLauncherRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(Queue)" DestinationFolder="Queue" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="QueueRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(SortedList)" DestinationFolder="SortedList" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="SortedListRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(Stack)" DestinationFolder="Stack" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="StackRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(StringBuilder)" DestinationFolder="StringBuilder" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="StringBuilderRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(StringCollection)" DestinationFolder="StringCollection" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="StringCollectionRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(StringDictionary)" DestinationFolder="StringDictionary" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="StringDictionaryRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(TypeAccelerator)" DestinationFolder="TypeAccelerator" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="TypeAcceleratorRootDir" />
+        </Copy>
+        <Copy SourceFiles="@(Utc)" DestinationFolder="UtcModule" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="UtcRootDir" />
+        </Copy>
+
+        <!-- OutDir -->
+        <Copy SourceFiles="@(Compile)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="OutDirFiles" />
+        </Copy>
+        <Copy SourceFiles="@(ArrayList)" DestinationFolder="$(OutDir)\ArrayList" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ArrayListOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(BitArray)" DestinationFolder="BitArray" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="BitArrayOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(CommandLineBuilder)" DestinationFolder="CommandLineBuilder" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="CmdLineBuilderOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(Environment)" DestinationFolder="$(OutDir)\EnvironmentModule" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="EnvironmentOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(ErrorRecord)" DestinationFolder="$(OutDir)\ErrorRecordModule" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ErrorRecordOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(ErrorResponseType)" DestinationFolder="$(OutDir)\ErrorResponseType" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ErrorResponseTypeOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(HybridDictionary)" DestinationFolder="HybridDictionary" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="HybridDictionaryOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(ListDictionary)" DestinationFolder="ListDictionary" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ListDictionaryOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(Message)" DestinationFolder="$(OutDir)\Message" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="MessageOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(MessageSource)" DestinationFolder="$(OutDir)\MessageSource" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="MessageOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(MessageType)" DestinationFolder="$(OutDir)\MessageType" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="MessageTypeOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(Metadata)" DestinationFolder="$(OutDir)\Metadata" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="MetadataOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(Origin)" DestinationFolder="$(OutDir)\Origin" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="OriginOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(PowerShellModule)" DestinationFolder="$(OutDir)\PowerShellModule" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="PowerShellModuleOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(ProcessLauncher)" DestinationFolder="$(OutDir)\ProcessLauncher" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="ProcessLauncherOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(Queue)" DestinationFolder="$(OutDir)\Queue" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="QueueOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(SortedList)" DestinationFolder="$(OutDir)\SortedList" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="SortedListOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(Stack)" DestinationFolder="$(OutDir)\Stack" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="StackOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(StringBuilder)" DestinationFolder="StringBuilder" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="StringBuilderOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(StringCollection)" DestinationFolder="StringCollection" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="StringCollectionOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(StringDictionary)" DestinationFolder="StringDictionary" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="StringDictionaryOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(TypeAccelerator)" DestinationFolder="$(OutDir)\TypeAccelerator" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="TypeAcceleratorOutDir" />
+        </Copy>
+        <Copy SourceFiles="@(Utc)" DestinationFolder="$(OutDir)\UtcModule" SkipUnchangedFiles="true">
+            <Output TaskParameter="CopiedFiles" ItemName="UtcOutDir" />
+        </Copy>
+    </Target>
+
+    <!--
+    ==============================================================================
+    PrepareToBuild
+
+    Override to run additional tasks before Build
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="PrepareToBuild">
+        <Message Importance="high" Text="Prepare To Build Project:  $(MSBuildProjectName)" />
+    </Target>
+
+    <!--
+    ==============================================================================
+    Build
+
+    The main build target.
+
+    Condition:  PowerShellProject must be true
+    DependsOnTargets:  $(BuildDependsOn)
+    Inputs:  @(Compile) - The list of source files to compile.
+             @(Content) - The list of content files to copy to the output directory.
+    Outputs:  $(OutputPath)$(OutputName) - The output file name path.
+
+    PackageEntryPoint:  The entry point for the package
+    ApplicationIconPath:  The path to the icon to use for an exacutable package
+    Bundle:  True if the package is a bundle
+    CompanyName:  The company name for copyright and metadata
+    CompileItems:  The list of source files to compile
+    ContentItems:  The list of content files to copy to the output directory
+    Copyright:  The copyright string
+    DotNetVersion:
+    FileDescription:  The file description
+    FileVersion:  The file version
+    HideConsoleWindow:  True if the console window should be hidden
+    HighDPISupport:  True if high DPI support is enabled
+    Obfuscate:  True if the package should be obfuscated
+    OperatingSystem:  The operating system
+    OutputDirectory:  The output directory
+    OutputName:  The output name
+    PackageAsExecutable:  True if the package should be an executable
+    PackageModules:  True if the package should include modules
+    PackagePlatform:  The package platform
+    PackageType:  The package type
+    PowerShellArgs:  The PowerShell arguments to pass on startup
+    PowerShellVersion:  The PowerShell version
+    ProductName:  The product name
+    ProductVersion:  The product version
+    RequireElevation:  True if elevation is required
+    ServiceDisplayName:  The service display name
+    ServiceName:  The service name
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="Build"
+        DependsOnTargets="$(BuildDependsOn)"
+        Inputs="@(Compile);@(Content)"
+        Outputs="$(OutputPath)$(OutputName)">
+        <Message Importance="high" Text="Building PowerShell Project:  $(MSBuildProjectName)" />
+        <PowerShellPackageTask PackageEntryPoint="$(PackageEntryPoint)"
+                        ApplicationIconPath="$(ApplicationIconPath)"
+                        Bundle="$(Bundle)"
+                        CompanyName="$(CompanyName)"
+                        CompileItems="@(Compile)"
+                        ContentItems="@(Content)"
+                        Copyright="$(Copyright)"
+                        DotNetVersion="$(DotNetVersion)"
+                        FileDescription="$(FileDescription)"
+                        FileVersion="$(FileVersion)"
+                        HideConsoleWindow="$(HideConsoleWindow)"
+                        HighDPISupport="$(HighDPISupport)"
+                        Obfuscate="$(Obfuscate)"
+                        OperatingSystem="$(OperatingSystem)"
+                        OutputDirectory="$(OutputPath)"
+                        OutputName="$(OutputName)"
+                        PackageAsExecutable="$(PackageAsExecutable)"
+                        PackageModules="$(PackageModules)"
+                        PackagePlatform="$(PackagePlatform)"
+                        PackageType="$(PackageType)"
+                        PowerShellArgs="$(PowerShellArgs)"
+                        PowerShellVersion="$(PowerShellVersion)"
+                        ProductName="$(ProductName)"
+                        ProductVersion="$(ProductVersion)"
+                        RequireElevation="$(RequireElevation)"
+                        ServiceDisplayName="$(ServiceDisplayName)"
+                        ServiceName="$(ServiceName)" />
+    </Target>
+
+    <!--
+    ==============================================================================
+    AfterBuild
+
+    When AfterBuildScript is not null or empty, executes that PowerShell Script
+
+    Condition:  PowerShellProject must be true
+    AfterBuildScript:  PowerShell string to run
+    ==============================================================================
+    -->
+    <Target
+            Condition =" '$(PowerShellProject)' == 'true' "
+            Name="AfterBuild">
+        <Message Importance="high" Text="After Building project:  $(MSBuildProjectName)" />
+        <MSBuild Condition="'$(AfterBuildScript)' != '' "
+                 Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(AfterBuildScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    AfterRebuild
+
+    Runs AfterBuild
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="AfterRebuild">
+        <Message Importance="high" Text="After Re-building project:  $(MSBuildProjectName)" />
+        <CallTarget Targets="AfterBuild" />
+    </Target>
+
+    <!--
+    ==============================================================================
+    BeforeTest
+
+    Runs BeforeTestScript before Pester and Static tests
+
+    Condition:  PowerShellProject must be true
+    BeforeTestScript:  PowerShell string to run if not null or empty
+    ==============================================================================
+    -->
+    <Target
+            Condition =" '$(PowerShellProject)' == 'true' "
+            Name="BeforeTest" DependsOnTargets="AfterBuild">
+        <Message Importance="high" Text="Before Test for Project:  $(MSBuildProjectName)" />
+        <MSBuild Condition="'$(BeforeTestScript)' != '' "
+                 Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(BeforeTestScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    PreTestEvent
+
+    Runs PreTestEventScript before Pester and Static tests
+
+    Condition:  PowerShellProject must be true
+    PreTestEventScript:  PowerShell string to run if not null or empty
+    ==============================================================================
+    -->
+    <Target
+            Condition =" '$(PowerShellProject)' == 'true' "
+            Name="PreTestEvent">
+        <Message Importance="high" Text="Pre-Test Event for Project:  $(MSBuildProjectName)" />
+        <MSBuild Condition="'$(PreTestEventScript)' != '' "
+                 Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(PreTestEventScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    StaticTest
+
+    Runs PSScriptAnalyzer on RootModule
+
+    Condition:  PowerShellProject must be true and RootModulePath must exist
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="StaticTest">
+        <Error
+            Text="RootModule Path does not exist: .\$(Name).psm1"
+            Condition="!Exists('.\$(Name).psm1')" />
+        <PropertyGroup>
+            <StaticTestScript>
+                Invoke-ScriptAnalyzer -Path .\$(Name).psm1 -Verbose
+            </StaticTestScript>
+        </PropertyGroup>
+        <Message Importance="high" Text="Running Static Tests for Project:  $(MSBuildProjectName)" />
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(StaticTestScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    StaticTestModuleManifest
+
+    Runs Test-ModuleManifest against the Module Manifest
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="StaticTestModuleManifest">
+        <Message Importance="high" Text="Running PowerShell Manifest Static Test for Project:  $(MSBuildProjectName)" />
+        <Error
+            Text="ManifestPath does not exist:  .\$(Name).psd1"
+            Condition="!Exists('.\$(Name).psd1')" />
+        <PropertyGroup>
+            <StaticTestModuleManifestScript>
+                Test-ModuleManifest -Path .\$(Name).psd1 -Verbose
+            </StaticTestModuleManifestScript>
+        </PropertyGroup>
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(StaticTestModuleManifestSript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    Test
+
+    Runs Pester Unit Tests
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="Test" DependsOnTargets="$(TestDependsOn)">
+        <Error
+            Text="TestPath does not exist:  .\$(Name).tests.ps1"
+            Condition="!Exists('.\$(Name).tests.ps1')" />
+        <Message Importance="high" Text="Running Pester Tests for Project:  $(MSBuildProjectName)" />
+        <PropertyGroup>
+            <TestScript>
+                Invoke-Pester -Path .\$(Name).tests.ps1 -Output Detailed -CI -CodeCoverage -Verbose
+            </TestScript>
+        </PropertyGroup>
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(TestSript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    PostTestEvent
+
+    Runs Post Test Event PowerShell string
+
+    Condition:  PowerShellProject must be true
+    PostTestEventScript:  PowerShell string to run if not null or empty
+    ==============================================================================
+    -->
+    <Target
+            Condition =" '$(PowerShellProject)' == 'true' "
+            Name="PostTestEvent">
+        <Message Importance="high" Text="Post Test Event for Project:  $(MSBuildProjectName)" />
+        <MSBuild Condition=" '$(PostTestEventScript)' != '' "
+                 Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(PostTestEventScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    AfterTest
+
+    Runs AfterTestScript after Pester and Static tests
+
+    Condition:  PowerShellProject must be true
+    AfterTestScript:  PowerShell string to run if not null or empty
+    ==============================================================================
+    -->
+    <Target
+            Condition =" '$(PowerShellProject)' == 'true' "
+            Name="AfterTest">
+        <Message Importance="high" Text="After Test for Project:  $(MSBuildProjectName)" />
+        <MSBuild Condition=" '$(AfterTestScript)' != '' "
+                 Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(AfterTestScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    BeforePublish
+
+    Runs BeforePublish before Publish Target
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+           Condition =" '$(PowerShellProject)' == 'true' "
+           Name="BeforePublish">
+        <Message Importance="high" Text="Before Publishing for Project:  $(MSBuildProjectName)" />
+        <MSBuild Condition=" '$(BeforePublishScript)' != '' "
+                Projects="$(MSBuildProjectFullPath)"
+                Targets="RunPowerShellCommand"
+                Properties="PowerShellCommand=$(BeforePublishScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    CreateLocalRepository
+
+    Creates and Registers a Local PowerShell Repository for PowerShell Module
+    Package Creation
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' AND !Exists('$(LocalRepositoryPath)') "
+        Name="CreateLocalRepository" DependsOnTargets="Test">
+        <Message Importance="high" Text="Create Local Repository:  $(MSBuildProjectName)" />
+        <ItemGroup>
+            <RepositoryDir Include="$(LocalRepositoryPath)" />
+        </ItemGroup>
+        <PropertyGroup>
+            <RegisterRepositoryScript>C:\Users\CTCRRMCIJMC1\Documents\GitHub\PSInstallCom\Register-LocalPSRepository.ps1</RegisterRepositoryScript>
+            <ArgumentList>-Name '$(RepositoryName)' -Location '$(LocalRepositoryPath)' -Verbose</ArgumentList>
+        </PropertyGroup>
+        <MakeDir Directories="@(RepositoryDir)" />
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellScript"
+                 Properties="PowerShellScript=$(RegisterRepositoryScript));ArgumentList=$(ArgumentList)" />
+    </Target>
+
+    <!--
+    ==============================================================================
+    PublishToLocalRepository
+
+    Publishes (and therefore Creates) a PowerShell Module Package to the Local
+    Repository
+
+    Condition:  PowerShellProject must be true
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="PublishToLocalRepository"
+        DependsOnTargets="CreateLocalRepository">
+        <PropertyGroup>
+            <PublishToRepositoryScript>C:\Users\CTCRRMCIJMC1\Documents\GitHub\PSInstallCom\Publish-LocalRepository.ps1</PublishToRepositoryScript>
+            <ArgumentList>-Path $(MSBuildProjectDirectory) -Repository '$(RepositoryName)'</ArgumentList>
+        </PropertyGroup>
+        <Message Importance="high" Text="Publish Project to Local Repository:  $(MSBuildProjectName)" />
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellScript"
+                 Properties="PowerShellScript=$(PublishToRepositoryScript);ArgumentList=$(ArgumentList)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    Publish
+
+    Main Publish Target
+
+    Condition:  PowerShellProject must be true, RepositoryApiKey must not be null or
+                empty, and ModulePath must exist
+    DependsOnTargets:  $(PublishDependsOn)
+    RepositoryApiKey:  Required for accessing a remote PowerShell Repository
+    ModulePath:  Path to the PowerShell Module to Publish
+    RepositoryName:  The friendly name to the Repository to Publish to
+
+    Error:  Throw if RepositoryApiKey is null or empty
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' == 'true' "
+        Name="Publish" DependsOnTargets="$(PublishDependsOn)">
+        <Message Importance="high" Text="Publish PowerShell Module Project:  $(MSBuildProjectName)" />
+        <PropertyGroup>
+            <PublishScript>
+                Publish-Module -Name '$(MSBuildProjectName)' -NuGetApiKey '$(RepositoryApiKey)' -Path $(ModulePath) -Repository '$($RespositoryName)'
+            </PublishScript>
+        </PropertyGroup>
+        <MSBuild Projects="$(MSBuildProjectFullPath)"
+                 Targets="RunPowerShellCommand"
+                 Properties="PowerShellCommand=$(PublishScript)"/>
+    </Target>
+
+    <!--
+    ==============================================================================
+    VSTestIfTestProject
+
+    Calls VSTest target if IsTestProject is true.  Works around a Microsoft bug
+    when executing unit tests from the Solution.
+
+    Condition:  Must not be a PowerShellProject
+    DependsOnTargets:  AfterBuild
+    IsTestProject:  True if the project is a test project
+    ==============================================================================
+    -->
+    <Target
+        Condition =" '$(PowerShellProject)' != 'true' "
+        Name="VSTestIfTestProject"
+        DependsOnTargets="AfterBuild">
+        <Message Importance="high" Text="Visual Studio Test If Test Project:  $(MSBuildProjectName)" />
+        <CallTarget Condition=" '$(IsTestProject)' == 'true' " Targets="VSTest" />
+    </Target>
+
+    <!--
+    ==============================================================================
+    VSTest
+
+    Calls VSTest target if IsTestProject is true.  Works around a Microsoft bug
+    when executing unit tests from the Solution.
+
+    Condition:  Must not be a PowerShellProject
+    ==============================================================================
+    -->
+    <Target
+        Name="VSTest"
+        Condition =" '$(PowerShellProject)' != 'true' ">
+        <Message Importance="high" Text="Visual Studio Test:  $(MSBuildProjectName)" />
+        <MSBuild Projects="@(ProjectReference)" Targets="VSTestIfTestProject" />
+    </Target>
+
+</Project>

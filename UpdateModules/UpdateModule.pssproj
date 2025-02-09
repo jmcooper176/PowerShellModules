@@ -1,0 +1,53 @@
+﻿<Project ToolsVersion="later" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0cc51650-a29d-4ca2-a176-2844b06cc15b}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.UpdateModule</RootNamespace>
+    <AssemblyName>UpdateModule</AssemblyName>
+    <Name>UpdateModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToExport>
+          'New-ModulePsm1', 'Get-Cmdlet', 'Find-DefaultResourceGroupCmdlet', 'Test-CmdletRequiredParameter',
+          'New-MinimumVersionEntry', 'Update-RMModule', 'Update-Azure', 'Update-Stack', 'Update-Netcore'
+      </CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>Azure Module Updater Cmdlets</Description>
+    <FunctionsToProcess>
+          'New-ModulePsm1', 'Get-Cmdlet', 'Find-DefaultResourceGroupCmdlet', 'Test-CmdletRequiredParameter',
+          'New-MinimumVersionEntry', 'Update-RMModule', 'Update-Azure', 'Update-Stack', 'Update-Netcore'
+      </FunctionsToProcess>
+    <NestedModules>'ErrorRecordModule.psd1', 'PowerShellModule.psd1', 'StringBuildModule.psd1'</NestedModules>
+    <Title>Azure Update Module</Title>
+    <ProjectHome />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Update-Modules.ps1" />
+    <Compile Include="UpdateModule.psd1" />
+    <Compile Include="UpdateModule.psm1" />
+    <Compile Include="UpdateModule.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

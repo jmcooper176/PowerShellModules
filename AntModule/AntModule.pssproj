@@ -1,0 +1,79 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <AssemblyName>AntModule</AssemblyName>
+    <Authors>John Merryweather Cooper</Authors>
+    <Bundle>True</Bundle>
+    <CompanyName>U.S. Office of Personnel Management</CompanyName>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Description>Cmdlets to automate Apache Ant jobs</Description>
+    <FunctionsToProcess>Get-AntPath;Start-Ant</FunctionsToProcess>
+    <HideConsoleWindow>False</HideConsoleWindow>
+    <HighDPISupport>False</HighDPISupport>
+    <ManifestPath>AntModule.psd1</ManifestPath>
+    <Name>AntModule</Name>
+    <NestedModules>CmdLineModule.psd1;EnvironmentModule.psd1;PowerShellModule.psd1;StringBuilderModlue.psd1</NestedModules>
+    <Obfuscate>False</Obfuscate>
+    <OutputName>$(Name).$(FileVersion).nupkg</OutputName>
+    <OutputType>Exe</OutputType>
+    <PackageAsExecutable>False</PackageAsExecutable>
+    <PackageModules>True</PackageModules>
+    <Platform Condition=" '$(Platform)' == '' ">Debug</Platform>
+    <PostBuildScript>Write-Information -MessageDate "Post Build Script" -InformationAction Continue</PostBuildScript>
+    <PowerShellVersion>7.4</PowerShellVersion>
+    <PreBuildScript>Write-Information -MessageDate "Pre-Build Script" -InformationAction Continue</PreBuildScript>
+    <ProjectGuid>{371065cb-f0c6-41ab-822d-b9077f308842}</ProjectGuid>
+    <RequireElevation>False</RequireElevation>
+    <RootModule>AntModule.psm1</RootModule>
+    <RootNamespace>SkyOps.PowerShell.AntModule</RootNamespace>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ShortModule>$(Name.Replace("Module", ""))</ShortModule>
+    <Title>Apache Ant Module</Title>
+    <CmdletsToExport>Get-AntPath;Start-Ant</CmdletsToExport>
+    <Guid>4b75cbbc-75ae-49a4-8410-1881b47d232a</Guid>
+    <ProcessorArchitecture />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AntModule.psd1" />
+    <Compile Include="AntModule.psm1" />
+    <Compile Include="AntModule.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

@@ -1,0 +1,57 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6448d992-af0d-400b-b0c7-0ab333690799}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.GitHubModule</RootNamespace>
+    <AssemblyName>GitHubModule</AssemblyName>
+    <Name>GitHubModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToExport>
+          'Add-MultilineStepSummary', 'Add-StepSummary', 'Add-SystemPath',
+          'ConvertTo-Tuple', 'Export-EnvironmentVariableFile',
+          'Get-GitHubEnvironmentVariable', 'Remove-StepSummary',
+          'Set-GitHubEnvironmentVariable', 'Set-MultilineEnvironmentVariable',
+          'Set-MultilineStepSummary', 'Set-OutputParameter'
+      </CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>Utility Module that provides functionality useful with GitHub steps</Description>
+    <FunctionsToProcess>
+          'Add-MultilineStepSummary', 'Add-StepSummary', 'Add-SystemPath',
+          'ConvertTo-Tuple', 'Export-EnvironmentVariableFile',
+          'Get-GitHubEnvironmentVariable', 'Remove-StepSummary',
+          'Set-GitHubEnvironmentVariable', 'Set-MultilineEnvironmentVariable',
+          'Set-MultilineStepSummary', 'Set-OutputParameter'
+      </FunctionsToProcess>
+    <NestedModules>'EnvironmentModule.psd1', 'StringBuilderModule.psd1'</NestedModules>
+    <Title>GitHub Output Variable Helper Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="GitHubModule.psd1" />
+    <Compile Include="GitHubModule.psm1" />
+    <Compile Include="GitHubModule.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

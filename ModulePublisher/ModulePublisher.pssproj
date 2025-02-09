@@ -1,0 +1,54 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{f27ff5a9-74b4-488d-b2be-7e265ad15208}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.ModulePublisher</RootNamespace>
+    <AssemblyName>ModulePublisher</AssemblyName>
+    <Name>ModulePublisher</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToExport>
+            'Get-ModuleOrder', 'Get-RepoLocation', 'Get-ApiKey',
+            'Update-NugetPackage', 'Remove-RMPackage', 'Remove-RMPackages',
+            'Update-Packages', 'Publish-RMModules'
+        </CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>Publishes Azure PowerShell Modules</Description>
+    <FunctionsToProcess>
+            'Get-ModuleOrder', 'Get-RepoLocation', 'Get-ApiKey',
+            'Update-NugetPackage', 'Remove-RMPackage', 'Remove-RMPackages',
+            'Update-Packages', 'Publish-RMModules'
+        </FunctionsToProcess>
+    <NestedModules>PowerShellModule.psd1</NestedModules>
+    <RequiredModules>@{ModuleName = 'Az.KeyVault'; ModuleVersion = '0.1.0'; }</RequiredModules>
+    <Title>Azure Module Publisher Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ModulePublisher.psd1" />
+    <Compile Include="ModulePublisher.psm1" />
+    <Compile Include="ModulePublisher.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

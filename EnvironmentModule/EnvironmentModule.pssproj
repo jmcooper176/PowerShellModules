@@ -1,0 +1,55 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{39cb17f5-dc29-40a8-9a2a-54194cf86ac6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.EnvironmentModule</RootNamespace>
+    <AssemblyName>EnvironmentModule</AssemblyName>
+    <Name>EnvironmentModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <NestedModules>PowerShellModule.psd1</NestedModules>
+    <Description>Enhanced interface to Process Environment Variables</Description>
+    <PowerShellVersion>5.1</PowerShellVersion>
+    <FunctionsToProcess>
+            'Add-EnvironmentValue', 'Copy-EnvironmentVariable', 'Get-EnvironmentVariable',
+            'Get-EnvironmentHashtable', 'Join-EnvironmentVariable', 'New-EnvironmentVariable',
+            'Remove-EnvironmentVariable', 'Rename-EnvironmentVariable', 'Set-EnvironmentVariable',
+            'Test-EnvironmentVariable', 'Out-Hashtable', 'Out-ArrayList'
+        </FunctionsToProcess>
+    <CmdletsToExport>
+            'Add-EnvironmentValue', 'Copy-EnvironmentVariable', 'Get-EnvironmentVariable',
+            'Get-EnvironmentHashtable', 'Join-EnvironmentVariable', 'New-EnvironmentVariable',
+            'Remove-EnvironmentVariable', 'Rename-EnvironmentVariable', 'Set-EnvironmentVariable',
+            'Test-EnvironmentVariable', 'Out-Hashtable', 'Out-ArrayList'
+        </CmdletsToExport>
+    <Title>Process Environment Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="EnvironmentModule.psd1" />
+    <Compile Include="EnvironmentModule.psm1" />
+    <Compile Include="EnvironmentModule.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

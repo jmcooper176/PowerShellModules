@@ -1,0 +1,75 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{cbdda4ac-fdec-4fec-b5f5-3c63fc1b7913}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.AzurePipelineModule</RootNamespace>
+    <AssemblyName>AzurePipelineModule</AssemblyName>
+    <Name>AzurePipelineModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToProcess>
+            'Format-AddAttachment', 'Format-AddBuildTag',
+            'Format-ArtifactAssociate',
+            'Format-SetEndpoint',
+            'Format-Complete',
+            'Format-LogEntry', 'Format-LogIssue', 'Format-UploadLog',
+            'Format-SetProgress', 'Format-SetVariable',
+            'Format-ArtifactUpload', 'Format-UploadSummary', 'Format-UploadFile', 'Format-PrependPath',
+            'Format-UpdateBuildNumber', 'Format-UpdateReleaseName'
+            'Format-AddAttachment', 'Format-AddBuildTag',
+            'Format-ArtifactAssociate',
+            'Format-SetEndpoint',
+            'Format-Complete',
+            'Format-LogEntry', 'Format-LogIssue', 'Format-UploadLog',
+            'Format-SetProgress', 'Format-SetVariable',
+            'Format-ArtifactUpload', 'Format-UploadSummary', 'Format-UploadFile', 'Format-PrependPath',
+            'Format-UpdateBuildNumber', 'Format-UpdateReleaseName'
+        </CmdletsToProcess>
+    <CompanyName>U.S. Office of Personnel Management</CompanyName>
+    <Description>Cmdlets for logging information to the Console for Azure Pipeline Builds</Description>
+    <FunctionsToProcess>
+            'Format-AddAttachment', 'Format-AddBuildTag',
+            'Format-ArtifactAssociate',
+            'Format-SetEndpoint',
+            'Format-Complete',
+            'Format-LogEntry', 'Format-LogIssue', 'Format-UploadLog',
+            'Format-SetProgress', 'Format-SetVariable',
+            'Format-ArtifactUpload', 'Format-UploadSummary', 'Format-UploadFile', 'Format-PrependPath',
+            'Format-UpdateBuildNumber', 'Format-UpdateReleaseName'
+        </FunctionsToProcess>
+    <ManifestPath>$(OutDir)\$(ProjectName).psd1</ManifestPath>
+    <NestedModules>StringBuilderModlue.psd1</NestedModules>
+    <RootModule>$(OutDir)\$(ProjectName).psm1</RootModule>
+    <Title>Azure Pipeline Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="AzPreview.psd1.template" />
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AzurePipelineModule.psd1" />
+    <Compile Include="AzurePipelineModule.psm1" />
+    <Compile Include="AzurePipelineModule.tests.ps1" />
+    <Compile Include="AzureRM.Example.psm1" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

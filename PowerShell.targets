@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<!--
+    ==============================================================================
+    PowerShell Project File Tasks
+    ==============================================================================
+    -->
+    <Target Name="RunPowerShellCommand"
+        Condition=" '$(PowerShellCommand)' != '' ">
+        <PropertyGroup>
+            <PowerShellExe Condition=" '$(PowerShellExe)' == '' AND Exists('C:\Program Files\PowerShell\7\pwsh.exe')">&quot;C:\Program Files\PowerShell\7\pwsh.exe&quot;</PowerShellExe>
+            <PowerShellExe Condition=" '$(PowerShellExe)' == '' AND Exists('$(WINDIR)\System32\WindowsPowerShell\v1.0\powershell.exe') ">
+                $(WINDIR)\System32\WindowsPowerShell\v1.0\powershell.exe
+            </PowerShellExe>
+        </PropertyGroup>
+        <Error
+            Text="PowershellCommand must not be null or empty:  '$(PowerShellCommand)'"
+            Condition=" '$(PowerShellCommand)' == '' " />
+        <Message Importance="high" Text="Running PowerShell Command:  $(PowerShellExe) $(PowerShellCommand)" />
+        <Exec Command="$(PowerShellExe) -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command &quot;&amp; $(PowerShellCommand)&quot;" />
+    </Target>
+
+    <Target Name="RunPowerShellScript"
+        Condition=" '$(PowerShellScript)' != '' AND Exists('$(PowerShellScript)')">
+        <PropertyGroup>
+            <PowerShellExe Condition=" '$(PowerShellExe)' == '' AND Exists('C:\Program Files\PowerShell\7\pwsh.exe')">&quot;C:\Program Files\PowerShell\7\pwsh.exe&quot;</PowerShellExe>
+            <PowerShellExe Condition=" '$(PowerShellExe)' == '' AND Exists('$(WINDIR)\System32\WindowsPowerShell\v1.0\powershell.exe') ">
+                $(WINDIR)\System32\WindowsPowerShell\v1.0\powershell.exe
+            </PowerShellExe>
+        </PropertyGroup>
+        <Error
+            Text="PowerShellCommand must not be null or empty:  '$(PowerShellScript)'"
+            Condition=" '$(PowerShellScript)' == '' " />
+        <Error
+            Text="PowerShellCommand path must exist:  '$(PowerShellScript)'"
+            Condition=" !Exists('$(PowerShellScript)') " />
+        <Message Importance="high" Text="Running PowerShell Script:  $(PowerShellExe) $(PowerShellScript)" />
+        <Exec Condition=" '$(ArgumentList)' == '' " Command="$(PowerShellExe) -NonInteractive -NoProfile -ExecutionPolicy Bypass -File &quot;$(PowerShellScript)&quot;" />
+        <Exec Condition=" '$(ArgumentList)' != '' " Command="$(PowerShellExe) -NonInteractive -NoProfile -ExecutionPolicy Bypass -File &quot;$(PowerShellScript)&quot; $(ArgumentList)" />
+    </Target>
+</Project>

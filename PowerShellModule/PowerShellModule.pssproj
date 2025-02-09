@@ -1,0 +1,67 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Configuration)\</OutputPath>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{d9bf72d7-2efb-4c93-ba80-03a0a50f8a9b}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>SkyOps.PowerShell.PowerShellModule</RootNamespace>
+    <AssemblyName>PowerShellModule</AssemblyName>
+    <Name>PowerShellModule</Name>
+    <CmdletsToExport>
+            'Add-Entry', 'Add-Parameter', 'Enter-Block',
+            'Get-BuildVersion', 'Get-MajorVersion', 'Get-MinorVersion', 'Get-Parameter', 'Get-Version',
+            'Initialize-Class', 'Initialize-Cmdlet', 'Initialize-Function', 'Initialize-Member', 'Initialize-Test', 'Initialize-Script',
+            'Measure-String', 'Test-Parameter', 'Test-Version'
+        </CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>PowerShell Invocation Extensions</Description>
+    <FunctionsToProcess>
+            'Add-Entry', 'Add-Parameter', 'Enter-Block',
+            'Get-BuildVersion', 'Get-MajorVersion', 'Get-MinorVersion', 'Get-Parameter', 'Get-Version',
+            'Initialize-Class', 'Initialize-Cmdlet', 'Initialize-Function', 'Initialize-Member', 'Initialize-Test', 'Initialize-Script',
+            'Measure-String', 'Test-Parameter', 'Test-Version'
+        </FunctionsToProcess>
+    <NestedModules>'ErrorRecordModule.psd1', 'ErrorResponseType.psm1', 'TypeAccelerator.psm1'</NestedModules>
+    <PowerShellVersion>6.2</PowerShellVersion>
+    <Title>Base PowerShell Module</Title>
+    <ManifestPath>$(OutDir)\$(ProjectName).psd1</ManifestPath>
+    <Guid>2e61ba29-64de-471a-a771-f530bf54ffde</Guid>
+    <ProcessorArchitecture />
+    <PackageAsExecutable>False</PackageAsExecutable>
+    <Bundle>True</Bundle>
+    <Obfuscate>False</Obfuscate>
+    <HideConsoleWindow>False</HideConsoleWindow>
+    <RequireElevation>False</RequireElevation>
+    <PackageModules>True</PackageModules>
+    <HighDPISupport>True</HighDPISupport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PowerShellModule.psd1" />
+    <Compile Include="PowerShellModule.psm1" />
+    <Compile Include="PowerShellModule.tests.ps1" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

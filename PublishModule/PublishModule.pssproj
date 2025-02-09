@@ -1,0 +1,54 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{47b755d5-2019-4c79-84ca-088c1bba1656}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.PublishModule</RootNamespace>
+    <AssemblyName>PublishModule</AssemblyName>
+    <Name>PublishModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToExport>
+            'Add-Module', 'Add-Modules', 'Add-AllModules', 'Add-ModuleVersion', 'Add-RootModule', , 'Get-AdminModule', 'Get-AllModules',
+            'Get-ClientModules', 'Get-Directories', 'Get-RollupModules', 'Out-FileNoBom', 'Publish-PowerShellModule', 'Publish-AllModules',
+            'Remove-ModuleDependencies', 'Save-PackageFromPsGallery', 'Save-PackageLocally', 'Update-NuGetPackage'
+        </CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>Cmdlets and functions to support publishing Powershell Module NuGet packages</Description>
+    <FunctionsToProcess>
+            'Add-Module', 'Add-Modules', 'Add-AllModules', 'Add-ModuleVersion', 'Add-RootModule', , 'Get-AdminModule', 'Get-AllModules',
+            'Get-ClientModules', 'Get-Directories', 'Get-RollupModules', 'Out-FileNoBom', 'Publish-PowerShellModule', 'Publish-AllModules',
+            'Remove-ModuleDependencies', 'Save-PackageFromPsGallery', 'Save-PackageLocally', 'Update-NuGetPackage'
+        </FunctionsToProcess>
+    <NestedModules>'ErrorRecordModule.psd1', 'PowerShellModule.psd1', 'StringBuilderModule.psd1'</NestedModules>
+    <Title>Azure Module Publication Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="PublishModule.psd1" />
+    <Compile Include="PublishModule.tests.ps1" />
+    <Compile Include="PublishModules.ps1" />
+    <Compile Include="PublishModule.psm1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

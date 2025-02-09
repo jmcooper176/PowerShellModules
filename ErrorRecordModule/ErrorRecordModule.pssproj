@@ -1,0 +1,54 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{72eeba42-9043-4c8c-8f63-963e645fed88}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.ErrorRecordModule</RootNamespace>
+    <AssemblyName>ErrorRecordModule</AssemblyName>
+    <Name>ErrorRecordModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <CmdletsToExport>
+            'Confirm-ArgumentInRange', 'Confirm-ArgumentNotEmpty', 'Confirm-ArgumentNotNull',
+            'Confirm-ArgumentValid', 'Format-ErrorId', 'Get-Exception',
+            'Get-FullyQualifiedErrorId', 'Get-ErrorCategory', 'Get-TargetObject',
+            'New-ErrorDetails', 'New-ErrorRecord', 'Write-Fatal'
+        </CmdletsToExport>
+    <FunctionsToProcess>
+            'Confirm-ArgumentInRange', 'Confirm-ArgumentNotEmpty', 'Confirm-ArgumentNotNull',
+            'Confirm-ArgumentValid', 'Format-ErrorId', 'Get-Exception',
+            'Get-FullyQualifiedErrorId', 'Get-ErrorCategory', 'Get-TargetObject',
+            'New-ErrorDetails', 'New-ErrorRecord', 'Write-Fatal'
+        </FunctionsToProcess>
+    <NestedModules>PowerShellModules.psd1</NestedModules>
+    <Description>Functions and Cmdlets to create an manipulate System.Management.Automation.ErrorRecord</Description>
+    <Title>PowerShell Error Record Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ErrorRecordModule.psd1" />
+    <Compile Include="ErrorRecordModule.psm1" />
+    <Compile Include="ErrorRecordModule.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

@@ -1,0 +1,98 @@
+﻿<Project ToolsVersion="latest" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{24c70f37-c9ea-4f07-83ed-cf2c23607523}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SkyOps.PowerShell.VersionModule</RootNamespace>
+    <AssemblyName>VersionModule</AssemblyName>
+    <Name>VersionModule</Name>
+    <ShortName>$(Name.Replace("Module", ""))</ShortName>
+    <AliasesToExport>
+            'ConvertFrom-ProductVersion',
+            'Get-ProductVersion',
+            'New-CalVersion', 'New-ProductVersion', 'New-SemVersion'
+        </AliasesToExport>
+    <CmdletsToExport>
+            'Compare-PerlVersion', 'Compare-PythonVersion', 'Compare-StringVersion',
+            'Compare-WindowsVersion',
+            'ConvertFrom-PerlVersion', 'ConvertFrom-PythonVersion', 'ConvertFrom-SemanticVersion',
+            'ConvertFrom-StringVersion', 'ConvertFrom-WindowsVersion',
+            'Get-AssemblyVersion', 'Get-FileVersion', 'Get-FileVersionInfo',
+            'Get-InformationalVersion', 'Get-ModuleVersion',
+            'Get-UtcDate',
+            'Initialize-Version',
+            'New-AssemblyVersion', 'New-BuildNumber', 'New-CalendarVersion',
+            'New-FileVersion', 'New-InformationalVersion', 'New-PatchNumber',
+            'New-PerlVersion', 'New-PythonVersion', 'New-RevisionNumber',
+            'New-SemanticVersion', 'New-WindowsVersion',
+            'Write-AssemblyVersion', 'Write-FileVersion', 'Write-InformationalVersion',
+            'Write-Version'
+        </CmdletsToExport>
+    <CompanyName>$(Company)</CompanyName>
+    <Description>Utility PowerShell Module that generates and modifies versions in files.</Description>
+    <FunctionsToProcess>
+            'Compare-PerlVersion', 'Compare-PythonVersion', 'Compare-StringVersion',
+            'Compare-WindowsVersion',
+            'ConvertFrom-PerlVersion', 'ConvertFrom-PythonVersion', 'ConvertFrom-SemanticVersion',
+            'ConvertFrom-StringVersion', 'ConvertFrom-WindowsVersion',
+            'Get-AssemblyVersion', 'Get-FileVersion', 'Get-FileVersionInfo',
+            'Get-InformationalVersion', 'Get-ModuleVersion',
+            'Get-UtcDate',
+            'Initialize-Version',
+            'New-AssemblyVersion', 'New-BuildNumber', 'New-CalendarVersion',
+            'New-FileVersion', 'New-InformationalVersion', 'New-PatchNumber',
+            'New-PerlVersion', 'New-PythonVersion', 'New-RevisionNumber',
+            'New-SemanticVersion', 'New-WindowsVersion',
+            'Write-AssemblyVersion', 'Write-FileVersion', 'Write-InformationalVersion',
+            'Write-Version',
+            'Test-CPreRelease', 'Test-PreRelease'
+        </FunctionsToProcess>
+    <NestedModules>'ErrorRecordModule.psd1', 'PowerShellModule.psd1', 'StringBuilderModule.psd1', 'UtcModule.psd1'</NestedModules>
+    <Title>Software Version Module</Title>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ErrorRecordModule\ErrorRecordModule.pssproj">
+      <Name>ErrorRecordModule</Name>
+      <Project>{72eeba42-9043-4c8c-8f63-963e645fed88}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\StringBuilderModule\StringBuilderModule.pssproj">
+      <Name>StringBuilderModule</Name>
+      <Project>{3b9b7bb7-ee41-4eb8-a82f-4eb8e3592f77}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\UtcModule\UtcModule.pssproj">
+      <Name>UtcModule</Name>
+      <Project>{24ffc703-8721-4703-8378-ed8773a43ea5}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="VersionModule.psd1" />
+    <Compile Include="VersionModule.psm1" />
+    <Compile Include="VersionModule.tests.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" />
+</Project>

@@ -1,0 +1,45 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{853b0103-4152-42eb-bc26-999d06b88311}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MyApplication</RootNamespace>
+    <AssemblyName>MyApplication</AssemblyName>
+    <Name>BuildScripts</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Build-Cleanup.ps1" />
+    <Compile Include="Build-Cleanup.tests.ps1" />
+    <Compile Include="Build-Drop.ps1" />
+    <Compile Include="Build-Drop.tests.ps1" />
+    <Compile Include="Build-Installer.ps1" />
+    <Compile Include="Build-Installer.tests.ps1" />
+    <Compile Include="BuildScripts.ps1" />
+    <Compile Include="BuildScripts.tests.ps1" />
+    <Compile Include="Invoke-CIStep.ps1" />
+    <Compile Include="Invoke-CIStep.tests.ps1" />
+    <Compile Include="post-build.ps1" />
+    <Compile Include="post-build.tests.ps1" />
+    <Compile Include="pre-build.ps1" />
+    <Compile Include="pre-build.tests.ps1" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" />
+</Project>

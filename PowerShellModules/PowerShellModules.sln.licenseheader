@@ -1,9 +1,8 @@
 ﻿extensions: designer.cs generated.cs
 extensions: .c .cs .cpp .cxx .fs .h .js .php .rc .ts
 // ---------------------------------------------------------------------------
-// <copyright file="%FileName%" company="U.S. Office of Personnel
-// Management">
-//     Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management. 
+// <copyright file="%FileName%" company="John Merryweather Cooper">
+//     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper. 
 //    All Rights Reserved.
 //
 //     Redistribution and use in source and binary forms, with or without
@@ -48,9 +47,8 @@ extensions: .c .cs .cpp .cxx .fs .h .js .php .rc .ts
 extensions: .aspx .ascx
 <%-- 
 ==============================================================================
-<copyright file="%FileName%" company="U.S. Office of Personnel
-Management">
-     Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management.
+<copyright file="%FileName%" company="John Merryweather Cooper">
+     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
     All Rights Reserved.
 
      Redistribution and use in source and binary forms, with or without
@@ -95,9 +93,8 @@ This file "%FileName%" is part of "%Project%".
 
 extensions: .vb
 '=============================================================================
-' <copyright file="%FileName%" company="U.S. Office of Personnel
-' Management">
-'     Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management.
+' <copyright file="%FileName%" company="John Merryweather Cooper">
+'     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
 '     All Rights Reserved.
 '
 '     Redistribution and use in source and binary forms, with or without
@@ -142,9 +139,8 @@ extensions: .vb
 extensions: .ps1 .psm1 .psd1
 <#
  =============================================================================
-<copyright file="%FileName%" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management.
+<copyright file="%FileName%" company="John Merryweather Cooper">
+    Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -189,9 +185,8 @@ This file "%FileName%" is part of "%Project%".
 
 extensions: .yml, .yaml
 # =============================================================================
-# <copyright file="%FileName%" company="U.S. Office of Personnel
-# Management">
-#     Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management.
+# <copyright file="%FileName%" company="John Merryweather Cooper">
+#     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
 #     All Rights Reserved.
 #
 #     Redistribution and use in source and binary forms, with or without
@@ -236,9 +231,8 @@ extensions: .yml, .yaml
 extensions:  .config .ps1xml .xhtml .xml .xsd .xsl .xslt .wxi .wxs .wxl
 <!--
 ==============================================================================
-<copyright file="%FileName%" company="U.S. Office of Personnel
-Management">
-     Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management.
+<copyright file="%FileName%" company="John Merryweather Cooper">
+     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
      All Rights Reserved.
 
      Redistribution and use in source and binary forms, with or without
@@ -283,9 +277,8 @@ This fIle "%FileName%" is part of "%Project%".
 
 extensions: .cshtml .vbhtml
 @* ---------------------------------------------------------------------------
-<copyright file="%FileName%" company="U.S. Office of Personnel
-Management">
-     Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management.
+<copyright file="%FileName%" company="John Merryweather Cooper">
+     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
      All Rights Reserved.
 
      Redistribution and use in source and binary forms, with or without
@@ -329,9 +322,8 @@ This file "%FileName%" is part of "%Project%".
 
 extensions: .css
 /* ---------------------------------------------------------------------------
-<copyright file="%FileName%" company="U.S. Office of Personnel
-Management">
-     Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management.
+<copyright file="%FileName%" company="John Merryweather Cooper">
+     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
      All Rights Reserved.
 
      Redistribution and use in source and binary forms, with or without
@@ -376,9 +368,8 @@ This file "%FileName%" is part of "%Project%".
 extensions: .py
 '''
 ---------------------------------------------------------------------------
-<copyright file="%FileName%" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management.
+<copyright file="%FileName%" company="John Merryweather Cooper">
+    Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -423,9 +414,8 @@ This fIle "%FileName%" is part of "%Project%".
 
 extensions: .ada. adb. ads .sql
 -- ---------------------------------------------------------------------------
--- <copyright file="%FileName%" company="U.S. Office of Personnel
--- Management">
---     Copyright (c) 2024-%CurrentYear% U.S. Office of Personnel Management.
+-- <copyright file="%FileName%" company="John Merryweather Cooper">
+--     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
 --     All Rights Reserved.
 --
 --     Redistribution and use in source and binary forms, with or without

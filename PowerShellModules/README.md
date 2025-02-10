@@ -3,7 +3,7 @@ PowerShell wrappers around Windows Installer COM
 
 ![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/codeql.yml/badge.svg)
 
-![GitHub Workflow Status](https://github.com//actions/workflows/msbuild-CI-Build.yml/badge.svg)
+![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/msbuild-CI-Build.yml/badge.svg)
 
 ![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/powershell.yml/badge.svg)
 

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "AntModule", "AntModule\AntModule.pssproj", "{371065CB-F0C6-41AB-822D-B9077F308842}"
 EndProject
-Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "ApplyVersionToAssemblies", "ApplyVersionToAssemblies\ApplyVersionToAssemblies.pssproj", "{DDF32450-E489-43C6-8D9E-C0C536A856BF}"
+Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "Write-VersionToAssemblyInfo", "ApplyVersionToAssemblies\Write-VersionToAssemblyInfo.pssproj", "{DDF32450-E489-43C6-8D9E-C0C536A856BF}"
 EndProject
 Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "AzurePipelineModule", "AzurePipelineModule\AzurePipelineModule.pssproj", "{CBDDA4AC-FDEC-4FEC-B5F5-3C63FC1B7913}"
 EndProject

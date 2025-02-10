@@ -27,6 +27,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="PSRepoStart.cmd" />
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Repo-Tasks.psd1" />

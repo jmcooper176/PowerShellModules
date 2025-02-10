@@ -1,5 +1,5 @@
 #
-# RELEASENOTES - PowerShellModule
+# RELEASENOTES - GitHubModule
 #
 
 DateTime               Notes

@@ -25,7 +25,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="ProcessLauncherModule.psd1" />
     <Compile Include="ProcessLauncherModule.psm1" />

@@ -1,0 +1,6 @@
+#
+# RELEASENOTES - Generate-ExternalContributors
+#
+
+DateTime               Notes
+---------------------  -------------------------------------------------

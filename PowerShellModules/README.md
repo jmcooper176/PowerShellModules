@@ -1,5 +1,5 @@
-# PSInstallCom
-PowerShell wrappers around Windows Installer COM
+# PowerShell Modules
+Collection of Useful PowerShell Modules
 
 ![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/codeql.yml/badge.svg)
 

@@ -1,0 +1,6 @@
+#
+# RELEASENOTES - Write-VersionToAssemblyInfo
+#
+
+DateTime               Notes
+---------------------  -------------------------------------------------

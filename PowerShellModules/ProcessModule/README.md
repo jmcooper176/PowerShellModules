@@ -1,4 +1,4 @@
-# README - PowerShellModule
+# README - ProcessModule
 
 ## Author
 

@@ -1,4 +1,4 @@
-# README - PowerShellModule
+# README - StringBuilderModule and StringBuilder Class
 
 ## Author
 

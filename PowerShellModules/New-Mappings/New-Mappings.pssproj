@@ -27,6 +27,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="CreateMappings_rules.json" />
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="New-FilterMappings.ps1" />

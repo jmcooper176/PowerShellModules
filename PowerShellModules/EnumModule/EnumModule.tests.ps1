@@ -1,4 +1,4 @@
-#
+﻿#
 # This is a PowerShell Unit Test file.
 # You need a unit test framework such as Pester to run PowerShell Unit tests.
 # You can download Pester from https://go.microsoft.com/fwlink/?LinkID=534084
@@ -67,7 +67,7 @@ Describe -Name 'EnumModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 

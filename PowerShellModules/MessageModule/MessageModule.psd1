@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="MessageModule.psd1" company="U.S. Office of Personnel
 Management">

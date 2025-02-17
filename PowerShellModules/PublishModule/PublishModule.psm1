@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="PublishModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -132,7 +132,7 @@ function Out-FileNoBom {
         entire `Value` is written to the file as a single string.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rigths Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rigths Reserved.
     #>
 }
 
@@ -171,7 +171,7 @@ function Get-Directory {
         Either Latest or Stack.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -244,7 +244,7 @@ function Get-RollupModule {
         If built using .NET core.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -297,7 +297,7 @@ function Get-AdminModule {
         The Module or class of Modules to build.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -412,7 +412,7 @@ function Get-ClientModule {
         If built with .NET core.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -491,7 +491,7 @@ function Get-AllModule {
         If the modules are built using Net Core.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -558,7 +558,7 @@ function Remove-ModuleDependency {
         Switch to keep RequiredModules.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
     #>
 }
@@ -633,7 +633,7 @@ function Update-NugetPackage {
         Path to the Nuget executable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -690,7 +690,7 @@ function Add-Module {
         Path to nuget executable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -748,7 +748,7 @@ function Save-PackageLocally {
         Path to the local temporary repository
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -817,7 +817,7 @@ function Save-PackagesFromPsGallery {
         Path to local temporary repository.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -904,7 +904,7 @@ function Add-AllModule {
         Location of nuget executable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -973,7 +973,7 @@ function Add-RootModule {
         Path to the module manifest or module script file.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -1043,7 +1043,7 @@ function Add-ModuleVersion {
         The version to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -1113,7 +1113,7 @@ function Add-Guid {
         The Guid to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -1183,7 +1183,7 @@ function Add-Author {
         The Author to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -1254,7 +1254,7 @@ function Add-CompanyName {
         The Author to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -1300,7 +1300,7 @@ function Add-Copyright {
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-        Set-Variable -Name CopyrightFormat -Option Constant -Value "Copyright © {0}, {1}.  All Rights Reserved." -WhatIf:$false
+        Set-Variable -Name CopyrightFormat -Option Constant -Value "Copyright Â© {0}, {1}.  All Rights Reserved." -WhatIf:$false
 
         if ($PSCmdlet.ParameterSetName -eq 'UsingFormat') {
             $Copyright = ($CopyrightFormat -eq $Year, $CompanyName)
@@ -1375,7 +1375,7 @@ function Add-Copyright {
         The Copyright to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -1604,7 +1604,7 @@ function Add-Module {
         Path to nuget exectuable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -1697,7 +1697,7 @@ function Publish-PowershellModule {
         Path to nuget executable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
     #>
 }
@@ -1766,7 +1766,7 @@ function Publish-AllModule {
         If publishing locally we don't do anything.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
     #>
 }
@@ -1839,6 +1839,6 @@ function Find-Executable {
         .OUTPUTS
         .EXAMPLE
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }

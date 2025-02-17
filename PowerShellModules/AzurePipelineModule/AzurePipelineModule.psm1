@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="AzurePipelineModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -109,7 +109,7 @@ function Format-AddAttachment {
         ##vso[task.addattachment type=test;name=TestRun]
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -163,7 +163,7 @@ function Format-AddBuildTag {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -246,7 +246,7 @@ function Format-ArtifactAssociate {
         the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -333,7 +333,7 @@ function Format-SetEndpoint {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -388,7 +388,7 @@ function Format-Complete {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -443,7 +443,7 @@ function Format-LogEntry {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -547,7 +547,7 @@ function Format-LogIssue {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -626,7 +626,7 @@ function Format-ArtifactUpload {
         PS> Format-ArtifactUpload -AttachmentName 'Installer' -FilePath 'C:\TEMP\Installer.msi' -ContainerFolder 'Installer'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -680,7 +680,7 @@ function Format-UploadLog {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -739,7 +739,7 @@ function Format-SetProgress {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -846,7 +846,7 @@ function Format-SetVariable {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -904,7 +904,7 @@ function Format-UploadSummary {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -961,7 +961,7 @@ function Format-UploadFile {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -1020,7 +1020,7 @@ function Format-PrependPath {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -1095,7 +1095,7 @@ function Format-UpdateBuildNumber {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -1148,7 +1148,7 @@ function Format-UpdateReleaseName {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail

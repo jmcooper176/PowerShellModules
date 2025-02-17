@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="Push-Package.ps1" company="U.S. Office of Personnel
 Management">
@@ -55,7 +55,7 @@ This file "Push-Package.ps1" is part of "Push-Package".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
     .TAGS
 

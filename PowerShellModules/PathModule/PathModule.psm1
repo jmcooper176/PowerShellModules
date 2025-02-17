@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="PathModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -105,7 +105,7 @@ function Get-PathAlias {
         .OUTPUTS
         .EXAMPLE
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_CommonParameters
         .LINK
@@ -179,7 +179,7 @@ function Get-Cmdlet {
         .OUTPUTS
         .EXAMPLE
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_CommonParameters
         .LINK
@@ -253,7 +253,7 @@ function Get-Executable {
         .OUTPUTS
         .EXAMPLE
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_CommonParameters
         .LINK
@@ -327,7 +327,7 @@ function Get-Filter {
         .OUTPUTS
         .EXAMPLE
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_CommonParameters
         .LINK
@@ -401,7 +401,7 @@ function Get-Function {
         .OUTPUTS
         .EXAMPLE
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_CommonParameters
         .LINK
@@ -474,7 +474,7 @@ function Get-ModuleExecutale {
         .OUTPUTS
         .EXAMPLE
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_CommonParameters
         .LINK
@@ -548,7 +548,7 @@ function Get-Script {
         .OUTPUTS
         .EXAMPLE
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_CommonParameters
         .LINK

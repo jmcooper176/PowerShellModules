@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="ApplyVersionToAssemblies.tests.ps1" company="U.S. Office of Personnel
 Management">
@@ -106,7 +106,7 @@ Describe -Name 'ApplyVersionToAssemblies.ps1' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
             # Arrange and Act
             $Copyright = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Copyright'
 

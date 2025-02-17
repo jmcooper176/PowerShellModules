@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="LocalAccountModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -112,6 +112,6 @@ function Test-LocalGroupMember {
     Measure-Object
 
     .NOTES
-    Copyright � 2022 WellSky.  All Rights Reserved.
+    Copyright © 2022 WellSky.  All Rights Reserved.
 #>
 }

@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="UpdateModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -249,7 +249,7 @@ if (%ISAZMODULE% -and (`$PSEdition -eq 'Core'))
         Specifies if resource management module.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -295,7 +295,7 @@ function Get-Cmdlet {
         Path to the current module.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -355,7 +355,7 @@ function Find-DefaultResourceGroupCmdlet {
         Specifies if resource management module.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -412,7 +412,7 @@ function Test-CmdletRequiredParameter {
         Name of the parameter
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -463,7 +463,7 @@ elseif (`$module -eq `$null) `
         The minimum version required for the module.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -499,7 +499,7 @@ function Update-RMModule {
         The list of modules.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -570,7 +570,7 @@ function Update-Azure {
         Debug or Release
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -620,7 +620,7 @@ function Update-Stack {
         Either Debug or Release
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -666,6 +666,6 @@ function Update-Netcore {
         Update .NET core modules.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }

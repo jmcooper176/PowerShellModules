@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="UriModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -92,7 +92,7 @@ function Format-UriDataString {
         This command escapes the characters in the original [uri] string.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -210,7 +210,7 @@ function Join-Uri {
         Returns a new [uri] original string.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -287,7 +287,7 @@ function New-RelativeUri {
         Returns a new relative [uri] string.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -543,7 +543,7 @@ function Split-Uri {
 
     <#
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -584,7 +584,7 @@ function Test-BaseOf {
 
     <#
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -628,7 +628,7 @@ function Test-HostName {
 
     <#
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -672,7 +672,7 @@ function Test-SchemeName {
 
     <#
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -756,7 +756,7 @@ function Test-Uri {
         The pipe [uri] is a well-formed [uri] of kind 'Absolute'.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -827,7 +827,7 @@ function Undo-UriDataString {
         [string]  `Undo-UriDataString returns an un-escaped string to the PowerShell pipeline.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

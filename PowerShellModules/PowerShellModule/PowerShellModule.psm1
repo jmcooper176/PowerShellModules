@@ -1,8 +1,8 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="PowerShellModule.psm1" company="U.S. Office of Personnel
 Management">
-    Copyright © 2022-2025, John Merryweather Cooper.
+    Copyright Â© 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -103,7 +103,7 @@ function Add-Entry {
         Added 'MyKey' = 'MyValue' to 'MyMap'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -172,7 +172,7 @@ function Add-Parameter {
         Added 'MyKey' = 'MyValue' to 'PSBoundParameters'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -275,7 +275,7 @@ function Enter-Block {
          29      42.71      80.57      19.69   19340    2 ArcControlAssist
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -359,7 +359,7 @@ function Get-BuildVersion {
         Gets the PowerShell build or patch number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -429,7 +429,7 @@ function Get-MajorVersion {
         Gets the PowerShell major number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -496,7 +496,7 @@ function Get-MinorVersion {
         Gets the PowerShell minor number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -553,7 +553,7 @@ function Get-Parameter {
         Specifies the PSBoundParameters [hashtable].
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .INPUTS
         None.  `Get-Parameter` does not accept input from the pipeline.
@@ -616,7 +616,7 @@ function Get-Version {
         Gets the PowerShell version number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -686,7 +686,7 @@ function Initialize-Class {
         Initialized a class.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -770,7 +770,7 @@ function Initialize-Cmdlet {
         Initialized a cmdlet.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -854,7 +854,7 @@ function Initialize-Function {
         Initialized a function.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -939,7 +939,7 @@ function Initialize-Method {
         Initialized a method.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1023,7 +1023,7 @@ function Initialize-Script {
         Initialized a script.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1080,7 +1080,7 @@ function Initialize-Test {
     Update-Variable -Name MINIMUM_DESCRIPTION_LENGTH -Option Constant -Scope Global  -Value 30
     Update-Variable -Name MINIMUM_SYNOPSIS_LENGTH -Option Constant -Scope Global -Value 25
     Update-Variable -Name COMPANY_NAME_STRING -Option Constant -Scope Global  -Value 'John Merryweather Cooper'
-    Update-Variable -Name COPYRIGHT_STRING -Option Constant -Scope Global -Value 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+    Update-Variable -Name COPYRIGHT_STRING -Option Constant -Scope Global -Value 'Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
 
     $fileInfo = Get-Item -LiteralPath $Path
     $ScriptExtension = $fileInfo | Select-Object -ExpandProperty Extension
@@ -1133,7 +1133,7 @@ function Initialize-Test {
         Initialized test suite.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1208,7 +1208,7 @@ function Measure-String {
         String is 10 characters long.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1271,7 +1271,7 @@ function Test-Prerequisites {
         [bool]  `Test-Prerequisites` returns a boolean value to the pipeline.  `True` if the module is available; otherwise `False` if the module is not available.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1442,7 +1442,7 @@ function Update-Variable {
 
         Reports that the current version of PowerShell is greater than 7.x
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1504,7 +1504,7 @@ function Test-Parameter {
         Reports 'Farce' is not present in $PSBoundParameters
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1672,7 +1672,7 @@ function Test-Version {
         Reports that the current version of PowerShell is greater than 7.x
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced

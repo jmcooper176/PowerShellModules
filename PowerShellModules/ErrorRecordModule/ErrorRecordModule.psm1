@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="ErrorRecordModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -137,7 +137,7 @@ function Confirm-ArgumentInRange {
         Index of 5 is in range [0, 9).
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -727,7 +727,7 @@ function Format-Exception {
         The string representation of the Exception object is output to the pipeline.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -846,7 +846,7 @@ function Format-LastExitCode {
         . . . "Last Exit Code '0x00000000|0' indicates success"
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINKS
         about_CommonParameters
@@ -1222,7 +1222,7 @@ function New-ErrorRecord {
         A new [errorrecord] object is created and stored in the variable `$ErrorRecord`.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1334,7 +1334,7 @@ function Test-ObjectNotFound {
         . . . Target object not found
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINKS
         about_CommonParameters
@@ -1422,7 +1422,7 @@ function Write-Fatal {
         $ErrorRecord is written to the error stream and a soft terminating error is thrown.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

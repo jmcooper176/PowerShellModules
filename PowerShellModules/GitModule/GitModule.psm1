@@ -1,8 +1,8 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="GitModule.psm1" company="U.S. Office of Personnel
 Management">
-    Copyright © 2022-2025, John Merryweather Cooper.
+    Copyright Â© 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -211,7 +211,7 @@ function Get-GitAuthorHead {
         PS> Get-GitAuthorHead
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -298,7 +298,7 @@ function Get-GitAuthorDateHead {
         2025-01-27 12:00:00
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -405,7 +405,7 @@ function Get-GitCommitMetadata {
         Returns the Git commit metadata for the file `semver.txt`
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -491,7 +491,7 @@ function Get-GitCommitterHead {
         John Merryweather Cooper
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -580,7 +580,7 @@ function Get-GitCommitterDateHead {
         2025-01-27 12:00:00
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -666,7 +666,7 @@ function Get-GitRepositoryMetadata {
         PS> Get-GitRepositoryMetadata | Format-List
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -764,7 +764,7 @@ function Get-GitShortId {
         PS> Get-GitShortId
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -820,7 +820,7 @@ function Get-GitLongId {
         PS> Get-GitLongId
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -878,7 +878,7 @@ function Get-GitRef {
         PS> Get-GitRef
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -936,7 +936,7 @@ function Get-GitLongRef {
         PS> Get-GitLongRef
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -994,7 +994,7 @@ function Get-GitBranch {
         PS> Get-GitBranch
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1052,7 +1052,7 @@ function Get-GitCommitMetadata {
         PS> Get-GitCommitMetadata
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1110,7 +1110,7 @@ function Get-GitFormattedLog {
         PS> Get-GitFormattedLog
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1171,7 +1171,7 @@ function Get-GitRepositoryName {
         PSInstallCom
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1235,7 +1235,7 @@ function Get-GitRepositoryPath {
         ./GitHub/PSInstallCom
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1298,7 +1298,7 @@ function Get-GitRepositoryUrl {
         https://github.com/jmcooper176/PowerShellModules
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1368,7 +1368,7 @@ function Get-GitTag {
         1.2.3.4
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1429,7 +1429,7 @@ function Get-GitVersion {
         1.2.3.4
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1492,7 +1492,7 @@ function Test-GitRepository {
         True
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

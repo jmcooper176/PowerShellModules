@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="UtcModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -79,7 +79,7 @@ function Get-Date {
         [DateTime].  `Get-Date` returns a [DateTime] object to the PowerShell pipeline.
 
         .NOTES
-        Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

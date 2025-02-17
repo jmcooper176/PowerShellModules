@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="EnvironmentModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -135,7 +135,7 @@ function Add-EnvironmentValue {
         `C:\Program Files\MyApp` is appended to the Path environment variable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -238,7 +238,7 @@ function Copy-EnvironmentVariable {
         Copied environment variable `Path` to `NewPath`.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -341,7 +341,7 @@ function Get-EnvironmentVariable {
         Returns the value of the process environment variable 'Path'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -408,7 +408,7 @@ function Get-EnvironmentHashtable {
 
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> Get-EnvironmentHashtable
@@ -543,7 +543,7 @@ function Join-EnvironmentVariable {
         Appends `C:\Program Files\MyApp` to the Path environment variable and sorts the values for uniqueness descending.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -626,7 +626,7 @@ function New-EnvironmentVariable {
         None.  `New-EnvironmentVariable` does not return any output to the PowerShell pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-EnvironmentVariable -Name 'NewPath' -Value 'C:\Program Files\MyApp'
@@ -749,7 +749,7 @@ function Out-ArrayList {
 
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -983,7 +983,7 @@ function Out-Hashtable {
         Creates a hashtable with two key-value pairs.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1063,7 +1063,7 @@ function Remove-EnvironmentVariable {
         Removes the 'NewPath' process environment variable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1119,7 +1119,7 @@ function Rename-EnvironmentVariable {
         .INPUTS
         .OUTPUTS
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .EXAMPLE
         .LINK
         about_CommonParameters
@@ -1167,7 +1167,7 @@ function Set-EnvironmentVariable {
         .INPUTS
         .OUTPUTS
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
         .EXAMPLE
         .LINK
         about_CommonParameters
@@ -1332,7 +1332,7 @@ function Test-EnvironmentVariable {
         Environment variable 'NewPath' is valid but does not exist.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

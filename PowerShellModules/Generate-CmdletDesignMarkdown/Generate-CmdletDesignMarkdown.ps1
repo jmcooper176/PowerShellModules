@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="Generate-CmdletDesignMarkdown.ps1" company="U.S. Office of Personnel
 Management">
@@ -55,7 +55,7 @@ This file "Generate-CmdletDesignMarkdown.ps1" is part of "Generate-CmdletDesignM
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
     .TAGS
 
@@ -108,7 +108,7 @@ This file "Generate-CmdletDesignMarkdown.ps1" is part of "Generate-CmdletDesignM
     Generated azure-powershell\ModuleCmdletDesign\Az.Databricks.Cmdlet.Design.md completed.
 
     .NOTES
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 #>
 
 

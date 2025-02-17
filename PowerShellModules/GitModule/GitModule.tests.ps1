@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="GitModule.tests.ps1" company="U.S. Office of Personnel
 Management">
@@ -123,12 +123,12 @@ Describe -Name 'GitModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It 'should have a Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
             # Assert
-            $Copyright | Should -Be 'Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.'
+            $Copyright | Should -Be 'Copyright Â© 2025, John Merryweather Cooper.  All Rights Reserved.'
         }
 
         It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {

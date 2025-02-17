@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="TypeAcceleratoModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -114,7 +114,7 @@ function Add-TypeAccelerator {
         This command adds the `[Vine]` type as a type accelerator to the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         The type accelerator is removed when the module is removed.
 
@@ -243,7 +243,7 @@ function Get-TypeAccelerator {
         This command gets the type accelerator for the `Vine` type in the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Advanced_Function
@@ -297,7 +297,7 @@ function Get-TypeAcceleratorClass {
         This command gets the internal TypeAccelerators class to use its static methods.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Advanced_Function
@@ -361,7 +361,7 @@ function Register-TypeAccelerator {
         This command registers the `[Vine]` type as a type accelerator to the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         The type accelerator is removed when the module is removed.
 
@@ -462,7 +462,7 @@ function Remove-TypeAccelerator {
         This command removes the `[Vine]` type as a type accelerator from the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         The type accelerator is not removed if it is not registered.
 
@@ -569,7 +569,7 @@ function Test-TypeAcceleratorRegistered {
         This command tests if the `Vine` type accelerator is registered in the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Advanced_Function

@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="LogModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -263,7 +263,7 @@ function Write-LogConsole {
         `Write-LogConsole` sends to it.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -408,7 +408,7 @@ function Write-LogDebug {
         `Write-LogDebug` only writes to the debug stream. It does not write any objects to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -606,7 +606,7 @@ function Write-LogError {
             `Write-LogError` only writes to the error stream. It does not write any objects to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -833,7 +833,7 @@ function Write-LogEvent {
         This cmdlet returns objects that represents the events in the logs as output to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -978,7 +978,7 @@ function Write-LogVerbose {
         `Write-LogVerbose` only writes to the error stream. It does not write any objects to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -1117,7 +1117,7 @@ function Write-LogWarning {
             `Write-LogWarning` only writes to host. It does not write any objects to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 

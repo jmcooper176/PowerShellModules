@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="New-FilterMappings.ps1" company="U.S. Office of Personnel
 Management">

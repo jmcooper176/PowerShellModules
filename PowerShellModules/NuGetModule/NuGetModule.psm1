@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="NuGetModule.psm1" company="U.S. Office of Personnel
 Management">

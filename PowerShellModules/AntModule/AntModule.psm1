@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="AntModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -52,7 +52,7 @@ using module ProcessLauncher
  =============================================================================
 <copyright file="AntModule.psm1" company="U.S. Office of Personnel
 Management">
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rights
+    Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights
     Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -135,7 +135,7 @@ function Get-AntPath {
         .EXAMPLE
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -313,7 +313,7 @@ function Start-Ant {
         .EXAMPLE
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Get-AntPath

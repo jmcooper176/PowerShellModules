@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="VersionModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -100,7 +100,7 @@ function Compare-PerlVersion {
         Compare the Perl version 5.0101 to the System.Version object with a major version of 5, a minor version of 10, a build version of 1, and a revision of 0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -170,7 +170,7 @@ function Compare-PythonVersion {
         Compare the Python version 3.9.1 to the System.Version object with a major version of 3, a minor version of 9, a build version of 1, and a revision of 0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -241,7 +241,7 @@ function Compare-StringVersion {
         Compare the System.Version object with a major version of 1, a minor version of 0, a build version of 0, and a revision of 0 to the string version '1.0.0'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -311,7 +311,7 @@ function Compare-WindowsVersion {
         Compare the System.Version object with a major version of 10, a minor version of 0, a build version of 19041, and a revision of 0 to the Windows version 10.0.19041.0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -378,7 +378,7 @@ function ConvertFrom-PerlVersion {
         Convert the Perl version 5.0101 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -474,7 +474,7 @@ function ConvertFrom-PythonVersion {
         Convert the Python version 3.9.1 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -544,7 +544,7 @@ function ConvertFrom-SemanticVersion {
         Convert the Semantic version 1.0.0 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -634,7 +634,7 @@ function ConvertFrom-StringVersion {
         Convert the string version '1.0.0' to a System.Version object with strict requirements.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -704,7 +704,7 @@ function ConvertFrom-WindowsVersion {
         Convert the Windows version 10.0.19041.0 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -792,7 +792,7 @@ function Get-AssemblyVersion {
         Get the assembly version for the file `mydotnetfile.exe` in the `C:\Windows\System32` directory.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -940,7 +940,7 @@ function Get-FileVersion {
         Returns the file version for the file `notepad.exe` in the `C:\Windows\System32` directory.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1072,7 +1072,7 @@ function Get-FileVersionInfo {
         [string]  Returns the file version string for the path.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> Get-FileVersion 'C:\Windows\System32\notepad.exe'
@@ -1213,7 +1213,7 @@ function Get-InformationalVersion {
         [string]  Returns the informational or product version string for the path.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> Get-InformationalVersion 'C:\Windows\System32\notepad.exe'
@@ -1298,7 +1298,7 @@ function Get-ModuleVersion {
         [version]  `Get-ModuleVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1497,7 +1497,7 @@ function Initialize-Version {
         Normalizes the version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1595,7 +1595,7 @@ function New-AssemblyVersion {
         [version]  `New-AssemblyVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-AssemblyVersion -Major 1 -Minor 0 -Build 1234
@@ -1686,7 +1686,7 @@ function New-BuildNumber {
         Create a new build number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1788,7 +1788,7 @@ function New-CalendarVersion {
         Create a new calendar version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1901,7 +1901,7 @@ function New-FileVersion {
         [version]  `New-FileVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-FileVersion -Major 1 -Minor 0 -Build 1234 -Revision 0
@@ -2032,7 +2032,7 @@ function New-InformationalVersion {
         [version]  `New-InformationalVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-InformationalVersion -Major 1 -Minor 0 -Build 1234 -Revision 0
@@ -2597,7 +2597,7 @@ function New-PatchNumber {
         Create a new patch number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2697,7 +2697,7 @@ function New-PerlVersion {
         Create a new Perl version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2854,7 +2854,7 @@ function New-PythonVersion {
         Create a new Python version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2942,7 +2942,7 @@ function New-RevisionNumber {
         Create a new revision number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3107,7 +3107,7 @@ function New-SemanticVersion {
         representing the QFE file version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All
         Rights Reserved.
 
         .EXAMPLE
@@ -3213,7 +3213,7 @@ function New-Version {
         Create a new version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3292,7 +3292,7 @@ function New-WindowsVersion {
         Generates a windows version number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3383,7 +3383,7 @@ function Test-CPreRelease {
         Test if a string is a valid pre-release label.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3475,7 +3475,7 @@ function Test-PreRelease {
         Test if a string is a valid pre-release label.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3588,7 +3588,7 @@ function Write-AssemblyVersionToAssemblyInfo {
         VERBOSE: AssemblyVersion in File 'C:\Path\To\AssemblyInfo.cs' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3722,7 +3722,7 @@ function Write-AssemblyFileVersionToAssemblyInfo {
         VERBOSE: AssemblyFileVersion in File 'C:\Path\To\AssemblyInfo.cs' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3864,7 +3864,7 @@ function Write-FileVersionToSdkProj {
         VERBOSE: FileVersion in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4004,7 +4004,7 @@ function Write-AssemblyInformationalVersionToAssemblyInfo {
         VERBOSE: AssemblyInformationalVersion in File 'C:\Path\To\AssemblyInfo.cs' updated to '1.2.0.0'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4142,7 +4142,7 @@ function Write-InformationalVersionToSdkProj {
         VERBOSE: InformationalVersion in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4220,7 +4220,7 @@ function Write-ModuleVersion {
         None.  `Write-ModuleVersion` does not return any PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4334,7 +4334,7 @@ function Write-VersionToSdkProj {
         VERBOSE: Version in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4467,7 +4467,7 @@ function Write-XPathVersion {
         VERBOSE: Version XPath '//Project/PropertyGroup/Version' in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

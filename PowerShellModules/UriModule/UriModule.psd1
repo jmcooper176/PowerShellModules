@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="UriModule.psd1" company="U.S. Office of Personnel
 Management">

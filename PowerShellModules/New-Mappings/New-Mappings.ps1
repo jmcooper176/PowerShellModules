@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="New-Mappings.ps1" company="U.S. Office of Personnel
 Management">

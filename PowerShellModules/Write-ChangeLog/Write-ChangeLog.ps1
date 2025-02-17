@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="Write-ChangeLog.ps1" company="U.S. Office of Personnel
 Management">
@@ -55,7 +55,7 @@ This file "Write-ChangeLog.ps1" is part of "Write-ChangeLog".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
     .TAGS write git change log markdown
 
@@ -134,7 +134,7 @@ This file "Write-ChangeLog.ps1" is part of "Write-ChangeLog".
     * * *
 
     .NOTES
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
     .LINK
     about_CommonParameters
@@ -280,7 +280,7 @@ function Write-ChangeLog {
         The two lines are written or appended to $FilePath and echoed to standard output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -393,7 +393,7 @@ function Write-ChangeLogHeader {
         Appends the level one header to $FilePath.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

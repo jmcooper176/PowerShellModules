@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="GitHubModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -98,7 +98,7 @@ function Add-MultilineStepSummary {
         PS> 'This is a multi-line step summary' | Add-MultilineStepSummary
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -166,7 +166,7 @@ function Add-StepSummary {
         PS> 'This is a single-line step summary' | Add-StepSummary
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -249,7 +249,7 @@ function Add-SystemPath {
         Adds the path to 'git' to the GITHUB_PATH.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -335,7 +335,7 @@ function ConvertTo-Tuple {
         Returns a tuple representing the environment name/value pair.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -438,7 +438,7 @@ function Export-EnvironmentVariableFile {
         Adds the content to the file path stored in the GITHUB_STEP_SUMMARY environment variable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -616,7 +616,7 @@ function Get-GitHubEnvironmentVariable {
 
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -682,7 +682,7 @@ function Remove-StepSummary {
         Deletes the file pointed to by GITHUB_STEP_SUMMARY.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -769,7 +769,7 @@ function Set-GitHubEnvironmentVariable {
         This is a test
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -863,7 +863,7 @@ function Set-MultilineEnvironmentVariable {
         This is a test
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -940,7 +940,7 @@ function Set-MultilineStepSummary {
         PS> 'This is a multi-line step summary' | Set-MultilineStepSummary
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1014,7 +1014,7 @@ function Set-OutputParameter {
         [string]  If `Echo` is true, `Set-OutParameter` outputs the name=value pair to the PowerShell pipeline; otherwise, there is no output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

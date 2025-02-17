@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="ServiceAccountModule.psm1" company="U.S. Office of Personnel
 Management">

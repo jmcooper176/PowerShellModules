@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="EnvironmentModule.tests.ps1" company="U.S. Office of Personnel
 Management">
@@ -115,7 +115,7 @@ Describe -Name 'EnvironmentModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 

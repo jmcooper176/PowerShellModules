@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="StringBuilder.psm1" company="U.S. Office of Personnel
 Management">
@@ -66,7 +66,7 @@ This file "StringBuilder.psm1" is part of "StringBuilderModule".
     Hello, World!
 
     .NOTES
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rigths Reserved.
+    Copyright Â© 2022-2025, John Merryweather Cooper.  All Rigths Reserved.
     License:  https://www.opensource.org/licenses/BSD-3-Clause
     ProjectUri:  https://github.com/OCIO-DEVSECOPS/PSInstallCom/StringBuilderModule/
 
@@ -262,7 +262,7 @@ class StringBuilder {
         PS> $this.Initialize($properties)
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -324,7 +324,7 @@ class StringBuilder {
         Source StringBuilder:  This is a test.  It is only a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -371,7 +371,7 @@ class StringBuilder {
         Unsigned Short:  1024
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -418,7 +418,7 @@ class StringBuilder {
         Unsigned Short:  214748396
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -465,7 +465,7 @@ class StringBuilder {
         Unsigned Short:  214748396
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -513,7 +513,7 @@ class StringBuilder {
         Character Array:  abcde
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -560,7 +560,7 @@ class StringBuilder {
         String:  This is a test.  It is only a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -613,7 +613,7 @@ class StringBuilder {
         String:  This is a test.  It is only a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -667,7 +667,7 @@ class StringBuilder {
         String:  It is only a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -714,7 +714,7 @@ class StringBuilder {
         4-byte Floating Point:  1.234
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -761,7 +761,7 @@ class StringBuilder {
         Boolean:  True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -808,7 +808,7 @@ class StringBuilder {
         Byte:  254
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -855,7 +855,7 @@ class StringBuilder {
         Character:  z
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -902,7 +902,7 @@ class StringBuilder {
         Character Array:  a char array
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -949,7 +949,7 @@ class StringBuilder {
         Decimal:  1.23
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -996,7 +996,7 @@ class StringBuilder {
         Double:  1.23456E-07
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1043,7 +1043,7 @@ class StringBuilder {
         Unsigned Long:  234765981
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1090,7 +1090,7 @@ class StringBuilder {
         Signed Byte:  126
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1137,7 +1137,7 @@ class StringBuilder {
         Short:  32766
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1184,7 +1184,7 @@ class StringBuilder {
         Integer:  66535
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1231,7 +1231,7 @@ class StringBuilder {
         Long:  99887766
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1278,7 +1278,7 @@ class StringBuilder {
         Object:  32766
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1334,7 +1334,7 @@ class StringBuilder {
         Formatted String:  Name : 1 - True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1387,7 +1387,7 @@ class StringBuilder {
         Formatted String:  Name : 1
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1437,7 +1437,7 @@ class StringBuilder {
         Formatted String:  Name : 1 - True | 0.99
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1487,7 +1487,7 @@ class StringBuilder {
         Formatted String:  Name
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1537,7 +1537,7 @@ class StringBuilder {
         Join:  This is a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1587,7 +1587,7 @@ class StringBuilder {
         Join:  This 1 1.00 12346800
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1631,7 +1631,7 @@ class StringBuilder {
         Line Terminator:
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1678,7 +1678,7 @@ class StringBuilder {
         Line Terminator:  Hello, World!
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1720,7 +1720,7 @@ class StringBuilder {
         PS> Write-Information -MessageData $this.ToString() -InformationAction Continue
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1772,7 +1772,7 @@ class StringBuilder {
         True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1824,7 +1824,7 @@ class StringBuilder {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1864,7 +1864,7 @@ class StringBuilder {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1904,7 +1904,7 @@ class StringBuilder {
         True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1957,7 +1957,7 @@ class StringBuilder {
         Copy To:  is a
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2004,7 +2004,7 @@ class StringBuilder {
         i
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
     #>
     [char]ElementAt([int]$index) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
@@ -2081,7 +2081,7 @@ class StringBuilder {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2134,7 +2134,7 @@ class StringBuilder {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2173,7 +2173,7 @@ class StringBuilder {
         Ensure Capacity:  100
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2221,7 +2221,7 @@ class StringBuilder {
         True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2265,7 +2265,7 @@ class StringBuilder {
         True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2329,7 +2329,7 @@ class StringBuilder {
         -1
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2385,7 +2385,7 @@ class StringBuilder {
         22
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2438,7 +2438,7 @@ class StringBuilder {
         21
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2491,7 +2491,7 @@ class StringBuilder {
         14
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2539,7 +2539,7 @@ class StringBuilder {
         21
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2603,7 +2603,7 @@ class StringBuilder {
         21
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2647,7 +2647,7 @@ class StringBuilder {
         Inser32t:  This  is a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2716,7 +2716,7 @@ class StringBuilder {
         Inserfoxt:  This  is a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes

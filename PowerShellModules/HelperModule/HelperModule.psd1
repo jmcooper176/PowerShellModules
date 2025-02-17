@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="HelperModule.psd1" company="U.S. Office of Personnel
 Management">
@@ -54,7 +54,6 @@ This file "HelperModule.psd1" is part of "HelperModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'HelperModule.psm1'
 
@@ -74,7 +73,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Unit test helper functions for PowerShell Pester.'
@@ -98,7 +97,7 @@ PowerShellVersion = '5.1'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @('ConvertModule')
+RequiredModules = @('ConvertModule', 'PowerShellModule')
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
@@ -117,12 +116,16 @@ RequiredModules = @('ConvertModule')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport =
+    'Get-HelpProperty', 'Get-HelpPropertyLength',
+    'Get-ModuleProperty',
     'Select-ModuleByFilter', 'Select-ModuleByProperty',
     'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty',
     'Test-ModuleProperty'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport =
+    'Get-HelpProperty', 'Get-HelpPropertyLength',
+    'Get-ModuleProperty',
     'Select-ModuleByFilter', 'Select-ModuleByProperty',
     'Test-HasMember', 'Test-HasMethod', 'Test-HasProperty',
     'Test-ModuleProperty'
@@ -144,9 +147,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'Unit Testing', 'Unit', 'Testing', 'Helper Functions', 'Helper', 'Functions'
 
@@ -170,9 +171,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -180,6 +179,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

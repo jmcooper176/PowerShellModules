@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="NameValueCollection.psd1" company="U.S. Office of Personnel
 Management">
@@ -74,7 +74,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'Unknown'
 
 # Copyright statement for this module
-Copyright = '� 2022-2025, John Merryweather Cooper. All Rights Reserved.'
+Copyright = '© 2022-2025, John Merryweather Cooper. All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Implements Name/Value Collection for PowerShell.'

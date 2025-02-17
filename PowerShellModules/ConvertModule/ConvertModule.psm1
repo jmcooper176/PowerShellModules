@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="ConvertModule.psm1" company="U.S. Office of Personnel
 Management">
@@ -110,7 +110,7 @@ function ConvertFrom-Type {
         Converted the type to a string type name.  Returned the string type name.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
@@ -178,7 +178,7 @@ function ConvertTo-Type {
         Converted the type name to a type object.  Returned the type object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
@@ -452,7 +452,7 @@ function ConvertTo-Boolean {
         Converted the string to a boolean value.  Returned the boolean value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -749,7 +749,7 @@ function ConvertTo-Byte {
         Converted the string to an unsigned byte value.  Returned the unsigned byte value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1004,7 +1004,7 @@ function ConvertTo-Char {
         Converted the string to a char value.  Returned the char value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1138,7 +1138,7 @@ function ConvertTo-DateTime {
         Converted the string to a DateTime value.  Returned the DateTime value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1430,7 +1430,7 @@ function ConvertTo-Decimal {
         Converted the string to a decimal value.  Returned the decimal value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1722,7 +1722,7 @@ function ConvertTo-Double {
         Converted the string to a double value.  Returned the double value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2013,7 +2013,7 @@ function ConvertTo-Float {
         Converted the string to a float value.  Returned the float value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2315,7 +2315,7 @@ function ConvertTo-Integer {
         Converted the string to an integer value.  Returned the integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2617,7 +2617,7 @@ function ConvertTo-Long {
         Converted the string to an long integer value.  Returned the long integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2919,7 +2919,7 @@ function ConvertTo-Short {
         Converted the string to a short integer value.  Returned the short integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3221,7 +3221,7 @@ function ConvertTo-SignedByte {
         Converted the string to an signed byte value.  Returned the signed byte value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3521,7 +3521,7 @@ function ConvertTo-String {
         Converted the character to a string value.  Returned the string value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3823,7 +3823,7 @@ function ConvertTo-UnsignedInteger {
         Converted the string to an unsigned integer value.  Returned the unsigned integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4125,7 +4125,7 @@ function ConvertTo-UnsignedLong {
         Converted the string to an unsigned long value.  Returned the unsigned long value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4412,7 +4412,7 @@ function ConvertTo-UnsignedShort {
         Converted the string to an unsigned short integer value.  Returned the unsigned short integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

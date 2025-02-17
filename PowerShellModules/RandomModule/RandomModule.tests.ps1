@@ -1,4 +1,4 @@
-<#
+ï»¿<#
  =============================================================================
 <copyright file="RandomModule.tests.ps1" company="U.S. Office of Personnel
 Management">
@@ -104,12 +104,12 @@ Describe -Name 'RandomModule' {
             $CompanyName | Should -Be 'Ram Tuned Mega Code'
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It 'should have a Copyright of Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'Copyright'
 
             # Assert
-            $Copyright | Should -Be 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+            $Copyright | Should -Be 'Copyright Â© 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
         }
 
         It 'should have a Description of Cmdlets/functions for the generation of pseudo-random numbers.' {

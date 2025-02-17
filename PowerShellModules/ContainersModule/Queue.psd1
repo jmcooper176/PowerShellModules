@@ -1,4 +1,4 @@
-<#
+﻿<#
  =============================================================================
 <copyright file="Queue.psd1" company="U.S. Office of Personnel
 Management">
@@ -74,7 +74,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'PowerShell class implementation of the C# non-generic Queue class'

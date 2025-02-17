@@ -1,51 +1,4 @@
-﻿<#
- =============================================================================
-<copyright file="VersionModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
-    All Rights Reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-       1. Redistributions of source code must retain the above
-          copyright notice, this list of conditions and the following
-          disclaimer.
-
-       2. Redistributions in binary form must reproduce the above
-          copyright notice, this list of conditions and the following
-          disclaimer in the documentation and/or other materials
-          provided with the distribution.
-
-       3. Neither the name of the copyright holder nor the names of
-          its contributors may be used to endorse or promote products
-          derived from this software without specific prior written
-          permission.
-
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-   COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-   INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-   ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-   POSSIBILITY OF SUCH DAMAGE.
-</copyright>
-<author>John Merryweather Cooper</author>
-<date>Created:  2024-9-12</date>
-<summary>
-This file "VersionModule.psm1" is part of "VersionModule".
-</summary>
-<remarks>description</remarks>
-=============================================================================
-#>
-
-#
+﻿#
 # VersionModule.psm1
 #
 
@@ -100,7 +53,7 @@ function Compare-PerlVersion {
         Compare the Perl version 5.0101 to the System.Version object with a major version of 5, a minor version of 10, a build version of 1, and a revision of 0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -170,7 +123,7 @@ function Compare-PythonVersion {
         Compare the Python version 3.9.1 to the System.Version object with a major version of 3, a minor version of 9, a build version of 1, and a revision of 0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -241,7 +194,7 @@ function Compare-StringVersion {
         Compare the System.Version object with a major version of 1, a minor version of 0, a build version of 0, and a revision of 0 to the string version '1.0.0'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -311,7 +264,7 @@ function Compare-WindowsVersion {
         Compare the System.Version object with a major version of 10, a minor version of 0, a build version of 19041, and a revision of 0 to the Windows version 10.0.19041.0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -378,7 +331,7 @@ function ConvertFrom-PerlVersion {
         Convert the Perl version 5.0101 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -474,7 +427,7 @@ function ConvertFrom-PythonVersion {
         Convert the Python version 3.9.1 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -544,7 +497,7 @@ function ConvertFrom-SemanticVersion {
         Convert the Semantic version 1.0.0 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -634,7 +587,7 @@ function ConvertFrom-StringVersion {
         Convert the string version '1.0.0' to a System.Version object with strict requirements.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -704,7 +657,7 @@ function ConvertFrom-WindowsVersion {
         Convert the Windows version 10.0.19041.0 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -792,7 +745,7 @@ function Get-AssemblyVersion {
         Get the assembly version for the file `mydotnetfile.exe` in the `C:\Windows\System32` directory.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -832,7 +785,7 @@ function Get-FileVersion {
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
         [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
-        [AllowWildcards()]
+        [SupportsWildcards()]
         [string[]]
         $Path,
 
@@ -940,7 +893,7 @@ function Get-FileVersion {
         Returns the file version for the file `notepad.exe` in the `C:\Windows\System32` directory.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -973,7 +926,7 @@ function Get-FileVersionInfo {
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
         [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
-        [AllowWildcards()]
+        [SupportsWildcards()]
         [string[]]
         $Path,
 
@@ -1072,7 +1025,7 @@ function Get-FileVersionInfo {
         [string]  Returns the file version string for the path.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .EXAMPLE
         PS> Get-FileVersion 'C:\Windows\System32\notepad.exe'
@@ -1213,7 +1166,7 @@ function Get-InformationalVersion {
         [string]  Returns the informational or product version string for the path.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .EXAMPLE
         PS> Get-InformationalVersion 'C:\Windows\System32\notepad.exe'
@@ -1298,7 +1251,7 @@ function Get-ModuleVersion {
         [version]  `Get-ModuleVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1336,7 +1289,7 @@ function Initialize-Version {
         [version]
         $Version,
 
-        [Parameter(Mandatory, ParameterSetName = 'UsingSemanticVersion')]
+        [Parameter(Mandatory, ParameterSetName = 'UsingSemanticVersion', ValueFromPipelineByPropertyName)]
         [semver]
         $SemanticVersion,
 
@@ -1353,9 +1306,13 @@ function Initialize-Version {
         if ($PSCmdlet.ParameterSetName -eq 'UsingSemanticVersion') {
             Set-Variable -Name MAX_MAJOR -Option Constant -Value 65534
             Set-Variable -Name MAX_MINOR -Option Constant -Value 65534
-            Set-Variable -Name MAX_PATCH -Option Constant -Value [int]::MaxValue
+            Set-Variable -Name MAX_PATCH -Option Constant -Value 2147483647
             Set-Variable -Name MAX_BUILD -Option Constant -Value 21474
             Set-Variable -Name MAX_REVISION -Option Constant -Value 83647
+            Set-Variable -Name BUILD_UNIT_REGEX -Option Constant -Value '^([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*)$'
+            Set-Variable -Name LABEL_REGEX -Option Constant -Value '^(?<preLabel>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(?:\+(?<buildLabel>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+            Set-Variable -Name LABEL_UNIT_REGEX -Option Constant -Value '^((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)$'
+            Set-Variable -Name SEMANTIC_VERSION_PART_REGEX -Option Constant -Value '^(?<major>\d+)(\.(?<minor>\d+))?(\.(?<patch>\d+))?$'
 
             if ($SemanticVersion.Major -gt $MAX_MAJOR) {
                 Write-Warning -Message "$($CmdletName):  Major greater than '$($MAX_MAJOR)' will not be comparable with System.Version"
@@ -1365,7 +1322,8 @@ function Initialize-Version {
                     Exception = [System.ArgumentException]::new('Version is de-normal with negative Major', 'SemanticVersion')
                     ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
                     ErrorCategory = 'InvalidArgument'
-                    TargetObject = $SemanticVersion.Major
+                    TargetObject = $SemanticVersion
+                    TargetName = 'SemanticVersion'
                 }
 
                 New-ErrorRecord @newErrorRecordSplat | Write-Fatal
@@ -1377,33 +1335,52 @@ function Initialize-Version {
                 Write-Warning -Message "$($CmdletName):  Minor greater than '$($MAX_MINOR)' will not be comparable with System.Version"
                 $minor = $MAX_MINOR
             } elseif ($SemanticVersion.Minor -lt 0) {
-                $minor = 0
+                $newErrorRecordSplat = @{
+                    Exception = [System.ArgumentException]::new('Version is de-normal with negative Minor', 'SemanticVersion')
+                    ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                    ErrorCategory = 'InvalidArgument'
+                    TargetObject = $SemanticVersion
+                    TargetName = 'SemanticVersion'
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Fatal
             } else {
                 $minor = $SemanticVersion.Minor
             }
 
+            $revision = New-RevisionNumber -MaxRevision $MAX_REVISION
+
             if ($SemanticVersion.Patch -lt 0) {
-                $patch = 0
-            } elseif (($SemanticVersion.Patch -shr 16) -gt $MAX_BUILD) {
+                $newErrorRecordSplat = @{
+                    Exception = [System.ArgumentException]::new('Version is de-normal with negative Patch', 'SemanticVersion')
+                    ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                    ErrorCategory = 'InvalidArgument'
+                    TargetObject = $SemanticVersion
+                    TargetName = 'SemanticVersion'
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+            } elseif ((($SemanticVersion.Patch - $revision) / 100000) -gt $MAX_BUILD) {
                 Write-Warning -Message "$($CmdletName):  Patch build part greater than '$($MAX_BUILD)' and will overflow a System.int"
                 $build = $MAX_BUILD
-                $revision = New-RevisionNumber -MaxRevision $MAX_REVISION
-                $patch = ($build -shl 16) -bor $revision
-            } elseif (($SemanticVersion.Patch -band 0xFFFF) -gt $MAX_REVISION) {
+                $patch = $build * 100000 + $revision
+            } elseif (($SemanticVersion.Patch / 100000) -gt $MAX_REVISION) {
                 Write-Warning -Message "$($CmdletName):  Patch revision part greater than '$($MAX_REVISION)' and may overflow a System.int"
                 $revision = $MAX_REVISION
-                $patch = ($SemanticVersion.Patch -band 0xFFFF) -bor $revision
+                $patch = $build * 100000 + $revision
             } else {
                 $patch = $SemanticVersion.Patch
             }
 
-            if ([string]::IsNullOrEmpty($SemanticVersion.BuildLabel) -and [string]::IsNullOrEmpty($SemanticVersion.PrereleaseLabel)) {
-                New-Object -TypeName System.Management.Automation.SemanticVersion -ArgumentList $major, $minor, $patch | Write-Output
-            } elseif (-not [string]::IsNullOrEmpty($SemanticVersion.BuildLabel)) {
+            if (-not ([string]::IsNullOrEmpty($SemanticVersion.PrereleseLabel) -or [string]::IsNullOrEmpty($SemanticVersion.BuildLabel))) {
+                New-Object -TypeName System.Management.Automation.SemanticVersion -ArgumentList $major, $minor, $patch, $SemanticVersion.PrereleaseLabel, $SemanticVersion.BuildLabel | Write-Output
+            }
+            elseif (-not ([string]::IsNullOrEmpty($SemanticVersion.BuildLabel))) {
                 New-Object -TypeName System.Management.Automation.SemanticVersion -ArgumentList $major, $minor, $patch, $SemanticVersion.BuildLabel | Write-Output
-            } else {
+            }
+            else {
                 New-Object -TypeName System.Management.Automation.SemanticVersion `
-                    -ArgumentList $major, $minor, $patch, $SemanticVersion.PrereleaseLabel, $SemanticVersion.BuildLabel | Write-Output
+                    -ArgumentList $major, $minor, $patch, $SemanticVersion.PrereleaseLabel | Write-Output
             }
         } else {
             if ($PE.IsPresent) {
@@ -1418,6 +1395,8 @@ function Initialize-Version {
                 Set-Variable -Name MAX_REVISION -Option Constant -Value 65534
             }
 
+            Set-Variable -Name VERSION_REGEX -Option Constant -Value '^(?<major>\d+)(\.(?<minor>\d+))?(\.(?<build>\d+))?(\.(?<revision>\d+))?$'
+
             if ($Version.Major -gt $MAX_MAJOR) {
                 Write-Warning -Message "$($CmdletName):  Major greater than '$($MAX_MAJOR)' will break all PE Headers including C++ Native and MSI"
                 $major = $MAX_MAJOR
@@ -1426,7 +1405,8 @@ function Initialize-Version {
                     Exception = [System.ArgumentException]::new('Version is de-normal with negative Major', 'Version')
                     ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
                     ErrorCategory = 'InvalidArgument'
-                    TargetObject = $Version.Major
+                    TargetObject = $Version
+                    TargetName = 'Version'
                 }
 
                 New-ErrorRecord @newErrorRecordSplat | Write-Fatal
@@ -1438,7 +1418,15 @@ function Initialize-Version {
                 Write-Warning -Message "$($CmdletName):  Minor greater than '$($MAX_MINOR)' will break all PE Headers including C++ Native and MSI"
                 $minor = $MAX_MINOR
             } elseif ($Version.Minor -lt 0) {
-                $minor = 0
+                $newErrorRecordSplat = @{
+                    Exception = [System.ArgumentException]::new('Version is de-normal with negative Minor', 'Version')
+                    ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                    ErrorCategory = 'InvalidArgument'
+                    TargetObject = $Version
+                    TargetName = 'Version'
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Fatal
             } else {
                 $minor = $Version.Minor
             }
@@ -1497,7 +1485,7 @@ function Initialize-Version {
         Normalizes the version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1595,7 +1583,7 @@ function New-AssemblyVersion {
         [version]  `New-AssemblyVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-AssemblyVersion -Major 1 -Minor 0 -Build 1234
@@ -1686,7 +1674,7 @@ function New-BuildNumber {
         Create a new build number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1788,7 +1776,7 @@ function New-CalendarVersion {
         Create a new calendar version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1901,7 +1889,7 @@ function New-FileVersion {
         [version]  `New-FileVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-FileVersion -Major 1 -Minor 0 -Build 1234 -Revision 0
@@ -1949,7 +1937,7 @@ function New-FileVersion {
 #>
 function New-InformationalVersion {
     [CmdletBinding(SupportsShouldProcess)]
-    [OutputType([version])]
+    [OutputType([string])]
     param (
         [Parameter(Mandatory)]
         [ValidateRange(0, 65534)]
@@ -1993,7 +1981,8 @@ function New-InformationalVersion {
     }
 
     if ($PSCmdlet.ShouldProcess(@($Major, $Minor, $Build, $Revision), $CmdletName)) {
-        New-Version -Major $Major -Minor $Minor -Build $Build -Revision $Revision | Initialize-Version | Write-Output
+        $version = New-Version -Major $Major -Minor $Minor -Build $Build -Revision $Revision | Initialize-Version
+        $version.ToString() | Write-Output
     }
 
     <#
@@ -2029,10 +2018,10 @@ function New-InformationalVersion {
         None.  `New-InformationalVersion` does not take any PowerShell pipeline input.
 
         .OUTPUTS
-        [version]  `New-InformationalVersion` returns an instance to the PowerShell pipeline output.
+        [string]  `New-InformationalVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-InformationalVersion -Major 1 -Minor 0 -Build 1234 -Revision 0
@@ -2561,7 +2550,7 @@ function New-PatchNumber {
             Write-Verbose -Message "$($CmdletName) : Both the build and revision parts of patch are in range"
         }
 
-        $build * 100000 + $MaxRevision | Write-Output
+        $build * 100000 + $revision | Write-Output
     }
 
     <#
@@ -2597,7 +2586,7 @@ function New-PatchNumber {
         Create a new patch number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2697,7 +2686,7 @@ function New-PerlVersion {
         Create a new Perl version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2854,7 +2843,7 @@ function New-PythonVersion {
         Create a new Python version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2942,7 +2931,7 @@ function New-RevisionNumber {
         Create a new revision number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2968,38 +2957,50 @@ function New-RevisionNumber {
     New-SemanticVersion
 #>
 function New-SemanticVersion {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingParts')]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'UsingParts')]
         [ValidateRange(0, 65534)]
         [Alias('Current')]
         [int]
         $Major,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'UsingParts')]
         [ValidateRange(0, 65534)]
         [Alias('Revision')]
         [int]
         $Minor,
 
+        [Parameter(ParameterSetName = 'UsingParts')]
         [ValidateRange(0, 2147483647)]
         [Alias('Build', 'Maintenance', 'Age')]
         [int]
         $Patch,
 
+        [Parameter(ParameterSetName = 'UsingParts')]
         [Alias('ZeroDay')]
         [DateTime]
         $OffsetFrom = '01/01/2000',
 
-        [ValidateScript({ Test-PreRelease -PreRelease $_ })]
-        [AllowEmptyString()]
+        # LabelUnitRegEx from PowerShell source code
+        [Parameter(ParameterSetName = 'UsingParts')]
+        [ValidatePattern('^((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)$')]
         [Alias('Suffix', 'PreRelease')]
         [string]
         $PrereleaseLabel,
 
+        # LabelUnitRegEx from PowerShell source code
+        [Parameter(ParameterSetName = 'UsingParts')]
+        [ValidatePattern('^((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)$')]
         [Alias('Metadata', 'BuildMetadata')]
         [string[]]
-        $BuildLabel
+        $BuildLabel,
+
+        [Parameter(ParameterSetName = 'UsingString')]
+        [ValidatePattern('^(?<major>\d+)(\.(?<minor>\d+))?(\.(?<patch>\d+))?')]
+        [Alias('Version')]
+        [string]
+        $Value
     )
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
@@ -3007,43 +3008,56 @@ function New-SemanticVersion {
 
     if ($PSVersionTable.PSVersion.Major -lt 6) {
         Write-Warning "$($CmdletName) : Semantic Versions are not supported on this PowerShell Major '$($PSVersionTable.PSVersion.Major)' version"
-        return New-FileVersion -Major $Major -Minor $Minor
-    }
 
-    $utc = Get-UtcDate
-    $build = New-BuildNumber -OffsetFrom $OffsetFrom -Utc $utc
-    $revision = New-RevisionNumber -MaxRevision $MAX_REVISION -Utc $utc
-    $metadataList = [System.Collections.ArrayList]::new()
-
-    if (-not (Test-PSParameter -Name 'Patch' -Parameters $PSBoundParameters)) {
-        $Patch = New-PatchNumber -OffsetFrom $OffsetFrom -Utc $utc
-    }
-
-    $metadataList.Add("Build-$($build)") | Out-Null
-    $metadataList.Add("Revision-$($revision)") | Out-Null
-
-    if (Test-PSParameter -Name 'BuildLabel' -Parameters $PSBoundParameters) {
-        $metadataList.AddRange($BuildLabel) | Out-Null
-    }
-
-    $metaData = ($metadataList.ToArray() -join '-')
-
-    if ($PSCmdlet.ShouldProcess(@($Major, $Minor, $Patch, $metaData), $CmdletName)) {
-        if ((Test-PSParameter -Name 'PrereleaseLabel' -Parameters $PSBoundParameters) -and ($metaData.Length -gt 0)) {
-            Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported.  Using PreRelease and Build labels"
-            [semver]::new($Major, $Minor, $Patch, $PreReleaseLabel, $metadata) | Write-OutPut
-        }
-        elseif (($metaData.Length -gt 0)) {
-            Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported.  Using Build label"
-            [semver]::new($Major, $Minor, $Patch, [string]::Empty, $metadata) | Write-OutPut
-        }
-        elseif (Test-PSParameter -Name 'PrereleaseLabel' -Parameters $PSBoundParameters) {
-            Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported with PreRelease label" | Write-Verbose
-            [semver]::new($Major, $Minor, $Patch, $PreReleaseLabel) | Write-OutPut
+        if (Test-PSParameter -Name 'Patch' -Parameters $PSBoundParameters) {
+            return New-FileVersion -Major $Major -Minor $Minor -Build $Patch
         }
         else {
-            Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported without metadata" | Write-Verbose
-            [semver]::new($Major, $Minor, $Patch) | Write-OutPut
+            return New-FileVersion -Major $Major -Minor $Minor
+        }
+    }
+
+    if ($PSCmdlet.ParameterSetName -eq 'UsingString') {
+        try {
+            [semver]::new($Value) | Write-Output
+        }
+        catch {
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            $Error | Write-Fatal
+        }
+    }
+    else {
+        $utc = Get-UtcDate
+        $build = New-BuildNumber -OffsetFrom $OffsetFrom -Utc $utc
+        $revision = New-RevisionNumber -MaxRevision $MAX_REVISION -Utc $utc
+        $metadataList = [System.Collections.ArrayList]::new()
+
+        if (-not (Test-PSParameter -Name 'Patch' -Parameters $PSBoundParameters)) {
+            $Patch = New-PatchNumber -OffsetFrom $OffsetFrom -Utc $utc
+        }
+
+        $metadataList.Add("Build-$($build)") | Out-Null
+        $metadataList.Add("Revision-$($revision)") | Out-Null
+
+        if (Test-PSParameter -Name 'BuildLabel' -Parameters $PSBoundParameters) {
+            $metadataList.AddRange($BuildLabel) | Out-Null
+        }
+
+        $metaData = ($metadataList.ToArray() -join '-')
+
+        if ($PSCmdlet.ShouldProcess(@($Major, $Minor, $Patch, $metaData), $CmdletName)) {
+            if ((Test-PSParameter -Name 'PrereleaseLabel' -Parameters $PSBoundParameters) -and ($metaData.Length -gt 0)) {
+                Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported.  Using Prerelease and Build Labels"
+                [semver]::new($Major, $Minor, $Patch, $PreReleaseLabel, $metadata) | Write-OutPut
+            }
+            elseif ($metaData.Length -gt 0) {
+                Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported.  Using Build Label"
+                [semver]::new($Major, $Minor, $Patch, $metadata) | Write-OutPut
+            }
+            else {
+                Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported without metadata" | Write-Verbose
+                [semver]::new($Major, $Minor, $Patch) | Write-OutPut
+            }
         }
     }
 
@@ -3094,6 +3108,9 @@ function New-SemanticVersion {
         '+'.  By default, `Build-\d+` and `Revision-\d+` are
         always added.
 
+        .PARAMETER Value
+        Specifies the string representation of the semantic version.
+
         .INPUTS
         None.  `New-SemanticVersion` does not take any PowerShell pipeline input.
 
@@ -3107,7 +3124,7 @@ function New-SemanticVersion {
         representing the QFE file version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All
         Rights Reserved.
 
         .EXAMPLE
@@ -3152,31 +3169,50 @@ New-Alias -Name New-SemVersion -Value New-SemanticVersion
     New-Version
 #>
 function New-Version {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingQuads')]
     [OutputType([version])]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'UsingQuads')]
         [ValidateRange(0, 65534)]
         [int]
         $Major,
 
+        [Parameter(ParameterSetName = 'UsingQuads')]
         [ValidateRange(0, 65534)]
         [int]
         $Minor = 0,
 
+        [Parameter(ParameterSetName = 'UsingQuads')]
         [ValidateRange(0, 65534)]
         [int]
         $Build = 0,
 
+        [Parameter(ParameterSetName = 'UsingQuads')]
         [ValidateRange(0, 65534)]
         [int]
-        $Revision = 0
+        $Revision = 0,
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingString')]
+        [ValidatePattern('^(?<major>\d+)(\.(?<minor>\d+))?(\.(?<build>\d+))?(\.(?<revision>\d+))?$')]
+        [string]
+        $Value
     )
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-    if ($PSCmdlet.ShouldProcess(@($Major, $Minor, $Build, $Revision), $CmdletName)) {
-        New-Object -TypeName System.Version -ArgumentList $Major, $Minor, $Build, $Revision
+    if ($PSCmdlet.ParameterSetName -eq 'UsingString') {
+        try {
+            [version]::new($Value) | Write-Output
+        }
+        catch {
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            $Error | Write-Fatal
+        }
+    }
+    else {
+        if ($PSCmdlet.ShouldProcess(@($Major, $Minor, $Build, $Revision), $CmdletName)) {
+            New-Object -TypeName System.Version -ArgumentList $Major, $Minor, $Build, $Revision
+        }
     }
 
     <#
@@ -3198,6 +3234,9 @@ function New-Version {
         .PARAMETER Revision
         The revision portion of a [version].  `Revision` must be in the range [0, 65534] and is optional.
 
+        .PARAMETER Value
+        Specifies the string representation of the version to parse and return as a [version].
+
         .INPUTS
         None.  `New-Version` does not take any PowerShell pipeline input.
 
@@ -3213,7 +3252,7 @@ function New-Version {
         Create a new version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3292,7 +3331,7 @@ function New-WindowsVersion {
         Generates a windows version number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3383,7 +3422,7 @@ function Test-CPreRelease {
         Test if a string is a valid pre-release label.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3475,7 +3514,7 @@ function Test-PreRelease {
         Test if a string is a valid pre-release label.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3588,7 +3627,7 @@ function Write-AssemblyVersionToAssemblyInfo {
         VERBOSE: AssemblyVersion in File 'C:\Path\To\AssemblyInfo.cs' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3722,7 +3761,7 @@ function Write-AssemblyFileVersionToAssemblyInfo {
         VERBOSE: AssemblyFileVersion in File 'C:\Path\To\AssemblyInfo.cs' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3864,7 +3903,7 @@ function Write-FileVersionToSdkProj {
         VERBOSE: FileVersion in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4004,7 +4043,7 @@ function Write-AssemblyInformationalVersionToAssemblyInfo {
         VERBOSE: AssemblyInformationalVersion in File 'C:\Path\To\AssemblyInfo.cs' updated to '1.2.0.0'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4142,7 +4181,7 @@ function Write-InformationalVersionToSdkProj {
         VERBOSE: InformationalVersion in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4220,7 +4259,7 @@ function Write-ModuleVersion {
         None.  `Write-ModuleVersion` does not return any PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4334,7 +4373,7 @@ function Write-VersionToSdkProj {
         VERBOSE: Version in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4467,7 +4506,7 @@ function Write-XPathVersion {
         VERBOSE: Version XPath '//Project/PropertyGroup/Version' in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

@@ -1,51 +1,4 @@
-﻿<#
- =============================================================================
-<copyright file="VersionModule.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
-    All Rights Reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-       1. Redistributions of source code must retain the above
-          copyright notice, this list of conditions and the following
-          disclaimer.
-
-       2. Redistributions in binary form must reproduce the above
-          copyright notice, this list of conditions and the following
-          disclaimer in the documentation and/or other materials
-          provided with the distribution.
-
-       3. Neither the name of the copyright holder nor the names of
-          its contributors may be used to endorse or promote products
-          derived from this software without specific prior written
-          permission.
-
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-   COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-   INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-   ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-   POSSIBILITY OF SUCH DAMAGE.
-</copyright>
-<author>John Merryweather Cooper</author>
-<date>Created:  2024-9-12</date>
-<summary>
-This file "VersionModule.tests.ps1" is part of "VersionModule".
-</summary>
-<remarks>description</remarks>
-=============================================================================
-#>
-
-#
+﻿#
 # This is a PowerShell Unit Test file.
 # You need a unit test framework such as Pester to run PowerShell Unit tests.
 # You can download Pester from https://go.microsoft.com/fwlink/?LinkID=534084
@@ -94,12 +47,12 @@ Describe -Name 'VersionModule' {
             $ModuleVersion | Should -BeGreaterThan '1.3.0'
         }
 
-        It 'should have a GUID of 08636B39-72BD-48E3-8CEF-084EFA5AD3D7' {
+        It 'should have a GUID of 0af0be62-352d-4271-9ada-606bde322d42' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be '08636B39-72BD-48E3-8CEF-084EFA5AD3D7'
+            $Guid | Should -Be '0af0be62-352d-4271-9ada-606bde322d42'
         }
 
         It 'should have an Author of John Merryweather Cooper' {
@@ -110,7 +63,7 @@ Describe -Name 'VersionModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It 'should have a CompanyName of U.S. Office of Personnel Management' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -118,12 +71,12 @@ Describe -Name 'VersionModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It 'should have a Copyright of Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
             # Assert
-            $Copyright | Should -Be 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+            $Copyright | Should -Be 'Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.'
         }
 
         It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
@@ -884,7 +837,7 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-AssemblyVersion -Major $major -Minor $minor
@@ -897,7 +850,7 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-AssemblyVersion -Major $major -Minor $minor
@@ -910,7 +863,7 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-FileVersion -Major $major -Minor $minor
@@ -1100,7 +1053,7 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-FileVersion -Major $major -Minor $minor
@@ -1113,7 +1066,7 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-FileVersion -Major $major -Minor $minor
@@ -1126,7 +1079,7 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-FileVersion -Major $major -Minor $minor
@@ -1183,7 +1136,7 @@ Describe -Name 'VersionModule' {
             $minor = 10
 
             # Act
-            $result = New-AssemblyVersion -Major $major -Minor $minor
+            $result = New-InformationalVersion -Major $major -Minor $minor
 
             # Assert
             $result | Should -BeOfType 'string'
@@ -1193,39 +1146,39 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-InformationalVersion -Major $major -Minor $minor
 
             # Assert
-            $expected | Should -BeLessThan $actual
+            $expected | Should -BeLessThan ([version]::new($actual))
         }
 
         It -Name 'new informational version should have Major same as Major input' -Tag 'Test' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-InformationalVersion -Major $major -Minor $minor
 
             # Assert
-            $expected.Major | Should -Be $actual.Major
+            $expected.Major | Should -Be ([version]::new($actual)).Major
         }
 
         It -Name 'new informational version should Minor same as Minor input' -Tag 'Test' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-InformationalVersion -Major $major -Minor $minor
 
             # Assert
-            $expected.Minor | Should -Be $actual.Minor
+            $expected.Minor | Should -Be ([version]::new($actual)).Minor
         }
     }
 
@@ -1325,7 +1278,7 @@ Describe -Name 'VersionModule' {
             $result = New-PatchNumber
 
             # Assert
-            $result | Should -BeLessOrEqual [int]::MaxValue
+            $result | Should -BeLessOrEqual 2147483647
         }
 
         It -Name 'new patch number build part should equal build number' -Tag 'Test' {
@@ -1333,10 +1286,22 @@ Describe -Name 'VersionModule' {
             $expected = New-BuildNumber
 
             # Act
-            $actual = [int][Math]::Floor((New-PatchNumber) / 100000.0)
+            $actual = [int]((New-PatchNumber) / 100000)
 
             # Assert
             $actual | Should -Be $expected
+        }
+
+        It 'calls 1 seconds apart should return monotonically increasing values' {
+            # Arrange
+            $versionFirst = New-PatchNumber
+
+            # Act
+            Start-Sleep -Seconds 1
+            $versionSecond = New-PatchNumber
+
+            # Assert
+            $versionFirst | Should -BeLessThan $versionSecond
         }
     }
 
@@ -1464,6 +1429,18 @@ Describe -Name 'VersionModule' {
             # Assert
             $ModuleName | Should -Be 'VersionModule'
         }
+
+        It 'calls 2 seconds apart should return monotonically increasing values' {
+            # Arrange
+            $versionFirst = New-RevisionNumber
+
+            # Act
+            Start-Sleep -Seconds 2
+            $versionSecond = New-RevisionNumber
+
+            # Assert
+            $versionFirst | Should -BeLessThan $versionSecond
+        }
     }
 
     Context -Name 'New-SemanticVersion' {
@@ -1523,7 +1500,7 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0)
+            $expected = [version]::new($major, $minor, 0)
 
             # Act
             $actual = New-SemanticVersion -Major $major -Minor $minor
@@ -1536,7 +1513,7 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-SemanticVersion -Major $major -Minor $minor
@@ -1549,7 +1526,7 @@ Describe -Name 'VersionModule' {
             # Arrange
             $major = 1940
             $minor = 10
-            $expected = [System.Version]::new($major, $minor, 0, 0)
+            $expected = [version]::new($major, $minor, 0, 0)
 
             # Act
             $actual = New-SemanticVersion -Major $major -Minor $minor
@@ -1569,6 +1546,218 @@ Describe -Name 'VersionModule' {
 
             # Assert
             $expected | Should -BeLessOrEqual $actual.Patch
+        }
+
+        It -Name 'new semantic version from string should return a valid [semver]' -Tag 'Test' {
+            # Arrange
+            $version = '1.2.3'
+
+            # Act
+            $result = New-SemanticVersion -Version $version
+
+            # Assert
+            $result | Should -BeOfType 'System.Management.Automation.SemanticVersion'
+        }
+
+        It -Name 'new semantic version from string patch should equal [semver] Patch property' -Tag 'Test' {
+            # Arrange
+            $version = '1.2.3'
+            $systemVersion = [version]::new(1, 2, 3)
+
+            # Act
+            $result = New-SemanticVersion -Version $version
+
+            # Assert
+            $result.Patch | Should -Be $systemVersion.Build
+        }
+
+        It -Name 'new semantic version from string minor should equal [semver] Minor property' -Tag 'Test' {
+            # Arrange
+            $version = '1.2.3'
+            $systemVersion = [version]::new(1, 2, 3)
+
+            # Act
+            $result = New-SemanticVersion -Version $version
+
+            # Assert
+            $result.Minor | Should -Be $systemVersion.Minor
+        }
+
+        It -Name 'new semantic version from string major should equal [semver] Major property' -Tag 'Test' {
+            # Arrange
+            $version = '1.2.3'
+            $systemVersion = [version]::new(1, 2, 3)
+
+            # Act
+            $result = New-SemanticVersion -Version $version
+
+            # Assert
+            $result.Major | Should -Be $systemVersion.Major
+        }
+    }
+
+    Context -Name 'New-Version' {
+        It 'should exist' {
+            # Arrange and Act
+            $Command = Get-Command -Name 'New-Version'
+
+            # Assert
+            $Command | Should -Not -BeNull
+        }
+
+        It 'should be a cmdlet or function' {
+            # Arrange and Act
+            $Command = Get-Command -Name 'New-Version'
+
+            # Assert
+            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
+        }
+
+        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+            # Arrange and Act
+            $Synopsis = Get-Help -Name 'New-Version' -Full | Select-Object -ExpandProperty Synopsis
+
+            # Assert
+            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
+        }
+
+        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+            # Arrange and Act
+            $Description = Get-Help -Name 'New-Version' -Full | Select-Object -ExpandProperty Description
+
+            # Assert
+            $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
+        }
+
+        It 'should have a module name of VersionModule' {
+            # Arrange and Act
+            $ModuleName = Get-Command -Name 'New-Version' | Select-Object -ExpandProperty ModuleName
+
+            # Assert
+            $ModuleName | Should -Be 'VersionModule'
+        }
+
+        It -Name 'return value should be of type [version]' -Tag 'Test' {
+            # Arrange
+            $major = 1940
+            $minor = 10
+
+            # Act
+            $result = New-Version -Major $major -Minor $minor
+
+            # Assert
+            $result | Should -BeOfType [version]
+        }
+
+        It -Name 'new version should be greater than or equal to Major.Minor.0.0' -Tag 'Test' {
+            # Arrange
+            $major = 1940
+            $minor = 10
+            $expected = [version]::new($major, $minor, 0, 0)
+
+            # Act
+            $actual = New-Version -Major $major -Minor $minor
+
+            # Assert
+            $actual | Should -BeGreaterOrEqual $expected
+        }
+
+        It -Name 'new version should have Major same as Major input' -Tag 'Test' {
+            # Arrange
+            $major = 1940
+            $minor = 10
+            $expected = [version]::new($major, $minor, 0, 0)
+
+            # Act
+            $actual = New-Version -Major $major -Minor $minor
+
+            # Assert
+            $expected.Major | Should -Be $actual.Major
+        }
+
+        It -Name 'new version should Minor same as Minor input' -Tag 'Test' {
+            # Arrange
+            $major = 1940
+            $minor = 10
+            $expected = [version]::new($major, $minor, 0, 0)
+
+            # Act
+            $actual = New-Version -Major $major -Minor $minor
+
+            # Assert
+            $expected.Minor | Should -Be $actual.Minor
+        }
+
+        It -Name 'new version Build should be greater than or equal to New-BuildNumber' -Tag 'Test' {
+            # Arrange
+            $major = 1940
+            $minor = 10
+            $expected = New-BuildNumber
+
+            # Act
+            $actual = New-Version -Major $major -Minor $minor
+
+            # Assert
+            $actual.Build | Should -BeGreaterOrEqual $expected
+        }
+
+        It -Name 'new version from string should return a valid [version]' -Tag 'Test' {
+            # Arrange
+            $version = '1.2.3.4'
+
+            # Act
+            $result = New-Version -Value $version
+
+            # Assert
+            $result | Should -BeOfType [version]
+        }
+
+        It -Name 'new version from string revision should equal [version] Revision property' -Tag 'Test' {
+            # Arrange
+            $version = '1.2.3.4'
+            $systemVersion = [version]::new(1, 2, 3, 4)
+
+            # Act
+            $result = New-Version -Value $version
+
+            # Assert
+            $result.Revision | Should -Be $systemVersion.Revision
+        }
+
+        It -Name 'new version from string build should equal [version] Build property' -Tag 'Test' {
+            # Arrange
+            $version = '1.2.3.4'
+            $systemVersion = [version]::new(1, 2, 3, 4)
+
+            # Act
+            $result = New-Version -Value $version
+
+            # Assert
+            $result.Build | Should -Be $systemVersion.Build
+        }
+
+        It -Name 'new version from string minor should equal [version] Minor property' -Tag 'Test' {
+            # Arrange
+            $version = '1.2.3.4'
+            $systemVersion = [version]::new(1, 2, 3, 4)
+
+            # Act
+            $result = New-Version -Value $version
+
+            # Assert
+            $result.Minor | Should -Be $systemVersion.Minor
+        }
+
+        It -Name 'new version from string major should equal [version] Major property' -Tag 'Test' {
+            # Arrange
+            $version = '1.2.3.4'
+            $systemVersion = [version]::new(1, 2, 3, 4)
+
+            # Act
+            $result = New-Version -Value $version
+
+            # Assert
+            $result.Major | Should -Be $systemVersion.Major
         }
     }
 

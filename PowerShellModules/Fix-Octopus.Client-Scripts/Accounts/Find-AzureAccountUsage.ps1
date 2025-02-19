@@ -1,18 +1,34 @@
-﻿#This script will look for the usage of a specific Azure Account in all projects and print the results
+﻿<#
+    .DESCRIPTION
+    This script will look for the usage of a specific Azure Account in all projects and print the results.
+#>
 
-##CONFIG##
+[CmdletBinding()]
+param (
+    [Parameter(Mandatory)]
+    [ValidatePattern('^API-.*$')]
+    [string]
+    $ApiKey,
 
-$apikey = 'API-xxxx' # Get this from your profile
+    [Parameter(Mandatory)]
+    [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+    [string]
+    $OctopusUri,
 
-$octopusURI = 'http://YourOctopusServer' # Your Octopus Server address
+    [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $AccountName
+)
 
-$AccountName = "Your Account Name" #Name of the account that you want to find
+BEGIN {
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
-##PROCESS##
+    Add-Type -Path 'Octopus.Client.dll'
+}
 
-Add-Type -Path 'Octopus.Client.dll'
-
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
+$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI,$ApiKey
 $repository = New-Object Octopus.Client.OctopusRepository $endpoint
 
 $AllProjects = $Repository.Projects.FindAll()

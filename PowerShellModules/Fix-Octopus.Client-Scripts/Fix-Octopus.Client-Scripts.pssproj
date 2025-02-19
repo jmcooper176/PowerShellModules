@@ -1,0 +1,145 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{80ca84c0-2863-4355-9f28-b3cbe6138e58}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MyApplication</RootNamespace>
+    <AssemblyName>MyApplication</AssemblyName>
+    <Name>Fix-Octopus.Client-Scripts</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Accounts\New-AzureServicePrincipal.ps1" />
+    <Compile Include="Accounts\New-GoogleCloudAccount.ps1" />
+    <Compile Include="Accounts\Find-AzureAccountUsage.ps1" />
+    <Compile Include="BulkOperations\Add-BulkTenantsToProject.ps1" />
+    <Compile Include="Certificates\Add-EnvironmentRestrictionToCertificate.ps1" />
+    <Compile Include="Certificates\New-Certificate.ps1" />
+    <Compile Include="Certificates\Remove-DuplicateCertificates.ps1" />
+    <Compile Include="Certificates\Update-Certificate.ps1" />
+    <Compile Include="Channels\New-Channel.ps1" />
+    <Compile Include="Common\OctopusClientModule.psd1" />
+    <Compile Include="Common\OctopusClientModule.tests.tests.ps1" />
+    <Compile Include="Common\OctopusClientModule.psm1" />
+    <Compile Include="DeploymentProcesses\Add-EnvironmentConditionToStep.ps1" />
+    <Compile Include="DeploymentProcesses\Add-MissingStepsToProcess.ps1" />
+    <Compile Include="DeploymentProcesses\Update-PackageFeedForProjects.ps1" />
+    <Compile Include="DeploymentProcesses\New-ScriptStep.ps1" />
+    <Compile Include="DeploymentProcesses\New-StepBasedOnStepTemplate.ps1" />
+    <Compile Include="DeploymentProcesses\Export-InlineScriptsToFile.ps1" />
+    <Compile Include="DeploymentProcesses\Get-StepsUsingPackage.ps1" />
+    <Compile Include="DeploymentProcesses\Get-StepsUsingRole.ps1" />
+    <Compile Include="DeploymentProcesses\Remove-DeploymentProcessStep.ps1" />
+    <Compile Include="DeploymentProcesses\Remove=RoleFromAllSteps.ps1" />
+    <Compile Include="DeploymentProcesses\Limit-RoleToStep.ps1" />
+    <Compile Include="DeploymentProcesses\Expand-ChildSteps.ps1" />
+    <Compile Include="Deployments\Stop-Queued.ps1" />
+    <Compile Include="Deployments\New-ProjectDeploymentIfNotRunningAlready.ps1" />
+    <Compile Include="Deployments\New-ReleaseAndDeployment.ps1" />
+    <Compile Include="Deployments\New-ReleaseAndDeploymentWithTenants.ps1" />
+    <Compile Include="Deployments\Publish-Release.ps1" />
+    <Compile Include="Deployments\Publish-ReleaseToTenant.ps1" />
+    <Compile Include="Deployments\Get-DeploymentLifecyclePhase.ps1" />
+    <Compile Include="Deployments\CheckPoint-Release.ps1" />
+    <Compile Include="Deployments\RetrievePagedListOfDeploymentsToEnvironment.ps1" />
+    <Compile Include="Environments\Add-Environments.ps1" />
+    <Compile Include="Events\Find-ByDate.ps1" />
+    <Compile Include="Events\Find-DeployedByUser.ps1" />
+    <Compile Include="Feeds\Update-Feed.ps1" />
+    <Compile Include="Feeds\New-Feed.ps1" />
+    <Compile Include="Feeds\Remove-Feed.ps1" />
+    <Compile Include="Feeds\Import-Package.ps1" />
+    <Compile Include="Feeds\Find-PackagesFromFeed.ps1" />
+    <Compile Include="Feeds\Get-AllFeeds.ps1" />
+    <Compile Include="Feeds\Reset-NugetFeeds.ps1" />
+    <Compile Include="Feeds\Publish-Package.ps1" />
+    <Compile Include="Lifecycles\Add-PhaseToLifecycle.ps1" />
+    <Compile Include="Lifecycles\New-Lifecycle.ps1" />
+    <Compile Include="Lifecycles\New-LifecycleWithPhase.ps1" />
+    <Compile Include="ProjectGroups\New-ProjectGroup.ps1" />
+    <Compile Include="Projects\New-AutoDeployTriggersForAllProjects.ps1" />
+    <Compile Include="Projects\New-Project.ps1" />
+    <Compile Include="Projects\New-ScriptStepForAllProjects.ps1" />
+    <Compile Include="Projects\Remove-ProjectByName.ps1" />
+    <Compile Include="Projects\Remove-ProjectsWithoutDeploymentProcess.ps1" />
+    <Compile Include="Projects\Disable-AllProjectTriggers.ps1" />
+    <Compile Include="Projects\Skip-UnavailableMachinesAllProjects.ps1" />
+    <Compile Include="Releases\New-Release.ps1" />
+    <Compile Include="Releases\Remove-ReleasesForProject.ps1" />
+    <Compile Include="Releases\Checkpoint-ReleasesNotInDestination.ps1" />
+    <Compile Include="Releases\Update-ReleaseVariableSnapshot.ps1" />
+    <Compile Include="Runbooks\New-Runbook.ps1" />
+    <Compile Include="Runbooks\New-RunbookScheduledTrigger.ps1" />
+    <Compile Include="Runbooks\Publish-Runbook.ps1" />
+    <Compile Include="Runbooks\Start-Runbook.ps1" />
+    <Compile Include="ScriptModules\Copy-BetweenInstances.ps1" />
+    <Compile Include="Spaces\Add-SpaceWithEnvironments.ps1" />
+    <Compile Include="Spaces\Remove-Space.ps1" />
+    <Compile Include="StepTemplates\Update-InDeploymentProcesses.ps1" />
+    <Compile Include="Tagsets\Add-TagToTagset.ps1" />
+    <Compile Include="Tagsets\New-TagSet.ps1" />
+    <Compile Include="Targets\Add-RoleToAllMachines.ps1" />
+    <Compile Include="Targets\Add-RoleToTarget.ps1" />
+    <Compile Include="Targets\Update-TargetMachinePolicy.ps1" />
+    <Compile Include="Targets\Test-ForTentacleUpgrades.ps1" />
+    <Compile Include="Targets\Measure-MachineAndEnvironments.ps1" />
+    <Compile Include="Targets\New-AzureWebApp.ps1" />
+    <Compile Include="Targets\New-AzureWebAppTargetsFromSubscription.ps1" />
+    <Compile Include="Targets\Remove-MachinesByRole.ps1" />
+    <Compile Include="Targets\Remove-TargetByName.ps1" />
+    <Compile Include="Targets\Enable-OrDisableAMachine.ps1" />
+    <Compile Include="Targets\Request-MachinesInDeployment.ps1" />
+    <Compile Include="Targets\Register-ListeningTentacle.ps1" />
+    <Compile Include="Targets\Register-PollingTentacle.ps1" />
+    <Compile Include="Targets\Sync-Targets.ps1" />
+    <Compile Include="Tasks\Start-HealthCheck.ps1" />
+    <Compile Include="Teams\Add-EnvironmentToTeam.ps1" />
+    <Compile Include="Teams\Find-TeamsWithUserRole.ps1" />
+    <Compile Include="Teams\Remove-ProjectFromTeam.ps1" />
+    <Compile Include="Tenants\New-Tenant.ps1" />
+    <Compile Include="Tenants\Update-MultipleTenantVariablesWithSingleValue.ps1" />
+    <Compile Include="Tenants\Update-TenantLogo.ps1" />
+    <Compile Include="Users\Add-AzureActiveDirectoryLoginToUsers.ps1" />
+    <Compile Include="Users\New-ApiKey.ps1" />
+    <Compile Include="Users\Find-UsersWithEditRoles.ps1" />
+    <Compile Include="Users\Find-InactiveUsers.ps1" />
+    <Compile Include="Users\Find-UsersWithUserRole.ps1" />
+    <Compile Include="Users\Request-Users.ps1" />
+    <Compile Include="Variables\Add-LibraryVariableSetToAllProjects.ps1" />
+    <Compile Include="Variables\Add-LibraryVariableSetToSelectedProjects.ps1" />
+    <Compile Include="Variables\Add-VariableToLibraryVariableSet.ps1" />
+    <Compile Include="Variables\Reset-SensitiveVariables.ps1" />
+    <Compile Include="Variables\Copy-LibraryVariables.ps1" />
+    <Compile Include="Variables\Find-VariablesScopedToSteps.ps1" />
+    <Compile Include="Variables\Find-ProjectsThatUseALibraryVariableSet.ps1" />
+    <Compile Include="Variables\Find-VariableSetVariableUsage.ps1" />
+    <Compile Include="Variables\Find-VariableUsage.ps1" />
+    <Compile Include="Variables\Find-VariableValueUsage.ps1" />
+    <Compile Include="Variables\Update-VariableToProject.ps1" />
+    <Compile Include="Variables\Remove-EmptyCollectionsFromScope.ps1" />
+    <Compile Include="Variables\Update-VariableEnvironments.ps1" />
+    <Compile Include="Variables\UpdateLibraryVariableSetVariableValue.ps1" />
+    <Compile Include="Variables\Update-VariableInProject.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Machines\README.md" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" />
+</Project>

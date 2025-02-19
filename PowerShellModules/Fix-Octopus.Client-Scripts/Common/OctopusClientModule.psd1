@@ -1,0 +1,3 @@
+#
+# OctopusClientModule.psd1
+#

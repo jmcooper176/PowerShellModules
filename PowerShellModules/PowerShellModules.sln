@@ -121,6 +121,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solutions Items", "Solution
 EndProject
 Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "Fix-Octopus.Client-Scripts", "Fix-Octopus.Client-Scripts\Fix-Octopus.Client-Scripts.pssproj", "{80CA84C0-2863-4355-9F28-B3CBE6138E58}"
 EndProject
+Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "OctopusClientModule", "OctopusClientModule\OctopusClientModule.pssproj", "{1483EC44-A595-45F5-8E7E-4EFAA8CA4922}"
+EndProject
+Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "OctopusRestModule", "OctopusRestModule\OctopusRestModule.pssproj", "{185A9F33-EEEF-4BA3-A1DF-2DB66B5DCB16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -307,6 +311,14 @@ Global
 		{80CA84C0-2863-4355-9F28-B3CBE6138E58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80CA84C0-2863-4355-9F28-B3CBE6138E58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80CA84C0-2863-4355-9F28-B3CBE6138E58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1483EC44-A595-45F5-8E7E-4EFAA8CA4922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1483EC44-A595-45F5-8E7E-4EFAA8CA4922}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1483EC44-A595-45F5-8E7E-4EFAA8CA4922}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1483EC44-A595-45F5-8E7E-4EFAA8CA4922}.Release|Any CPU.Build.0 = Release|Any CPU
+		{185A9F33-EEEF-4BA3-A1DF-2DB66B5DCB16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{185A9F33-EEEF-4BA3-A1DF-2DB66B5DCB16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{185A9F33-EEEF-4BA3-A1DF-2DB66B5DCB16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{185A9F33-EEEF-4BA3-A1DF-2DB66B5DCB16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

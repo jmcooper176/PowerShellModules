@@ -141,5 +141,33 @@
   <ItemGroup>
     <Content Include="Machines\README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Accounts\" />
+    <Folder Include="BulkOperations\" />
+    <Folder Include="Certificates\" />
+    <Folder Include="Channels\" />
+    <Folder Include="Common\" />
+    <Folder Include="DeploymentProcesses\" />
+    <Folder Include="Deployments\" />
+    <Folder Include="Environments\" />
+    <Folder Include="Events\" />
+    <Folder Include="Feeds\" />
+    <Folder Include="Lifecycles\" />
+    <Folder Include="Machines\" />
+    <Folder Include="ProjectGroups\" />
+    <Folder Include="Projects\" />
+    <Folder Include="Releases\" />
+    <Folder Include="Runbooks\" />
+    <Folder Include="ScriptModules\" />
+    <Folder Include="Spaces\" />
+    <Folder Include="StepTemplates\" />
+    <Folder Include="Tagsets\" />
+    <Folder Include="Targets\" />
+    <Folder Include="Tasks\" />
+    <Folder Include="Teams\" />
+    <Folder Include="Tenants\" />
+    <Folder Include="Users\" />
+    <Folder Include="Variables\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" />
 </Project>

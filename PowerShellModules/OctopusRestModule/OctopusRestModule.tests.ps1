@@ -1,4 +1,4 @@
-﻿Describe "PathModule" {
+﻿Describe "OctopusRestModule" {
     Context "Exists" {
         It "Runs" {
         }

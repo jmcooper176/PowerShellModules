@@ -50,6 +50,7 @@ This file "TypeAcceleratoModuler.tests.ps1" is part of "TypeAcceleratorModule".
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'TypeAcceleratorModule.psd1'
+    $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
     Initialize-PSTest -Name 'TypeAcceleratorModule' -Path $ModulePath
 
@@ -194,6 +195,28 @@ Describe -Name 'TypeAcceleratorModule' {
 
             # Assert
             $ModuleManifest | Should -Not -BeNullOrEmpty
+        }
+
+        It 'should parse' {
+            $inputSource = Get-Content -LiteralPath $ModulePath -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+
+            $errors.Value | ForEach-Object -Process {
+                $message = ('{0} at {1}:  Parse error generating abstract syntax tree' -f $ModuleName, $ModulePath)
+                $writeErrorSplat = @{
+                        Exception    = [System.Management.Automation.ParseException]::new($message)
+                        Category     = 'ParseError'
+                        ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                        TargetObject = $_
+                        ErrorAction  = 'Continue'
+                    }
+
+                    Write-Error @writeErrorSplat -ErrorAction Continue
+                    $PSCmdlet.ThrowTerminatingError($writeErrorHash)
+                }
         }
 
         It 'should have a RootModule of TypeAcceleratorModule.psm1' {

@@ -50,6 +50,7 @@ This file "PowerShellModule.psm1" is part of "PowerShellModule".
 #>
 function Add-Entry {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory)]
         [AllowEmptyCollection()]
@@ -124,6 +125,7 @@ function Add-Entry {
 #>
 function Add-Parameter {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory)]
         [Alias('Parameter')]
@@ -193,6 +195,7 @@ function Add-Parameter {
 #>
 function Enter-Block {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory)]
         [scriptblock]
@@ -520,7 +523,7 @@ function Get-MinorVersion {
 #>
 function Get-Parameter {
     [CmdletBinding()]
-    [OutputType([System.Object])]
+    [OutputType([object])]
     param (
         [Parameter(Mandatory)]
         [Alias('Parameter')]
@@ -536,7 +539,7 @@ function Get-Parameter {
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if (Test-Parameter -Name $Name -Parameters $Parameters) {
-        $Parameters[$Name]
+        $Parameters[$Name] | Write-Output
     }
 
     <#
@@ -855,6 +858,7 @@ function Initialize-Function {
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1153,25 +1157,50 @@ function Initialize-Test {
     Measure-String
 #>
 function Measure-String {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'UsingString')]
+    [OutputType([iht])]
     param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingString')]
         [AllowNull()]
         [AllowEmptyString()]
-        [string]
-        $Value
+        [string[]]
+        $Value,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingObject')]
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [psobject]
+        $InputObject
     )
 
     BEGIN {
         $Cmdlet = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        $length = 0
     }
 
     PROCESS {
-        if ([string]::IsNullOrEmpty($Value)) {
-            0 | Write-Output
+        $length = 0
+
+        if ($PSCmdlet.ParameterSetName -eq 'UsingObject') {
+            if (($null -eq $InputObject)) {
+                $length | Write-Output
+            }
+            else {
+                $InputObject | Measure-Object -Character | Select-Object -ExpandProperty Characters | Write-Output
+            }
         }
         else {
-            $Value.Length
+            if (($null -eq $Value) -or ($Value.Count -lt 1)) {
+                $length | Write-Output
+            }
+            else {
+                $Value | ForEach-Object -Process {
+                    $length += $_.Length
+                }
+
+                $length | Write-Output
+            }
         }
     }
 
@@ -1225,6 +1254,132 @@ function Measure-String {
 }
 
 <#
+    Set-TeeContent
+#>
+function Set-TeeContent {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'UsingPath')]
+        [ValdiateScript(Get-ChildItem -Path $_ | Test-Path -PathType Leaf)]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingLiteralPath')]
+        [ValdiateScript(Test-Path -LiteralPath $_ -PathType Leaf)]
+        [string[]]
+        $LiteralPath,
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingVariable')]
+        [ValidateNotNullOrEmpty]
+        [string]
+        $Variable,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [object[]]
+        $Value,
+
+        [System.Text.Encoding]
+        $Encoding = 'UTF8',
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        $Cmdlet = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $Value | Set-Content -LiteralPath $Path -Encoding $Encoding -Force:$Force.IsPresent
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq 'UsingVariable') {
+            $Value | ForEach-Object -Process { Tee-Object -InputObject $_ -Variable $Variable -Encoding $Encoding -Append | Out-Null }
+        }
+        else {
+            $Value | Set-Content -Path $Path
+        }
+    }
+}
+
+<#
+    Set-Parameter
+#>
+function Set-Parameter {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory)]
+        [Alias('Parameter')]
+        [string]
+        $Name,
+
+        [Parameter(Mandatory)]
+        [Alias('Bound')]
+        [hashtable]
+        $Parameters,
+
+        [Parameter(Mandatory)]
+        [AllowNull()]
+        [object]
+        $Value
+    )
+
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+    if (Test-Parameter -Name $Name -Parameters $Parameters) {
+        $Parameters[$Name] = $Value
+    }
+    else {
+        Add-Parameter -Name $Name -Parameters $Parameters -Value $Value
+    }
+
+    <#
+        .SYNOPSIS
+        Gets a parameter from 'PSBoundParameters'.
+
+        .DESCRIPTION
+        `Get-Parameter` is a helper function that gets a parameter from 'PSBoundParameters'.
+
+        .PARAMETER Name
+        Specifies the name of the parameter to get.
+
+        .PARAMETER Parameters
+        Specifies the PSBoundParameters [hashtable].
+
+        .NOTES
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+
+        .INPUTS
+        None.  `Get-Parameter` does not accept input from the pipeline.
+
+        .OUTPUTS
+        [System.Object]  `Get-Parameter` returns an object to the PowerShell pipeline representing the parameter value.
+
+        .EXAMPLE
+        PS> Get-PSParameter -Name 'MyKey' -Parameters $PSBoundParameters
+
+        Tests
+
+        Gets the bound parameter value for 'MyKey'.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        Set-Variable
+        .LINK
+        Set-StrictMode
+        .LINK
+        Test-Parameter
+    #>
+}
+
+<#
     Test-Prerequisites
 #>
 function Test-Prerequisites {
@@ -1244,7 +1399,7 @@ function Test-Prerequisites {
 
     PROCESS {
         $Name | ForEach-Object -Process {
-            if (Get-Module -ListAvailable | Where-Object -FilterScript { $_.Name -eq $_ }) {
+            if (Get-Module -ListAvailable | Where-Object -Property Name -EQ $_ ) {
                 $true | Write-Output
             }
             else {

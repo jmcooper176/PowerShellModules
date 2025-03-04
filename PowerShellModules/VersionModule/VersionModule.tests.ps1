@@ -63,7 +63,7 @@ Describe -Name 'VersionModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of U.S. Office of Personnel Management' {
+        It 'should have a CompanyName of John Merryweather Cooper' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -71,12 +71,12 @@ Describe -Name 'VersionModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.' {
+        It 'should have a Copyright of Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
             # Assert
-            $Copyright | Should -Be 'Copyright © 2023-2025, U.S. Office of Personnel Management.  All Rights Reserved.'
+            $Copyright | Should -Be 'Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.'
         }
 
         It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {

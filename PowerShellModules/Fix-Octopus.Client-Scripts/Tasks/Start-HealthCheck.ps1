@@ -1,6 +1,6 @@
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -Path .\Octopus.Client.dll 
+Add-Type -Path .\Octopus.Client.dll
 
 $octopusURL = "https://youroctourl"
 $octopusAPIKey = "API-YOURAPIKEY"
@@ -13,9 +13,9 @@ $MachineTimeoutAfterMinutes = 5
 $EnvironmentName = ""
 $MachineNames = @()
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -25,22 +25,22 @@ try
 
     # Get EnvironmentId
     $EnvironmentID = $null
-    if([string]::IsNullOrWhiteSpace($EnvironmentName) -eq $False) 
+    if([string]::IsNullOrWhiteSpace($EnvironmentName) -eq $False)
     {
         $EnvironmentID = $repositoryForSpace.Environments.FindByName($EnvironmentName).Id
     }
-    
+
     # Get MachineIds
     $MachineIds = $null
     if($MachineNames.Count -gt 0)
     {
-        $MachineIds = ($repositoryForSpace.Machines.GetAll() | Where-Object {$MachineNames -contains $_.Name} | Select-Object -ExpandProperty Id) -Join ", "
+        $MachineIds = ($repositoryForSpace.Machines.GetAll() | Where-Object -FilterScript {$MachineNames -contains $_.Name} | Select-Object -ExpandProperty Id) -Join ", "
     }
-    
+
     # Execute health check
     $repositoryForSpace.Tasks.ExecuteHealthCheck($Description,$TimeOutAfterMinutes,$MachineTimeoutAfterMinutes,$EnvironmentID,$MachineIds)
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

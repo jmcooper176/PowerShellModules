@@ -8,7 +8,7 @@ Example:
 -OctopusUri 'https://foo.com/api'
 
 .PARAMETER OctopusApiKey
-Note: If copying between spaces, ensure that the account corresponding to the 
+Note: If copying between spaces, ensure that the account corresponding to the
 API key has the requisite permissions in both spaces.
 
 .PARAMETER NugetPath
@@ -31,7 +31,7 @@ The ID (not name) of the space in which the destination library variable set res
 Example:
 -DestinationLibraryVariableSetId 'LibraryVariableSets-2'
 
-.PARAMETER VariableNameRegexPattern 
+.PARAMETER VariableNameRegexPattern
 A Regular Expression that dictates which variables in the source variable set will be copied, based on
 variable name. Case-insensitive.
 Example 1, copy a single variable:
@@ -62,8 +62,8 @@ if ($PSBoundParameters['Debug']) {
 function AcquireAssemblies() {
 	[CmdletBinding()]
 	Param()
-	Write-Host 'Acquiring dependent assemblies'
-	@('Octopus.Client') | % { 
+	Write-Information -MessageData 'Acquiring dependent assemblies'
+	@('Octopus.Client') |ForEach-Object -Process{
 		& $NugetPath install $_ -ExcludeVersion -PackageSaveMode nuspec -Framework net45 -Verbosity $script:NugetVerbosity -NonInteractive
 	}
 }
@@ -71,46 +71,45 @@ function AcquireAssemblies() {
 function LoadAssemblies() {
 	[CmdletBinding()]
 	Param()
-	Write-Verbose 'Loading dependent assemblies'
+	Write-Verbose -Message 'Loading dependent assemblies'
 	@(
 		'.\Octopus.Client\lib\net452\Octopus.Client.dll'
-	) | % { Add-Type -Path $_ }
+	) |ForEach-Object -Process{ Add-Type -Path $_ }
 }
 
-
-if ($VerbosePreference -eq 'SilentlyContinue') { 
-	$script:NugetVerbosity = 'quiet' 
+if ($VerbosePreference -eq 'SilentlyContinue') {
+	$script:NugetVerbosity = 'quiet'
 } else {
-	$script:NugetVerbosity = 'normal' 
+	$script:NugetVerbosity = 'normal'
 }
 AcquireAssemblies
 LoadAssemblies
 
-$octopusRepository = (New-Object Octopus.Client.OctopusRepository (New-Object Octopus.Client.OctopusServerEndpoint $OctopusURI, $OctopusApiKey))
+$octopusRepository = (New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList (New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $OctopusURI, $OctopusApiKey))
 
 $headers = @{"X-Octopus-ApiKey" = $OctopusApiKey}
 
 function Get-OctopusResource([string]$uri, [string]$spaceId) {
 	# Adapted from https://github.com/OctopusDeploy/OctopusDeploy-Api/blob/master/REST/PowerShell/Variables/MigrateVariableSetVariablesToProject.ps1
 	$uriWithSpace = [string]::Join('/', @(
-			$OctopusUri.TrimEnd('/'), 
+			$OctopusUri.TrimEnd('/'),
 			$spaceId))
 	$fullUri = [string]::Join('/', @(
 			$uriWithSpace,
 			$uri))
-	Write-Host "[GET]: $fullUri"
+	Write-Information -MessageData "[GET]: $fullUri"
 	return Invoke-RestMethod -Method Get -Uri $fullUri -Headers $headers
 }
 
 function Put-OctopusResource([string]$uri, [string]$spaceId, [object]$resource) {
 	# Adapted from https://github.com/OctopusDeploy/OctopusDeploy-Api/blob/master/REST/PowerShell/Variables/MigrateVariableSetVariablesToProject.ps1
 	$uriWithSpace = [string]::Join('/', @(
-			$OctopusUri.TrimEnd('/'), 
+			$OctopusUri.TrimEnd('/'),
 			$spaceId))
 	$fullUri = [string]::Join('/', @(
 			$uriWithSpace,
 			$uri))
-	Write-Host "[PUT]: $fullUri"
+	Write-Information -MessageData "[PUT]: $fullUri"
 	Invoke-RestMethod -Method Put -Uri $fullUri -Body $($resource | ConvertTo-Json -Depth 10) -Headers $headers
 }
 
@@ -122,12 +121,12 @@ $destinationGlobalVariableSetId = $destinationLibraryVariableSet.VariableSetId
 $destinationGlobalVariableSet = Get-OctopusResource "/variables/$destinationGlobalVariableSetId" $DestinationSpaceId
 
 $changeMade = $false
-$sourceGlobalVariableSet.Variables | % {
+$sourceGlobalVariableSet.Variables |ForEach-Object -Process{
 	if ($_.Name -match $VariableNameRegexPattern) {
 		if($_.IsSensitive) {
-			Write-Warning "Variable '$($_.Name)' will not be copied. It is marked Sensitive, so its value cannot be read."
+			Write-Warning -Message "Variable '$($_.Name)' will not be copied. It is marked Sensitive, so its value cannot be read."
 		} else {
-			Write-Verbose "Preparing to add variable '$($_.Name)' with value '$($_.Value)' in '$destinationGlobalVariableSetId'"
+			Write-Verbose -Message "Preparing to add variable '$($_.Name)' with value '$($_.Value)' in '$destinationGlobalVariableSetId'"
 			if (($SourceSpaceId -ne $DestinationSpaceId) -and $_.Scope -and ($_.Scope.Count -ne 0)) {
 				$scopeCategories = @('Environment', 'Role')
 				$scopeWarnings = @("You must ensure variable '$($_.Name)' with value '$($_.Value)' is scoped appropriately in the destination space.")
@@ -139,7 +138,7 @@ $sourceGlobalVariableSet.Variables | % {
 					}
 				}
 				$scopeWarnings += $("'$($_.Name)'/'$($_.Value)': " + $($scopeWarningDetails -join '; '))
-				foreach ($scopeWarning in $scopeWarnings) { Write-Warning $scopeWarning }
+				foreach ($scopeWarning in $scopeWarnings) { Write-Warning -Message $scopeWarning }
 			}
 			$destinationGlobalVariableSet.Variables += $_
 			$changeMade = $true
@@ -150,9 +149,9 @@ $sourceGlobalVariableSet.Variables | % {
 if ($changeMade) {
 	$operation = "Adding variables"
 	if ($PSCmdlet.ShouldProcess($destinationGlobalVariableSetId, $operation)) {
-		Write-Host "$operation to '$destinationGlobalVariableSetId'"
+		Write-Information -MessageData "$operation to '$destinationGlobalVariableSetId'"
 		Put-OctopusResource "/variables/$destinationGlobalVariableSetId" $DestinationSpaceId $destinationGlobalVariableSet
 	}
 } else {
-	Write-Warning "No variables matching Regex '$VariableNameRegexPattern' were found in '$sourceGlobalVariableSetId'"
+	Write-Warning -Message "No variables matching Regex '$VariableNameRegexPattern' were found in '$sourceGlobalVariableSetId'"
 }

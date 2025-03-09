@@ -1,7 +1,6 @@
 ﻿<#
  =============================================================================
-<copyright file="ApplyVersionToAssemblies.ps1" company="U.S. Office of Personnel
-Management">
+<copyright file="ApplyVersionToAssemblies.ps1" company="John Merryweather Cooper">
     Copyright (c) 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
@@ -119,8 +118,8 @@ param (
     $SourceDirectory = $Env:BUILD_SOURCESDIRECTORY
 )
 
-Set-StrictMode -Version 3.0
-Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+$ScriptName = Initialize-PSScript -MyInvocation $MyInvocation
+
 Set-Variable -Name VERSION_REGEX -Option Constant -Value '(\d{1,5})(\.\d{1,5}){2,3}'
 
 $SourceDirectory = Resolve-Path -LiteralPath $SourceDirectory
@@ -197,7 +196,6 @@ Get-ChildItem -LiteralPath $SourceDirectory -Include "*.*proj" -File -Recurse | 
 
         Write-Verbose -Message "$($ScriptName):  MsBuild Project File '$projectFile' => assembly, file, and informational versions applied"
     } | Out-File -LiteralPath $file
-
 }
 
 # Set GitHub Action output variables

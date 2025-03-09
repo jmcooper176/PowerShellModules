@@ -13,24 +13,24 @@ $OctopusChannels = (Invoke-RestMethod "$OctopusUrl/api/$OctopusSpaceId/channels/
 $LifeCycleId = $OctopusChannels.LifecycleId
 if ([string]::IsNullOrWhitespace($LifeCycleId))
 {
-	Write-Host "LifecycleId is null, presumably due to Default Channel"
+    Write-Information -MessageData "LifecycleId is null, presumably due to Default Channel"
     $OctopusProject = (Invoke-RestMethod "$OctopusUrl/api/$OctopusSpaceId/projects/$ProjectId" -Headers $header)
-	$LifeCycleId = $OctopusProject.LifecycleId
+    $LifeCycleId = $OctopusProject.LifecycleId
 }
 if ([string]::IsNullOrWhitespace($LifeCycleId))
 {
-	throw "Couldnt find LifeCycleId!"
+    throw "Couldnt find LifeCycleId!"
 }
 
-Write-Host "LifecycleId: " $LifeCycleId
+Write-Information -MessageData "LifecycleId: " $LifeCycleId
 $OctopusLifecycles = (Invoke-RestMethod "$OctopusUrl/api/$OctopusSpaceId/lifecycles/$LifeCycleId" -Headers $header)
 $OctopusPhases = $OctopusLifecycles.Phases
 foreach($phase in $OctopusPhases){
-	foreach($environment in $phase.OptionalDeploymentTargets){
-		if ($OctopusEnvironmentId -eq $environment){
-			Write-Highlight "Environment: $($OctopusEnvironmentName)"
+    foreach($environment in $phase.OptionalDeploymentTargets){
+        if ($OctopusEnvironmentId -eq $environment){
+            Write-Highlight "Environment: $($OctopusEnvironmentName)"
             Write-Highlight "Phase Name: $($phase.Name)"
             Exit 0
-		}
-	}
+        }
+    }
 }

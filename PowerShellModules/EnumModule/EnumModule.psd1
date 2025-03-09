@@ -15,7 +15,7 @@ RootModule = 'EnumModule.psm1'
 ModuleVersion = '1.0.0'
 
 # ID used to uniquely identify this module
-GUID = 'FD5CC794-800D-4873-BFF8-FE50BB72FA6E'
+GUID = '5fa26beb-be1a-47b4-86c5-739673bcca7d'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -24,7 +24,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2025, U.S. Office of Personnel Manage.  All Rights Reserved.'
+Copyright = 'Copyright © 2025, John Merryweather Cooper Manage.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Collection of Cmdlets/Functions to manipulate [Enum].'

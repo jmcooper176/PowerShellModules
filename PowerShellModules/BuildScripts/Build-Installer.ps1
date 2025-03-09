@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Build-Installer.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Build-Installer.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "Build-Installer.ps1" is part of "BuildScripts".
 
     .VERSION 1.0.0
 
-    .GUID 18C8C91E-199D-4D72-BFEC-244047E8210C
+    .GUID F9FCEFCF-13D9-4113-8534-4353C051CA6C
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "Build-Installer.ps1" is part of "BuildScripts".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/BuildScripts
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/BuildScripts
 
     .ICONURI
 
@@ -73,7 +72,6 @@ This file "Build-Installer.ps1" is part of "BuildScripts".
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -83,12 +81,11 @@ This file "Build-Installer.ps1" is part of "BuildScripts".
     Build Windows Installer XML (WiX) installer.
 #>
 
-
 $scriptFolder = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 . ($scriptFolder + '.\SetupEnv.ps1')
 
 $packageFolder = "$env:AzurePSRoot\artifacts"
-if (Test-Path $packageFolder) {
+if (Test-Path -LiteralPath $packageFolder -PathType Container) {
     Remove-Item -Path $packageFolder -Recurse -Force
 }
 
@@ -102,7 +99,7 @@ if ($null -ne $allWixVersions) {
     foreach ($wixVersion in $allWixVersions) {
         $wixInstallRoot = $wixVersion.GetValue("InstallRoot", $null)
         if ($null -ne $wixInstallRoot) {
-            Write-Verbose "WIX tools was installed at $wixInstallRoot"
+            Write-Verbose -Message "WIX tools was installed at $wixInstallRoot"
             break
         }
     }

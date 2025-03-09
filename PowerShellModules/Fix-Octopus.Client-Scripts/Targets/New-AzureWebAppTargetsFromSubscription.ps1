@@ -11,40 +11,39 @@ $roleName = "CloudWebServer"
 
 add-type -path 'C:\tools\Octopus.Client.dll'
 
-$endpoint = new-object Octopus.Client.OctopusServerEndpoint $octopusServerUrl, $octopusApiKey
-$repository = new-object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusServerUrl, $octopusApiKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 $environmentDetails = $repository.Environments.FindByName($envName)
 $environmentId = $environmentDetails.Id
-Write-Host "got Octopus env " $environmentDetails.Name
+Write-Information -MessageData "got Octopus env " $environmentDetails.Name
 
 $accountDetails = $repository.Accounts.FindByName($spName)
 $accountId = $accountDetails.Id
-Write-Host "got Octopus account " $accountDetails.Name
-
+Write-Information -MessageData "got Octopus account " $accountDetails.Name
 
 Login-AzureRmAccount
 Select-AzureRmSubscription $azureSubscription
 
-Write-Host "connected to Azure..."
+Write-Information -MessageData "connected to Azure..."
 
 $webApps = Get-AzureRmWebApp
 
 foreach ($webApp in $webApps)
 {
-    Write-Host "target for " $webApp.SiteName
+    Write-Information -MessageData "target for " $webApp.SiteName
 
-    $target = new-object Octopus.Client.Model.MachineResource -Property @{
+    $target = New-Object -TypeName Octopus.Client.Model.MachineResource -Property @{
                         Name = $webApp.SiteName
-                        Roles = new-object Octopus.Client.Model.ReferenceCollection($roleName)
-                        Endpoint = new-object Octopus.Client.Model.Endpoints.AzureWebAppEndpointResource -Property @{
-                            AccountId = $accountId 
+                        Roles = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $roleName
+                        Endpoint = New-Object -TypeName Octopus.Client.Model.Endpoints.AzureWebAppEndpointResource -Property @{
+                            AccountId = $accountId
                             ResourceGroupName = $webApp.ResourceGroup
                             WebAppName = $webApp.SiteName }
-                        EnvironmentIds = new-object Octopus.Client.Model.ReferenceCollection($environmentId)
+                        EnvironmentIds = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $environmentId
                     };
 
-    Write-Host "creating target in Octopus for " $webApp.SiteName
+    Write-Information -MessageData "creating target in Octopus for " $webApp.SiteName
 
     $repository.Machines.Create($target, $null);
 }

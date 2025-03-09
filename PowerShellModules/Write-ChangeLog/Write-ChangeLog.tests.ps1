@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Write-ChangeLog.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Write-ChangeLog.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,9 +63,9 @@ BeforeAll {
 AfterAll {
 }
 
-Describe -Name 'Write-ChangeLog.ps1' {
-    Context -Name 'Script Manifest' {
-        It 'should exist' {
+Describe -Name 'Write-ChangeLog.ps1' -Tag 'Script', 'Under', 'Test' {
+    Context -Name 'Script Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ScriptManifest = Test-ScriptFileInfo -Path $ScriptPath
 
@@ -74,7 +73,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $ScriptManifest | Should -Not -BeNullOrEmpty
         }
 
-        It 'should have a Version greater than or equal to 1.0.0' {
+        It -Name 'should have a Version greater than or equal to 1.0.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ScriptVersion = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Version'
 
@@ -82,15 +81,15 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $ScriptVersion | Should -BeGreaterOrEqual '1.0.0'
         }
 
-        It 'should have a GUID of 8CEAB921-7106-4DBE-9081-6A2B4FF7F9F4' {
+        It -Name 'should have a GUID of 0FDC4220-823B-42F6-B059-30F9607A09D5' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Guid'
 
             # Assert
-            $Guid | Should -Be '8CEAB921-7106-4DBE-9081-6A2B4FF7F9F4'
+            $Guid | Should -Be '0FDC4220-823B-42F6-B059-30F9607A09D5'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Author'
 
@@ -98,7 +97,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -106,7 +105,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Copyright'
 
@@ -114,7 +113,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Copyright | Should -Be $COPYRIGHT_STRING
         }
 
-        It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Description'
 
@@ -125,7 +124,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Length | Should -BeGreaterThan $MINIMUM_DESCIPTION_LENGTH
         }
 
-        It 'should have a Description of The `Write-ChangeLog.ps1` script writes a change log to a file path.  The change log is written in markdown format and echoed to standard output..' {
+        It -Name 'should have a Description of The `Write-ChangeLog.ps1` script writes a change log to a file path.  The change log is written in markdown format and echoed to standard output..' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Description'
 
@@ -134,8 +133,8 @@ Describe -Name 'Write-ChangeLog.ps1' {
         }
     }
 
-    Context -Name 'Write-ChangeLog' {
-        It 'should exist' {
+    Context -Name 'Write-ChangeLog' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Write-ChangeLog'
 
@@ -143,7 +142,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Write-ChangeLog'
 
@@ -151,7 +150,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Write-ChangeLog' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -159,7 +158,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange
             $Description = Get-Help -Name 'Write-ChangeLog' -Full | Select-Object -ExpandProperty Description
 
@@ -170,7 +169,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should output a NewLine for null input' {
+        It -Name 'should output a NewLine for null input' -Tag 'Unit', 'Test' {
             # Arrange
             Set-Variable -Name 'Actual' -Value $null -Scope 'Script'
             $Expected = [Environment]::NewLine
@@ -182,7 +181,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Actual | Should -Be $Expected
         }
 
-        It 'should output the same text string' {
+        It -Name 'should output the same text string' -Tag 'Unit', 'Test' {
             # Arrange
             Set-Variable -Name 'Actual' -Value $null -Scope 'Script'
             $Expected = 'Hello, World!'
@@ -195,8 +194,8 @@ Describe -Name 'Write-ChangeLog.ps1' {
         }
     }
 
-    Context -Name 'Write-ChangeLogHeader' {
-        It 'should exist' {
+    Context -Name 'Write-ChangeLogHeader' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Write-ChangeLogHeader'
 
@@ -204,7 +203,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Write-ChangeLogHeader'
 
@@ -212,7 +211,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Write-ChangeLogHeader' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -220,7 +219,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange
             $Description = Get-Help -Name 'Write-ChangeLogHeader' -Full | Select-Object -ExpandProperty Description
 
@@ -231,7 +230,7 @@ Describe -Name 'Write-ChangeLog.ps1' {
             $Length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should output a Level 1 markdown header' {
+        It -Name 'should output a Level 1 markdown header' -Tag 'Unit', 'Test' {
             # Arrange
             $Value = 'Hello, World!'
             $Expected = '# Hello, World!'

@@ -1,5 +1,5 @@
 #
-# RELEASENOTES - LogModule
+# RELEASENOTES - PowerShellModule
 #
 
 DateTime               Notes

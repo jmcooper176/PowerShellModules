@@ -22,14 +22,13 @@ param (
 )
 
 BEGIN {
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $ScriptName = Initialize-PSScript -MyInvocation $MyInvocation
 
     Add-Type -Path 'Octopus.Client.dll'
 }
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI,$ApiKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$ApiKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 $AllProjects = $Repository.Projects.FindAll()
 

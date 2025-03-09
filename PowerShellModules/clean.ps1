@@ -14,7 +14,7 @@
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules
 
     .ICONURI
 
@@ -26,7 +26,6 @@
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -35,7 +34,6 @@
     .DESCRIPTION
     Clean repository of items not in source control.
 #>
-
 
 [CmdletBinding()]
 param (

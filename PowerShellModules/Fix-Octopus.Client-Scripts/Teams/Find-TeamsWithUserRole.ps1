@@ -9,9 +9,9 @@ $octopusAPIKey = "API-YOURAPIKEY"
 $spaceName = "default"
 $userRoleName = "Deployment creator"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -24,13 +24,13 @@ try
 
     # Get user role
     $userRole = $repositoryForSpace.UserRoles.FindByName($userRoleName)
-    
+
     # Loop through teams
     $teamNames = @()
     foreach ($team in $teams)
     {
         # Get scopeduserrole
-        $scopedUserRole = $repositoryForSpace.Teams.GetScopedUserRoles($team) | Where-Object {$_.UserRoleId -eq $userRole.Id}
+        $scopedUserRole = $repositoryForSpace.Teams.GetScopedUserRoles($team) | Where-Object -FilterScript {$_.UserRoleId -eq $userRole.Id}
 
         # Check for null
         if ($null -ne $scopedUserRole)
@@ -41,14 +41,13 @@ try
     }
 
     # Loop through results
-    Write-Host "The following teams are using role $($userRoleName):"
+    Write-Information -MessageData "The following teams are using role $($userRoleName):"
     foreach ($teamName in $teamNames)
     {
-        Write-Host "$teamName"
+        Write-Information -MessageData "$teamName"
     }
-
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

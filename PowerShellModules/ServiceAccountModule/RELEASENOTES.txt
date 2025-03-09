@@ -1,5 +1,5 @@
 #
-# RELEASENOTES - ServiceAccountModule
+# RELEASENOTES - PowerShellModule
 #
 
 DateTime               Notes

@@ -1,19 +1,19 @@
-# Contributing to PSInstallCom
+# Contributing to PowerShellModules
 
 This repository contains PowerShell cmdlets for developers and administrators to develop, deploy,
-administer, and manage U.S. Office of Personnel Management Azure resources.
+administer, and manage John Merryweather Cooper Azure resources.
 
 ## Basics
 
-If you would like to become a contributor to this project (or any other open source U.S. Office of Personnel Management
+If you would like to become a contributor to this project (or any other open source John Merryweather Cooper
 project), see how to [Get Involved](https://opensource.microsoft.com/collaborate/).
 
 ## Before Starting
 
 ### Onboarding
 
-All users must sign the
-[U.S. Office of Personnel Management Contributor License Agreement (CLA)](https://cla.opensource.microsoft.com/) before making any code contributions.
+All users must agree to the
+[Contributor License Agreement (CLA)](https://cla.opensource.microsoft.com/) before making any code contributions.
 
 ### Code of Conduct
 
@@ -88,7 +88,7 @@ The following guidelines must be followed for **every** pull request that is ope
 The following guidelines must be followed in **every** pull request that is opened.
 
 - Changes made have corresponding test coverage.
-- Tests should not include any hardcoded values, such as location, resource id, etc.
+- Tests should not include any hard-coded values, such as location, resource id, etc.
 - Tests should have proper setup of resources to ensure any user can re-record the test if necessary.
 - No existing tests should be skipped.
 

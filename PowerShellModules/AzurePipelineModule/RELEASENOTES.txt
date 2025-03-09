@@ -1,5 +1,5 @@
 #
-# RELEASENOTES - AzurePipelineModule
+# RELEASENOTES - PowerShellModule
 #
 
 DateTime               Notes

@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="pre-build.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="pre-build.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "pre-build.ps1" is part of "BuildScripts".
 
     .VERSION 1.0.0
 
-    .GUID C704773C-ECA9-42F1-8AA9-88F9659CCDCC
+    .GUID 4D3E9AD7-1C20-4536-9262-A156B57EB6AE
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "pre-build.ps1" is part of "BuildScripts".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/BuildScripts
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/BuildScripts
 
     .ICONURI
 

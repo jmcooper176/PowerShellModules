@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ModulePublisher.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ModulePublisher.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -156,7 +155,7 @@ function Get-ApiKey
         }
 }
 
-function Update-NugetPackage
+function Update-NuGetPackage
 {
     [CmdletBinding(SupportsShouldProcess)]
     param(
@@ -168,7 +167,7 @@ function Update-NugetPackage
         [Parameter(Mandatory)]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe
+        $NuGetPath
     )
 
     BEGIN {
@@ -193,12 +192,12 @@ function Update-NugetPackage
         Remove-Item -Recurse -Path $relDir -Force
         Remove-Item -Recurse -Path $packPath -Force
         Remove-Item -Path $contentPath -Force
-        $content = (Get-Content -LiteralPath $modulePath) -join "`r`n"
+        $content = (Get-Content -LiteralPath $modulePath) -join [Environment]::NewLine
         $content = $content -replace $regex2, ("<licenseUrl>https://raw.githubusercontent.com/Azure/azure-powershell/dev/LICENSE.txt</licenseUrl>`r`n    <projectUrl>https://github.com/Azure/azure-powershell</projectUrl>`r`n    <requireLicenseAcceptance>true</requireLicenseAcceptance>")
         $content | Out-File -FilePath $modulePath -Force
 
         if ($PSCmdlet.ShouldProcess($modulePath, $CmdletName)) {
-            &$NugetExe pack $modulePath -OutputDirectory $file.Directory.FullName
+            &$NuGetPath pack $modulePath -OutputDirectory $file.Directory.FullName
         }
     }
 }
@@ -223,7 +222,7 @@ function Remove-RMPackage
 
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe = (Join-Path -Path $PSScriptRoot -ChildPath "NuGet.exe"))
+        $NuGetPath = (Join-Path -Path $PSScriptRoot -ChildPath "nuget"))
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
@@ -234,8 +233,8 @@ function Remove-RMPackage
         $Version = $ModuleInfo.Version
 
         if ($PSCmdlet.ShouldProcess(
-            "Removing Nuget Package using command $NugetExe delete $Name $Version $ApiKey -Source $RepoLocation -Verbosity detailed", $CmdletName)) {
-            &$NugetExe delete $Name $Version $ApiKey -Source $RepoLocation -Verbosity detailed -NoPrompt
+            "Removing NuGet Package using command $NuGetPath delete $Name $Version $ApiKey -Source $RepoLocation -Verbosity detailed", $CmdletName)) {
+            &$NuGetPath delete $Name $Version $ApiKey -Source $RepoLocation -Verbosity detailed -NoPrompt
         }
     }
 }
@@ -250,7 +249,7 @@ function Remove-RMPackage {
 
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe = (Join-Path -Path $PSScriptRoot -ChildPath "NuGet.exe"),
+        $NuGetPath = (Join-Path -Path $PSScriptRoot -ChildPath "nuget"),
 
         [Parameter(ParameterSetName="ByName", Mandatory)]
         [ValidateSet('TestGallery', 'PSGallery')]
@@ -266,7 +265,7 @@ function Remove-RMPackage {
         $RepoLocation = (Get-RepoLocation -repoName $RepoName)
         $ApiKey = (Get-ApiKey -repoName $RepoName)
         $modules = (Find-Module -Name $ModuleNameString -Repository $RepoName)
-        $modules | ForEach-Object -Process { Find-Module -Name $_.Name -Repository $RepoName -AllVersions } | Remove-RMPackage -RepoLocation $RepoLocation -ApiKey $ApiKey -NugetExe $NugetExe -WhatIf:([bool]$WhatIfPreference) -ErrorAction Stop
+        $modules | ForEach-Object -Process { Find-Module -Name $_.Name -Repository $RepoName -AllVersions } | Remove-RMPackage -RepoLocation $RepoLocation -ApiKey $ApiKey -NuGetPath $NuGetPath -WhatIf:([bool]$WhatIfPreference) -ErrorAction Stop
     }
 }
 
@@ -282,7 +281,7 @@ function Update-Package
         [Parameter(Mandatory)]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe
+        $NuGetPath
         )
 
     BEGIN {
@@ -296,7 +295,7 @@ function Update-Package
         foreach ($package in $modules)
         {
             if ($PSCmdlet.ShouldProcess($package, $CmdletName)) {
-                Update-NugetPackage -Path $package -NugetExe $NugetExe
+                Update-NuGetPackage -Path $package -NuGetPath $NuGetPath
             }
         }
     }
@@ -313,7 +312,7 @@ function Publish-RMModule
 
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe = (Join-Path -Path $PSScriptRoot -ChildPath "NuGet.exe"),
+        $NuGetPath = (Join-Path -Path $PSScriptRoot -ChildPath "nuget"),
 
         [Parameter(ParameterSetName="ByLocation", Mandatory)]
         [ValidateNotNullOrEmpty()]
@@ -354,11 +353,11 @@ function Publish-RMModule
             throw "Module at $packagePath does not exist"
           }
 
-          if ($PSCmdlet.ShouldProcess($packagePath, "Pushing package $packagePath to nuget source $RepoLocation using command '$NugetExe push $packagePath $ApiKey -Source $RepoLocation'"))
+          if ($PSCmdlet.ShouldProcess($packagePath, "Pushing package $packagePath to NuGet source $RepoLocation using command '$NuGetPath push $packagePath $ApiKey -Source $RepoLocation'"))
           {
-            Write-Information -MessageData "Pushing package $packagePath to nuget source $RepoLocation" -InformationAction Continue
-            &$NugetExe push $packagePath $ApiKey -Source $RepoLocation -Verbosity detailed
-            Write-Information -MessageData "Pushed package $packagePath to nuget source $RepoLocation" -InformationAction Continue
+            Write-Information -MessageData "Pushing package $packagePath to NuGet source $RepoLocation" -InformationAction Continue
+            &$NuGetPath push $packagePath $ApiKey -Source $RepoLocation -Verbosity detailed
+            Write-Information -MessageData "Pushed package $packagePath to NuGet source $RepoLocation" -InformationAction Continue
           }
         }
     }

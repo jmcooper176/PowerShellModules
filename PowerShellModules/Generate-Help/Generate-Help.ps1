@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Generate-Help.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Generate-Help.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "Generate-Help.ps1" is part of "Generate-Help".
 
     .VERSION 1.0.0
 
-    .GUID 6AE817D5-78EF-4F91-B874-E25840AEB1A5
+    .GUID 1CCC4603-E1CC-415C-A69D-EFBC2E8F9BDF
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "Generate-Help.ps1" is part of "Generate-Help".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/Generate-ExternalContributors
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/Generate-ExternalContributors
 
     .ICONURI
 
@@ -72,7 +71,6 @@ This file "Generate-Help.ps1" is part of "Generate-Help".
     .EXTERNALSCRIPTDEPENDENCIES
 
     .RELEASENOTES
-
 
     .PRIVATEDATA
 
@@ -87,7 +85,6 @@ This file "Generate-Help.ps1" is part of "Generate-Help".
     .DESCRIPTION
     Generate help for cmdlets.
 #>
-
 
 [CmdletBinding()]
 param(
@@ -137,7 +134,7 @@ if ($ValidateMarkdownHelp.IsPresent)
 {
     $SuppressedExceptionsPath = "$PSScriptRoot\StaticAnalysis\Exceptions"
 
-    if (!(Test-Path -Path $SuppressedExceptionsPath))
+    if (-not (Test-Path -LiteralPath $SuppressedExceptionsPath -PathType Container))
     {
         New-Item -Path "$PSScriptRoot\..\artifacts" -Name "Exceptions" -ItemType Directory
     }
@@ -171,7 +168,7 @@ if ($ValidateMarkdownHelp.IsPresent)
 
     $NewExceptionsPath = "$PSScriptRoot\..\artifacts\StaticAnalysisResults"
 
-    if (!(Test-Path -Path $NewExceptionsPath))
+    if (!(Test-Path -LiteralPath $NewExceptionsPath -PathType Container))
     {
         New-Item -Path "$PSScriptRoot\..\artifacts" -Name "StaticAnalysisResults" -ItemType Directory
     }
@@ -207,7 +204,7 @@ if ($ValidateMarkdownHelp.IsPresent)
 
 # We need to define new version of module instead of hardcode here
 $GeneratedModuleListPath = [System.IO.Path]::Combine($PSScriptRoot, "GeneratedModuleList.txt")
-$GeneratedModules = Get-Content $GeneratedModuleListPath
+$GeneratedModules = Get-Content -LiteralPath $GeneratedModuleListPath
 
 if ($GenerateMamlHelp.IsPresent)
 {

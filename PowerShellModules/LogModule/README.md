@@ -1,9 +1,7 @@
 # README - LogModule
 
 ## Author
-
 John Merryweather Cooper <jmcooper8654@gmail.com>
 
 ## Owner
-
-John Merryweather Cooper
+John Merryweather Cooper - DevSecOps Architect

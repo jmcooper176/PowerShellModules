@@ -9,17 +9,17 @@ $projectName = "Web" # Name of the project to promote
 $fromEnvironmentName = "Dev" # Name of the environment to promote from
 $toEnvironmentName = "Staging" # Name of the environment to promote to
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$apikey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 $project = $repository.Projects.FindByName($projectName)
 $environment = $repository.Environments.FindByName($fromEnvironmentName)
 $toEnvironment = $repository.Environments.FindByName($toEnvironmentName)
 
 $dashboard = $repository.Dashboards.GetDynamicDashboard($project.Id, $environment.Id)
-$currentDeploymentInTest = $dashboard.Items | ? {$_.IsCurrent} | Select-Object -First 1
+$currentDeploymentInTest = $dashboard.Items | Where-Object -FilterScript {$_.IsCurrent} | Select-Object -First 1
 
-$promotedDeployment = New-Object Octopus.Client.Model.DeploymentResource
+$promotedDeployment = New-Object -TypeName Octopus.Client.Model.DeploymentResource
 $promotedDeployment.EnvironmentId = $toEnvironment.Id
 $promotedDeployment.ChannelId = $currentDeploymentInTest.ChannelId
 $promotedDeployment.ProjectId = $currentDeploymentInTest.ProjectId

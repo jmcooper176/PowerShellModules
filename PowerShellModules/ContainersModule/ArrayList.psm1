@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ArrayList.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ArrayList.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -76,10 +75,34 @@ class ArrayList : System.Collections.ArrayList {
 
     ArrayList([System.Collections.ICollection] $collection) {
         if ($null -eq $collection) {
-            throw [System.ArgumentNullException]::new('collection', "$($this.ClassName) : Parameter 'Collection' cannot be null")
+            $newObjectSplat = @{
+                TypeName = System.Management.Automation.ErrorRecord
+                ArgumentList = @(
+                    [System.ArgumentNullException]::new('collection', "$($this.ClassName) : Parameter 'Collection' cannot be null"),
+                    'InvalidArgument',
+                    "Constructor-ArgumentNullException-01",
+                    $collection
+                )
+            }
+
+            $er = New-Object @newObjectSplat
+            Write-Error -ErrorRecord $er -ErrorAction Continue
+            throw $er
         }
         elseif ($collection -is [Array] -and ([Array]$collection).Rank -gt 1) {
-            throw [System.RankException]::new("$($this.ClassName) : Collection as array must be a single-rank array")
+            $newObjectSplat = @{
+                TypeName = System.Management.Automation.ErrorRecord
+                ArgumentList = @(
+                    [System.RankException]::new("$($this.ClassName) : Collection as array must be a single-rank array"),
+                    'LimitsExceeded',
+                    "Constructor-RankException-01",
+                    $collection
+                )
+            }
+
+            $er = New-Object @newObjectSplat
+            Write-Error -ErrorRecord $er -ErrorAction Continue
+            throw $er
         }
 
         $this.Instance = [System.Collections.ArrayList]::new($collection)
@@ -127,14 +150,39 @@ class ArrayList : System.Collections.ArrayList {
 
                 if ($proposedValue -is [int]) {
                     if ([int]$proposedValue -lt 0 -or [int]$proposedValue -gt [int]::MaxValue) {
-                        throw [System.ArgumentOutOfRangeException]::new('args[0]', $args[0], 'Capacity must be between 0 and [int]::MaxValue')
+                        $newObjectSplat = @{
+                            TypeName = System.Management.Automation.ErrorRecord
+                            ArgumentList = @(
+                                [System.ArgumentOutOfRangeException]::new('args[0]', $args[0], "Capacity must be between 0 and $([int]::MaxValue)"),
+                                'LimitsExceeded',
+                                "PSCapacity-ArgumentOutOfRangeException-01",
+                                $args[0]
+                            )
+                        }
+
+                        $er = New-Object @newObjectSplat
+                        Write-Error -ErrorRecord $er -ErrorAction Continue
+                        throw $er
                     }
                     else {
                         $this.Instance.Capacity = [int]$proposedValue
                     }
                 }
                 else {
-                    throw [System.ArgumentException]::new('Capacity must be an integer', 'args[0]')
+                    $newObjectSplat = @{
+                        TypeName = System.Management.Automation.ErrorRecord
+                        ArgumentList = @(
+                            [System.ArgumentException]::new('Capacity must be an integer', 'args[0]'),
+                            'InvalidArgument',
+                            "PSCapacity-ArgumentOutOfRangeException-01",
+                            $args[0]
+                        )
+                    }
+
+                    $er = New-Object @newObjectSplat
+                    Write-Error -ErrorRecord $er -ErrorAction Continue
+                    throw $er
+                    throw
                 }
             }
         }
@@ -253,11 +301,12 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.CopyTo($array)
         }
         catch [System.ArgumentException] {
-            throw [System.ArgumentException]::new(
-                "The number of elements in the source 'ArrayList' is greater than the number of elements that the destination array can contain", 'startIndex')
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
         catch [System.InvalidCastException] {
-            throw [System.InvalidCastException]::new("The type of source 'ArrayList' cannot be cast automatically to the specified type '$($array.GetType().FullName)'")
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
     }
 
@@ -288,11 +337,12 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.CopyTo($index, $array, $arrayIndex, $count)
         }
         catch [System.ArgumentException] {
-            throw [System.ArgumentException]::new(
-                'The number of elements from index to the end of the source ArrayList is greater than the available space from arrayIndex to the end of the destination array', 'index')
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
         catch [System.InvalidCastException] {
-            throw [System.InvalidCastException]::new("The type of source 'ArrayList' cannot be cast automatically to the specified type '$($array.GetType().FullName)'")
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
     }
 
@@ -314,11 +364,12 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.CopyTo($array, $startIndex)
         }
         catch [System.ArgumentException] {
-            throw [System.ArgumentException]::new(
-                'The number of elements in the source ArrayList is greater than the available space from arrayIndex to the end of the destination array', 'startIndex')
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
         catch [System.InvalidCastException] {
-            throw [System.InvalidCastException]::new("The type of source 'ArrayList' cannot be cast automatically to the specified type '$($array.GetType().FullName)'")
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
     }
 
@@ -341,7 +392,8 @@ class ArrayList : System.Collections.ArrayList {
             return $this.Instance.GetRange($index, $count)
         }
         catch [System.ArgumentException] {
-            throw [System.ArgumentException]::new('index and count do not denote a valid range in the list', 'index')
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
     }
 
@@ -398,7 +450,8 @@ class ArrayList : System.Collections.ArrayList {
             return $this.Instance.LastIndexOf($value, $startIndex, $count)
         }
         catch [System.ArgumentException] {
-            throw [System.ArgumentException]::new('startIndex and count do not denote a valid range in the list', 'startIndex')
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
     }
 
@@ -429,7 +482,8 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.RemoveRange($index, $count)
         }
         catch [System.ArgumentException] {
-            throw [System.ArgumentException]::new('index and count do not denote a valid range in the list', 'index')
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
     }
 
@@ -462,7 +516,8 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.Reverse($index, $count)
         }
         catch [System.ArgumentException] {
-            throw [System.ArgumentException]::new('index and count do not denote a valid range in the list', 'index')
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            throw $Error[0]
         }
     }
 
@@ -531,6 +586,7 @@ class ArrayList : System.Collections.ArrayList {
         try {
             [ArrayList].Copy($source, $sourceIndex, $destination, $destinationIndex, $length)
         } catch {
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
             $backupSource.CopyTo($source, 0)
             $backupDestination.CopyTo($destination, 0)
         }
@@ -543,7 +599,6 @@ class ArrayList : System.Collections.ArrayList {
         [int]$destinationIndex,
         [int]$length
     ) {
-
         $methodName = Initialize-PSMethod -Invocation $MyInvocation
 
         if (-not (Test-PSParameter -Name 'length' -Parameters $PSBoundParameters)) {

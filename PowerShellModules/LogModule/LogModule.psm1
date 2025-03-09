@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="LogModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="LogModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -120,7 +119,7 @@ function Write-LogConsole {
             Write-Information @writeHostHash
         }
 
-        $timestamp = Get-Date -Format o | ForEach-Object -Process { $_ -replace ':', '.' }
+        $timestamp = Microsoft.PowerShell.Utility\Get-Date -Format o | ForEach-Object -Process { $_ -replace ':', '.' }
     }
 
     PROCESS {
@@ -274,7 +273,7 @@ function Write-LogConsole {
         Write-Information
 
         .LINK
-        Get-Date
+        Microsoft.PowerShell.Utility\Get-Date
 
         .LINK
         Out-File
@@ -321,7 +320,7 @@ function Write-LogDebug {
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-        $timestamp = Get-Date -Format o | ForEach-Object -Process { $_ -replace ':', '.' }
+        $timestamp = Microsoft.PowerShell.Utility\Get-Date -Format o | ForEach-Object -Process { $_ -replace ':', '.' }
     }
 
     PROCESS {

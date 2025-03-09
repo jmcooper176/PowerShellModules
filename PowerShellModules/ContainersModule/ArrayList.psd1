@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ArrayList.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ArrayList.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,7 +63,7 @@ This file "ArrayList.psd1" is part of "ContainersModule".
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID              = '0FFD428F-A5F0-4848-BBD1-CFC990062CAA'
+    GUID              = 'd6528398-a154-4082-a7d4-a4e9e7a36d42'
 
     # Author of this module
     Author            = 'John Merryweather Cooper'

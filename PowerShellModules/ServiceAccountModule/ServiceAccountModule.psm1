@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ServiceAccountModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ServiceAccountModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -245,7 +244,7 @@ function Use-ServiceAccount {
 
             switch($Action) {
                 'Add' {
-                    Write-Verbose 'Installing account using NetAddServiceAccount'
+                    Write-Verbose -Message 'Installing account using NetAddServiceAccount'
 
                     if ($PromptForPassword.IsPresent) {
                         $Credential = Get-Credential -Message "Enter the password for the account '$($Account)'"
@@ -339,7 +338,7 @@ function Use-ServiceAccount {
             }
 
             if ($ret) {
-                Write-Verbose "Returning user-friendly error message for status code: $ret"
+                Write-Verbose -Message "Returning user-friendly error message for status code: $ret"
 
                 $ret | Format-MessageFromModule -ModuleName 'Ntdll.dll' | Write-Error
             }

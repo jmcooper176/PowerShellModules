@@ -5,9 +5,9 @@ $octopusAPIKey = "API-YourAPIKey"
 $spaceName = "Default"
 $lifecycleName = "MyLifecycle"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get space
 $space = $repository.Spaces.FindByName($spaceName)
@@ -17,11 +17,11 @@ $repositoryForSpace = $client.ForSpace($space)
 if ($null -eq $repositoryForSpace.Lifecycles.FindByName($lifecycleName))
 {
     # Create new lifecyle
-    $lifecycle = New-Object Octopus.Client.Model.LifecycleResource
+    $lifecycle = New-Object -TypeName Octopus.Client.Model.LifecycleResource
     $lifecycle.Name = $lifecycleName
     $repositoryForSpace.Lifecycles.Create($lifecycle)
 }
 else
 {
-    Write-Host "$lifecycleName already exists."
+    Write-Information -MessageData "$lifecycleName already exists."
 }

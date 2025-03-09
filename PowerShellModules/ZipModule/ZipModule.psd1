@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ZipModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ZipModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "ZipModule.psd1" is part of "ZipModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'ZipModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '1.0.9130.49036'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '10F71FD2-E8EF-4E40-8767-004E9908E73E'
+GUID = '8a8686bf-aced-49f2-a396-6f6830ad3b52'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -98,8 +96,8 @@ PowerShellVersion = '7.0'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @('ErrorRecordModule', 
-               'PowerShellModule', 
+RequiredModules = @('ErrorRecordModule',
+               'PowerShellModule',
                'UtilityModule')
 
 # Assemblies that must be loaded prior to importing this module
@@ -140,9 +138,7 @@ AliasesToExport = '*'
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'ip','archive','compress','decompress','extract'
 
@@ -166,9 +162,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -176,6 +170,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 DefaultCommandPrefix = 'Zip'
-
 }
-

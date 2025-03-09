@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="New-Package.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="New-Package.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "New-Package.ps1" is part of "New-Package".
 
     .VERSION 1.0.0
 
-    .GUID 188940A8-DA00-40CC-9BA9-909A2BACD2B0
+    .GUID E7F4BC02-873F-4199-9650-BDAC237B02DF
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "New-Package.ps1" is part of "New-Package".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/Generate-ExternalContributors
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/Generate-ExternalContributors
 
     .ICONURI
 
@@ -73,7 +72,6 @@ This file "New-Package.ps1" is part of "New-Package".
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -84,7 +82,6 @@ This file "New-Package.ps1" is part of "New-Package".
     .DESCRIPTION
     Generates a new NuGet package.
 #>
-
 
 [CmdletBinding(SupportsShouldProcess)]
 param (
@@ -130,25 +127,25 @@ $nugetSplat = @(
 if ((Test-PSParameter -Name 'PreRelease' -Parameters $PSBoundParameters) -and $NotTool.IsPresent) {
     if ($PSCmdlet.ShouldProcess($NuSpecPath, $ScriptName)) {
         Push-Location -LiteralPath $nuspecDir
-        nuget @nugetSplat -Suffix $PreRelease
+        & nuget @nugetSplat -Suffix $PreRelease
         Pop-Location
     }
 } elseif (Test-PSParameter -Name 'PreRelease' -Parameters $PSBoundParameters) {
     if ($PSCmdlet.ShouldProcess($NuSpecPath, $ScriptName)) {
         Push-Location -LiteralPath $nuspecDir
-        nuget @nugetSplat -Suffix $PreRelease -Tool
+        & nuget @nugetSplat -Suffix $PreRelease -Tool
         Pop-Location
     }
 } elseif ($NotTool.IsPresent) {
     if ($PSCmdlet.ShouldProcess($NuSpecPath, $ScriptName)) {
         Push-Location -LiteralPath $nuspecDir
-        nuget @nugetSplat
+        & nuget @nugetSplat
         Pop-Location
     }
 } else {
     if ($PSCmdlet.ShouldProcess($NuSpecPath, $ScriptName)) {
         Push-Location -LiteralPath $nuspecDir
-        nuget @nugetSplat -Tool
+        & nuget @nugetSplat -Tool
         Pop-Location
     }
 }

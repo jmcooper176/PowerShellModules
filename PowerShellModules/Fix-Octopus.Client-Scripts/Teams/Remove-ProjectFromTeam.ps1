@@ -11,9 +11,9 @@ $spaceName = "default"
 $projectName = "MyProject"
 $teamName = "MyTeam"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -23,21 +23,21 @@ try
 
     # Get project
     $project = $repositoryForSpace.Projects.FindByName($projectName)
-    
+
     # Get team
     $team = $repositoryForSpace.Teams.FindByName($teamName)
 
     # Get scoped user roles
     $scopedUserRoles = $repositoryForSpace.ScopedUserRoles.FindMany({param($p) $p.ProjectIds -contains $project.Id -and $p.TeamId -eq $team.Id})
-    
+
     # Loop through scoped user roles and remove where present
     foreach ($scopedUserRole in $scopedUserRoles)
     {
-        $scopedUserRole.ProjectIds = [Octopus.Client.Model.ReferenceCollection]($scopedUserRole.ProjectIds | Where-Object {$_ -notcontains $project.Id})
+        $scopedUserRole.ProjectIds = [Octopus.Client.Model.ReferenceCollection]($scopedUserRole.ProjectIds | Where-Object -FilterScript {$_ -notcontains $project.Id})
         $repositoryForSpace.ScopedUserRoles.Modify($scopedUserRole)
     }
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

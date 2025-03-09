@@ -13,9 +13,9 @@ $maxNumberOfTenants = 1 # The max number of tenants you wish to change in this r
 $tenantsUpdated = 0
 
 # Create client object
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 $space = $repository.Spaces.FindByName($spaceName)
 $client = $client.ForSpace($space)
@@ -35,7 +35,7 @@ foreach ($environmentName in $environmentNameList)
     }
     else
     {
-        Write-Warning "Environment $environmentName not found!"
+        Write-Warning -Message "Environment $environmentName not found!"
     }
 }
 
@@ -55,8 +55,8 @@ foreach ($tenant in $tenants)
     else
     {
         # Get existing project connections
-        $projectEnvironments = $tenant.ProjectEnvironments | Where-Object {$_.Keys -eq $project.Id}
-        
+        $projectEnvironments = $tenant.ProjectEnvironments | Where-Object -FilterScript {$_.Keys -eq $project.Id}
+
         # Compare environment list
         $missingEnvironments = @()
         foreach ($environment in $environments)
@@ -84,7 +84,6 @@ foreach ($tenant in $tenants)
 
         $tenantsUpdated ++
     }
-    
 
     if ($tenantsUpdated -ge $maxNumberOfTenants)
     {

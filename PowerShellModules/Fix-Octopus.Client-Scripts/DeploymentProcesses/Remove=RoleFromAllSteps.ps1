@@ -1,6 +1,6 @@
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -Path 'Octopus.Client.dll' 
+Add-Type -Path 'Octopus.Client.dll'
 
 $apikey = 'API-MCPLE1AQM2VKTRFDLIBMORQHBXA' # Get this from your profile
 $octopusURI = 'http://localhost' # Your server address
@@ -8,8 +8,8 @@ $octopusURI = 'http://localhost' # Your server address
 $projectName = "Demo Project" # Name of your project
 $roleToRemove = "Demo-role" # Role to remove (case sensitive)
 
-$endpoint = new-object Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
-$repository = new-object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$apikey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 $project = $repository.Projects.FindByName($projectName)
 

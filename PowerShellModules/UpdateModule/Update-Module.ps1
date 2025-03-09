@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Update-Modules.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Update-Modules.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,15 +44,47 @@ This file "Update-Modules.ps1" is part of "UpdateModule".
 =============================================================================
 #>
 
+<#PSScriptInfo
+
+    .VERSION 1.0.0
+
+    .GUID EEB92F4A-4EDC-448E-89E0-937FDF30A532
+
+    .AUTHOR John Merryweather Cooper
+
+    .COMPANYNAME John Merryweather Cooper
+
+    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+
+    .TAGS
+
+    .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
+
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules
+
+    .ICONURI
+
+    .EXTERNALMODULEDEPENDENCIES PowerShellModule
+
+    .REQUIREDSCRIPTS
+
+    .EXTERNALSCRIPTDEPENDENCIES
+
+    .RELEASENOTES
+
+    .PRIVATEDATA
+
+#>
+
 <#
 .SYNOPSIS
-    Update the modules.
+    `Update-Modules.ps1` updates the modules.
 
 .PARAMETER BuildConfig
     The build configuration, either Debug or Release
 
 .PARAMETER Scope
-    Either All, Latest, Stack, NetCore, ServiceManagement, AzureStorage
+    Either All, Latest, Stack, NetCore, Service, AzureStorage
 
 #>
 param(
@@ -62,7 +93,7 @@ param(
     [string] $BuildConfig,
 
     [Parameter(Mandatory = $false, Position = 1)]
-    [ValidateSet("All", "Latest", "Stack", "NetCore", "ServiceManagement", "AzureStorage")]
+    [ValidateSet("All", "Latest", "Stack", "NetCore", "Service", "AzureStorage")]
     [string] $Scope
 )
 
@@ -74,7 +105,7 @@ Import-Module "$PSScriptRoot\UpdateModules.psm1"
 
 # Constants (Scopes)
 $NetCoreScopes = @('NetCore')
-$AzureScopes = @('All', 'Latest', 'ServiceManagement', 'AzureStorage')
+$AzureScopes = @('All', 'Latest', 'Service', 'AzureStorage')
 $StackScopes = @('All', 'Stack')
 
 # Begin

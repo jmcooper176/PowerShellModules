@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ZipFileModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ZipFileModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -58,7 +57,7 @@ function Get-Comment {
         $LiteralPath,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [string]
         $Path
     )
@@ -99,7 +98,7 @@ function Get-Entry {
         $LiteralPath,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [string]
         $Path
     )
@@ -140,7 +139,7 @@ function Get-Entry {
         $LiteralPath,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [string]
         $Path
     )

@@ -7,7 +7,6 @@
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'ErrorRecordModule.psm1'
 
@@ -18,7 +17,7 @@ ModuleVersion = '1.8.9169.53687'
 CompatiblePSEditions = 'Desktop', 'Core'
 
 # ID used to uniquely identify this module
-GUID = '7B69E307-CD00-4B99-98F4-DCA4ACA31779'
+GUID = '8ee81efb-53b4-4ea0-af8f-37a73ab5a5c3'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -27,7 +26,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Functions and Cmdlets to create an manipulate System.Management.Automation.ErrorRecord'
@@ -69,21 +68,21 @@ RequiredModules = @('PowerShellModule')
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Confirm-ArgumentInRange', 'Confirm-ArgumentNotEmpty', 
-               'Confirm-ArgumentNotNull', 'Confirm-ArgumentNotNullOrEmpty', 
-               'Confirm-ArgumentNotNullOrWhiteSpace', 'Confirm-ArgumentValid', 
-               'Format-ErrorId', 'Format-Exception', 'Format-LastExitCode', 
-               'Get-Exception', 'Get-FullyQualifiedErrorId', 'Get-ErrorCategory', 
-               'Get-TargetObject', 'New-ErrorDetail', 'New-ErrorRecord', 
+FunctionsToExport = 'Confirm-ArgumentInRange', 'Confirm-ArgumentNotEmpty',
+               'Confirm-ArgumentNotNull', 'Confirm-ArgumentNotNullOrEmpty',
+               'Confirm-ArgumentNotNullOrWhiteSpace', 'Confirm-ArgumentValid',
+               'Format-ErrorId', 'Format-Exception', 'Format-LastExitCode',
+               'Get-Exception', 'Get-FullyQualifiedErrorId', 'Get-ErrorCategory',
+               'Get-TargetObject', 'New-ErrorDetail', 'New-ErrorRecord',
                'Test-ObjectNotFound', 'Write-Fatal'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Confirm-ArgumentInRange', 'Confirm-ArgumentNotEmpty', 
-               'Confirm-ArgumentNotNull', 'Confirm-ArgumentNotNullOrEmpty', 
-               'Confirm-ArgumentNotNullOrWhiteSpace', 'Confirm-ArgumentValid', 
-               'Format-ErrorId', 'Format-Exception', 'Format-LastExitCode', 
-               'Get-Exception', 'Get-FullyQualifiedErrorId', 'Get-ErrorCategory', 
-               'Get-TargetObject', 'New-ErrorDetail', 'New-ErrorRecord', 
+CmdletsToExport = 'Confirm-ArgumentInRange', 'Confirm-ArgumentNotEmpty',
+               'Confirm-ArgumentNotNull', 'Confirm-ArgumentNotNullOrEmpty',
+               'Confirm-ArgumentNotNullOrWhiteSpace', 'Confirm-ArgumentValid',
+               'Format-ErrorId', 'Format-Exception', 'Format-LastExitCode',
+               'Get-Exception', 'Get-FullyQualifiedErrorId', 'Get-ErrorCategory',
+               'Get-TargetObject', 'New-ErrorDetail', 'New-ErrorRecord',
                'Test-ObjectNotFound', 'Write-Fatal'
 
 # Variables to export from this module
@@ -103,9 +102,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'error','record','exception','validation'
 
@@ -129,9 +126,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -139,6 +134,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

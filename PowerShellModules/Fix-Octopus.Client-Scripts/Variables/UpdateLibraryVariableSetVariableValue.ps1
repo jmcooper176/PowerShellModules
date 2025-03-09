@@ -10,22 +10,22 @@ $libraryVariableSetName = "MyLibraryVariableSet"
 $variableName = "MyVariable"
 $variableValue = "MyValue"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get repository specific to space
 $space = $repository.Spaces.FindByName($spaceName)
 $repositoryForSpace = $client.ForSpace($space)
 
-Write-Host "Looking for library variable set '$libraryVariableSetName'"
+Write-Information -MessageData "Looking for library variable set '$libraryVariableSetName'"
 
 $librarySet = $repositoryForSpace.LibraryVariableSets.FindByName($libraryVariableSetName)
 
 # Check to see if something was returned
 if ($null -eq $librarySet)
 {
-    Write-Warning "Library variable not found with name '$libraryVariabelSetName'"
+    Write-Warning -Message "Library variable not found with name '$libraryVariabelSetName'"
     exit
 }
 
@@ -33,7 +33,7 @@ if ($null -eq $librarySet)
 $variableSet = $repositoryForSpace.VariableSets.Get($librarySet.VariableSetId)
 
 # Get the variable
-($variableSet.Variables | Where-Object {$_.Name -eq $variableName}).Value = $variableValue
+($variableSet.Variables | Where-Object -FilterScript {$_.Name -eq $variableName}).Value = $variableValue
 
 # Update
 $repositoryForSpace.VariableSets.Modify($variableSet)

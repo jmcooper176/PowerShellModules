@@ -1,7 +1,6 @@
 ﻿<#
  =============================================================================
-<copyright file="GitModule.psm1" company="U.S. Office of Personnel
-Management">
+<copyright file="GitModule.psm1" company="John Merryweather Cooper">
     Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
@@ -60,8 +59,7 @@ function Get-GitBranchRemote {
         $Local
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
 
@@ -98,8 +96,7 @@ function Get-GitShow {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         Push-Location $WorkingDirectory
         $currentBranch = Get-GitBranch -WorkingDirectory $WorkingDirectory
@@ -139,8 +136,7 @@ function Get-GitRevisionParse {
         $ShowTopLevel
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
 
@@ -178,8 +174,7 @@ function Get-GitAuthorHead {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -211,7 +206,7 @@ function Get-GitAuthorHead {
         PS> Get-GitAuthorHead
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -263,8 +258,7 @@ function Get-GitAuthorDateHead {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -298,7 +292,7 @@ function Get-GitAuthorDateHead {
         2025-01-27 12:00:00
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -340,7 +334,7 @@ function Get-GitCommitMetadata {
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [AllowWildcards()]
         [string[]]
         $Path,
@@ -356,8 +350,7 @@ function Get-GitCommitMetadata {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -405,7 +398,7 @@ function Get-GitCommitMetadata {
         Returns the Git commit metadata for the file `semver.txt`
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -454,8 +447,7 @@ function Get-GitCommitterHead {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -491,7 +483,7 @@ function Get-GitCommitterHead {
         John Merryweather Cooper
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -543,8 +535,7 @@ function Get-GitCommitterDateHead {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -580,7 +571,7 @@ function Get-GitCommitterDateHead {
         2025-01-27 12:00:00
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -626,8 +617,7 @@ function Get-GitRepositoryMetadata {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     $gitRepository = New-Object -TypeName System.Management.Automation.PSObject
 
@@ -666,7 +656,7 @@ function Get-GitRepositoryMetadata {
         PS> Get-GitRepositoryMetadata | Format-List
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -742,8 +732,7 @@ function Get-GitShortId {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Get-GitRevisionParse -WorkingDirectory $WorkingDirectory -Short | Write-Output
 
@@ -764,7 +753,7 @@ function Get-GitShortId {
         PS> Get-GitShortId
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -798,8 +787,7 @@ function Get-GitLongId {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Get-GitRevisionParse -WorkingDirectory $WorkingDirectory | Write-Output
 
@@ -820,7 +808,7 @@ function Get-GitLongId {
         PS> Get-GitLongId
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -854,8 +842,7 @@ function Get-GitRef {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
     & git symbolic-ref --short HEAD | Write-Output
@@ -878,7 +865,7 @@ function Get-GitRef {
         PS> Get-GitRef
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -912,8 +899,7 @@ function Get-GitLongRef {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
     & git symbolic-ref HEAD | Write-Output
@@ -936,7 +922,7 @@ function Get-GitLongRef {
         PS> Get-GitLongRef
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -970,8 +956,7 @@ function Get-GitBranch {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
     & git branch --show-current | Write-Output
@@ -994,7 +979,7 @@ function Get-GitBranch {
         PS> Get-GitBranch
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -1028,8 +1013,7 @@ function Get-GitCommitMetadata {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
     & git log -1 '--pretty=format:"%H %s"' | Write-Output
@@ -1052,7 +1036,7 @@ function Get-GitCommitMetadata {
         PS> Get-GitCommitMetadata
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -1086,8 +1070,7 @@ function Get-GitFormattedLog {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
     & git log --no-merges --pretty=short | Write-Output
@@ -1110,7 +1093,7 @@ function Get-GitFormattedLog {
         PS> Get-GitFormattedLog
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -1147,8 +1130,7 @@ function Get-GitRepositoryName {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Get-GitRepositoryPath -WorkingDirectory $WorkingDirectory | Split-Path -Leaf | Write-Output
 
@@ -1171,7 +1153,7 @@ function Get-GitRepositoryName {
         PSInstallCom
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -1211,8 +1193,7 @@ function Get-GitRepositoryPath {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Get-GitRevisionParse -WorkingDirectory $WorkingDirectory -ShowTopLevel | Write-Output
 
@@ -1235,7 +1216,7 @@ function Get-GitRepositoryPath {
         ./GitHub/PSInstallCom
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -1272,8 +1253,7 @@ function Get-GitRepositoryUrl {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
     & git remote get-url origin | Write-Output
@@ -1298,7 +1278,7 @@ function Get-GitRepositoryUrl {
         https://github.com/jmcooper176/PowerShellModules
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -1335,8 +1315,7 @@ function Get-GitTag {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
 
@@ -1368,7 +1347,7 @@ function Get-GitTag {
         1.2.3.4
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -1405,8 +1384,7 @@ function Get-GitVersion {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Get-GitTag -WorkingDirectory $WorkingDirectory | Write-Output
 
@@ -1429,7 +1407,7 @@ function Get-GitVersion {
         1.2.3.4
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -1466,8 +1444,7 @@ function Test-GitRepository {
         $WorkingDirectory = $PWD
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
     Test-Path -LiteralPath '.\.git' -PathType Container | Write-Output
@@ -1492,7 +1469,7 @@ function Test-GitRepository {
         True
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.
 
         .LINK
         about_CommonParameters
@@ -1533,8 +1510,7 @@ function Test-HasTag {
         $Tag
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Push-Location $WorkingDirectory
 

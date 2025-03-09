@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Build-Drop.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Build-Drop.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -57,9 +56,9 @@ BeforeAll {
 AfterAll {
 }
 
-Describe -Name 'Builld-Drop.ps1' {
-    Context -Name 'Script Manifest' {
-        It 'should exist' {
+Describe -Name 'Builld-Drop.ps1' -Tag 'Script', 'Under', 'Test' {
+    Context -Name 'Script Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ScriptManifest = Test-ScriptFileInfo -Path $ScriptPath
 
@@ -67,7 +66,7 @@ Describe -Name 'Builld-Drop.ps1' {
             $ScriptManifest | Should -Not -BeNullOrEmpty
         }
 
-        It 'should have a Version greater than or equal to 1.0.0' {
+        It -Name 'should have a Version greater than or equal to 1.0.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ScriptVersion = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Version'
 
@@ -75,15 +74,15 @@ Describe -Name 'Builld-Drop.ps1' {
             $ScriptVersion | Should -BeGreaterOrEqual '1.0.0'
         }
 
-        It 'should have a GUID of 3B21532C-DC1C-43B0-9C28-778285F3BCF0' {
+        It -Name 'should have a GUID of F98E90F7-D6B4-40C9-8E9F-7344E9203A06' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Guid'
 
             # Assert
-            $Guid | Should -Be '3B21532C-DC1C-43B0-9C28-778285F3BCF0'
+            $Guid | Should -Be 'F98E90F7-D6B4-40C9-8E9F-7344E9203A06'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Author'
 
@@ -91,7 +90,7 @@ Describe -Name 'Builld-Drop.ps1' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -99,7 +98,7 @@ Describe -Name 'Builld-Drop.ps1' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Copyright'
 
@@ -107,7 +106,7 @@ Describe -Name 'Builld-Drop.ps1' {
             $Copyright | Should -Be $COPYRIGHT_STRING
         }
 
-        It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Description'
 
@@ -118,7 +117,7 @@ Describe -Name 'Builld-Drop.ps1' {
             $Length | Should -BeGreaterThan $MINIMUM_DESCIPTION_LENGTH
         }
 
-        It 'should have a Description containing `Convert a ClaimsIdentity to a JSON Web Encryption (JWE) token.' {
+        It -Name 'should have a Description containing `Convert a ClaimsIdentity to a JSON Web Encryption (JWE) token.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Description'
 

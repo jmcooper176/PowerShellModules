@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="HelperModule.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="HelperModule.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,6 +50,7 @@ This file "HelperModule.tests.ps1" is part of "HelperModule".
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\HelperModule.psd1'
+    $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
     $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
     Initialize-PSTest -Name 'HelperModule' -Path $ModulePath
@@ -60,9 +60,9 @@ AfterAll {
     Get-Module -Name 'HelperModule' | Remove-Module -Verbose -Force
 }
 
-Describe -Name 'HelperModule' {
-    Context -Name 'Module Manifest' {
-        It 'should exist' {
+Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleManifest = Test-ModuleManifest -Path $ModulePath
 
@@ -70,29 +70,34 @@ Describe -Name 'HelperModule' {
             $ModuleManifest | Should -Not -BeNullOrEmpty
         }
 
-        It 'should parse' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
             $inputSource = Get-Content -LiteralPath $ModulePath -Raw
 
             [ref] $tokens = @()
             [ref] $errors = @()
-            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
 
+            # Act
             $errors.Value | ForEach-Object -Process {
-                $message = ('{0} at {1}:  Parse error generating abstract syntax tree' -f $ModuleName, $ModulePath)
-                $writeErrorSplat = @{
-                        Exception    = [System.Management.Automation.ParseException]::new($message)
-                        Category     = 'ParseError'
-                        ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                        TargetObject = $_
-                        ErrorAction  = 'Continue'
-                    }
-
-                    Write-Error @writeErrorSplat -ErrorAction Continue
-                    $PSCmdlet.ThrowTerminatingError($writeErrorHash)
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
                 }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
         }
 
-        It 'should have a RootModule of HelperModule.psm1' {
+        It -Name 'should have a RootModule of HelperModule.psm1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $RootModule = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'RootModule'
 
@@ -100,7 +105,7 @@ Describe -Name 'HelperModule' {
             $RootModule | Should -Be 'HelperModule.psm1'
         }
 
-        It 'should have a ModuleVersion greater than  1.3.0' {
+        It -Name 'should have a ModuleVersion greater than  1.3.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Version'
 
@@ -108,15 +113,15 @@ Describe -Name 'HelperModule' {
             $ModuleVersion | Should -BeGreaterThan '1.3.0'
         }
 
-        It 'should have a GUID of 6FB469B2-EF92-423D-8D82-F495128AD32F' {
+        It -Name 'should have a GUID of 6e424d77-583b-40f8-968d-686ebea12ee1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be '6FB469B2-EF92-423D-8D82-F495128AD32F'
+            $Guid | Should -Be '6e424d77-583b-40f8-968d-686ebea12ee1'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Author'
 
@@ -124,7 +129,7 @@ Describe -Name 'HelperModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -132,7 +137,7 @@ Describe -Name 'HelperModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -140,7 +145,7 @@ Describe -Name 'HelperModule' {
             $Copyright | Should -Be $COPYRIGHT_STRING
         }
 
-        It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -148,7 +153,7 @@ Describe -Name 'HelperModule' {
             $Description | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a Description of Enhanced interface to Process Environment Variables.' {
+        It -Name 'should have a Description of Enhanced interface to Process Environment Variables.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -156,614 +161,339 @@ Describe -Name 'HelperModule' {
             $Description | Should -Be 'Enhanced interface to Process Environment Variables.'
         }
 
-        It 'should have a PowerShellVersion of 5.1' {
+        It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $PowerShellVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'PowerShellVersion'
 
             # Assert
             $PowerShellVersion | Should -Be '5.1'
         }
+
+        It -Name 'should have ExportedCmdlets count should equal ExportedFunctions count' -Tag 'Unit', 'Test' {
+            # Arrange
+            $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedCmdlets' |
+                Sort-Object -Unique
+            $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedFunctions' |
+                Sort-Object -Unique
+
+            # Act And Assert
+            $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
+        }
+
+        It -Name 'should have ExportedCmdlets equal to ExportedFunctions' -Tag 'Unit', 'Test' {
+            # Arrange
+            $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedCmdlets' |
+                Sort-Object -Unique -Descending
+            $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedFunctions' |
+                Sort-Object -Unique -Descending
+
+            # Act
+            for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
+                $result = $exportedCmdlets[$i] -eq $exportedFunctions[$i]
+
+                if (-not $result) {
+                    break
+                }
+            }
+
+            # Assert
+            $result | Should -BeTrue
+        }
     }
 
-    Context -Name 'Get-HelpModule' {
-        It 'should exist' {
+    Context -Name 'Add-EnvironmentValue' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Command = Get-Command -Name 'Get-HelpPropery'
+            $Command = Get-Command -Name 'Add-EnvironmentValue'
 
             # Assert
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Command = Get-Command -Name 'Get-HelpProperty'
+            $Command = Get-Command -Name 'Add-EnvironmentValue'
 
             # Assert
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Synopsis = Get-HelpProperty -Name Get-HelpProperty -Property Synopsis
+            $Synopsis = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Synopsis
 
             # Assert
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Description = Get-HelpProperty -Name Get-HelpProperty -Property Description
+            $Description = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Description
 
             # Assert
-            $Description.Length Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
+            $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of HelperModule' {
+        It -Name 'should have a module name of HelperModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $ModuleName = Get-Command -Name 'Get-HelpProperty' | Select-Object -ExpandProperty ModuleName
-
-            # Assert
-            $ModuleName | Should -Be 'HelperModule'
-        }
-
-        It 'ForEach-Object Description should not be null or empty' {
-            # Arrange and Act
-            $value = Get-HelpPropertyLength -Name ForEach-Object -Property Description
-
-            # Assert
-            $value | Should -Not -BeNullOrEmpty
-        }
-
-        It 'Get-ChildItem Description should not be null or empty' {
-            # Arrange and Act
-            $value = Get-HelpPropertyLength -Name Get-ChildItem -Property Description
-
-            # Assert
-            $value | Should -Not -BeNullOrEmpty
-        }
-
-        It 'Get-Help Description should not be null or empty' {
-            # Arrange and Act
-            $value = Get-HelpPropertyLength -Name Get-Help -Property Description
-
-            # Assert
-            $value | Should -Not -BeNullOrEmpty
-        }
-
-        It 'Get-Item Description should be not be null or empty' {
-            # Arrange and Act
-            $value = Get-HelpPropertyLength -Name Get-Item -Property Description
-
-            # Assert
-            $value | Should -Not -BeNullOrEmpty
-        }
-
-        It 'Measure-Object Description should not be null or empty' {
-            # Arrange and Act
-            $value = Get-HelpPropertyLength -Name Measure-Object -Property Description
-
-            # Assert
-            $value | Should -Not -BeNullOrEmpty
-        }
-
-        It 'Select-Object Description should not be null or empty' {
-            # Arrange and Act
-            $value = Get-HelpPropertyLength -Name Select-Object -Property Description
-
-            # Assert
-            $value | Should -Not -BeNullOrEmpty
-        }
-
-        It 'Sort-Object Description should not be null or empty' {
-            # Arrange and Act
-            $value = Get-HelpPropertyLength -Name Sort-Object -Property Description
-
-            # Assert
-            $value | Should -Not -BeNullOrEmpty
-        }
-
-        It 'Where-Object Description should not be null or empty' {
-            # Arrange and Act
-            $value = Get-HelpPropertyLength -Name Where-Object -Property Description
-
-            # Assert
-            $value | Should -Not -BeNullOrEmpty
-        }
-    }
-
-    Context -Name 'Get-HelpModuleLength' {
-        It 'should exist' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Get-HelpProperyLength'
-
-            # Assert
-            $Command | Should -Not -BeNull
-        }
-
-        It 'should be a cmdlet or function' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Get-HelpPropertyLength'
-
-            # Assert
-            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
-        }
-
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
-            # Arrange and Act
-            $Synopsis = Get-HelpProperty -Name Get-HelpPropertyLength -Property Synopsis
-
-            # Assert
-            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
-        }
-
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $Description = Get-HelpProperty -Name Get-HelpPropertyLength -Property Description
-
-            # Assert
-            $Description.Length Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'should have a module name of HelperModule' {
-            # Arrange and Act
-            $ModuleName = Get-Command -Name 'Get-HelpPropertyLength' | Select-Object -ExpandProperty ModuleName
-
-            # Assert
-            $ModuleName | Should -Be 'HelperModule'
-        }
-
-        It 'ForEach-Object Description should be greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $length = Get-HelpPropertyLength -Name ForEach-Object -Property Description
-
-            # Assert
-            $length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'Get-ChildItem Description should be greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $length = Get-HelpPropertyLength -Name Get-ChildItem -Property Description
-
-            # Assert
-            $length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'Get-Help Description should be greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $length = Get-HelpPropertyLength -Name Get-Help -Property Description
-
-            # Assert
-            $length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'Get-Item Description should be greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $length = Get-HelpPropertyLength -Name Get-Item -Property Description
-
-            # Assert
-            $length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'Measure-Object Description should be greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $length = Get-HelpPropertyLength -Name Measure-Object -Property Description
-
-            # Assert
-            $length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'Select-Object Description should be greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $length = Get-HelpPropertyLength -Name Select-Object -Property Description
-
-            # Assert
-            $length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'Sort-Object Description should be greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $length = Get-HelpPropertyLength -Name Sort-Object -Property Description
-
-            # Assert
-            $length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'Where-Object Description should be greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $length = Get-HelpPropertyLength -Name Where-Object -Property Description
-
-            # Assert
-            $length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-    }
-
-    Context -Name 'Get-ModuleProperty' {
-        It 'should exist' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Get-ModulePropery'
-
-            # Assert
-            $Command | Should -Not -BeNull
-        }
-
-        It 'should be a cmdlet or function' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Get-ModuleProperty'
-
-            # Assert
-            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
-        }
-
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
-            # Arrange and Act
-            $Synopsis = Get-HelpProperty -Name Get-ModuleProperty -Property Synopsis
-
-            # Assert
-            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
-        }
-
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $Description = Get-HelpProperty -Name Get-ModuleProperty -Property Description
-
-            # Assert
-            $Description.Length Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'should have a module name of HelperModule' {
-            # Arrange and Act
-            $ModuleName = Get-Command -Name 'Get-ModuleProperty' | Select-Object -ExpandProperty ModuleName
-
-            # Assert
-            $ModuleName | Should -Be 'HelperModule'
-        }
-
-        It 'Module Name Pester should return property Name equals Pester' {
-            # Arrange and Act
-            $name = Get-ModuleProperty -Name 'Pester' -Property Name
-
-            # Assert
-            $name | Should -Be 'Pester'
-        }
-
-        It 'Module Name Pester  return property Path that exists and is a leaf' {
-            # Arrange and Act
-            $path = Get-ModuleProperty -Name 'Pester' -Property Path
-
-            # Assert
-            $path | Test-Path -PathType Leaf | Should -Be $true
-        }
-
-        It 'Module Name Pester  return property Description that is not null or empty' {
-            # Arrange and Act
-            $description = Get-ModuleProperty -Name 'Pester' -Property Description
-
-            # Assert
-            $description | Should -Not -BeNullOrEmpty
-        }
-
-        It 'Module Name Pester return property ModuleType of Script' {
-            # Arrange and Act
-            $moduleType = Get-ModuleProperty -Name 'Pester' -Property ModuleType
-
-            # Assert
-            $moduleType | Should -Be 'Script'
-        }
-
-        It 'Module Name Pester return property Name equals Pester' {
-            # Arrange and Act
-            $name = Get-ModuleProperty -Name 'Pester' -Property Name
-
-            # Assert
-            $name | Should -Be 'Pester'
-        }
-
-        It 'Module Name Pester return property Path that exists and is a leaf' {
-            # Arrange and Act
-            $path = Get-ModuleProperty -Name 'Pester' -Property Path
-
-            # Assert
-            $path | Test-Path -PathType Leaf | Should -BeTrue
-        }
-
-        It "LiteralPath '.\HelperModule.psd1' should return property Description that is not null or empty" {
-            # Arrange and Act
-            $description = Get-ModuleProperty -LiteralPath '.\HelperModule.psd1' -Property Description
-
-            # Assert
-            $description | Should -Not -BeNullOrEmpty
-        }
-
-        It "LiteralPath '.\HelperModule.psd1' should return property ModuleType of Script" {
-            # Arrange and Act
-            $moduleType = Get-ModuleProperty -LiteralPath '.\HelperModule.psd1' -Property ModuleType
-
-            # Assert
-            $moduleType | Should -Be 'Script'
-        }
-
-        It "LiteralPath '.\HelperModule.psd1' should return property Path that exists and is a leaf" {
-            # Arrange and Act
-            $path = Get-ModuleProperty -LiteralPath '.\HelperModule.psd1' -Property Path
-
-            # Assert
-            $path | Test-Path -PathType Leaf | Should -BeTrue
-        }
-
-        It "Path '.\HelperModul*.psd?' should return property Description that is not null or empty" {
-            # Arrange and Act
-            $description = Get-ModuleProperty -Path '.\HelperModul*.psd?' -Property Description
-
-            # Assert
-            $description | Should -Not -BeNullOrEmpty
-        }
-
-        It "Path '.\HelperModul*.psd?' should return property ModuleType of Script" {
-            # Arrange and Act
-            $moduleType = Get-ModuleProperty -Path '.\HelperModul*.psd?' -Property ModuleType
-
-            # Assert
-            $moduleType | Should -Be 'Script'
-        }
-
-        It "Path '.\HelperModul*.psd?' should return property Path that exists and is a leaf" {
-            # Arrange and Act
-            $path = Get-ModuleProperty -Path '.\HelperModul*.psd?' -Property Path
-
-            # Assert
-            $path | Test-Path -PathType Leaf | Should -BeTrue
-        }
-    }
-
-    Context -Name 'Select-ModuleByFilter' {
-        It 'should exist' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Select-ModuleByFilter'
-
-            # Assert
-            $Command | Should -Not -BeNull
-        }
-
-        It 'should be a cmdlet or function' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Select-ModuleByFilter'
-
-            # Assert
-            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
-        }
-
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
-            # Arrange and Act
-            $Synopsis = Get-HelpProperty -Name Select-ModuleByFilter -Property Synopsis
-
-            # Assert
-            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
-        }
-
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $Description = Get-HelpProperty -Name Select-ModuleByFilter -Property Description
-
-            # Assert
-            $Description.Length Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'should have a module name of HelperModule' {
-            # Arrange and Act
-            $ModuleName = Get-Command -Name 'Select-ModuleByFilter' | Select-Object -ExpandProperty ModuleName
+            $ModuleName = Get-Command -Name 'Add-EnvironmentValue' | Select-Object -ExpandProperty ModuleName
 
             # Assert
             $ModuleName | Should -Be 'HelperModule'
         }
     }
+}
 
-    Context -Name 'Select-ModuleByProperty' {
-        It 'should exist' {
+BeforeAll {
+    # Arrange
+    $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'HelperModule.psd1' -Resolve
+    $ConvertModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\ConvertModule\ConvertModule.psd1' -Resolve
+    $TypeAcceleratorPath = Join-Path -Path $PSScriptRoot -ChildPath '..\TypeAccelerator\TypeAccelerator.psd1' -Resolve
+
+    # Act
+    Import-Module -Name $ModulePath -Force -Verbose
+    Import-Module -Name $TypeAcceleratorPath -Force -Verbose
+
+    # Assert
+    Get-Module -Name 'HelperModule' | Should -Not -BeNull
+    Get-Module -Name 'TypeAccelerator' | Should -Not -BeNull
+}
+
+AfterAll {
+    # Act
+    Get-Module -Name 'HelperModule' | Remove-Module -Verbose
+    Get-Module -Name 'TypeAccelerator' | Remove-Module -Verbose
+
+    # Assert
+    Get-Module -Name 'HelperModule' | Should -BeNull
+    Get-Module -Name 'TypeAccelerator' | Should -BeNull
+}
+
+Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should have a RootModule of HelperModule.psm1' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Command = Get-Command -Name 'Select-ModuleByProperty'
+            $RootModule = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'RootModule'
 
             # Assert
-            $Command | Should -Not -BeNull
+            $RootModule | Should -Be 'HelperModule.psm1'
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should have a ModuleVersion of 1.1.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Command = Get-Command -Name 'Select-ModuleByProperty'
+            $ModuleVersion = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'Version'
 
             # Assert
-            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
+            $ModuleVersion | Should -Be '1.1.0'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a GUID of 196e2256-561c-4cdf-87dc-5146720c69c2' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Synopsis = Get-HelpProperty -Name Select-ModuleByProperty -Property Synopsis
+            $Guid = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
+            $Guid | Should -Be '196e2256-561c-4cdf-87dc-5146720c69c2'
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Description = Get-HelpProperty -Name Select-ModuleByProperty -Property Description
+            $Author = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'Author'
 
             # Assert
-            $Description.Length Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
+            $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a module name of HelperModule' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $ModuleName = Get-Command -Name 'Select-ModuleByProperty' | Select-Object -ExpandProperty ModuleName
+            $CompanyName = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'CompanyName'
 
             # Assert
-            $ModuleName | Should -Be 'HelperModule'
-        }
-    }
-
-    Context -Name 'Test-HasMember' {
-        It 'should exist' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Test-HasMember'
-
-            # Assert
-            $Command | Should -Not -BeNull
+            $CompanyName | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Command = Get-Command -Name 'Test-HasMember'
+            $Copyright = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'Copyright'
 
             # Assert
-            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
+            $Copyright | Should -Be 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a Description of Unit test helper functions for PowerShell.' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Synopsis = Get-HelpProperty -Name Test-HasMember -Property Synopsis
+            $Description = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'Description'
 
             # Assert
-            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
+            $Description | Should -Be 'Unit test helper functions for PowerShell.'
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Description = Get-HelpProperty -Name Test-HasMember -Property Description
+            $PowerShellVersion = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'PowerShellVersion'
 
             # Assert
-            $Description.Length Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
+            $PowerShellVersion | Should -Be '5.1'
         }
 
-        It 'should have a module name of HelperModule' {
+        It -Name 'should have a NestedModule of ConvertModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $ModuleName = Get-Command -Name 'Test-HasMember' | Select-Object -ExpandProperty ModuleName
+            $NestedModules = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'NestedModules'
 
             # Assert
-            $ModuleName | Should -Be 'HelperModule'
-        }
-    }
-
-    Context -Name 'Test-HasMethod' {
-        It 'should exist' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Test-HasMethod'
-
-            # Assert
-            $Command | Should -Not -BeNull
-        }
-
-        It 'should be a cmdlet or function' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Test-HasMethod'
-
-            # Assert
-            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
-        }
-
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
-            # Arrange and Act
-            $Synopsis = Get-HelpProperty -Name Test-HasMethod -Property Synopsis
-
-            # Assert
-            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
-        }
-
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $Description = Get-HelpProperty -Name Test-HasMethod -Property Description
-
-            # Assert
-            $Description.Length Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'should have a module name of HelperModule' {
-            # Arrange and Act
-            $ModuleName = Get-Command -Name 'Test-HasMethod' | Select-Object -ExpandProperty ModuleName
-
-            # Assert
-            $ModuleName | Should -Be 'HelperModule'
+            $NestedModules | Should -Be 'ConvertModule'
         }
     }
 
-    Context -Name 'Test-HasProperty' {
-        It 'should exist' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Test-HasProperty'
+    Context -Name 'Select-ModuleByFilter' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'Should exist'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $testPathSplat = @{
+                LiteralPath     = 'Function:\Select-ModuleByFilter'
+                PathType = 'Leaf'
+            }
 
-            # Assert
-            $Command | Should -Not -BeNull
+            # Act and Assert
+            Test-Path @testPathSplat | Should -BeTrue
         }
 
-        It 'should be a cmdlet or function' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Test-HasProperty'
+        It -Name 'Should return the the same module'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $Expected = $ModulePath
+
+            # Act
+            $Module = Select-ModuleByFilter -Path $Expected -Filter { $true }
 
             # Assert
-            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
-        }
-
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
-            # Arrange and Act
-            $Synopsis = Get-HelpProperty -Name Test-HasProperty -Property Synopsis
-
-            # Assert
-            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
-        }
-
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $Description = Get-HelpProperty -Name Test-HasProperty -Property Description
-
-            # Assert
-            $Description.Length Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
-        }
-
-        It 'should have a module name of HelperModule' {
-            # Arrange and Act
-            $ModuleName = Get-Command -Name 'Test-HasProperty' | Select-Object -ExpandProperty ModuleName
-
-            # Assert
-            $ModuleName | Should -Be 'HelperModule'
+            $Module | Select-Object -ExpandProperty Path | Should -Be $Expected
         }
     }
 
-    Context -Name 'Test-ModuleProperty' {
-        It 'should exist' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Test-ModuleProperty'
+    Context -Name 'Select-ModuleByProperty' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'exists'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $testPathSplat = @{
+                LiteralPath     = 'Function:\Select-ModuleByProperty'
+                PathType = 'Leaf'
+            }
 
-            # Assert
-            $Command | Should -Not -BeNull
+            # Act and Assert
+            Test-Path @testPathSplat | Should -BeTrue
         }
 
-        It 'should be a cmdlet or function' {
-            # Arrange and Act
-            $Command = Get-Command -Name 'Test-ModuleProperty'
+        It -Name 'Should return the the same module'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $Expected = $ModulePath
+
+            # Act
+            $Module = Select-ModuleByProperty -Path $Expected -Property 'Path' -Value $Expected
 
             # Assert
-            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
+            $Module | Select-Object -ExpandProperty Path | Should -Be $Expected
+        }
+    }
+
+    Context -Name 'Test-HasMember' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'exists'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $testPathSplat = @{
+                LiteralPath     = 'Function:\Test-HasMember'
+                PathType = 'Leaf'
+            }
+
+            # Act and Assert
+            Test-Path @testPathSplat | Should -BeTrue
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
-            # Arrange and Act
-            $Synopsis = Get-HelpProperty -Name Test-ModuleProperty -Property Synopsis
-
-            # Assert
-            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
+        It -Name 'Should throw an ArgumentNullException'  -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            { 'Name' | Test-HasMember -Object $null -Strict } | Should -Throw '*ArgumentNullException*'
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
-            # Arrange and Act
-            $Description = Get-HelpProperty -Name Test-ModuleProperty -Property Description
+        It -Name 'Should return $true'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $Object = Get-Item -LiteralPath $env:ComSpec
 
-            # Assert
-            $Description.Length Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
+            # Act and Assert
+            'FullName' | Test-HasMember -Object $Object -Strict | Should -BeTrue
+        }
+    }
+
+    Context -Name 'Test-HasMethod' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'exists'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $testPathSplat = @{
+                LiteralPath     = 'Function:\Test-HasMethod'
+                PathType = 'Leaf'
+            }
+
+            # Act and Assert
+            Test-Path @testPathSplat | Should -BeTrue
         }
 
-        It 'should have a module name of HelperModule' {
-            # Arrange and Act
-            $ModuleName = Get-Command -Name 'Test-ModuleProperty' | Select-Object -ExpandProperty ModuleName
+        It -Name 'Should throw a ArgumentNullException'  -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            { 'Name' | Test-HasMethod -Object $null -Strict } | Should -Throw '*ArgumentNullException*'
+        }
 
-            # Assert
-            $ModuleName | Should -Be 'HelperModule'
+        It -Name 'Should return $true'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $Object = Get-Item -LiteralPath $env:COMSPEC
+
+            # Act and Assert
+            'GetType' | Test-HasMethod -Object $Object -Strict | Should -BeTrue
+        }
+    }
+
+    Context -Name 'Test-HasProperty' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'exists'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $testPathSplat = @{
+                LiteralPath     = 'Function:\Test-HasMethod'
+                PathType = 'Leaf'
+            }
+
+            # Act and Assert
+            Test-Path @testPathSplat | Should -BeTrue
+        }
+
+        It -Name 'Should throw a ArgumentNullException'  -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            { 'Name' | Test-HasMethod -Object $null -Strict } | Should -Throw '*ArgumentNullException*'
+        }
+
+        It -Name 'Should return $true'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $Object = [PSCustomObject]@{
+                Name = 'John'
+            }
+
+            # Act and Assert
+            $Object | Test-HasProperty -Object $Object -Strict | Should -BeTrue
+        }
+    }
+
+    Context -Name 'Test-ModuleProperty' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'exists'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $testPathSplat = @{
+                LiteralPath     = 'Function:\Test-ModuleProperty'
+                PathType = 'Leaf'
+            }
+
+            # Act and Assert
+            Test-Path @testPathSplat | Should -BeTrue
+        }
+
+        It -Name 'Should return $true'  -Tag 'Unit', 'Test' {
+            # Arrange
+            $Expected = 'Path'
+
+            # Act and Assert
+            $ModulePath | Test-ModuleProperty -Property $Expected | Should -BeTrue
         }
     }
 }

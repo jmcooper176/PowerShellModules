@@ -1,8 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="PublishModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="PublishModule.psd1" company="John Merryweather Cooper
+">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ This file "PublishModule.psd1" is part of "PublishModule".
 ModuleVersion = '1.0.0.0'
 
 # ID used to uniquely identify this module
-GUID = '101178B8-1D64-4D6D-8B28-43A4A5104F21'
+GUID = 'ef6847d7-8133-423a-9831-159328fa8c88'
 
 # Author of this module
 Author = 'John Merryweather Cooper'

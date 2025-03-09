@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="TypeAcceleratoModuler.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="TypeAcceleratoModuler.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -50,6 +49,7 @@ This file "TypeAcceleratoModuler.tests.ps1" is part of "TypeAcceleratorModule".
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'TypeAcceleratorModule.psd1'
+    $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
     $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
     Initialize-PSTest -Name 'TypeAcceleratorModule' -Path $ModulePath
@@ -83,10 +83,10 @@ BeforeAll {
         @{Accelerator = [int16];                          FullName = 'System.Int16';},
         @{Accelerator = [long];                           FullName = 'System.Int64';},
         @{Accelerator = [int64];                          FullName = 'System.Int64';},
-        @{Accelerator = [ciminstance];                    FullName = 'Microsoft.Management.Infrastructure.CimInstance';},
-        @{Accelerator = [cimclass];                       FullName = 'Microsoft.Management.Infrastructure.CimClass';},
-        @{Accelerator = [cimtype];                        FullName = 'Microsoft.Management.Infrastructure.CimType';},
-        @{Accelerator = [cimconverter];                   FullName = 'Microsoft.Management.Infrastructure.CimConverter';},
+        @{Accelerator = [ciminstance];                    FullName = 'Microsoft..Infrastructure.CimInstance';},
+        @{Accelerator = [cimclass];                       FullName = 'Microsoft..Infrastructure.CimClass';},
+        @{Accelerator = [cimtype];                        FullName = 'Microsoft..Infrastructure.CimType';},
+        @{Accelerator = [cimconverter];                   FullName = 'Microsoft..Infrastructure.CimConverter';},
         @{Accelerator = [IPEndpoint];                     FullName = 'System.Net.IPEndPoint';},
     #   @{Accelerator = [NoRunspaceAffinity];             FullName = 'System.Management.Automation.Language.NoRunspaceAffinityAttribute';},
         @{Accelerator = [NullString];                     FullName = 'System.Management.Automation.Language.NullString';},
@@ -140,14 +140,14 @@ BeforeAll {
         @{Accelerator = [X509Certificate];                FullName = 'System.Security.Cryptography.X509Certificates.X509Certificate';},
         @{Accelerator = [X500DistinguishedName];          FullName = 'System.Security.Cryptography.X509Certificates.X500DistinguishedName';},
         @{Accelerator = [xml];                            FullName = 'System.Xml.XmlDocument';},
-        @{Accelerator = [CimSession];                     FullName = 'Microsoft.Management.Infrastructure.CimSession';},
+        @{Accelerator = [CimSession];                     FullName = 'Microsoft..Infrastructure.CimSession';},
         @{Accelerator = [mailaddress];                    FullName = 'System.Net.Mail.MailAddress';},
     #   @{Accelerator = [semver];                         FullName = 'System.Management.Automation.SemanticVersion';},
         @{Accelerator = [adsi];                           FullName = 'System.DirectoryServices.DirectoryEntry';},
         @{Accelerator = [adsisearcher];                   FullName = 'System.DirectoryServices.DirectorySearcher';},
-        @{Accelerator = [wmiclass];                       FullName = 'System.Management.ManagementClass';},
-        @{Accelerator = [wmi];                            FullName = 'System.Management.ManagementObject';},
-        @{Accelerator = [wmisearcher];                    FullName = 'System.Management.ManagementObjectSearcher';},
+        @{Accelerator = [wmiclass];                       FullName = 'System..Class';},
+        @{Accelerator = [wmi];                            FullName = 'System..Object';},
+        @{Accelerator = [wmisearcher];                    FullName = 'System..ObjectSearcher';},
         @{Accelerator = [scriptblock];                    FullName = 'System.Management.Automation.ScriptBlock';},
     #   @{Accelerator = [pspropertyexpression];           FullName = 'Microsoft.PowerShell.Commands.PSPropertyExpression';},
         @{Accelerator = [psvariable];                     FullName = 'System.Management.Automation.PSVariable';},
@@ -187,9 +187,9 @@ AfterAll {
     Get-Module -Name 'TypeAcceleratorModule' | Remove-Module -Verbose -Force
 }
 
-Describe -Name 'TypeAcceleratorModule' {
-    Context -Name 'Module Manifest' {
-        It 'should exist' {
+Describe -Name 'TypeAcceleratorModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleManifest = Test-ModuleManifest -Path $ModulePath
 
@@ -197,29 +197,34 @@ Describe -Name 'TypeAcceleratorModule' {
             $ModuleManifest | Should -Not -BeNullOrEmpty
         }
 
-        It 'should parse' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
             $inputSource = Get-Content -LiteralPath $ModulePath -Raw
 
             [ref] $tokens = @()
             [ref] $errors = @()
-            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
 
+            # Act
             $errors.Value | ForEach-Object -Process {
-                $message = ('{0} at {1}:  Parse error generating abstract syntax tree' -f $ModuleName, $ModulePath)
-                $writeErrorSplat = @{
-                        Exception    = [System.Management.Automation.ParseException]::new($message)
-                        Category     = 'ParseError'
-                        ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                        TargetObject = $_
-                        ErrorAction  = 'Continue'
-                    }
-
-                    Write-Error @writeErrorSplat -ErrorAction Continue
-                    $PSCmdlet.ThrowTerminatingError($writeErrorHash)
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
                 }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
         }
 
-        It 'should have a RootModule of TypeAcceleratorModule.psm1' {
+        It -Name 'should have a RootModule of TypeAcceleratorModule.psm1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $RootModule = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'RootModule'
 
@@ -227,7 +232,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $RootModule | Should -Be 'TypeAcceleratorModule.psm1'
         }
 
-        It 'should have a ModuleVersion greater than  1.0.0' {
+        It -Name 'should have a ModuleVersion greater than  1.0.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Version'
 
@@ -235,15 +240,15 @@ Describe -Name 'TypeAcceleratorModule' {
             $ModuleVersion | Should -BeGreaterThan '1.0.0'
         }
 
-        It 'should have a GUID of DE36732E-2C9C-4832-8FDD-779EBBAAE157' {
+        It -Name 'should have a GUID of 821cb68a-a769-4432-a70e-6a70b6e0de29' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be 'DE36732E-2C9C-4832-8FDD-779EBBAAE157'
+            $Guid | Should -Be '821cb68a-a769-4432-a70e-6a70b6e0de29'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Author'
 
@@ -251,7 +256,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -259,7 +264,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -267,7 +272,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Copyright | Should -Be $COPYRIGHT_STRING
         }
 
-        It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -275,7 +280,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Description | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a Description of Library of cmdlets/functions to register/un-register type accelerators.' {
+        It -Name 'should have a Description of Library of cmdlets/functions to register/un-register type accelerators.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -283,17 +288,52 @@ Describe -Name 'TypeAcceleratorModule' {
             $Description | Should -Be 'Library of cmdlets/functions to register/un-register type accelerators.'
         }
 
-        It 'should have a PowerShellVersion of 5.1' {
+        It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $PowerShellVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'PowerShellVersion'
 
             # Assert
             $PowerShellVersion | Should -Be '5.1'
         }
+
+        It -Name 'should have ExportedCmdlets count should equal ExportedFunctions count' -Tag 'Unit', 'Test' {
+            # Arrange
+            $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedCmdlets' |
+                    Sort-Object -Unique
+            $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedFunctions' |
+                    Sort-Object -Unique
+
+            # Act And Assert
+            $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
+        }
+
+        It -Name 'should have ExportedCmdlets equal to ExportedFunctions' -Tag 'Unit', 'Test' {
+            # Arrange
+            $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedCmdlets' |
+                    Sort-Object -Unique -Descending
+            $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedFunctions' |
+                    Sort-Object -Unique -Descending
+
+            # Act
+            for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
+                $result = $exportedCmdlets[$i] -eq $exportedFunctions[$i]
+
+                if (-not $result) {
+                    break
+                }
+            }
+
+            # Assert
+            $result | Should -BeTrue
+        }
     }
 
-    Context -Name 'Add-TypeAccelerator' {
-        It 'should exist' {
+    Context -Name 'Add-TypeAccelerator' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-TypeAccelerator'
 
@@ -301,7 +341,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-TypeAccelerator'
 
@@ -309,7 +349,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Add-TypeAccelerator' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -317,7 +357,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Add-TypeAccelerator' -Full | Select-Object -ExpandProperty Description
 
@@ -325,7 +365,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of TypeAcceleratorModule' {
+        It -Name 'should have a module name of TypeAcceleratorModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Add-TypeAccelerator' | Select-Object -ExpandProperty ModuleName
 
@@ -333,7 +373,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $ModuleName | Should -Be 'TypeAcceleratorModule'
         }
 
-        It -Name 'Mock Add-TypeAccelerator and prove invoked' -ForEach $TestData -Tag @('Unit', 'Test') {
+        It -Name 'Mock Add-TypeAccelerator and prove invoked' -ForEach $TestData  -Tag 'Unit', 'Test' {
             # Arrange
             Mock -CommandName 'Add-TypeAccelerator' -ModuleName 'TypeAccelerator' -MockWith {
                 Write-Information -MessageData "Mocked Add-TypeAccelerator -ExportableType '[$($FullName)]' -InvocationInfo <MyInvocationInfo>" -InformationAction Continue
@@ -348,7 +388,7 @@ Describe -Name 'TypeAcceleratorModule' {
             Should -Invoke 'Add-TypeAccelerator' -Exactly 1
         }
 
-        It -Name 'Mock Add-TypeAccelerato and global state should match' -ForEach $TestData -Tag @('Unit', 'Test') {
+        It -Name 'Mock Add-TypeAccelerato and global state should match' -ForEach $TestData  -Tag 'Unit', 'Test' {
             # Arrange
             Mock -CommandName 'Add-TypeAccelerator' -ModuleName 'TypeAccelerator' -MockWith {
                 Write-Information -MessageData "Mocked Add-TypeAccelerator -ExportableType '[$($FullName)]' -InvocationInfo <MyInvocationInfo>" -InformationAction Continue
@@ -364,8 +404,8 @@ Describe -Name 'TypeAcceleratorModule' {
         }
     }
 
-    Context -Name 'Get-TypeAccelerator' {
-        It 'should exist' {
+    Context -Name 'Get-TypeAccelerator' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-TypeAccelerator'
 
@@ -373,7 +413,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-TypeAccelerator'
 
@@ -381,7 +421,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Get-TypeAccelerator' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -389,7 +429,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Get-TypeAccelerator' -Full | Select-Object -ExpandProperty Description
 
@@ -397,7 +437,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of TypeAcceleratorModule' {
+        It -Name 'should have a module name of TypeAcceleratorModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Get-TypeAccelerator' | Select-Object -ExpandProperty ModuleName
 
@@ -405,7 +445,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $ModuleName | Should -Be 'TypeAcceleratorModule'
         }
 
-        It -Name 'Get-TypeAccelerator -ListAvailable gets count TypeAccelerators' -Tag @('Unit', 'Test') {
+        It -Name 'Get-TypeAccelerator -ListAvailable gets count TypeAccelerators'  -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 107
 
@@ -416,7 +456,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Actual | Should -Be $Expected
         }
 
-        It -Name 'Get-TypeAccelerator -ListAvailable gets all TypeAccelerators Accelerators' -ForEach $TestData -Tag @('Unit', 'Test') {
+        It -Name 'Get-TypeAccelerator -ListAvailable gets all TypeAccelerators Accelerators' -ForEach $TestData  -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = ($Accelerator -as [type])
 
@@ -427,7 +467,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Actual | Should -Be $Expected
         }
 
-        It -Name 'Get-TypeAccelerator -ListAvailable gets all TypeAccelerators FullNames' -ForEach $TestData -Tag @('Unit', 'Test') {
+        It -Name 'Get-TypeAccelerator -ListAvailable gets all TypeAccelerators FullNames' -ForEach $TestData  -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = $FullName
 
@@ -438,8 +478,8 @@ Describe -Name 'TypeAcceleratorModule' {
         }
     }
 
-    Context -Name 'Get-TypeAcceleratorClass' {
-        It 'should exist' {
+    Context -Name 'Get-TypeAcceleratorClass' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-TypeAcceleratorClass'
 
@@ -447,7 +487,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-TypeAcceleratorClass'
 
@@ -455,7 +495,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Get-TypeAcceleratorClass' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -463,7 +503,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Get-TypeAcceleratorClass' -Full | Select-Object -ExpandProperty Description
 
@@ -471,7 +511,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of TypeAcceleratorModule' {
+        It -Name 'should have a module name of TypeAcceleratorModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Get-TypeAcceleratorClass' | Select-Object -ExpandProperty ModuleName
 
@@ -479,7 +519,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $ModuleName | Should -Be 'TypeAcceleratorModule'
         }
 
-        It -Name 'Get-TypeAcceleratorClass should not be null' -Tag @('Unit', 'Test') {
+        It -Name 'Get-TypeAcceleratorClass should not be null'  -Tag 'Unit', 'Test' {
             # Arrange and Act
             $result = Get-TypeAcceleratorClass
 
@@ -488,8 +528,8 @@ Describe -Name 'TypeAcceleratorModule' {
         }
     }
 
-    Context -Name 'Register-TypeAccelerator' {
-        It 'should exist' {
+    Context -Name 'Register-TypeAccelerator' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Register-TypeAccelerator'
 
@@ -497,7 +537,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Register-TypeAccelerator'
 
@@ -505,7 +545,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Register-TypeAccelerator' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -513,7 +553,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Register-TypeAccelerator' -Full | Select-Object -ExpandProperty Description
 
@@ -521,7 +561,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of TypeAcceleratorModule' {
+        It -Name 'should have a module name of TypeAcceleratorModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Register-TypeAccelerator' | Select-Object -ExpandProperty ModuleName
 
@@ -529,7 +569,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $ModuleName | Should -Be 'TypeAcceleratorModule'
         }
 
-        It -Name 'Mock Register-TypeAccelerator' -ForEach $TestData -Tag @('Unit', 'Test') {
+        It -Name 'Mock Register-TypeAccelerator' -ForEach $TestData  -Tag 'Unit', 'Test' {
             # Arrange
             Mock -CommandName 'Register-TypeAccelerator' -ModuleName 'TypeAccelerator' -MockWith {
                 Write-Information -MessageData "Mocked Register-TypeAccelerator -ExportableType '[$($_.Name)]'" -InformationAction Continue
@@ -543,8 +583,8 @@ Describe -Name 'TypeAcceleratorModule' {
         }
     }
 
-    Context -Name 'Remove-TypeAccelerator' {
-        It 'should exist' {
+    Context -Name 'Remove-TypeAccelerator' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Remove-TypeAccelerator'
 
@@ -552,7 +592,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Remove-TypeAccelerator'
 
@@ -560,7 +600,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Remove-TypeAccelerator' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -568,7 +608,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Remove-TypeAccelerator' -Full | Select-Object -ExpandProperty Description
 
@@ -576,7 +616,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of TypeAcceleratorModule' {
+        It -Name 'should have a module name of TypeAcceleratorModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Remove-TypeAccelerator' | Select-Object -ExpandProperty ModuleName
 
@@ -584,7 +624,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $ModuleName | Should -Be 'TypeAcceleratorModule'
         }
 
-        It -Name 'Mock Remove-TypeAccelerator' -ForEach $TestData -Tag @('Unit', 'Test') {
+        It -Name 'Mock Remove-TypeAccelerator' -ForEach $TestData  -Tag 'Unit', 'Test' {
             # Arrange
             Mock -CommandName 'Remove-TypeAccelerator' -ModuleName 'TypeAccelerator' -MockWith {
                 Write-Information -MessageData "Mocked Remove-TypeAccelerator -ExportableType '[$($_.Name)]'" -InformationAction Continue
@@ -598,8 +638,8 @@ Describe -Name 'TypeAcceleratorModule' {
         }
     }
 
-    Context -Name 'Test-TypeAcceleratorRegistered' {
-        It 'should exist' {
+    Context -Name 'Test-TypeAcceleratorRegistered' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Test-TypeAcceleratorRegistered'
 
@@ -607,7 +647,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Test-TypeAcceleratorRegistered'
 
@@ -615,7 +655,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Test-TypeAcceleratorRegistered' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -623,7 +663,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Test-TypeAcceleratorRegistered' -Full | Select-Object -ExpandProperty Description
 
@@ -631,7 +671,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of TypeAcceleratorModule' {
+        It -Name 'should have a module name of TypeAcceleratorModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Test-TypeAcceleratorRegistered' | Select-Object -ExpandProperty ModuleName
 
@@ -639,7 +679,7 @@ Describe -Name 'TypeAcceleratorModule' {
             $ModuleName | Should -Be 'TypeAcceleratorModule'
         }
 
-        It -Name 'Test-TypeAcceleratorRegistered against TestData' -ForEach $TestData -Tag @('Unit', 'Test') {
+        It -Name 'Test-TypeAcceleratorRegistered against TestData' -ForEach $TestData  -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = $TestData.Length
 

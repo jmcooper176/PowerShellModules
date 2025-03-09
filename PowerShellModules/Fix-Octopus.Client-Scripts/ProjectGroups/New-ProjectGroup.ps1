@@ -6,16 +6,16 @@ $spaceName = "Default"
 $projectGroupName = "MyProjectGroup"
 $projectGroupDescription = "MyDescription"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get space
 $space = $repository.Spaces.FindByName($spaceName)
 $repositoryForSpace = $client.ForSpace($space)
 
 # Create project group object
-$projectGroup = New-Object Octopus.Client.Model.ProjectGroupResource
+$projectGroup = New-Object -TypeName Octopus.Client.Model.ProjectGroupResource
 $projectGroup.Description = $projectGroupDescription
 $projectGroup.Name = $projectGroupName
 $projectGroup.EnvironmentIds = $null

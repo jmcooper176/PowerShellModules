@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="AntModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="AntModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "AntModule.psd1" is part of "AntModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'AntModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '0.0.9127.52003'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '0FFD428F-A5F0-4848-BBD1-CFC990062CAA'
+GUID = '9350007f-0efd-4e36-93ab-a942837e6a12'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -141,9 +139,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'apache','ant','build','automation','devops','ci/cd','continuous integration','continuous deployment','continuous delivery','jenkins','bamboo','teamcity','octopus deploy','azure devops','tfs','vsts','visual studio team services','visual studio team system','visual studio online','visual studio team foundation server','visual studio online build','visual studio online release','visual studio online deploy','visual studio online delivery','visual studio online continuous integration','visual studio online continuous deployment','visual studio online continuous delivery'
 
@@ -157,7 +153,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = ''
+        # ReleaseNotes = ''
 
         # Prerelease string of this module
         # Prerelease = ''
@@ -167,9 +163,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -177,6 +171,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

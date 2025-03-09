@@ -1,5 +1,5 @@
 #
-# RELEASENOTES - ZipModule
+# RELEASENOTES - PowerShellModule
 #
 
 DateTime               Notes

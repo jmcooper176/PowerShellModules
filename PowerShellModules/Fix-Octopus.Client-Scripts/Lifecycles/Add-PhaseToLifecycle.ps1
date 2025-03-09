@@ -1,4 +1,4 @@
-Add-Type -Path 'path\to\Octopus.Client.dll' 
+Add-Type -Path 'path\to\Octopus.Client.dll'
 
 $server = "YourServerURL"
 $apikey = "API-KEY"
@@ -8,8 +8,8 @@ $PhaseName = "" # Name of the new phase to create
 $EnvironmentName = "" # Name of the environment to add to the phase
 
 # Create endpoint and client
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($server, $apikey)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $server, $apikey
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get default repository and get space by name
 $repository = $client.ForSystem()
@@ -24,7 +24,7 @@ $lifecycle = $repo.Lifecycles.FindByName($LifecycleName) # Lifecycle name to add
 $Environment = $repo.Environments.FindByName($EnvironmentName).Id # Environment name to add to phase.
 
 # Create new $phase object and add requisite values.
-$phase = New-Object Octopus.Client.Model.PhaseResource
+$phase = New-Object -TypeName Octopus.Client.Model.PhaseResource
 $phase.Name = $PhaseName # Rename what you want.
 $phase.OptionalDeploymentTargets.Add($Environment)
 $phase.MinimumEnvironmentsBeforePromotion = 0

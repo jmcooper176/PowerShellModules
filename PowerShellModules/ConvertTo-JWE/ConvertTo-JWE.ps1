@@ -1,7 +1,6 @@
 ﻿<#
  =============================================================================
-<copyright file="ConvertTo-JWE.ps1" company="U.S. Office of Personnel
-Management">
+<copyright file="ConvertTo-JWE.ps1" company="John Merryweather Cooper">
     Copyright (c) 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
@@ -61,7 +60,7 @@ This file "ConvertTo-JWE.ps1" is part of "ConvertTo-JWE".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/ConvertTo-JWE
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/ConvertTo-JWE
 
     .ICONURI
 
@@ -83,8 +82,6 @@ This file "ConvertTo-JWE.ps1" is part of "ConvertTo-JWE".
     .DESCRIPTION
     Convert a ClaimsIdentity to a JSON Web Encryption (JWE) token.
 #>
-
-
 
 [CmdletBinding()]
 param (

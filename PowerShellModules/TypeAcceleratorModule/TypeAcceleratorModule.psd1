@@ -7,7 +7,6 @@
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'TypeAcceleratorModule.psm1'
 
@@ -18,7 +17,7 @@ ModuleVersion = '1.0.9166.49496'
 CompatiblePSEditions = 'Desktop', 'Core'
 
 # ID used to uniquely identify this module
-GUID = 'DE36732E-2C9C-4832-8FDD-779EBBAAE157'
+GUID = '821cb68a-a769-4432-a70e-6a70b6e0de29'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -27,7 +26,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Library of cmdlets/functions to register/un-register type accelerators.'
@@ -69,15 +68,15 @@ RequiredModules = @('PowerShellModule')
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Add-TypeAccelerator', 'Get-TypeAccelerator', 
-               'Get-TypeAcceleratorClass', 'Register-TypeAccelerator', 
-               'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered', 
+FunctionsToExport = 'Add-TypeAccelerator', 'Get-TypeAccelerator',
+               'Get-TypeAcceleratorClass', 'Register-TypeAccelerator',
+               'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered',
                'Unregister-TypeAccelerator'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Add-TypeAccelerator', 'Get-TypeAccelerator', 
-               'Get-TypeAcceleratorClass', 'Register-TypeAccelerator', 
-               'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered', 
+CmdletsToExport = 'Add-TypeAccelerator', 'Get-TypeAccelerator',
+               'Get-TypeAcceleratorClass', 'Register-TypeAccelerator',
+               'Remove-TypeAccelerator', 'Test-TypeAcceleratorRegistered',
                'Unregister-TypeAccelerator'
 
 # Variables to export from this module
@@ -97,9 +96,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'TypeAccelerator','Type','Accelerator'
 
@@ -107,7 +104,7 @@ PrivateData = @{
         LicenseUri = 'https://opensource.org/license/BSD-3-clause'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/OCIO-DEVSECOPS/PSInstallCom/TypeAcceleratorModule'
+        ProjectUri = 'https://github.com/jmcooper176/PowerShellModules/TypeAcceleratorModule'
 
         # A URL to an icon representing this module.
         # IconUri = ''
@@ -123,9 +120,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -133,6 +128,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

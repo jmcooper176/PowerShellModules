@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ModulePublisher.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ModulePublisher.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "ModulePublisher.psd1" is part of "ModulePublisher".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'ModulePublisher.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '0.0.9127.52003'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '9858F2CD-143E-40EE-B545-199C17172569'
+GUID = 'dc47e634-0ebb-4be6-900d-cddbaf8f1fbb'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -74,7 +72,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Publishes Azure PowerShell Modules'
@@ -116,13 +114,13 @@ RequiredModules = @(@{ModuleName = 'Az.KeyVault'; ModuleVersion = '0.1.0'; })
 NestedModules = @('PowerShellModule.psd1')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-ModuleOrder', 'Get-RepoLocation', 'Get-ApiKey', 
-               'Update-NugetPackage', 'Remove-RMPackage', 'Remove-RMPackages', 
+FunctionsToExport = 'Get-ModuleOrder', 'Get-RepoLocation', 'Get-ApiKey',
+               'Update-NugetPackage', 'Remove-RMPackage', 'Remove-RMPackages',
                'Update-Packages', 'Publish-RMModules'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Get-ModuleOrder', 'Get-RepoLocation', 'Get-ApiKey', 
-               'Update-NugetPackage', 'Remove-RMPackage', 'Remove-RMPackages', 
+CmdletsToExport = 'Get-ModuleOrder', 'Get-RepoLocation', 'Get-ApiKey',
+               'Update-NugetPackage', 'Remove-RMPackage', 'Remove-RMPackages',
                'Update-Packages', 'Publish-RMModules'
 
 # Variables to export from this module
@@ -142,9 +140,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'Azure','PowerShell','Publishing'
 
@@ -158,7 +154,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = ''
+        # ReleaseNotes = ''
 
         # Prerelease string of this module
         # Prerelease = ''
@@ -168,9 +164,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -178,6 +172,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

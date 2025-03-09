@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="TypeAcceleratoModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="TypeAcceleratoModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -407,8 +406,7 @@ function Remove-TypeAccelerator {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand -WhatIf:$false
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         # Get the internal TypeAccelerators class to use its static methods.
         $TypeAcceleratorsClass = Get-TypeAcceleratorClass
@@ -510,8 +508,7 @@ function Test-TypeAcceleratorRegistered {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         # Get the internal TypeAccelerators class to use its static methods.
         $TypeAcceleratorsClass = Get-TypeAcceleratorClass

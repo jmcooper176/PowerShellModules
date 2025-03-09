@@ -8,8 +8,8 @@ $octopusAPIKey = "API-YOURAPIKEY"
 # Purpose of the API Key. This field is mandatory.
 $APIKeyPurpose = ""
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 try
 {
@@ -24,5 +24,5 @@ try
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

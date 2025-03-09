@@ -14,7 +14,7 @@
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules
 
     .ICONURI
 
@@ -26,7 +26,6 @@
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -35,7 +34,6 @@
     .DESCRIPTION
     Save external PowerShell module or script to local repository.
 #>
-
 
 [CmdletBinding()]
 param (
@@ -56,12 +54,11 @@ param (
 
     [ValidateSet('msi', 'msu', 'Programs', 'NuGet', 'PowerShellGet', 'ps1', 'chocolatey')]
     [string[]]
-    $ProviderName = 'NuGet'
+    $ProviderName = 'nuget'
 )
 
 BEGIN {
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 }
 
 PROCESS {

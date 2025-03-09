@@ -9,9 +9,9 @@ $octopusURL = "https://youroctourl"
 $octopusAPIKey = "API-YOURAPIKEY"
 $spaceName = "default"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -20,15 +20,15 @@ try
     $repositoryForSpace = $client.ForSpace($space)
 
     # Get tasks
-    $queuedDeployments = $repositoryForSpace.Tasks.FindAll() | Where-Object {$_.State -eq "Queued" -and $_.HasBeenPickedUpByProcessor -eq $false -and $_.Name -eq "Deploy"}
+    $queuedDeployments = $repositoryForSpace.Tasks.FindAll() | Where-Object -FilterScript {$_.State -eq "Queued" -and $_.HasBeenPickedUpByProcessor -eq $false -and $_.Name -eq "Deploy"}
 
     # Loop through results
     foreach ($task in $queuedDeployments)
     {
-        $repositoryForSpace.Tasks.Cancel($task)   
+        $repositoryForSpace.Tasks.Cancel($task)
     }
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

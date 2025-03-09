@@ -21,24 +21,24 @@ $accountTenantParticipation = "Untenanted"
 $jsonKeyPath = "/path/to/jsonkeyfile.json"
 
 # (Optional) Tenant tags e.g.: "AWS Region/California"
-$accountTenantTags = @() 
+$accountTenantTags = @()
 # (Optional) Tenant Ids e.g.: "Tenants-101"
 $accountTenantIds = @()
 # (Optional) Environment Ids e.g.: "Environments-1"
 $accountEnvironmentIds = @()
 
-if(-not (Test-Path $jsonKeyPath)) {
-    Write-Warning "The Json Key file was not found at '$jsonKeyPath'."
+if(-not (Test-Path -LiteralPath $jsonKeyPath -PathType Leaf)) {
+    Write-Warning -Message "The Json Key file was not found at '$jsonKeyPath'."
     return
 }
 else {
-    $jsonContent = Get-Content -Path $jsonKeyPath
+    $jsonContent = Get-Content -LiteralPath $jsonKeyPath
     $jsonKeyBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($jsonContent))
 }
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -47,24 +47,24 @@ try
     $repositoryForSpace = $client.ForSpace($space)
 
     # Create Google Cloud Account object
-    $googleCloudAccount = New-Object Octopus.Client.Model.Accounts.GoogleCloudAccountResource
+    $googleCloudAccount = New-Object -TypeName Octopus.Client.Model.Accounts.GoogleCloudAccountResource
     $googleCloudAccount.Name = $accountName
     $googleCloudAccount.Description = $accountDescription
-    
-    $jsonKeySensitiveValue = New-Object Octopus.Client.Model.SensitiveValue
+
+    $jsonKeySensitiveValue = New-Object -TypeName Octopus.Client.Model.SensitiveValue
     $jsonKeySensitiveValue.NewValue = $jsonKeyBase64
     $jsonKeySensitiveValue.HasValue = $True
     $googleCloudAccount.JsonKey = $jsonKeySensitiveValue
 
     $googleCloudAccount.TenantedDeploymentParticipation = [Octopus.Client.Model.TenantedDeploymentMode]::$accountTenantParticipation
-    $googleCloudAccount.TenantTags = New-Object Octopus.Client.Model.ReferenceCollection $accountTenantTags
-    $googleCloudAccount.TenantIds = New-Object Octopus.Client.Model.ReferenceCollection $accountTenantIds
-    $googleCloudAccount.EnvironmentIds = New-Object Octopus.Client.Model.ReferenceCollection $accountEnvironmentIds
+    $googleCloudAccount.TenantTags = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $accountTenantTags
+    $googleCloudAccount.TenantIds = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $accountTenantIds
+    $googleCloudAccount.EnvironmentIds = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $accountEnvironmentIds
 
     # Create account
     $repositoryForSpace.Accounts.Create($googleCloudAccount)
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

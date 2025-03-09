@@ -19,10 +19,9 @@ $accountTenantIds = @()
 $accountEnvironmentIds = @()
 $spaceName = "default"
 
-
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -31,7 +30,7 @@ try
     $repositoryForSpace = $client.ForSpace($space)
 
     # Create azure service principal object
-    $azureAccount = New-Object Octopus.Client.Model.Accounts.AzureServicePrincipalAccountResource
+    $azureAccount = New-Object -TypeName Octopus.Client.Model.Accounts.AzureServicePrincipalAccountResource
     $azureAccount.ClientId = $azureClientId
     $azureAccount.TenantId = $azureTenantId
     $azureAccount.Description = $accountDescription
@@ -39,14 +38,14 @@ try
     $azureAccount.Password = $azureSecret
     $azureAccount.SubscriptionNumber = $azureSubscriptionNumber
     $azureAccount.TenantedDeploymentParticipation = [Octopus.Client.Model.TenantedDeploymentMode]::$accountTenantParticipation
-    $azureAccount.TenantTags = New-Object Octopus.Client.Model.ReferenceCollection $accountTenantTags
-    $azureAccount.TenantIds = New-Object Octopus.Client.Model.ReferenceCollection $accountTenantIds
-    $azureAccount.EnvironmentIds = New-Object Octopus.Client.Model.ReferenceCollection $accountEnvironmentIds
+    $azureAccount.TenantTags = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $accountTenantTags
+    $azureAccount.TenantIds = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $accountTenantIds
+    $azureAccount.EnvironmentIds = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $accountEnvironmentIds
 
     # Create account
     $repositoryForSpace.Accounts.Create($azureAccount)
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

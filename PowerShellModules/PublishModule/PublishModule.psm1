@@ -1,9 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="PublishModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
-    All Rights Reserved.
+<copyright file="PublishModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions
@@ -132,7 +130,7 @@ function Out-FileNoBom {
         entire `Value` is written to the file as a single string.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rigths Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.  All Rigths Reserved.
     #>
 }
 
@@ -361,20 +359,20 @@ function Get-ClientModule {
 
         # Handle things which don't support netcore yet.
         if (-not $IsNetCore.IsPresent) {
-            $ServiceScopes = @('All', 'Latest', 'ServiceManagement')
+            $ServiceScopes = @('All', 'Latest', 'Service')
 
             if ($Scope -in $ServiceScopes) {
-                $targets += Join-Path -Path $packageFolder -ChildPath "$buildConfig\ServiceManagement\Azure"
+                $targets += Join-Path -Path $packageFolder -ChildPath "$buildConfig\Service\Azure"
             }
         }
 
         # Get the list of targets
         if ($Scope -in $AllScopes) {
             if ($IsNetCore.IsPresent) {
-                $resourceManagerModules = Get-ChildItem @getChildItemSplat | Where-Object { $_.Name -like "*Az.*" -or $_.Name -eq "Az" }
+                $resourceManagerModules = Get-ChildItem @getChildItemSplat | Where-Object -FilterScript { $_.Name -like "*Az.*" -or $_.Name -eq "Az" }
             }
             else {
-                $resourceManagerModules = Get-ChildItem @getChildItemSplat | Where-Object { $_.Name -like "*Azure*" }
+                $resourceManagerModules = Get-ChildItem @getChildItemSplat | Where-Object -FilterScript { $_.Name -like "*Azure*" }
             }
 
             # We should ignore these, they are handled separatly.
@@ -497,7 +495,7 @@ function Get-AllModule {
 
 <#################################################
 #
-#       Create and update nuget functions.
+#       Create and update NuGet functions.
 #
 #################################################>
 
@@ -523,13 +521,13 @@ function Remove-ModuleDependency {
     PROCESS {
         if (-not $KeepRequiredModules.IsPresent) {
             $regex = New-Object -TypeName System.Text.RegularExpressions.Regex -ArgumentList "RequiredModules\s*=\s*@\([^\)]+\)"
-            $content = (Get-Content -LiteralPath $Path) -join "`r`n"
+            $content = (Get-Content -LiteralPath $Path) -join [Environment]::NewLine
             $text = $regex.Replace($content, "RequiredModules = @()")
             Out-FileNoBom -File $Path -Text $text
         }
 
         $regex = New-Object -TypeName System.Text.RegularExpressions.Regex -ArgumentList "NestedModules\s*=\s*@\([^\)]+\)"
-        $content = (Get-Content -Path $Path) -join "`r`n"
+        $content = (Get-Content -LiteralPath $Path) -join [Environment]::NewLine
 
         $file = Get-Item -LiteralPath $Path
         Import-LocalizedData -BindingVariable ModuleMetadata -BaseDirectory $file.DirectoryName -FileName $file.Name
@@ -564,9 +562,9 @@ function Remove-ModuleDependency {
 }
 
 <#
-    Update-NugetPackage
+    Update-NuGetPackage
 #>
-function Update-NugetPackage {
+function Update-NuGetPackage {
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory)]
@@ -587,7 +585,7 @@ function Update-NugetPackage {
         [Parameter(Mandatory)]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe
+        $NuGetPath
     )
 
     BEGIN {
@@ -608,12 +606,12 @@ function Update-NugetPackage {
         Remove-Item -Path $contentPath -Force
 
         # Create new output
-        $content = (Get-Content -LiteralPath $modulePath) -join "`r`n"
+        $content = (Get-Content -LiteralPath $modulePath) -join [Environment]::NewLine
         $content = $content -replace $regex2, ("<requireLicenseAcceptance>true</requireLicenseAcceptance>")
         Out-FileNoBom -File (Join-Path -Path (Get-Location) -ChildPath $modulePath) -Text $content
 
         # https://stackoverflow.com/a/36369540/294804
-        &$NugetExe pack $modulePath -OutputDirectory $TempRepoPath -NoPackageAnalysis
+        &$NuGetPath pack $modulePath -OutputDirectory $TempRepoPath -NoPackageAnalysis
     }
 
     <#
@@ -629,8 +627,8 @@ function Update-NugetPackage {
         .PARAMETER DirPath
         Path to the directory holding the modules to update.
 
-        .PARAMETER NugetExe
-        Path to the Nuget executable.
+        .PARAMETER NuGetPath
+        Path to the NuGet executable.
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
@@ -656,7 +654,7 @@ function Add-Module {
 
         [ValidateNotNullOrEmpty()]
         [string]
-        $NugetExe
+        $NuGetPath
     )
 
     BEGIN {
@@ -668,7 +666,7 @@ function Add-Module {
             Write-Verbose -Message $modulePath
             $module = Get-Item -Path $modulePath
             Write-Verbose -Message "Updating $module module from $modulePath"
-            Add-Module -Path $modulePath -TempRepo $TempRepo -TempRepoPath $TempRepoPath -NugetExe $NugetExe
+            Add-Module -Path $modulePath -TempRepo $TempRepo -TempRepoPath $TempRepoPath -NuGetPath $NuGetPath
             Write-Verbose -Message "Updated $module module"
         }
     }
@@ -686,8 +684,8 @@ function Add-Module {
         .PARAMETER TempRepoPath
         Path to local temporary repository.
 
-        .PARAMETER NugetExe
-        Path to nuget executable.
+        .PARAMETER NuGetPath
+        Path to NuGet executable.
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
@@ -721,11 +719,11 @@ function Save-PackageLocally {
             Write-Verbose -Message "Required dependency $ModuleName, $RequiredVersion found in the repo $TempRepo"
         }
         else {
-            Write-Warning "Required dependency $ModuleName, $RequiredVersion not found in the repo $TempRepo"
+            Write-Warning -Message "Required dependency $ModuleName, $RequiredVersion not found in the repo $TempRepo"
             Write-Verbose -Message "Downloading the package from PsGallery to the path $TempRepoPath"
             # We try to download the package from the PsGallery as we are likely intending to use the existing version of the module.
             # If the module not found in psgallery, the following commnad would fail and hence publish to local repo process would fail as well
-            Save-Package -Name $ModuleName -RequiredVersion $RequiredVersion -ProviderName Nuget -Path $TempRepoPath -Source https://www.powershellgallery.com/api/v2 | Out-Null
+            Save-Package -Name $ModuleName -RequiredVersion $RequiredVersion -ProviderName NuGet -Path $TempRepoPath -Source https://www.powershellgallery.com/api/v2 | Out-Null
             $NupkgFilePath = Join-Path -Path $TempRepoPath -ChildPath "$ModuleName.$RequiredVersion.nupkg"
             $ModulePaths = $env:PSModulePath -split ';'
             $DestinationModulePath = [System.IO.Path]::Combine($ModulePaths[0], $ModuleName, $RequiredVersion)
@@ -844,7 +842,7 @@ function Add-AllModule {
         [Parameter(Mandatory)]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe
+        $NuGetPath
     )
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
@@ -860,7 +858,7 @@ function Add-AllModule {
         Save-PackagesFromPsGallery -TempRepo $TempRepo -TempRepoPath $TempRepoPath -ModulePaths $modulePath
 
         # Add the modules to the local repository
-        Add-Module -TempRepo $TempRepo -TempRepoPath $TempRepoPath -ModulePath $modulePath -NugetExe $NugetExe
+        Add-Module -TempRepo $TempRepo -TempRepoPath $TempRepoPath -ModulePath $modulePath -NuGetPath $NuGetPath
         Write-Verbose -Message " "
     }
     Write-Verbose -Message "$($CmdletName) : Removing lower version Az.Accounts packages"
@@ -900,8 +898,8 @@ function Add-AllModule {
         .PARAMETER TempRepoPath
         Path to the temporary reposityroy.
 
-        .PARAMETER NugetExe
-        Location of nuget executable.
+        .PARAMETER NuGetPath
+        Location of NuGet executable.
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
@@ -921,7 +919,7 @@ function Add-RootModule {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [SupportsWildcards()]
         [string]
         $Path)
@@ -984,7 +982,7 @@ function Add-ModuleVersion {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1054,7 +1052,7 @@ function Add-Guid {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1124,7 +1122,7 @@ function Add-Author {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1194,7 +1192,7 @@ function Add-CompanyName {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1228,7 +1226,7 @@ function Add-CompanyName {
                     CategoryReason     = "Invalid PowerShell file type by extension '$($file.Extension)'"
                     CategoryTargetName = 'Path'
                     CategoryTargetType = 'System.String'
-                    ErrorId            = Format-ErrorId -Caller $CmdletName -Name 'InvalidOperationExtension' -Position $MyInvocation.ScriptLineNumber
+                    ErrorId            = Format-ErrorId -Caller $CmdletName -Name 'PSArgumentExtension' -Position $MyInvocation.ScriptLineNumber
                     Exception          = [System.Management.Automation.PSArgumentException]::new($message, 'Path')
                     Message            = $message
                     RecommendedAction  = "Please provide a Parameter 'Path' with a valid file extension from { '.psd1', '.psm1' }"
@@ -1265,7 +1263,7 @@ function Add-Copyright {
     [CmdletBinding(DefaultParameterSetName = 'UsingCopyright', SupportsShouldProcess)]
     param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1412,7 +1410,7 @@ function New-ModuleManifestError {
         [string]
         $TargetType = 'System.String',
 
-        [type]
+        [System.Exception]
         $ExceptionType = [System.ArgumentException],
 
         [System.Collections.ArrayList]
@@ -1448,6 +1446,7 @@ function New-ModuleManifestError {
         CategoryTargetType = $TargetType
         ErrorId            = Format-ErrorId -Caller $CmdletName -Name $ExceptionType.Name -Position $MyInvocation.ScriptLineNumber
         Exception          = [System.InvalidOperationException]::new($message)
+        InnerException     = $ExceptionType
         Message            = $message
         RecommendAction    = "Please provide a Parameter '$($TargetName)' with a valid file extension from { $($extensions) }"
         TargetObject       = $Path
@@ -1480,7 +1479,7 @@ function Add-Module {
         [Parameter(Mandatory)]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe
+        $NuGetPath
     )
 
     BEGIN {
@@ -1533,7 +1532,7 @@ function Add-Module {
                     $dirPath = Join-Path -Path . -ChildPath $moduleName
                     $unzippedManifest = Join-Path -Path $dirPath -ChildPath ($moduleName + ".psd1")
 
-                    # Validate nuget is there
+                    # Validate NuGet is there
                     if (-not (Test-Path -LiteralPath $nupkgPath -PathType Leaf)) {
                         $message = "$($CmdletName) : Module at '$($nupkgPath)' in '$($TempRepoPath)' does not exist"
                         $newErrorRecordSplat = @{
@@ -1569,15 +1568,15 @@ function Add-Module {
                         Add-RootModule -Path $unzippedManifest
                     }
 
-                    Write-Verbose "Removing module manifest dependencies for $unzippedManifest"
+                    Write-Verbose -Message "Removing module manifest dependencies for $unzippedManifest"
                     Remove-ModuleDependency -Path (Join-Path $TempRepoPath $unzippedManifest -Resolve)
 
                     Remove-Item -Path $zipPath -Force
 
                     Write-Verbose -Message "$($CmdletName) : Repackaging $dirPath"
-                    Update-NugetPackage -TempRepoPath $TempRepoPath -ModuleName $moduleName -DirPath $dirPath -NugetExe $NugetExe
+                    Update-NuGetPackage -TempRepoPath $TempRepoPath -ModuleName $moduleName -DirPath $dirPath -NuGetPath $NuGetPath
 
-                    Write-Verbose -Message -Message "$($CmdletName) : Removing temporary folder $dirPath"
+                    Write-Verbose -Message "$($CmdletName) : Removing temporary folder $dirPath"
                     Remove-Item -Recurse $dirPath -Force -ErrorAction Stop
                 }
                 finally {
@@ -1600,8 +1599,8 @@ function Add-Module {
         .PARAMETER TempRepoPath
         Path to the local temporary repository.
 
-        .PARAMETER NugetExe
-        Path to nuget exectuable.
+        .PARAMETER NuGetPath
+        Path to NuGet exectuable.
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
@@ -1637,7 +1636,7 @@ function Publish-PowershellModule {
         [Parameter(Mandatory)]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe
+        $NuGetPath
     )
 
     BEGIN {
@@ -1672,10 +1671,10 @@ function Publish-PowershellModule {
             throw $er
         }
 
-        Write-Verbose -Message "$($CmdletName) : Pushing package $moduleName to nuget source '$($RepoLocation)'"
-        &$NugetExe push $nupkgPath $ApiKey -s $RepoLocation
+        Write-Verbose -Message "$($CmdletName) : Pushing package $moduleName to NuGet source '$($RepoLocation)'"
+        &$NuGetPath push $nupkgPath $ApiKey -s $RepoLocation
         $formatLastExitCode = ('0x{0:X8}|{0}' -f $LASTEXITCODE)
-        Write-Verbose -Message "$($CmdletName) : Pushed package $moduleName to nuget source '$($RepoLocation)' with exit code '$($formatLastExitCode)'"
+        Write-Verbose -Message "$($CmdletName) : Pushed package $moduleName to NuGet source '$($RepoLocation)' with exit code '$($formatLastExitCode)'"
     }
 
     <#
@@ -1688,13 +1687,13 @@ function Publish-PowershellModule {
         Key used to publish.
 
         .PARAMETER TempRepoPath
-        Path to the local temporary repository containing nuget.
+        Path to the local temporary repository containing NuGet.
 
         .PARAMETER RepoLocation
         Repository we are publishing too.
 
-        .PARAMETER NugetExe
-        Path to nuget executable.
+        .PARAMETER NuGetPath
+        Path to NuGet executable.
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
@@ -1725,7 +1724,7 @@ function Publish-AllModule {
         [Parameter(Mandatory)]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [string]
-        $NugetExe,
+        $NuGetPath,
 
         [switch]
         $PublishLocal
@@ -1741,14 +1740,14 @@ function Publish-AllModule {
             foreach ($modulePath in $paths) {
                 $module = Get-Item -Path $modulePath
                 Write-Information -MessageData "Pushing $module module from $modulePath" -InformationAction Continue
-                Publish-PowershellModule -Path $modulePath -ApiKey $apiKey -TempRepoPath $TempRepoPath -RepoLocation $RepoLocation -NugetExe $NugetExe
+                Publish-PowershellModule -Path $modulePath -ApiKey $apiKey -TempRepoPath $TempRepoPath -RepoLocation $RepoLocation -NuGetPath $NuGetPath
                 Write-Information -MessageData "Pushed $module module" -InformationAction Continue
             }
         }
     }
 
     <#
-        .SYNOPSIS Publish the nugets to PSGallery
+        .SYNOPSIS Publish the NuGets to PSGallery
 
         .PARAMETER ApiKey
         Key used to publish.
@@ -1759,8 +1758,8 @@ function Publish-AllModule {
         .PARAMETER RepoLocation
         Name of repository we are publishing too.
 
-        .PARAMETER NugetExe
-        Path to nuget executable.
+        .PARAMETER NuGetPath
+        Path to NuGet executable.
 
         .PARAMETER PublishLocal
         If publishing locally we don't do anything.

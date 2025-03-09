@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="LinqModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="LinqModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "LinqModule.psd1" is part of "LinqModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'LinqModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '1.2.9157.2002'
 CompatiblePSEditions = @('Desktop', 'Core')
 
 # ID used to uniquely identify this module
-GUID = '5A75A102-6EB7-4F5E-85AB-5ACDB11EEC91'
+GUID = '30d413f5-9231-4095-af82-4df08c0fef4e'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -74,7 +72,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Collection of LINQ methods for PowerShell'
@@ -152,17 +150,15 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         # Tags = @()
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://opensource.org/license/BSD-3-clause'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/jmcooper176/PowerShellModules'
 
         # A URL to an icon representing this module.
         # IconUri = ''
@@ -178,9 +174,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -188,6 +182,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

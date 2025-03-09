@@ -1,7 +1,7 @@
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -Path 'Octopus.Client.dll' 
- 
+Add-Type -Path 'Octopus.Client.dll'
+
 $apikey = 'API-KEY' # Get this from your profile
 $octopusURI = 'https://localhost' # Your server address
 
@@ -12,8 +12,8 @@ $targetRole = '' # Run this step on these deployment targets, leave empty for no
 $runOnServer = '' # Set this to true to run the step on the Octopus Server (Must be string "true"|"false")
 $environmentName = '' # Name of Environment on which you want this step to run
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI, $apikey 
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI, $apikey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 
 foreach ($name in $projectNames) {
     if (![string]::IsNullOrEmpty($projectNames)) {
@@ -30,21 +30,21 @@ foreach ($name in $projectNames) {
 
         $actionTemplate = $repository.ActionTemplates.FindByName($stepTemplateName)
 
-        $step = New-Object Octopus.Client.Model.DeploymentStepResource
+        $step = New-Object -TypeName Octopus.Client.Model.DeploymentStepResource
         $step.Name = $stepName
         $step.Condition = [Octopus.Client.Model.DeploymentStepCondition]::Success
         if (![string]::IsNullOrEmpty($targetRole)) {
             $step.Properties["Octopus.Action.TargetRoles"] = $targetRole
         }
 
-        $action = New-Object Octopus.Client.Model.DeploymentActionResource
+        $action = New-Object -TypeName Octopus.Client.Model.DeploymentActionResource
         $action.Name = $stepName
         $action.ActionType = $actionTemplate.ActionType
 
         if (![string]::IsNullOrEmpty($environmentName)) {
             $action.Environments.Add($environmentId) | Out-Null
         }
-        
+
         #Generic properties
         foreach ($property in $actionTemplate.Properties.GetEnumerator()) {
             $action.Properties[$property.Key] = $property.Value
@@ -61,7 +61,7 @@ foreach ($name in $projectNames) {
         }
 
         if ($action.Properties["Octopus.Action.RunOnServer"].Value -eq $false -and [string]::IsNullOrEmpty($targetRole)) {
-            write-host ""
+            Write-Information -MessageData ""
             $step.Properties["Octopus.Action.TargetRoles"] = Read-Host 'If $action.Properties["Octopus.Action.RunOnServer"] Is Not "true", You Must Enter a Target Role'
         }
 
@@ -72,7 +72,7 @@ foreach ($name in $projectNames) {
             $repository.DeploymentProcesses.Modify($process)
         }
         catch {
-            Write-Warning $_.Exception.InnerException.Details.Name.ToString()
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
         }
     }
 }

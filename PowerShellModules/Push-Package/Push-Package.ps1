@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Push-Package.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Push-Package.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "Push-Package.ps1" is part of "Push-Package".
 
     .VERSION 1.0.0
 
-    .GUID E9D08D58-B84E-4957-9D5D-3C8295CB74CF
+    .GUID E59E334E-ABD0-4ADA-B6EF-469B3C0086BA
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "Push-Package.ps1" is part of "Push-Package".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/Generate-ExternalContributors
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/Generate-ExternalContributors
 
     .ICONURI
 
@@ -73,7 +72,6 @@ This file "Push-Package.ps1" is part of "Push-Package".
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -82,7 +80,6 @@ This file "Push-Package.ps1" is part of "Push-Package".
     .DESCRIPTION
     Push NuGet package to a NuGet feed.
 #>
-
 
 [CmdletBinding(SupportsShouldProcess)]
 param (

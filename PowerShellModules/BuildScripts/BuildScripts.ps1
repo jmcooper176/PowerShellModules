@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="BuildScripts.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="BuildScripts.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "BuildScripts.ps1" is part of "BuildScripts".
 
     .VERSION 1.0.0
 
-    .GUID C9BCF901-966A-425D-A4AD-8F86D54D2233
+    .GUID 8174893F-7CB4-4B28-B848-DFFA5C8A360E
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "BuildScripts.ps1" is part of "BuildScripts".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/BuildScripts
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/BuildScripts
 
     .ICONURI
 
@@ -73,7 +72,6 @@ This file "BuildScripts.ps1" is part of "BuildScripts".
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -82,7 +80,6 @@ This file "BuildScripts.ps1" is part of "BuildScripts".
     .DESCRIPTION
     Top-level build script.
 #>
-
 
 [CmdletBinding()]
 param()

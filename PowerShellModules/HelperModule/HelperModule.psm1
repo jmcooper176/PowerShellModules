@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="HelperModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="HelperModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -46,237 +45,433 @@ This file "HelperModule.psm1" is part of "HelperModule".
 #>
 
 <#
+    Get-AlertSet
+#>
+function Get-AlertSet {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property alertSet | Write-Output
+    }
+}
+
+<#
+    Get-Category
+#>
+function Get-Category {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property Category | Write-Output
+    }
+}
+
+<#
+    Get-Component
+#>
+function Get-Component {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property Component | Write-Output
+    }
+}
+
+<#
+    Get-Copyright
+#>
+function Get-Copyright {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-Notes | ForEach-Object -Process {
+            if (($_ -match '(?<copyright>Copyright.*)') -xor ($_ -match '(?<copyright>\(c\).*)')) {
+                return $Matches['copyright']
+            }
+        }
+
+        return [string]::Empty
+    }
+}
+
+<#
+    Get-Description
+#>
+function Get-Description {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property description | Write-Output
+    }
+}
+
+<#
+    Get-Details
+#>
+function Get-Details {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property details | Write-Output
+    }
+}
+
+<#
+    Get-Examples
+#>
+function Get-Examples {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property examples | Write-Output
+    }
+}
+
+<#
+    Get-Functionality
+#>
+function Get-Examples {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property Functionality | Write-Output
+    }
+}
+
+<#
     Get-HelpProperty
 #>
 function Get-HelpProperty {
-    [CmdletBinding()]
-    [OutputType([object])]
+    [CmdletBinding([string], [string[]])]
     param (
-        [Parameter(Mandatory)]
-        [ValidateScript({ Get-Command -Name $_ -CommandType @('Cmdlet', 'Function', 'Script') })]
-        [Alias('CmdletName')]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
         [string]
         $Name,
 
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateSet('alertSet', 'Category', 'Component', 'description', 'details', 'examples',
-        'Functionality', 'inputTypes', 'ModuleName', 'Name', 'Synopsis', 'parameters', 'PSSnapIn',
-        'relatedLinks', 'returnValues', 'Role', 'syntax')]
-        [Alias('HelpProperty')]
-        [string]
-        $Property
-    )
-
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-    }
-
-    PROCESS {
-        Get-Help -Name $Name -Full | Select-Object -ExpandProperty $Property | Write-Output
-    }
-
-    <#
-        .SYNOPSIS
-        Gets a property from the help file for a cmdlet, function, or script.
-
-        .DESCRIPTION
-        `Get-HelpProperty` gets a property from the help file for a cmdlet, function, or script.
-
-        .PARAMETER Name
-        Specifies the name or path of the cmdlet, function, or script.
-
-        If name is specified as a module name, the module must exist in the current session.
-
-        If name is specified as a relative or absolute path, the path must exist on the file system and must be a leaf.
-
-        .PARAMETER Property
-        Specifies the name of the property to retrieve from the help file.
-
-        .INPUTS
-        [string]  `Get-HelpProperty` accepts a string value for the Property parameter from the PowerShell pipeline.
-
-        .OUTPUTS
-        [object]  `Get-HelpProperty` returns the value of the property to the PowerShell pipeline.
-
-        .EXAMPLE
-        PS> Get-HelpProperty -Name 'Get-Process' -Property 'Syntax'
-
-        Get-Process [[-Name] <System.String[]>] [-FileVersionInfo] [-Module] [<CommonParameters>]
-
-        Get-Process [-FileVersionInfo] -Id <System.Int32[]> [-Module] [<CommonParameters>]
-
-        Get-Process [-FileVersionInfo] -InputObject <System.Diagnostics.Process[]> [-Module] [<CommonP
-
-        Get-Process -Id <System.Int32[]> -IncludeUserName [<CommonParameters>]
-
-        Get-Process [[-Name] <System.String[]>] -IncludeUserName [<CommonParameters>]
-
-        Get-Process -IncludeUserName -InputObject <System.Diagnostics.Process[]> [<CommonParameters>]
-
-        Retrieved the Syntax property from the help file for the Get-Process cmdlet.  Returned the syntax.
-
-        .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
-
-        .LINK
-        about_CommonParameters
-
-        .LINK
-        about_Functions_Advanced
-
-        .LINK
-        Get-Command
-
-        .LINK
-        Get-Help
-
-        .LINK
-        Initialize-PSCmdlet
-
-        .LINK
-        Select-Object
-
-        .LINK
-        Write-Output
-    #>
-}
-
-<#
-    Get-HelpPropertyLength
-#>
-function Get-HelpPropertyLength {
-    [CmdletBinding()]
-    [OutputType([int])]
-    param (
-        [Parameter(Mandatory)]
-        [ValidateScript({ Get-Command -Name $_ -CommandType @('Cmdlet', 'Function', 'Script') })]
-        [Alias('CmdletName')]
-        [string]
-        $Name,
-
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateSet('alertSet', 'Category', 'Component', 'description', 'details', 'examples',
-            'Functionality', 'inputTypes', 'ModuleName', 'Name', 'Synopsis', 'parameters', 'PSSnapIn',
-            'relatedLinks', 'returnValues', 'Role', 'syntax')]
-        [Alias('HelpProperty')]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelingByPropertyName)]
+        [ValidateSet('alertSet', 'Category', 'Component', 'description', 'details', 'examples', 'Functionality', 'inputTypes',
+            'ModuleName', 'Name', 'parameters', 'PSSnapIn', 'relatedLinks', 'returnValues', 'Role', 'Synopsis', 'syntax')]
         [string[]]
         $Property
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        $buffer = [System.Collections.ArrayList]::new()
     }
 
     PROCESS {
-        Write-Verbose -Message "$($CmdletName) : Getting length of '$($_)' for '$($Name)'"
-        $Property | Get-HelpProperty -Name $Name | Out-String -Stream | Measure-Object -Character | Select-Object -ExpandProperty Characters | Write-Output
+        $Property | Where-Object -FilterScript { Test-HelpProperty -Name $Name -Property $_ } | ForEach-Object -Process {
+            $propertyPresent = $_
+            $buffer.Clear()
+
+            switch ($propertyPresent) {
+                'alertSet' {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty alertSet | ForEach-Object -Process {
+                        if (-not [string]::IsNullOrWhiteSpace(([string]$_))) {
+                            $buffer.Add(([string]$_)) | Out-Null
+                        }
+                        else {
+                            $buffer.Add([Environment]::NewLine) | Out-Null
+                        }
+                    }
+
+                    $buffer.ToArray() | Write-Output
+
+                    break
+                }
+
+                'description' {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty description | ForEach-Object -Process {
+                        if (-not [string]::IsNullOrWhiteSpace(([string]$_))) {
+                            $buffer.Add(([string]$_)) | Out-Null
+                        }
+                        else {
+                            $buffer.Add([Environment]::NewLine) | Out-Null
+                        }
+                    }
+
+                    $buffer.ToArray() | Write-Output
+
+                    break
+                }
+
+                'details' {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty details | ForEach-Object -Process {
+                        if (-not [string]::IsNullOrWhiteSpace(([string]$_))) {
+                            $buffer.Add(([string]$_)) | Out-Null
+                        }
+                        else {
+                            $buffer.Add([Environment]::NewLine) | Out-Null
+                        }
+                    }
+
+                    $buffer.ToArray() | Write-Output
+
+                    break
+                }
+
+                'examples' {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty examples | ForEach-Object -Process {
+                        if (-not [string]::IsNullOrWhiteSpace(([string]$_))) {
+                            $buffer.Add(([string]$_)) | Out-Null
+                        }
+                        else {
+                            $buffer.Add([Environment]::NewLine) | Out-Null
+                        }
+                    }
+
+                    $buffer.ToArray() | Write-Output
+
+                    break
+                }
+
+                'inputTypes' {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty inputTypes | ForEach-Object -Process {
+                        if (-not [string]::IsNullOrWhiteSpace(([string]$_))) {
+                            $buffer.Add(([string]$_)) | Out-Null
+                        }
+                        else {
+                            $buffer.Add([Environment]::NewLine) | Out-Null
+                        }
+                    }
+
+                    $buffer.ToArray() | Write-Output
+
+                    break
+                }
+
+                'parameters' {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty parameters | ForEach-Object -Process {
+                        if (-not [string]::IsNullOrWhiteSpace(([string]$_))) {
+                            $buffer.Add(([string]$_)) | Out-Null
+                        }
+                        else {
+                            $buffer.Add([Environment]::NewLine) | Out-Null
+                        }
+                    }
+
+                    $buffer.ToArray() | Write-Output
+
+                    break
+                }
+
+                'relatedLinks' {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty relatedLinks | ForEach-Object -Process {
+                        if (-not [string]::IsNullOrWhiteSpace(([string]$_))) {
+                            $buffer.Add(([string]$_)) | Out-Null
+                        }
+                        else {
+                            $buffer.Add([Environment]::NewLine) | Out-Null
+                        }
+                    }
+
+                    $buffer.ToArray() | Write-Output
+
+                    break
+                }
+
+                'returnValues' {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty returnValues | ForEach-Object -Process {
+                        if (-not [string]::IsNullOrWhiteSpace(([string]$_))) {
+                            $buffer.Add(([string]$_)) | Out-Null
+                        }
+                        else {
+                            $buffer.Add([Environment]::NewLine) | Out-Null
+                        }
+                    }
+
+                    $buffer.ToArray() | Write-Output
+
+                    break
+                }
+
+                'syntax' {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty syntax | ForEach-Object -Process {
+                        if (-not [string]::IsNullOrWhiteSpace(([string]$_))) {
+                            $buffer.Add(([string]$_)) | Out-Null
+                        }
+                        else {
+                            $buffer.Add([Environment]::NewLine) | Out-Null
+                        }
+                    }
+
+                    $buffer.ToArray() | Write-Output
+
+                    break
+                }
+
+                default {
+                    Get-Help -Name $Name -Full | Select-Object -ExpandProperty $propertyPresent | Out-String | Write-Output
+                    break
+                }
+            }
+        }
+    }
+
+    END {
+        $buffer.Clear()
     }
 
     <#
         .SYNOPSIS
-        Gets the length of a property from the help file for a cmdlet, function, or script.
+        Tests an object fo the presence of a property.
 
         .DESCRIPTION
-        `Get-HelpPropertyLength` gets the length of a property from the help file for a cmdlet, function, or script.
+        The `Test-HasProperty` function tests an object for the presence of a property.
+
+        .PARAMETER Object
+        Specifies the PowerShell object under test.
 
         .PARAMETER Name
-        Specifies the name or path of the cmdlet, function, or script.
+        Specifies the name of the property to test for.
 
-        .PARAMETER Property
-        Specifies the one or more property names to retrieve from the help file and measure for length.
+        .PARAMETER Strict
+        Indicates that the function should throw an exception if the Object parameter is null.
 
         .INPUTS
-        [string[]]  `Get-HelpPropertyLength` accepts a string array for the Property parameter from the PowerShell pipeline.
+        [string]  `Test-HasProperty` accepts a string value for the Name parameter from the PowerShell pipeline.
 
         .OUTPUTS
-        [int]  `Get-HelpPropertyLength` returns the length of each property to the PowerShell pipeline.]
+        [bool]  `Test-HasProperty` returns a boolean value indicating the presence or absence of the property.
 
         .EXAMPLE
-        PS> Get-HelpPropertyLength -Name 'Get-Process' -Property 'Syntax'
+        PS> $Object = [PSCustomObject]@{Name = 'Test'; Value = 42}
+        PS> Test-HasProperty -Object $Object -Name 'Name'
+        True
 
-        531
+        Tested the object for the presence of the Name property.  Returned True.
 
-        Returns the length of the Syntax property from the help file for the Get-Process cmdlet.
+        .EXAMPLE
+        PS> $Object = [PSCustomObject]@{Name = 'Test'; Value = 42}
+        PS> Test-HasProperty -Object $Object -Name 'Type'
+        False
+
+        Tested the object for the presence of the Name property.  Returned False.
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
-        .LINK
-        about_CommonParameters
+        You may use this script only in accordance with the terms of the License Agreement that should have been included with this script.
 
         .LINK
         about_Functions_Advanced
 
         .LINK
-        Get-Command
+        about_Advanced_Function_Parameters
 
         .LINK
-        Get-HelpProperty
+        about_throw
 
         .LINK
-        Initialize-PSCmdlet
+        Set-StrictMode
 
         .LINK
-        Measure-Object
+        Set-Variable
 
         .LINK
-        Out-String
-
-        .LINK
-        Select-Object
+        Write-Error
 
         .LINK
         Write-Output
 
         .LINK
-        Write-Verbose
+        Write-Warning
     #>
 }
 
 <#
-    Get-ModuleProperty
+    Get-InputTypes
 #>
-function Get-ModuleProperty {
-    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+function Get-InputTypes {
+    [CmdletBinding()]
     [OutputType([string])]
     param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
-        [SupportsWildcards()]
-        [string[]]
-        $Path,
-
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
-        [string[]]
-        $LiteralPath,
-
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingModuleName')]
-        [ValidateScript({ Get-Module -ListAvailable | Where-Object -Property Name -EQ -Value $_ })]
-        [Alias('ModuleName')]
-        [string[]]
-        $Name,
-
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateSet('AccessMode', 'Author', 'ClrVersion', 'CompanyName', 'CompatiblePSEditions',
-            'Copyright', 'Definition', 'Description',
-            'DotNetFrameworkVersion',
-            'ExperimentalFeatures',
-            'ExportedAliases', 'ExportedCmdlets', 'ExportedCommands', 'ExportedDscResources', 'ExportedFormatFiles', 'ExportedFunctions', 'ExportedTypeFiles', 'ExportedVariables',
-            'FileList',
-            'Guid',
-            'HelpInfoUri', 'IconUri', 'ImplementingAssembly', 'LicenseUri', 'LogPipelineExecutionDetais', 'ModuleList', 'ModuleType', 'Name', 'NestedModules',
-            'OnRemove',
-            'Path',
-            'PowerShellHostName', 'PowerShellVersion',
-            'Prefix',
-            'ProcessorArchitecture',
-            'ProjectUri', 'ReleaseNotes', 'RepositorySourceLocation',
-            'RequiredAssemblies', 'RequiredModules',
-            'RootModule', 'Scripts',
-            'SessionState', 'Tags', 'Version')]
-        [string[]]
-        $Property
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
     )
 
     BEGIN {
@@ -284,133 +479,990 @@ function Get-ModuleProperty {
     }
 
     PROCESS {
-        switch ($PSCmdlet.ParameterSetName) {
-            'UsingLiteralPath' {
-                $LiteralPath | ForEach-Object -Process {
-                    $modulePath = $_
+        $Name | Get-HelpProperty -Property inputTypes | Write-Output
+    }
+}
 
-                    $Property | ForEach-Object -Process {
-                        $moduleProperty = $_
-                        Test-ModuleManifest -Path $modulePath | Select-Object -ExpandProperty $moduleProperty | Write-Output
-                    }
+<#
+    Get-ModuleManifestProperty
+#>
+function Get-ModuleManifestProperty {
+    [CmdletBinding()]
+    [OutputType([System.Management.Automation.ModuleAccessMode],
+        [string],
+        [version],
+        [System.Collections.Generic.IEnumerable[string]],
+        [System.Collections.Generic.IEnumerable[ExperimentalFeature]],
+        [System.Collections.Generic.Dictionary[string,System.Management.Automation.AliasInfo]],
+        [System.Collections.Generic.Dictionary[string,System.Management.Automation.CmdletInfo]],
+        [System.Collections.Generic.Dictionary[string,System.Management.Automation.CommandInfo]],
+        [System.Collections.ObjectModel.ReadOnlyCollection[string]],
+        [System.Collections.ObjectModel.ReadOnlyCollection[psmoduleinfo]],
+        [System.Collections.Generic.Dictionary[string,System.Management.Automation.FunctionInfo]],
+        [System.Collections.Generic.Dictionary[string,psvariable]],
+        [guid],
+        [uri],
+        [System.Reflection.Assembly],
+        [bool],
+        [System.Collections.Generic.IEnumerable[System.Object]],
+        [System.Management.Automation.ModuleType],
+        [System.Collections.ObjectModel.ReadOnlyCollection[psmoduleinfo]],
+        [scriptblock],
+        [System.Object],
+        [System.Reflection.ProcessorArchitecture],
+        [System.Management.Automation.SessionState])]
+    param (
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [SupportsWildcards()]
+        [string]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateSet('Author', 'CompanyName', 'Copyright', 'Definition', 'Description', 'HelpInfoUri', 'ModuleBase',
+            'Name', 'Path', 'PowerShellHostName', 'Prefix', 'ReleaseNotes', 'RootModule',
+            'CompatiblePSEditions', 'FileList', 'RequiredAssemblies', 'Scripts', 'Tags',
+            'ClrVersion', 'DotNetFrameworkVersion', 'PowerShellHostVersion', 'PowerShellVersion', 'Version',
+            'ExportedDscResources', 'ExportedFormatFiles', 'ExportedTypeFiles',
+            'NestedModules', 'RequiredModules',
+            'IconUri', 'LicenseUri', 'RepositorySourceLocation', 'ProjectUri',
+            'AccessMode',
+            'ExperimentalFeatures',
+            'ExportedAliases',
+            'ExportedCmdlets',
+            'ExportedCommands',
+            'ExportedVariables',
+            'Guid',
+            'ImplementingAssembly',
+            'LogPipelineExecutionDetails',
+            'ModuleList',
+            'ModuleType',
+            'PrivateData',
+            'ProcessorArchitecture',
+            'SessionState')]
+        [string[]]
+        $Property
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        $stringProperties = @('Author', 'CompanyName', 'Copyright', 'Definition', 'Description', 'HelpInfoUri', 'ModuleBase',
+            'Name', 'Path', 'PowerShellHostName', 'Prefix', 'ReleaseNotes', 'RootModule')
+        $listProperties = @('CompatiblePSEditions', 'FileList', 'RequiredAssemblies', 'Scripts', 'Tags')
+        $versionProperties = @('ClrVersion', 'DotNetFrameworkVersion', 'PowerShellHostVersion', 'PowerShellVersion', 'Version')
+        $readOnlyCollectionProperties = @('ExportedDscResources', 'ExportedFormatFiles', 'ExportedTypeFiles')
+        $psModuleInfoProperties = @('NestedModules', 'RequiredModules')
+        $uriProperties = @('IconUri', 'LicenseUri', 'RepositorySourceLocation', 'ProjectUri')
+    }
+
+    PROCESS {
+        $Property | ForEach-Object -Process {
+            $prop = $_
+
+            switch ($prop) {
+                { $_ -in $stringProperties } {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
                 }
 
-                break
+                { $_ -in $listProperties } {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                { $_ -in $versionProperties } {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                { $_ -in $readOnlyCollectionProperties } {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                { $_ -in $psModuleInfoProperties } {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                { $_ -in $uriProperties } {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'AccessMode' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'ExperimentalFeatures' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'ExportedAliases' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'ExportedCmdlets' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'ExportedCommands' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'ExportedVariables' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'Guid' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'ImplementingAssembly' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'LogPipelineExecutionDetails' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'ModuleList' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'ModuleType' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'OnRemove' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'PrivateData' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'ProcessArchitecture' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+
+                'SessionState' {
+                    $Path | Resolve-Path | Test-ModuleManifest | Select-Object -ExpandProperty $prop | Write-Output
+                    break
+                }
+            }
+        }
+        $Path | Resolve-Path | Test-ModuleManifest | Select-Object -Property $Property | Write-Output
+    }
+
+    <#
+        .SYNOPSIS
+        Selects a module property(s) or property expression(s).
+
+        .DESCRIPTION
+        The `Select-ModuleProperty` function selects a module property(s) or property expression(s)..
+
+        .PARAMETER Path
+        Specifies the path to the module manifest file.
+
+        .PARAMETER Property
+        Specifies the name of the property to select.
+
+        .INPUTS
+        [string]  `Select-ModuleProperty` accepts a string value for the Path parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [bool]  `Select-ModuleProperty` returns a boolean value indicating the presence or absence of the property.
+
+        .EXAMPLE
+        PS> $Path = 'C:\Program Files\WindowsPowerShell\Modules\MyModule\MyModule.psd1'
+        PS> Select-ModuleProperty -Path $Path -Property 'PowerShellVersion'
+        5.1
+
+        Selected the module property.  Returned the property value.
+
+        .NOTES
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_Functions_Advanced
+    #>
+}
+
+<#
+    Get-ModuleName
+#>
+function Get-ModuleName {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property ModuleName | Write-Output
+    }
+}
+
+<#
+    Get-Name
+#>
+function Get-Name {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property Name | Write-Output
+    }
+}
+
+<#
+    Get-Notes
+#>
+function Get-Notes {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | ForEach-Object -Process {
+            (Get-Help -Name $_ -Full | Out-String) -match '(?ms)NOTES(?<notes>.*?)RELATED'
+            (($Matches['notes'] -replace 'NOTES').Trim() -split [Environment]::NewLine) | Write-Output
+        }
+    }
+}
+
+<#
+    Get-Parameters
+#>
+function Get-Parameters {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property parameters | Write-Output
+    }
+}
+
+<#
+    Get-RelatedLinks
+#>
+function Get-RelatedLinks {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property relatedLinks | Write-Output
+    }
+}
+
+<#
+    Get-ReturnValues
+#>
+function Get-ReturnValues {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property returnValues | Write-Output
+    }
+}
+
+<#
+    Get-Role
+#>
+function Get-Role {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property Role | Write-Output
+    }
+}
+
+<#
+    Get-Synopsis
+#>
+function Get-Synopsis {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property Synopsis | Write-Output
+    }
+}
+
+<#
+    Get-Syntax
+#>
+function Get-Syntax {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-HelpProperty -Property syntax | Write-Output
+    }
+}
+
+<#
+    Initialize-ModuleManifest
+#>
+function Initialize-ModuleManifest {
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [string]
+        $Path,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [guid]
+        $Guid,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Author,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $CompanyName,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Copyright,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $DefaultCommandPrefix,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Description,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $PowerShellHostName,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Prerelease,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -LiteralPath -Include '*.ps1', '*.psm1', '*.psd1', '*.dll', '*.cdxml', '*.xaml' $_ -PathType Leaf })]
+        [Alias('ModuleToProcess')]
+        [string]
+        $RootModule,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.dll', '*.psm1' -PathType Leaf })]
+        [object[]]
+        $NestedModules = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [object[]]
+        $ModuleList = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [object[]]
+        $RequiredModules = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [scriptblock]
+        $OnRemove,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateSet('None', 'MSIL', 'X86', 'IA64', 'Amd64', 'Arm')]
+        [ProcessorArchitecture]
+        $ProcessorArchitecture = 'None',
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [hashtable]
+        $PrivateData = @{},
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [System.Management.Automation.SessionState]
+        $SessionState,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [SupportsWildcards()]
+        [string[]]
+        $AliasesToExport = '*',
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [SupportsWildcards()]
+        [string[]]
+        $CmdletsToExport = '*',
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateSet('Core', 'Desktop')]
+        [string[]]
+        $CompatiblePSEditions,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [SupportsWildcards()]
+        [string[]]
+        $DscResourcesToExport = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $ExternalModuleDependencies = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $FileList = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $FormatsToProcess = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [SupportsWildcards()]
+        [string[]]
+        $FunctionsToExport = '*',
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $PackageProviders = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $ReleaseNotes = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.dll' -PathType Leaf })]
+        [string[]]
+        $RequireAssemblies = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [string[]]
+        $ScriptsToProcess = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [string[]]
+        $Tags = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.ps1xml' -PathType Leaf })]
+        [string[]]
+        $TypesToProcess = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [SupportsWildcards()]
+        [string[]]
+        $VariablesToExport = '*',
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ (4.5 -gt $_) -and ($PSVersionTable.PSVersion.Major -le 5) })]
+        [version]
+        $ClrVersion,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ (4.5 -gt $_) -and ($PSVersionTable.PSVersion.Major -le 5) })]
+        [version]
+        $DotNetFrameworkVersion,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('Version')]
+        [version]
+        $ModuleVersion = 1.0.0,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [version]
+        $PowerShellHostVersion,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('Version')]
+        [version]
+        $PowerShellVersion = 5.1,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [uri]
+        $HelpInfoUri,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [uri]
+        $IconUri,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [uri]
+        $LicenseUri,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [uri]
+        $ProjectUri,
+
+        [Alias('Force')]
+        [switch]
+        $AllowClobber,
+
+        [switch]
+        $PassThru,
+
+        [switch]
+        $RequireLicenseAcceptance
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $newModuleManifestSplat = @{
+            Path = $Path
+            ModuleVersion = $ModuleVersion
+            ModuleList = $ModuleList
+            NestedModules = $NestedModules
+            RequiredModules = $RequiredModules
+            ProcessorArchitecture = $ProcessorArchitecture
+            PrivateData = $PrivateData
+            AliasesToExport = $AliasesToExport
+            CmdletsToExport = $CmdletsToExport
+            DSCResourcesToExport = $DscResourcesToExport
+            ExternalModuleDependencies = $ExternalModuleDependencies
+            FileList = $FileList
+            FormatsToProcess = $FormatsToProcess
+            FunctionsToExport = $FunctionsToExport
+            PackageProviders = $PackageProviders
+            ReleaseNotes = $ReleaseNotes
+            RequiredAssemblies = $RequireAssemblies
+            ScriptsToProcess = $ScriptsToProcess
+            Tags = $Tags
+            TypesToProcess = $TypesToProcess
+            VariablesToExport = $VariablesToExport
+            PowerShellVersion = $PowerShellVersion
+            PassThru = $PassThru.IsPresent
+            RequireLicenseAcceptance = $RequireLicenseAcceptance.IsPresent
+            WhatIf = $false
+        }
+
+        if ($PSBoundParameters.ContainsKey('Author')) {
+            $newModuleManifestSplat.Add('Author', $Author)
+        }
+        else {
+            $userName = $env:USERNAME
+            $givenName = Get-AdUser -Identity | Select-Object -ExpandProperty GivenName
+            $surname = Get-AdUser -Identity | Select-Object -ExpandProperty GivenName
+            $Author = ('{0} {1}' -f $givenName, $surname)
+            $newModuleManifestSplat.Add('Author', $Author)
+        }
+
+        if ($PSBoundParameters.ContainsKey('ClrVersion')) {
+            $newModuleManifestSplat.Add('ClrVersion', $ClrVersion)
+        }
+
+        if ($PSBoundParameters.ContainsKey('CompanyName')) {
+            $newModuleManifestSplat.Add('CompanyName', $CompanyName)
+        }
+        else {
+            $newModuleManifestSplat.Add('CompanyName', $Author)
+        }
+
+        if ($PSBoundParameters.ContainsKey('CompatiblePSEditions')) {
+            $newModuleManifestSplat.Add('CompatiblePSEditions', $CompatiblePSEditions)
+        }
+
+        if ($PSBoundParameters.ContainsKey('Copyright')) {
+            $newModuleManifestSplat.Add('Copyright', $Copyright)
+        }
+        else {
+            $Copyright = ('Copyright (c) {0}, {1}.  All Rights Reserved.' -f $CompanyName, ((Microsoft.PowerShell.Utility\Get-Date).ToUniversalTime().Year))
+            $newModuleManifestSplat.Add('Copyright', $Copyright)
+        }
+
+        if ($PSBoundParameters.ContainsKey('DefaultCommandPrefix')) {
+            $newModuleManifestSplat.Add('DefaultCommandPrefix', $DefaultCommandPrefix)
+        }
+
+        if ($PSBoundParameters.ContainsKey('Guid')) {
+            $newModuleManifestSplat.Add('Guid', $Guid)
+        }
+        else {
+            $Guid = [guid]::NewGuid()
+            $newModuleManifestSplat.Add('Guid', $Guid)
+        }
+
+        if ($PSBoundParameters.ContainsKey('PowerShellHostName')) {
+            $newModuleManifestSplat.Add('PowerShellHostName', $PowerShellHostName)
+        }
+
+        if ($PSBoundParameters.ContainsKey('Prerelease')) {
+            $newModuleManifestSplat.Add('Prerelease', $Prerelease)
+        }
+
+        if ($PSBoundParameters.ContainsKey('OnRemove')) {
+            $newModuleManifestSplat.Add('OnRemove', $OnRemove)
+        }
+
+        if ($PSBoundParameters.ContainsKey('RootModule')) {
+            $newModuleManifestSplat.Add('RootModule', $RootModule)
+        }
+        else {
+            $fileName = Get-ItemProperty -LiteralPath $Path -Name Name
+            $RootModule = $fileName -replace '.psd1', '.psm1'
+            $newModuleManifestSplat.Add('RootModule', $RootModule)
+        }
+
+        if ($PSBoundParameters.ContainsKey('SessionState')) {
+            $newModuleManifestSplat.Add('SessionState', $SessionState)
+        }
+
+        if ($PSBoundParameters.ContainsKey('DotNetFrameworkVersion')) {
+            $newModuleManifestSplat.Add('DotNetFrameworkVersion', $DotNetFrameworkVersion)
+        }
+
+        if ($PSBoundParameters.ContainsKey('PowerShellHostVersion')) {
+            $newModuleManifestSplat.Add('PowerShellHostVersion', $PowerShellHostVersion)
+        }
+
+        if ($PSBoundParameters.ContainsKey('HelpInfoUri')) {
+            $newModuleManifestSplat.Add('HelpInfoUri', $HelpInfoUri)
+        }
+
+        if ($PSBoundParameters.ContainsKey('IconUri')) {
+            $newModuleManifestSplat.Add('IconUri', $IconUri)
+        }
+
+        if ($PSBoundParameters.ContainsKey('LicenseUri')) {
+            $newModuleManifestSplat.Add('LicenseUri', $IconUri)
+        }
+
+        if ($PSBoundParameters.ContainsKey('ProjectUri')) {
+            $newModuleManifestSplat.Add('ProjectUri', $ProjectUri)
+        }
+        else {
+            $ProjectUri = Get-GitRepositoryUrl
+            $newModuleManifestSplat.Add('ProjectUri', $ProjectUri)
+        }
+
+        if ($PSCmdlet.ShouldProcess($newModuleManifestSplat, $CmdletName)) {
+            if ($AllowClobber.IsPresent -and (Test-Path -LiteralPath $Path -PathType Leaf)) {
+                Remove-Item -LiteralPath $Path -Force -WhatIf:$false
             }
 
-            'UsingModuleName' {
-                $Name | ForEach-Object -Process {
-                    $moduleName = $_
-
-                    ForEach-Object -Process {
-                        $moduleProperty = $_
-                        Get-Module -Name $moduleName | Select-Object -ExpandProperty $moduleProperty | Write-Output
-                    }
-                }
-
-                break
+            if ($PassThru.IsPresent) {
+                New-ModuleManifest @newModuleManifestSplat | Write-Output
             }
-
-            default {
-                $Path | Resolve-Path | ForEach-Object -Process {
-                    $modulePath = $_
-
-                    $Property | ForEach-Object -Process {
-                        $moduleProperty = $_
-
-                        Test-ModuleManifest -Path $modulePath | Select-Object -ExpandProperty $moduleProperty | Write-Output
-                    }
-                }
-
-                break
+            else {
+                New-ModuleManifest @newModuleManifestSplat
             }
         }
     }
 
     <#
         .SYNOPSIS
-        Gets a property from a module manifest file.
+        Selects a module property(s) or property expression(s).
 
         .DESCRIPTION
-        `Get-ModuleProperty` gets a property from a module manifest file.
+        The `Select-ModuleProperty` function selects a module property(s) or property expression(s)..
 
         .PARAMETER Path
-        Specifies the path to one or more module manifest files.  Wildcards are supported.
-
-        .PARAMETER LiteralPath
-        Specifies the literal path to one or more module manifest files.  Characters in the path are taken literally.
-
-        .PARAMETER Name
-        Specifies the name of one or more modules.  The module must be available in the current session.
+        Specifies the path to the module manifest file.
 
         .PARAMETER Property
-        Specifies one or more property names to retrieve from the module manifest file.
+        Specifies the name of the property to select.
 
         .INPUTS
-        [string[]]  `Get-ModuleProperty` accepts a string array for the Path, LiteralPath, or Property parameter from the PowerShell pipeline.
+        [string]  `Select-ModuleProperty` accepts a string value for the Path parameter from the PowerShell pipeline.
 
         .OUTPUTS
-        [string]  `Get-ModuleProperty` returns the string value each property to the PowerShell pipeline.
+        [bool]  `Select-ModuleProperty` returns a boolean value indicating the presence or absence of the property.
 
         .EXAMPLE
         PS> $Path = 'C:\Program Files\WindowsPowerShell\Modules\MyModule\MyModule.psd1'
-        PS> Get-ModuleProperty -Path $Path -Property 'PowerShellVersion'
-
+        PS> Select-ModuleProperty -Path $Path -Property 'PowerShellVersion'
         5.1
 
-        Retrieved the PowerShellVersion property value from the module manifest file.
+        Selected the module property.  Returned the property value.
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
-        about_CommonParameters
+        about_Functions_Advanced
+    #>
+}
+
+<#
+    Measure-Description
+#>
+function Measure-Description {
+    [CmdletBinding()]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Measure-HelpProperty -Property description | Write-Output
+    }
+}
+
+<#
+    Measure-HelpProperty
+#>
+function Measure-HelpProperty {
+    [CmdletBinding()]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Name,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelingByPropertyName)]
+        [ValidateSet('alertSet', 'Category', 'Component', 'description', 'details', 'examples', 'Functionality', 'inputTypes',
+            'ModuleName', 'Name', 'parameters', 'PSSnapIn', 'relatedLinks', 'returnValues', 'Role', 'Synopsis', 'syntax')]
+        [string[]]
+        $Property
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Property | Get-HelpProperty -Name $Name | Measure-Object -Character | Select-Object -ExpandProperty Characters | Write-Output
+    }
+
+    <#
+        .SYNOPSIS
+        Tests an object fo the presence of a property.
+
+        .DESCRIPTION
+        The `Test-HasProperty` function tests an object for the presence of a property.
+
+        .PARAMETER Object
+        Specifies the PowerShell object under test.
+
+        .PARAMETER Name
+        Specifies the name of the property to test for.
+
+        .PARAMETER Strict
+        Indicates that the function should throw an exception if the Object parameter is null.
+
+        .INPUTS
+        [string]  `Test-HasProperty` accepts a string value for the Name parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [bool]  `Test-HasProperty` returns a boolean value indicating the presence or absence of the property.
+
+        .EXAMPLE
+        PS> $Object = [PSCustomObject]@{Name = 'Test'; Value = 42}
+        PS> Test-HasProperty -Object $Object -Name 'Name'
+        True
+
+        Tested the object for the presence of the Name property.  Returned True.
+
+        .EXAMPLE
+        PS> $Object = [PSCustomObject]@{Name = 'Test'; Value = 42}
+        PS> Test-HasProperty -Object $Object -Name 'Type'
+        False
+
+        Tested the object for the presence of the Name property.  Returned False.
+
+        .NOTES
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+
+        You may use this script only in accordance with the terms of the License Agreement that should have been included with this script.
 
         .LINK
         about_Functions_Advanced
 
         .LINK
-        ForEach-Object
+        about_Advanced_Function_Parameters
 
         .LINK
-        Get-Module
+        about_throw
 
         .LINK
-        Initialize-PSCmdlet
+        Set-StrictMode
 
         .LINK
-        Select-Object
+        Set-Variable
 
         .LINK
-        Test-ModuleManifest
-
-        .LINK
-        Test-Path
-
-        .LINK
-        Where-Object
+        Write-Error
 
         .LINK
         Write-Output
+
+        .LINK
+        Write-Warning
     #>
+}
+
+<#
+    Measure-Notes
+#>
+function Measure-Notes {
+    [CmdletBinding()]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Get-Notes | Measure-Object -Character | Select-Object -ExpandProperty Characters | Write-Output
+    }
+}
+
+<#
+    Measure-Synopsis
+#>
+function Measure-Synopsis {
+    [CmdletBinding()]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Name | Measure-HelpProperty -Property Synopsis | Write-Output
+    }
 }
 
 <#
     Select-ModuleByFilter
 #>
 function Select-ModuleByFilter {
-    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [CmdletBinding()]
     [OutputType([System.Management.Automation.PSModuleInfo])]
     param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [SupportsWildcards()]
-        [string[]]
-        $Path,
-
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
-        [string[]]
+        [string]
         $Path,
 
         [Parameter(Mandatory)]
@@ -424,12 +1476,7 @@ function Select-ModuleByFilter {
     }
 
     PROCESS {
-        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
-            $LiteralPath | Test-ModuleManifest | Where-Object -FilterScript $FilterScript | Write-Output
-        }
-        else {
-            $Path | Resolve-Path | Test-ModuleManifest | Where-Object -FilterScript $FilterScript | Write-Output
-        }
+        $Path | Resolve-Path | Test-ModuleManifest | Where-Object -FilterScript $FilterScript | Write-Output
     }
 
     <#
@@ -473,46 +1520,22 @@ function Select-ModuleByFilter {
     Select-ModuleByProperty
 #>
 function Select-ModuleByProperty {
-    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [CmdletBinding()]
     [OutputType([System.Management.Automation.PSModuleInfo])]
     param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [SupportsWildcards()]
-        [string[]]
+        [string]
         $Path,
 
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
-        [string[]]
-        $LiteralPath,
-
         [Parameter(Mandatory)]
-        [ValidateSet(
-            'AccessMode', 'Author', 'ClrVersion', 'CompanyName', 'CompatiblePSEditions',
-            'Copyright', 'Definition', 'Description',
-            'DotNetFrameworkVersion',
-            'ExperimentalFeatures',
-            'ExportedAliases', 'ExportedCmdlets', 'ExportedCommands', 'ExportedDscResources', 'ExportedFormatFiles', 'ExportedFunctions', 'ExportedTypeFiles', 'ExportedVariables',
-            'FileList',
-            'Guid',
-            'HelpInfoUri', 'IconUri', 'ImplementingAssembly', 'LicenseUri', 'LogPipelineExecutionDetais', 'ModuleList', 'ModuleType', 'Name', 'NestedModules',
-            'OnRemove',
-            'Path',
-            'PowerShellHostName', 'PowerShellVersion',
-            'Prefix',
-            'ProcessorArchitecture',
-            'ProjectUri', 'ReleaseNotes', 'RepositorySourceLocation',
-            'RequiredAssemblies', 'RequiredModules',
-            'RootModule', 'Scripts',
-            'SessionState', 'Tags', 'Version'
-        )]
+        [ValidateSet('Path', 'Description', 'PowerShellVersion', 'PowerShellHostName', 'PowerShellHostVersion', 'DotNetFrameworkVersion', 'ClrVersion', 'ProcessorArchitecture', 'RequiredModules', 'RequiredAssemblies', 'ScriptsToProcess', 'TypesToProcess', 'FormatsToProcess', 'NestedModules', 'FunctionsToExport', 'CmdletsToExport', 'VariablesToExport', 'AliasesToExport', 'DscResourcesToExport', 'ModuleList')]
         [string]
         $Property,
 
         [Parameter(Mandatory)]
         [AllowNull()]
-        [AllowEmptyCollection()]
         [object]
         $Value
     )
@@ -522,12 +1545,7 @@ function Select-ModuleByProperty {
     }
 
     PROCESS {
-        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
-            $LiteralPath | Test-ModuleManifest | Where-Object -Property $Property -EQ -Value $Value | Write-Output
-        }
-        else {
-            $Path | Resolve-Path | Test-ModuleManifest | Where-Object -Property $Property -EQ -Value $Value | Write-Output
-        }
+        $Path | Resolve-Path | Test-ModuleManifest | Where-Object -Property $Property -EQ -Value $Value | Write-Output
     }
 
     <#
@@ -570,19 +1588,304 @@ function Select-ModuleByProperty {
 }
 
 <#
-    Test-HasMember
+    Set-ModuleManifestProperty
+#>
+function Set-ModuleManifestProperty {
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [string]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Author,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $CompanyName,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Copyright,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Description,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [guid]
+        $Guid,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [string]
+        $RootModule,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [Alias('Version')]
+        [version]
+        $ModuleVersion,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $DefaultCommandPrefix,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $PowerShellHostName,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Prerelease,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [object[]]
+        $NestedModules = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [object[]]
+        $ModuleList = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [object[]]
+        $RequiredModules = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [scriptblock]
+        $OnRemove,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateSet('None', 'MSIL', 'X86', 'IA64', 'Amd64', 'Arm')]
+        [ProcessorArchitecture]
+        $ProcessorArchitecture = 'None',
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [hashtable]
+        $PrivateData = @{},
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [System.Management.Automation.SessionState]
+        $SessionState,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $AliasesToExport = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $CmdletsToExport = '*',
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateSet('Core', 'Desktop')]
+        [string[]]
+        $CompatiblePSEditions = @('Core', 'Desktop'),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $DscResourcesToExport = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $ExternalModuleDependencies = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $FileList = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $FormatsToProcess = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $FunctionsToExport = '*',
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $PackageProviders = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $ReleaseNotes = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $RequireAssemblies = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [string[]]
+        $ScriptsToProcess = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [string[]]
+        $Tags = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [string[]]
+        $TypesToProcess = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [string[]]
+        $VariablesToExport = @(),
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [version]
+        $ClrVersion,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [version]
+        $DotNetFrameworkVersion,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('Version')]
+        [version]
+        $PowerShellHostVersion,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [Alias('Version')]
+        [version]
+        $PowerShellVersion = 5.1,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [uri]
+        $HelpInfoUri,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [uri]
+        $IconUri,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [uri]
+        $LicenseUri,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [uri]
+        $ProjectUri,
+
+        [switch]
+        $PassThru,
+
+        [switch]
+        $RequireLicenseAcceptance
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $updateModuleManifestSplat = @{
+            Path = $Path
+            Author = $Author
+            CompanyName = $CompanyName
+            Copyright = $Copyright
+            Description = $Description
+            Guid = $Guid
+            RootModule = $RootModule
+            ModuleVersion = $ModuleVersion
+            ModuleList = $ModuleList
+            NestedModules = $NestedModules
+            RequiredModules = $RequiredModules
+            ProcessorArchitecture = $ProcessorArchitecture
+            PrivateData = $PrivateData
+            AliasesToExport = $AliasesToExport
+            CmdletsToExport = $CmdletsToExport
+            CompatiblePSEditions = $CompatiblePSEditions
+            DSCResourcesToExport = $DscResourcesToExport
+            ExternalModuleDependencies = $ExternalModuleDependencies
+            FileList = $FileList
+            FormatsToProcess = $FormatsToProcess
+            FunctionsToExport = $FunctionsToExport
+            PackageProviders = $PackageProviders
+            ReleaseNotes = $ReleaseNotes
+            RequiredAssemblies = $RequireAssemblies
+            ScriptsToProcess = $ScriptsToProcess
+            Tags = $Tags
+            TypesToProcess = $TypesToProcess
+            VariablesToExport = $VariablesToExport
+            PowerShellVersion = $PowerShellVersion
+            PassThru = $PassThru.IsPresent
+            RequireLicenseAcceptance = $RequireLicenseAcceptance.IsPresent
+        }
+
+        if ($PSCmdlet.ShouldProcess($updateModuleManifestSplat, $CmdletName)) {
+            $Path | Update-ModuleManifest @updateModuleManifestSplat
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Selects a module property(s) or property expression(s).
+
+        .DESCRIPTION
+        The `Select-ModuleProperty` function selects a module property(s) or property expression(s)..
+
+        .PARAMETER Path
+        Specifies the path to the module manifest file.
+
+        .PARAMETER Property
+        Specifies the name of the property to select.
+
+        .INPUTS
+        [string]  `Select-ModuleProperty` accepts a string value for the Path parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [bool]  `Select-ModuleProperty` returns a boolean value indicating the presence or absence of the property.
+
+        .EXAMPLE
+        PS> $Path = 'C:\Program Files\WindowsPowerShell\Modules\MyModule\MyModule.psd1'
+        PS> Select-ModuleProperty -Path $Path -Property 'PowerShellVersion'
+        5.1
+
+        Selected the module property.  Returned the property value.
+
+        .NOTES
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_Functions_Advanced
+    #>
+}
+
+<#
+    Test-HasMethod
 #>
 function Test-HasMember {
     [CmdletBinding()]
     [OutputType([bool])]
     param (
         [Parameter(Mandatory)]
+        [AllowNull()]
         [PSObject]
         $Object,
 
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
-        [string[]]
+        [string]
         $Name
     )
 
@@ -591,7 +1894,12 @@ function Test-HasMember {
     }
 
     PROCESS {
-        $Name | ForEach-Object -Process { $Object.PSObject.Members | Where-Object -Property Name -EQ $_ | Write-Output }
+        if ($null -ne $Object) {
+            $Object.PSObject.Members | Where-Object -Property Name -EQ $Name | Write-Output
+        }
+        else {
+            $false | Write-Output
+        }
     }
 
     <#
@@ -668,13 +1976,14 @@ function Test-HasMethod {
     [CmdletBinding()]
     [OutputType([bool])]
     param (
-        [Parameter(Mandatory)]
-        [PSObject]
-        $Object,
-
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [AllowNull()]
+        [PSObject]
+        $InputObject,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
-        [string[]]
+        [string]
         $Name
     )
 
@@ -683,7 +1992,13 @@ function Test-HasMethod {
     }
 
     PROCESS {
-        $Name | ForEach-Object -Process { $Object.PSObject.Methods | Where-Object -Property Name -EQ $_ | Write-Output }
+        $InputObject | Where-Object -FilterScript { $null -ne $_ } | ForEach-Object -Process {
+            $TheObject = $_
+
+            $Name | ForEach-Object -Process {
+                $TheObject.PSObject.Methods | Where-Object -Property Name -EQ $_ | Write-Output
+            }
+        }
     }
 
     <#
@@ -760,17 +2075,15 @@ function Test-HasProperty {
     [CmdletBinding()]
     [OutputType([bool])]
     param (
-        [Parameter(Mandatory)]
-        [PSObject]
-        $Object,
-
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateNotNullOrEmpty()]
-        [string[]]
-        $Name,
+        [AllowNull()]
+        [PSObject]
+        $InputObject,
 
-        [switch]
-        $Strict
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Name
     )
 
     BEGIN {
@@ -778,7 +2091,114 @@ function Test-HasProperty {
     }
 
     PROCESS {
-        $Name | ForEach-Object -Process { $Object.PSObject.Properties | Where-Object -Property Name -EQ $_ | Write-Output }
+        $InputObject | Where-Object -FilterScript { $null -ne $_ } | ForEach-Object -Process {
+            $TheObject = $_
+
+            $Name | ForEach-Object -Process {
+                $TheObject.PSObject.Properties | Where-Object -Property Name -EQ $_ | Write-Output
+            }
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Tests an object fo the presence of a property.
+
+        .DESCRIPTION
+        The `Test-HasProperty` function tests an object for the presence of a property.
+
+        .PARAMETER Object
+        Specifies the PowerShell object under test.
+
+        .PARAMETER Name
+        Specifies the name of the property to test for.
+
+        .PARAMETER Strict
+        Indicates that the function should throw an exception if the Object parameter is null.
+
+        .INPUTS
+        [string]  `Test-HasProperty` accepts a string value for the Name parameter from the PowerShell pipeline.
+
+        .OUTPUTS
+        [bool]  `Test-HasProperty` returns a boolean value indicating the presence or absence of the property.
+
+        .EXAMPLE
+        PS> $Object = [PSCustomObject]@{Name = 'Test'; Value = 42}
+        PS> Test-HasProperty -Object $Object -Name 'Name'
+        True
+
+        Tested the object for the presence of the Name property.  Returned True.
+
+        .EXAMPLE
+        PS> $Object = [PSCustomObject]@{Name = 'Test'; Value = 42}
+        PS> Test-HasProperty -Object $Object -Name 'Type'
+        False
+
+        Tested the object for the presence of the Name property.  Returned False.
+
+        .NOTES
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+
+        You may use this script only in accordance with the terms of the License Agreement that should have been included with this script.
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        about_Advanced_Function_Parameters
+
+        .LINK
+        about_throw
+
+        .LINK
+        Set-StrictMode
+
+        .LINK
+        Set-Variable
+
+        .LINK
+        Write-Error
+
+        .LINK
+        Write-Output
+
+        .LINK
+        Write-Warning
+    #>
+}
+
+<#
+    Test-HelpProperty
+#>
+function Test-HelpProperty {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Name,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelingByPropertyName)]
+        [ValidateSet('alertSet', 'Category', 'Component', 'description', 'details', 'examples', 'Functionality', 'inputTypes',
+            'ModuleName', 'Name', 'parameters', 'PSSnapIn', 'relatedLinks', 'returnValues', 'Role', 'Synopsis', 'syntax')]
+        [string[]]
+        $Property
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $Property | ForEach-Object -Process {
+            if (Get-Help -Name $Name -Full | Get-Member -MemberType Properties | Where-Object -Property Name -EQ $_) {
+                $true | Write-Output
+            }
+            else {
+                $false | Write-Output
+            }
+        }
     }
 
     <#
@@ -852,40 +2272,17 @@ function Test-HasProperty {
     Test-ModuleProperty
 #>
 function Test-ModuleProperty {
-    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [CmdletBinding()]
     [OutputType([bool])]
     param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
         [SupportsWildcards()]
-        [string[]]
+        [string]
         $Path,
 
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
-        [string[]]
-        $LiteralPath,
-
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateSet(
-            'AccessMode', 'Author', 'ClrVersion', 'CompanyName', 'CompatiblePSEditions',
-            'Copyright', 'Definition', 'Description',
-            'DotNetFrameworkVersion',
-            'ExperimentalFeatures',
-            'ExportedAliases', 'ExportedCmdlets', 'ExportedCommands', 'ExportedDscResources', 'ExportedFormatFiles', 'ExportedFunctions', 'ExportedTypeFiles', 'ExportedVariables',
-            'FileList',
-            'Guid',
-            'HelpInfoUri', 'IconUri', 'ImplementingAssembly', 'LicenseUri', 'LogPipelineExecutionDetais', 'ModuleList', 'ModuleType', 'Name', 'NestedModules',
-            'OnRemove',
-            'Path',
-            'PowerShellHostName', 'PowerShellVersion',
-            'Prefix',
-            'ProcessorArchitecture',
-            'ProjectUri', 'ReleaseNotes', 'RepositorySourceLocation',
-            'RequiredAssemblies', 'RequiredModules',
-            'RootModule', 'Scripts',
-            'SessionState', 'Tags', 'Version'
-        )]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateSet('Path', 'Description', 'PowerShellVersion', 'PowerShellHostName', 'PowerShellHostVersion', 'DotNetFrameworkVersion', 'ClrVersion', 'ProcessorArchitecture', 'RequiredModules', 'RequiredAssemblies', 'ScriptsToProcess', 'TypesToProcess', 'FormatsToProcess', 'NestedModules', 'FunctionsToExport', 'CmdletsToExport', 'VariablesToExport', 'AliasesToExport', 'DscResourcesToExport', 'ModuleList')]
         [string[]]
         $Property
     )
@@ -895,26 +2292,11 @@ function Test-ModuleProperty {
     }
 
     PROCESS {
-        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
-            $LiteralPath | ForEach-Object -Process {
-                $modulePath = $_
-
-                $Property | ForEach-Object -Process {
-                    $moduleProperty = $_
-
-                    [bool](Test-ModuleManifest -Path $modulePath | Select-Object -ExpandProperty $moduleProperty) | Write-Output
-                }
-            }
-        }
-        else {
-            $Path | Resolve-Path | ForEach-Object -Process {
-                $modulePath = $_
-                $Property | ForEach-Object -Process {
-                    $moduleProperty = $_
-
-                    [bool](Test-ModuleManifest -Path $modulePath | Select-Object -ExpandProperty $moduleProperty) | Write-Output
-                }
-            }
-        }
+        $Path | Resolve-Path |
+            Test-ModuleManifest |
+            Select-Object -Property $Property |
+            Measure-Object -Property $Property |
+            Where-Object -Property Count -GT 0 |
+            Write-Output
     }
 }

@@ -19,8 +19,7 @@ function Get-AccountByName {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         Add-Type -Path 'Octopus.Client.dll'
     }
@@ -41,8 +40,7 @@ function Get-Action {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         Add-Type -Path 'Octopus.Client.dll'
     }
@@ -68,8 +66,7 @@ function Get-ActionProperty {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         Add-Type -Path 'Octopus.Client.dll'
     }
@@ -94,8 +91,7 @@ function Get-DeploymentProcess {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         Add-Type -Path 'Octopus.Client.dll'
     }
@@ -125,8 +121,7 @@ function Get-Project {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         Add-Type -Path 'Octopus.Client.dll'
     }
@@ -155,8 +150,7 @@ function Get-Step {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         Add-Type -Path 'Octopus.Client.dll'
     }
@@ -181,8 +175,7 @@ function Initialize-AzureServicePrincipal {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         Add-Type -Path 'Octopus.Client.dll'
     }
@@ -246,8 +239,7 @@ function New-AzureServicePrincipal {
     [OutputType([Octopus.Client.Model.Accounts.AzureServicePrincipalAccountResource])]
     param ()
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Add-Type -Path 'Octopus.Client.dll'
 
@@ -266,8 +258,7 @@ function New-Client {
         $Endpoint
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Add-Type -Path 'Octopus.Client.dll'
 
@@ -292,10 +283,10 @@ function New-Endpoint {
         $OctopusUri
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Add-Type -Path 'Octopus.Client.dll'
+
     New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $OctopusUri, $ApiKey | Write-Output
 }
 
@@ -318,8 +309,7 @@ function New-Repository {
         $Space
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     Add-Type -Path 'Octopus.Client.dll'
 
@@ -346,9 +336,6 @@ function New-Space {
         [string]
         $SpaceName = 'default'
     )
-
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Add-Type -Path 'Octopus.Client.dll'
 

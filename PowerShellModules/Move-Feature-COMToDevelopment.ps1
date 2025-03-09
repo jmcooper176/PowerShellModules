@@ -2,13 +2,13 @@
 
     .VERSION 1.0.0
 
-    .GUID DDD99883-4DE2-4171-B1A7-6B53A520337D
+    .GUID 1C5AC847-89C2-453C-B754-AF8264142520
 
     .AUTHOR John Merryweather Cooper
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2025 John Merryweather Cooper.
 
     .TAGS
 
@@ -73,7 +73,7 @@ $parentName = git rev-parse --abbrev-ref HEAD
 Write-Information -MessageData "Reverse Integration from '$($childName)' to '$($parentName)'" -InformationAction Continue
 
 Write-Information -MessageData "Committing merge from '$($childName)' to '$($parentName)'" -InformationAction Continue
-$timestamp = Get-Date -Format 's'
+$timestamp = Microsoft.PowerShell.Utility\Get-Date -Format 's'
 git commit --all --message="[$($timestamp)] Forward Integration from '$($childName)' to '$($parentName)'"
 
 Write-Information -MessageData "Pushing changes to remote for '$($parentName)'." -InformationAction Continue

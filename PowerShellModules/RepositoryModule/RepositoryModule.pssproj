@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{58f9fc18-0c7d-4b4e-b0ce-7f5cb8451c4a}</ProjectGuid>
+    <ProjectGuid>{d47cb387-b35d-4a23-af80-c811297ef2df}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>MyApplication</RootNamespace>
     <AssemblyName>MyApplication</AssemblyName>
@@ -26,14 +26,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="PSRepoStart.cmd" />
     <Content Include="README.md" />
     <Content Include="RELEASENOTES.txt" />
+    <Content Include="RepositoryStart.cmd" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Repo-Tasks.psd1" />
-    <Compile Include="Repo-Tasks.psm1" />
-    <Compile Include="Repo-Tasks.tests.ps1" />
+    <Compile Include="RepositoryModule.psd1" />
+    <Compile Include="RepositoryModule.psm1" />
+    <Compile Include="RepositoryModule.tests.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" />
 </Project>

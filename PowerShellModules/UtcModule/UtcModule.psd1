@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="UtcModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="UtcModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "UtcModule.psd1" is part of "UtcModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'UtcModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '1.4.9160.42789'
 CompatiblePSEditions = 'Desktop', 'Core'
 
 # ID used to uniquely identify this module
-GUID = '08636B39-72BD-48E3-8CEF-084EFA5AD3D7'
+GUID = 'fff90b31-0a12-498a-881d-697dab733526'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -74,7 +72,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Replacement UTC Get Date-Time stand-in cmdlet'
@@ -116,10 +114,22 @@ RequiredModules = @('PowerShellModule')
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-Date'
+FunctionsToExport = 'ConvertTo-FileTime', 'ConvertTo-LocalTime',
+                'Format-DateTime', 'Format-Now', 'Format-TimeSpan',
+                'Get-Date'
+                'Get-Day', 'Get-DayOfWeek', 'Get-DayOfYear', 'Get-Month',
+                'Get-Kind',
+                'Get-Hour', 'Get-Microsecond', 'Get-Millisecond', 'Get-Nanosecond', 'Get-Second', 'Get-Ticks', 'Get-TimeOfDay',
+                'Get-Year'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Get-Date'
+CmdletsToExport = 'ConvertTo-FileTime', 'ConvertTo-LocalTime',
+                'Format-DateTime', 'Format-Now', 'Format-TimeSpan',
+                'Get-Date'
+                'Get-Day', 'Get-DayOfWeek', 'Get-DayOfYear', 'Get-Month',
+                'Get-Kind',
+                'Get-Hour', 'Get-Microsecond', 'Get-Millisecond', 'Get-Nanosecond', 'Get-Second', 'Get-Ticks', 'Get-TimeOfDay',
+                'Get-Year'
 
 # Variables to export from this module
 VariablesToExport = @()
@@ -138,9 +148,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'UTC','Date','Time'
 
@@ -164,9 +172,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -174,6 +180,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 DefaultCommandPrefix = 'Utc'
-
 }
-

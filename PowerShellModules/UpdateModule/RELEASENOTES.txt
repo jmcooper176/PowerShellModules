@@ -1,5 +1,5 @@
 #
-# RELEASENOTES - UpdateModule
+# RELEASENOTES - PowerShellModule
 #
 
 DateTime               Notes

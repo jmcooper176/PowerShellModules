@@ -10,16 +10,15 @@ $csvExportPath = "path:\to\CSVFile.csv"
 
 $variableTracking = @()
 
-
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get space
 $space = $repository.Spaces.FindByName($spaceName)
 $repositoryForSpace = $client.ForSpace($space)
 
-Write-Host "Looking for usages of variable named $variableToFind in space $($space.Name)"
+Write-Information -MessageData "Looking for usages of variable named $variableToFind in space $($space.Name)"
 
 # Get all projects
 $projects = $repositoryForSpace.Projects.GetAll()
@@ -27,13 +26,13 @@ $projects = $repositoryForSpace.Projects.GetAll()
 # Loop through projects
 foreach ($project in $projects)
 {
-    Write-Host "Checking $($project.Name)"
-    
+    Write-Information -MessageData "Checking $($project.Name)"
+
     # Get varaible set
     $projectVariableSet = $repositoryForSpace.VariableSets.Get($project.VariableSetId)
-    
+
     # Find any name matches
-    $matchingNamedVariable = $projectVariableSet.Variables | Where-Object {$_.Name -like "*$variableToFind*"}
+    $matchingNamedVariable = $projectVariableSet.Variables | Where-Object -FilterScript {$_.Name -like "*$variableToFind*"}
 
     if ($null -ne $matchingNamedVariable)
     {
@@ -54,7 +53,7 @@ foreach ($project in $projects)
     }
 
     # Find any value matches
-    $matchingValueVariables = $projectVariableSet.Variables | Where-Object {$_.Value -like "*$variableToFind*"}
+    $matchingValueVariables = $projectVariableSet.Variables | Where-Object -FilterScript {$_.Value -like "*$variableToFind*"}
 
     if ($null -ne $matchingValueVariables)
     {
@@ -82,7 +81,7 @@ foreach ($project in $projects)
 
             # Loop through steps
             foreach ($step in $deploymentProcess.Steps)
-            {               
+            {
                 foreach ($action in $step.Actions)
                 {
                     foreach ($property in $action.Properties.Keys)
@@ -106,7 +105,7 @@ foreach ($project in $projects)
         }
         else
         {
-            Write-Host "$($project.Name) is version controlled, skipping searching the deployment process."
+            Write-Information -MessageData "$($project.Name) is version controlled, skipping searching the deployment process."
         }
     }
 
@@ -138,7 +137,7 @@ foreach ($project in $projects)
                                 Link = "$octopusURL$($project.Links.Web)/operations/runbooks/$($runbook.Id)/process/$($runbook.RunbookProcessId)/steps?actionId=$($action.Id)"
                             }
 
-                            $variableTracking += $result                            
+                            $variableTracking += $result
                         }
                     }
                 }
@@ -152,13 +151,13 @@ $variableTracking = @($variableTracking | Sort-Object -Property * -Unique)
 
 if ($variableTracking.Count -gt 0)
 {
-    Write-Host ""
-    Write-Host "Found $($variableTracking.Count) results:"
+    Write-Information -MessageData ""
+    Write-Information -MessageData "Found $($variableTracking.Count) results:"
     $variableTracking
 
-    if(![string]::IsNullOrWhiteSpace($csvExportPath)) 
+    if(![string]::IsNullOrWhiteSpace($csvExportPath))
     {
-        Write-Host "Exporting results to CSV file: $csvExportPath"
+        Write-Information -MessageData "Exporting results to CSV file: $csvExportPath"
         $variableTracking | Export-Csv -Path $csvExportPath -NoTypeInformation
     }
 }

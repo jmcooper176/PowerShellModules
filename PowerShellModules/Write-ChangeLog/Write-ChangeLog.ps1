@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Write-ChangeLog.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Write-ChangeLog.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "Write-ChangeLog.ps1" is part of "Write-ChangeLog".
 
     .VERSION 1.0.0
 
-    .GUID 8CEAB921-7106-4DBE-9081-6A2B4FF7F9F4
+    .GUID 0FDC4220-823B-42F6-B059-30F9607A09D5
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "Write-ChangeLog.ps1" is part of "Write-ChangeLog".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/Write-ChangeLog
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/Write-ChangeLog
 
     .ICONURI
 
@@ -109,25 +108,25 @@ This file "Write-ChangeLog.ps1" is part of "Write-ChangeLog".
     ## Clone URL:  <https://github.com/OPM-OCIO-FITBS-HRSITPMO-USAJOBS/SFS-Main.git>
     VERBOSE: Performing the operation "Write-ChangeLog.ps1" on target "Create or Append to Git Log Data File".
     * commit 63582d1fe704acf76d1cc1d211d53f0d7cebc0ef
-    | Author: Cooper, John M. (CTR) <John.Cooper2@opm.gov>
+    | Author: Cooper, John M. (CTR) <jmcooper8654@gmail.com>
     | Date:   Fri Jan 10 00:30:03 2025 -0600
     |
     |     Fixup Container Classes
     |
     * commit 0022b87714f5b49c53eaccec6eb60603adf62b8e
-    | Author: Cooper, John M. (CTR) <John.Cooper2@opm.gov>
+    | Author: Cooper, John M. (CTR) <jmcooper8654@gmail.com>
     | Date:   Fri Jan 10 00:07:09 2025 -0600
     |
     |     Fix TypeAcceleratorModule
     |
     * commit d3db7279b975763691a5cb7a714eb056576302f1
-    | Author: Cooper, John M. (CTR) <John.Cooper2@opm.gov>
+    | Author: Cooper, John M. (CTR) <jmcooper8654@gmail.com>
     | Date:   Fri Jan 10 00:04:20 2025 -0600
     |
     |     Cleanup
     |
     * commit 6185fe770553ca569976fc7812dca3e07c5328d0
-    | Author: Cooper, John M. (CTR) <John.Cooper2@opm.gov>
+    | Author: Cooper, John M. (CTR) <jmcooper8654@gmail.com>
     | Date:   Thu Jan 9 23:23:40 2025 -0600
     |
 
@@ -168,11 +167,6 @@ This file "Write-ChangeLog.ps1" is part of "Write-ChangeLog".
 
     .LINK
     Write-Verbose
-#>
-
-<#
-    .DESCRIPTION
-    The `Write-ChangeLog.ps1` script writes a change log to a file path.  The change log is written in markdown format and echoed to standard output.
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
@@ -411,7 +405,7 @@ $ScriptFIle = Initialize-PSScript -MyInvocation $MyInvocation
 if ($MyInvocation.InvocationName -ne '.') {
     $ScriptFIle = Initialize-PSScript -MyInvocation $MyInvocation
 
-    $RepositoryName = GitRepositoryName
+    $RepositoryName = Get-GitRepositoryName
 
     if ($PSCmdlet.ShouldProcess('Writing Title', $ScriptFile)) {
         Write-ChangeLogHeader -FilePath $FilePath -Header "$Channel CHANGE LOG for $RepositoryName" -Level 1 | Write-Output

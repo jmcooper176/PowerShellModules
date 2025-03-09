@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="LinqModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="LinqModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -367,35 +366,7 @@ function Group-DistinctBy {
 #>
 function Group-Each {
     [CmdletBinding()]
-    [OutputType([ArrayList])]
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
-        [ArrayList]
-        $List,
-
-        [Parameter(Mandatory)]
-        [scriptblock]
-        $Filter
-    )
-
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-    }
-
-    PROCESS {
-        $List | ForEach-Object -Process {
-            Invoke-Command -ScriptBlock $Filter -ArgumentList $_ | Write-Output
-        }
-    }
-}
-
-<#
-    Group-Ordered
-#>
-function Group-Ordered {
-    [CmdletBinding()]
-    [OutputType([ArrayList])]
+    [OutputType([Array])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-Any -List $_ })]
@@ -408,7 +379,29 @@ function Group-Ordered {
     }
 
     PROCESS {
-        $List | Sort-Object | Write-Output
+        $List.ToArray() | Group-Object | Write-Output
+    }
+}
+
+<#
+    Group-Ordered
+#>
+function Group-Ordered {
+    [CmdletBinding()]
+    [OutputType([Array])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Any -List $_ })]
+        [ArrayList]
+        $List
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $List.ToArray() | Sort-Object | Group-Object | Write-Output
     }
 }
 
@@ -417,7 +410,7 @@ function Group-Ordered {
 #>
 function Group-OrderedBy {
     [CmdletBinding()]
-    [OutputType([ArrayList])]
+    [OutputType([Array])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-Any -List $_ })]
@@ -434,7 +427,7 @@ function Group-OrderedBy {
     }
 
     PROCESS {
-        $List | Sort-Object -Property $Property | Write-Output
+        $List.ToArray() | Sort-Object -Property $Property | Group-Object -Property $Property | Write-Output
     }
 }
 

@@ -10,8 +10,8 @@ $environmentNames = @("Development", "Test")
 $projectName = "MyProject"
 
 # Create endpoint and client
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $apikey
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $apikey
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -21,13 +21,13 @@ try
     $space = $repository.Spaces.FindByName($spaceName)
     $repositoryForSpace = $client.ForSpace($space)
     $project = $repositoryForSpace.Projects.FindByName($projectName)
-    $environments = $repositoryForSpace.Environments.GetAll() | Where-Object {$environmentNames -contains $_.Name} | Select-Object -Property Id
+    $environments = $repositoryForSpace.Environments.GetAll() | Where-Object -FilterScript {$environmentNames -contains $_.Name} | Select-Object -Property Id
 
     # Get process
     $deploymentProcess = $repositoryForSpace.DeploymentProcesses.Get($project.DeploymentProcessId)
 
     # Get step
-    $step = $deploymentProcess.Steps | Where-Object {$_.Name -eq $stepName}
+    $step = $deploymentProcess.Steps | Where-Object -FilterScript {$_.Name -eq $stepName}
 
     # Update the action
     foreach ($action in $step.Actions)
@@ -37,11 +37,11 @@ try
             $action.Environments.Add($id)
         }
     }
-    
+
     # Update deployment process
     $repositoryForSpace.DeploymentProcesses.Modify($deploymentProcess)
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

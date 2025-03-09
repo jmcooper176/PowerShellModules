@@ -11,8 +11,8 @@ $apikey = 'API-XXXXXXXXXXXXXXXXXXXXXX' # You can get this from your profile
 $octopusURI = 'https://octopus.url' # Your server address
 $projectName = "Variables" # Name of the project where you want to update the variable
 
-$endpoint = new-object Octopus.Client.OctopusServerEndpoint ($octopusURI, $apikey)
-$repository = new-object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI, $apikey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 #Get Project
 $project = $repository.Projects.FindByName($projectName)
@@ -21,19 +21,18 @@ $project = $repository.Projects.FindByName($projectName)
 $variableset = $repository.VariableSets.Get($project.links.variables)
 
 #Get variable to update
-$variables = $variableset.Variables | Where-Object{$_.Scope -ne $null}
+$variables = $variableset.Variables | Where-Object -FilterScript{$_.Scope -ne $null}
 
 foreach($variable in $variables){
     $keys = @() + $variable.Scope.Keys
     foreach($propertyName in $keys){
         $propertyValue = $variable.Scope[$propertyName];
         if ($propertyValue.Count -eq 0) {
-            Write-Host "Removing empty '$propertyName' scope collection from '$($variable.Name)' variable"
+            Write-Information -MessageData "Removing empty '$propertyName' scope collection from '$($variable.Name)' variable"
             $variable.Scope.Remove($propertyName);
         }
     }
 }
-
 
 #Save variable set
 $repository.VariableSets.Modify($variableset)

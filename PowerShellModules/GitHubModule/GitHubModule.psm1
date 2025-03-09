@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="GitHubModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="GitHubModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -198,7 +197,7 @@ function Add-SystemPath {
         $LiteralPath,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -Path $_ -PathType Container })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Container })]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -393,7 +392,7 @@ function Export-EnvironmentVariableFile {
     }
 
     PROCESS {
-        Write-Verbose "$($CmdletName):  Writing content '$($Content)' to '$($EnvironmentFile)' at file path $($tuple.Item2)"
+        Write-Verbose -Message "$($CmdletName):  Writing content '$($Content)' to '$($EnvironmentFile)' at file path $($tuple.Item2)"
 
         try {
             Add-Content -LiteralPath $tuple.Item2 -Value $Content -Encoding UTF8 -PassThru:$Echo.IsPresent
@@ -565,10 +564,9 @@ function Get-GitHubEnvironmentVariable {
         .EXAMPLE
         PS> Get-GitHubEnvironmentVariable -Name 'GITHUB_WORKFLOW'
 
-        Nuget Deploy Build
+        NuGet Deploy Build
 
         Returns the value of the GITHUB_WORKFLOW environment variable.
-
 
         Dump of Example Environment:
 
@@ -613,7 +611,6 @@ function Get-GitHubEnvironmentVariable {
         GITHUB_WORKFLOW_REF                  OPM-OCIO-DEVSECOPS/SkyOps-NuGet/.github/workflows/nuget-Deploy-Build.yml@refs/heads/main
         GITHUB_WORKFLOW_SHA                  070eca72e4cd84b4f5a8df341938cec434a16c33
         GITHUB_WORKSPACE                     D:\a\SkyOps-NuGet\SkyOps-NuGet
-
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.

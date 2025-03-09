@@ -1,5 +1,5 @@
 #
-# RELEASENOTES - ErrorRecordModule
+# RELEASENOTES - PowerShellModule
 #
 
 DateTime               Notes

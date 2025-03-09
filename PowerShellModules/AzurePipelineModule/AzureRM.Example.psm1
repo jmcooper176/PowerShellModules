@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="AzureRM.Example.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="AzureRM.Example.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -65,14 +64,22 @@ function Test-DotNet {
 
     try
     {
-        if ((Get-PSDrive 'HKLM' -ErrorAction Ignore) -and (-not (Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\' -ErrorAction Stop | Get-ItemPropertyValue -ErrorAction Stop -Name Release | Where-Object { $_ -ge 461808 })))
+        if ((Get-PSDrive 'HKLM' -ErrorAction Ignore) -and (Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\' -ErrorAction Stop | Get-ItemProperty -Name Release -ErrorAction Stop | Where-Object -FilterScript { $_ -lt 461808 }))
         {
-            throw ".NET Framework versions lower than 4.7.2 are not supported in Az. Please upgrade to .NET Framework 4.7.2 or higher."
+            $message = ".NET Framework versions lower than 4.7.2 are not supported in Az. Please upgrade to .NET Framework 4.7.2 or higher."
+
+            Write-Error `
+                -Message $message `
+                -Category 'NotSupported' `
+                -ErrorId "LessThanNet472-NotSupported-01" `
+                -TargetObject 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\'
+
+            throw [System.NotSupportedException]::new($message)
         }
     }
     catch [System.Management.Automation.DriveNotFoundException]
     {
-        Write-Verbose ".NET Framework version check failed."
+        Write-Warning -Message ".NET Framework version check failed."
     }
 }
 
@@ -97,12 +104,12 @@ function Import-Assembly {
                     Add-Type -Path $_.FullName -ErrorAction Ignore | Out-Null
                 }
                 catch {
-                    Write-Verbose -Message $_
+                    $Error | ForEach-Object -Process { Write-Warning -Message $_.Exception.Message }
                 }
             }
         }
         catch {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord @_ -ErrorAction Continue }
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
         }
     }
 }

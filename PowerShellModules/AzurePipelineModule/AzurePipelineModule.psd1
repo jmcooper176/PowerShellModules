@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="AzurePipelineModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="AzurePipelineModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "AzurePipelineModule.psd1" is part of "AzurePipelineModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'AzurePipelineModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '1.0.9156.56953'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = 'D263BD41-B5A3-40CF-BCA7-83DEABF6162F'
+GUID = '1c33e763-eb67-4086-a4cf-322094223c76'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -74,7 +72,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Cmdlets for logging information to the Console for Azure Pipeline Builds'
@@ -98,7 +96,7 @@ PowerShellVersion = '5.1'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @('ErrorRecordModule', 
+RequiredModules = @('ErrorRecordModule',
                'PowerShellModule')
 
 # Assemblies that must be loaded prior to importing this module
@@ -117,19 +115,19 @@ RequiredModules = @('ErrorRecordModule',
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Format-AddAttachment', 'Format-AddBuildTag', 
-               'Format-ArtifactAssociate', 'Format-SetEndpoint', 'Format-Complete', 
-               'Format-LogEntry', 'Format-LogIssue', 'Format-UploadLog', 
-               'Format-SetProgress', 'Format-SetVariable', 'Format-ArtifactUpload', 
-               'Format-UploadSummary', 'Format-UploadFile', 'Format-PrependPath', 
+FunctionsToExport = 'Format-AddAttachment', 'Format-AddBuildTag',
+               'Format-ArtifactAssociate', 'Format-SetEndpoint', 'Format-Complete',
+               'Format-LogEntry', 'Format-LogIssue', 'Format-UploadLog',
+               'Format-SetProgress', 'Format-SetVariable', 'Format-ArtifactUpload',
+               'Format-UploadSummary', 'Format-UploadFile', 'Format-PrependPath',
                'Format-UpdateBuildNumber', 'Format-UpdateReleaseName'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Format-AddAttachment', 'Format-AddBuildTag', 
-               'Format-ArtifactAssociate', 'Format-SetEndpoint', 'Format-Complete', 
-               'Format-LogEntry', 'Format-LogIssue', 'Format-UploadLog', 
-               'Format-SetProgress', 'Format-SetVariable', 'Format-ArtifactUpload', 
-               'Format-UploadSummary', 'Format-UploadFile', 'Format-PrependPath', 
+CmdletsToExport = 'Format-AddAttachment', 'Format-AddBuildTag',
+               'Format-ArtifactAssociate', 'Format-SetEndpoint', 'Format-Complete',
+               'Format-LogEntry', 'Format-LogIssue', 'Format-UploadLog',
+               'Format-SetProgress', 'Format-SetVariable', 'Format-ArtifactUpload',
+               'Format-UploadSummary', 'Format-UploadFile', 'Format-PrependPath',
                'Format-UpdateBuildNumber', 'Format-UpdateReleaseName'
 
 # Variables to export from this module
@@ -149,9 +147,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'azure','powershell','logging','build','pipeline','azuredevops','vsts'
 
@@ -175,9 +171,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -185,6 +179,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="PowerShellModule.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="PowerShellModule.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,47 +50,70 @@ This file "PowerShellModule.tests.ps1" is part of "PowerShellModule".
 # You can download Pester from https://go.microsoft.com/fwlink/?LinkID=534084
 #
 
-AfterAll {
-    Pop-Location
-}
-
 BeforeAll {
-    Push-Location -LiteralPath $PSScriptRoot
-
-    $psModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'PowerShellModule.psd1'
-
-    if (Test-Path -LiteralPath $psModulePath -PathType Leaf) {
-        Import-Module -Name $psModulePath -Force
-    }
-
-    Initialize-PSTest -Name 'PowerShellModule' -Path $PSCommandPath
+    $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\PowerShellModule.psd1'
+    $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
+    $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
+    Import-Module -Name $ModulePath -Verbose
+    Initialize-PSTest -Name 'PathModule' -Path $ModulePath
 }
 
-Describe -Name 'PowerShellModule' -Tag 'Module' {
-    Context -Name 'PowerShellModule Module Manifest' -Tag 'Module Manifest' {
-        It -Name 'Exists' -Tag 'Test' {
+AfterAll {
+    Get-Module -Name 'PowerShellModule' | Remove-Module -Verbose -Force
+}
+
+Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'PowerShellModule Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'Exists' -Tag 'Unit', 'Test' {
             # Act and Assert
-            Test-Path -LiteralPath $ManifestPath -PathType Leaf | Should -BeTrue
+            Test-Path -LiteralPath $ModulePath -PathType Leaf | Should -BeTrue
         }
 
-        It -Name 'Has Content' -Tag 'Test' {
-            # Act and Assert
-            Get-Item -LiteralPath $ManifestPath | Select-Object -ExpandProperty Length | Should -BeGreaterThan 0
-        }
-
-        It -Name 'Is Not Null Or Empty' -Tag 'Test' {
-            # Act and Assert
-            Test-ModuleManifest -Path $ManifestPath | Should -Not -BeNullOrEmpty
-        }
-
-        It -Name 'Is Valid Return Type' -Tag 'Test' {
-            # Act and Assert
-            Test-ModuleManifest -Path $ManifestPath | Should -BeOfType [System.Management.Automation.PSModuleInfo]
-        }
-
-        It -Name 'Has Not Null, Empty, or WhiteSpace RootModule' -Tag 'Test' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $inputSource = Get-Content -LiteralPath $ModulePath -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'Has Content' -Tag 'Unit', 'Test' {
+            # Act and Assert
+            Get-ItemProperty -LiteralPath $ModulePath -Name Length | Should -BeGreaterThan 0
+        }
+
+        It -Name 'Is Not Null Or Empty' -Tag 'Unit', 'Test' {
+            # Act and Assert
+            Test-ModuleManifest -Path $ModulePath | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'Is Valid Return Type' -Tag 'Unit', 'Test' {
+            # Act and Assert
+            Test-ModuleManifest -Path $ModulePath | Should -BeOfType [System.Management.Automation.PSModuleInfo]
+        }
+
+        It -Name 'Has Not Null, Empty, or WhiteSpace RootModule' -Tag 'Unit', 'Test' {
+            # Arrange
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
             $expected = 'PowerShellModule.psm1'
 
             # Act
@@ -101,9 +123,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -BeExactly $expected
         }
 
-        It -Name 'Has Not Null ModuleVersion' -Tag 'Test' {
+        It -Name 'Has Not Null ModuleVersion' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
 
             # Act
             $actual = $moduleInfo.Version
@@ -112,9 +134,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -Not -BeNullOrEmpty
         }
 
-        It -Name 'Has ModuleVersion Greater Than 0.0.0' -Tag 'Test' {
+        It -Name 'Has ModuleVersion Greater Than 0.0.0' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
             $expected = [System.Version]::new(0, 0, 0)
 
             # Act
@@ -124,9 +146,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -BeGreaterThan $expected
         }
 
-        It -Name 'Has Not Null, Empty, or WhiteSpace Guid' -Tag 'Test' {
+        It -Name 'Has Not Null, Empty, or WhiteSpace Guid' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
 
             # Act
             $actual = $moduleInfo.Guid.ToString()
@@ -135,9 +157,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -Not -BeNullOrEmpty
         }
 
-        It -Name 'Has Not Null, Empty, or WhiteSpace Author' -Tag 'Test' {
+        It -Name 'Has Not Null, Empty, or WhiteSpace Author' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
 
             # Act
             $actual = $moduleInfo.Author
@@ -146,9 +168,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -Not -BeNullOrEmpty
         }
 
-        It -Name 'Has Not Null, Empty, or WhiteSpace CompanyName' -Tag 'Test' {
+        It -Name 'Has Not Null, Empty, or WhiteSpace CompanyName' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
 
             # Act
             $actual = $moduleInfo.CompanyName
@@ -157,9 +179,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -Not -BeNullOrEmpty
         }
 
-        It -Name 'CompanyName is COMPANY_NAME_STRING' -Tag 'Test' {
+        It -Name 'CompanyName is COMPANY_NAME_STRING' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
 
             # Act
             $actual = $moduleInfo.CompanyName
@@ -168,9 +190,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -BeExactly $COMPANY_NAME_STRING
         }
 
-        It -Name 'Has Not Null, Empty, or WhiteSpace Copyright' -Tag 'Test' {
+        It -Name 'Has Not Null, Empty, or WhiteSpace Copyright' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
 
             # Act
             $actual = $moduleInfo.Copyright
@@ -179,9 +201,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -Not -BeNullOrEmpty
         }
 
-        It -Name 'Copyright is COPYRIGHT_STRING' -Tag 'Test' {
+        It -Name 'Copyright is COPYRIGHT_STRING' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
 
             # Act
             $actual = $moduleInfo.Copyright
@@ -190,9 +212,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -BeExactly $COPYRIGHT_STRING
         }
 
-        It -Name 'Has Not Null, Empty, or WhiteSpace Description' -Tag 'Test' {
+        It -Name 'Has Not Null, Empty, or WhiteSpace Description' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
 
             # Act
             $actual = $moduleInfo.Description
@@ -201,9 +223,9 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -Not -BeNullOrEmpty
         }
 
-        It -Name 'Description Length is Greater Than or Equal to MINIMUM_DESCRIPTION_LENGTH' -Tag 'Test' {
+        It -Name 'Description Length is Greater Than or Equal to MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange
-            $moduleInfo = Test-ModuleManifest -Path $ManifestPath
+            $moduleInfo = Test-ModuleManifest -Path $ModulePath
 
             # Act
             $actual = $moduleInfo.Description.Length
@@ -212,7 +234,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $actual | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have ExportedCmdlets count should equal ExportedFunctions count' {
+        It -Name 'should have ExportedCmdlets count should equal ExportedFunctions count' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
@@ -225,14 +247,14 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
         }
 
-        It 'should have ExportedCmdlets equal to ExportedFunctions' {
+        It -Name 'should have ExportedCmdlets equal to ExportedFunctions' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -248,30 +270,15 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
         }
     }
 
-    <#
-        New-
-        Get-
-        Update-/Set-
-        Remove-
-    #>
-    Context -Name 'Module CRUD' -Tag 'Unit Tests' {
-        It -Name 'Cmdlet Scenario Expected Result' -Tag 'Test' {
-            # Arrange
-
-            # Act
-
-            # Assert
-        }
-
-        Context -Name 'Add-PSEntry Documentation' -Tag 'Help Unit Tests' {
+    Context -Name 'Add-PSEntry' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Add-PSEntry'
-                $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath $cmdletName)
+                $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath $cmdletName) -Raw
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
@@ -290,23 +297,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -318,12 +325,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Add-PSParameter Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Add-PSParameter' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Add-PSParameter'
@@ -331,12 +338,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -350,23 +357,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -378,12 +385,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Enter-PSBlock Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Enter-PSBlock' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Enter-PSBlock'
@@ -391,12 +398,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -410,23 +417,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -438,12 +445,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Get-PSBuildVersion Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Get-PSBuildVersion' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Get-PSBuildVersion'
@@ -451,12 +458,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -470,23 +477,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -498,12 +505,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Get-PSMajorVersion Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Get-PSMajorVersion' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Get-PSMajorVersion'
@@ -511,12 +518,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -530,23 +537,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -558,12 +565,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Get-PSMinorVerison Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Get-PSMinorVerison' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Get-PSMinorVersion'
@@ -571,12 +578,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -590,23 +597,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -618,12 +625,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Get-PSParameter Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Get-PSParameter' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Get-PSParameter'
@@ -631,12 +638,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -650,23 +657,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -678,12 +685,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Get-PSVersion Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Get-PSVersion' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Get-PSVersion'
@@ -691,12 +698,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -710,23 +717,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -738,12 +745,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Initialize-PSClass Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Initialize-PSClass' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Initialize-PSClass'
@@ -751,12 +758,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -770,23 +777,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -798,12 +805,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Initialize-PSCmdlet Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Initialize-PSCmdlet' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Initialize-PSCmdlet'
@@ -811,12 +818,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -830,23 +837,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -858,12 +865,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Initialize-PSFunction Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Initialize-PSFunction' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Initialize-PSFunction'
@@ -871,12 +878,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -890,23 +897,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -918,12 +925,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Initialize-PSTest Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Initialize-PSTest' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Initialize-PSTest'
@@ -931,12 +938,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -950,23 +957,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -978,12 +985,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Initialize-PSScript Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Initialize-PSScript' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Initialize-PSScript'
@@ -991,12 +998,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -1010,23 +1017,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -1038,12 +1045,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Measure-PSString Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Measure-PSString' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Measure-PSString'
@@ -1051,12 +1058,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -1070,23 +1077,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -1098,12 +1105,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Test-PSParameter Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Test-PSParameter' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Test-PSParameter'
@@ -1111,12 +1118,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -1130,23 +1137,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -1158,12 +1165,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Test-PSVersion Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Test-PSVersion' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Test-PSVersion'
@@ -1171,12 +1178,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -1190,23 +1197,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -1218,12 +1225,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
 
-        Context -Name 'Update-PSVariable Documentation' -Tag 'Help Unit Tests' {
+        Context -Name 'Update-PSVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
             BeforeEach {
                 # Arrange
                 $cmdletName = 'Update-PSVariable'
@@ -1231,12 +1238,12 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
 
                 [ref] $tokens = @()
                 [ref] $errors = @()
-                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+                $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
 
                 $errors.Value | ForEach-Object -Process {
                     $writeErrorHash = @{
                         Exception    = [System.Management.Automation.ParseException]::new($_)
-                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $moduleName, $cmdletName)
+                        Message      = ('{0}/{1}:  Parse error generating abstract syntax tree' -f $ModuleName, $cmdletName)
                         Category     = 'ParseError'
                         ErrorId      = ('{0}-L{1}' -f $cmdletName, $MyInvocation.ScriptLineNumber)
                         TargetObject = $_
@@ -1250,23 +1257,23 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $Help = Get-Help -Name $cmdletName -Full
             }
 
-            It -Name 'Has Synopsis' -Tag 'Help' {
+            It -Name 'Has Synopsis'  -Tag 'Unit', 'Test' {
                 $Help.Synopsis.Length | Should -BeGreaterOrEqual $MINIMUM_SYNOPSIS_LENGTH
             }
 
-            It -Name 'Has Description' -Tag 'Help' {
+            It -Name 'Has Description'  -Tag 'Unit', 'Test' {
                 $Help.description.Text | Measure-PSString | Should -BeGreaterOrEqual $MINIMUM_DESCRIPTION_LENGTH
             }
 
-            It -Name 'Parameters are Present' -Tag 'Help' {
+            It -Name 'Parameters are Present'  -Tag 'Unit', 'Test' {
                 $Help.Parameters.Parameter | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterOrEqual $AST.ParamBlock.Parameters.Count
             }
 
-            It -Name 'Has Example' -Tag 'Help' {
+            It -Name 'Has Example'  -Tag 'Unit', 'Test' {
                 $Help.Examples.Count | Should -BeGreaterThan 0
             }
 
-            It -Name 'Copyright is Present' -Tag 'Help' {
+            It -Name 'Copyright is Present'  -Tag 'Unit', 'Test' {
                 # Arrange
                 $expected = $COPYRIGHT_STRING
 
@@ -1278,22 +1285,8 @@ Describe -Name 'PowerShellModule' -Tag 'Module' {
                 $actual | Should -Be $expected
             }
 
-            It -Name 'Has Links' -Tag 'Help' {
+            It -Name 'Has Links'  -Tag 'Unit', 'Test' {
                 $Help.RelatedLinks | Measure-Object | Select-Object -ExpandProperty 'Count' | Should -BeGreaterThan 0
             }
         }
-    }
-
-    <#
-        Test-
-    #>
-    Context -Name 'Module Logic' -Tag 'Unit Tests' {
-        It -Name 'Cmdlet Scenario Expected Result' -Tag 'Test' {
-            # Arrange
-
-            # Act
-
-            # Assert
-        }
-    }
 }

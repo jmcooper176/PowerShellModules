@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="UriModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="UriModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -55,12 +54,11 @@ function Format-UriDataString {
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute })]
         [string]
-        $StringToEscape,
+        $StringToEscape
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -151,8 +149,7 @@ function Join-Uri {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -239,8 +236,7 @@ function New-RelativeUri {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name -WhatIf:$false
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -383,8 +379,7 @@ function Split-Uri {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -571,8 +566,7 @@ function Test-BaseOf {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -609,8 +603,7 @@ function Test-HostName {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -653,8 +646,7 @@ function Test-SchemeName {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -700,13 +692,12 @@ function Test-Uri {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
         $Uri | ForEach-Object -Process {
-            if ($_ -eq $null) {
+            if ($null -eq $_) {
                 Write-Warning -Message "$($CmdletName) : Parameter 'Uri' is null"
                 $false | Write-Output
             }
@@ -794,12 +785,11 @@ function Undo-UriDataString {
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute })]
         [string]
-        $StringToUnescape,
+        $StringToUnescape
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {

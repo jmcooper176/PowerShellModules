@@ -1,8 +1,7 @@
-﻿<#
+<#
  =============================================================================
-<copyright file="CommandLineModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2025, John Merryweather Cooper.
+<copyright file="CommandLineModule.psd1" company="John Merryweather Cooper">
+    Copyright (c) 2025 John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,7 +63,7 @@ This file "CommandLineModule.psd1" is part of "CommandLineModule".
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID              = 'BC220ACF-A10C-4BC4-A0CF-2539AB802FA9'
+    GUID              = '87a63c2b-1dd5-491c-8aa4-fbf2803163ab'
 
     # Author of this module
     Author            = 'John Merryweather Cooper'
@@ -142,10 +141,10 @@ This file "CommandLineModule.psd1" is part of "CommandLineModule".
             # Tags = @()
 
             # A URL to the license for this module.
-            # LicenseUri = ''
+            LicenseUri = 'https://opensource.org/license/BSD-3-clause'
 
             # A URL to the main website for this project.
-            # ProjectUri = ''
+            ProjectUri = 'https://github.com/jmcooper176/PowerShellModules'
 
             # A URL to an icon representing this module.
             # IconUri = ''

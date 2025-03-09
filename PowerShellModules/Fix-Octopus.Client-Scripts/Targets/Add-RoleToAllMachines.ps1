@@ -7,8 +7,8 @@ $octopusURI = 'https://octopus.url' # Your server address
 
 $role = "A new role" # The role to add to each machine
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$apikey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 $machines = $repository.Machines.FindAll();
 

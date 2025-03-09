@@ -1,11 +1,11 @@
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
 # Load Octopus Client assembly
-Add-Type -Path 'path\to\Octopus.Client.dll' 
+Add-Type -Path 'path\to\Octopus.Client.dll'
 
 # Create endpoint and client
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint("http://OctopusServer/", "API-KEY")
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList "http://OctopusServer/", "API-KEY"
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get default repository and get space by name
 #$repository = $client.ForSystem()
@@ -16,18 +16,17 @@ $client = New-Object Octopus.Client.OctopusClient($endpoint)
 
 $certificates = $client.Repository.Certificates.GetAll()
 
-$certsToKeep = New-Object Collections.Generic.List[string]
+$certsToKeep = New-Object -TypeName Collections.Generic.List[string]
 
-# Will remove any duplicate certificates from Octopus based on SerialNumber. Delete function is commented out for a dry run. 
+# Will remove any duplicate certificates from Octopus based on SerialNumber. Delete function is commented out for a dry run.
 
 foreach ($cert in $certificates) {
-
     if ($certsToKeep -contains $cert.SerialNumber) {
-    Write-host "Deleting:" $cert.id
+    Write-Information -MessageData "Deleting:" $cert.id
     #$client.Repository.Certificates.Delete($cert) # Run this script before you enable the delete to confirm that you are Keeping & Deleting the correct certificates.
     }
     else {
         $certsToKeep.Add($cert.SerialNumber)
-        Write-Host "Keeping:" $cert.id  
+        Write-Information -MessageData "Keeping:" $cert.id
     }
 }

@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="CommandLineBuilder.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="CommandLineBuilder.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,7 +63,7 @@ This file "CommandLineBuilder.psd1" is part of "ContainersModule".
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID              = 'A7454104-C3E9-43C0-A629-9526EC58C9BE'
+    GUID              = 'b8ed027d-7b38-4e92-a1f5-d05d66b53a9e'
 
     # Author of this module
     Author            = 'John Merryweather Cooper'

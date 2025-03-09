@@ -7,9 +7,9 @@ $octopusAPIKey = "API-YOURAPIKEY"
 $spaceName = "default"
 $machineNames = @("MyMachine")
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -27,15 +27,15 @@ try
     }
 
     # Create new task resource
-    $task = New-Object Octopus.Client.Model.TaskResource
+    $task = New-Object -TypeName Octopus.Client.Model.TaskResource
     $task.Name = "Upgrade"
     $task.Description = "Upgrade machines"
-    $task.Arguments.Add("MachineIds", $machines)    
-    
+    $task.Arguments.Add("MachineIds", $machines)
+
     # Execute
-    $repositoryForSpace.Tasks.Create($task)   
+    $repositoryForSpace.Tasks.Create($task)
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

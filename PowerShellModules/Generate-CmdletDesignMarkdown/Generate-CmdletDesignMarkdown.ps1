@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Generate-CmdletDesignMarkdown.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Generate-CmdletDesignMarkdown.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "Generate-CmdletDesignMarkdown.ps1" is part of "Generate-CmdletDesignM
 
     .VERSION 1.0.0
 
-    .GUID 7BA9DE5F-7344-4822-AE9D-1BD05B2FF91D
+    .GUID 56A0354F-3810-4D63-9236-9C475E9DEAE5
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "Generate-CmdletDesignMarkdown.ps1" is part of "Generate-CmdletDesignM
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/Generate-CmdletDesignMarkdown
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/Generate-CmdletDesignMarkdown
 
     .ICONURI
 
@@ -72,7 +71,6 @@ This file "Generate-CmdletDesignMarkdown.ps1" is part of "Generate-CmdletDesignM
     .EXTERNALSCRIPTDEPENDENCIES
 
     .RELEASENOTES
-
 
     .PRIVATEDATA
 
@@ -108,9 +106,8 @@ This file "Generate-CmdletDesignMarkdown.ps1" is part of "Generate-CmdletDesignM
     Generated azure-powershell\ModuleCmdletDesign\Az.Databricks.Cmdlet.Design.md completed.
 
     .NOTES
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.  All Rights Reserved.
 #>
-
 
 #requires -version 7.4
 #requires -Modules PowerShellModule

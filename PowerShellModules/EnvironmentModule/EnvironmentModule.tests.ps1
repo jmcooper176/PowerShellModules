@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="EnvironmentModule.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="EnvironmentModule.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -57,6 +56,7 @@ This file "EnvironmentModule.tests.ps1" is part of "EnvironmentModule".
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\EnvironmentModule.psd1'
+    $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
     $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
     Initialize-PSTest -Name 'EnvironmentModule' -Path $ModulePath
@@ -66,9 +66,9 @@ AfterAll {
     Get-Module -Name 'EnvironmentModule' | Remove-Module -Verbose -Force
 }
 
-Describe -Name 'EnvironmentModule' {
-    Context -Name 'Module Manifest' {
-        It 'should exist' {
+Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleManifest = Test-ModuleManifest -Path $ModulePath
 
@@ -76,29 +76,34 @@ Describe -Name 'EnvironmentModule' {
             $ModuleManifest | Should -Not -BeNullOrEmpty
         }
 
-        It 'should parse' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
             $inputSource = Get-Content -LiteralPath $ModulePath -Raw
 
             [ref] $tokens = @()
             [ref] $errors = @()
-            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
 
+            # Act
             $errors.Value | ForEach-Object -Process {
-                $message = ('{0} at {1}:  Parse error generating abstract syntax tree' -f $ModuleName, $ModulePath)
-                $writeErrorSplat = @{
-                        Exception    = [System.Management.Automation.ParseException]::new($message)
-                        Category     = 'ParseError'
-                        ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                        TargetObject = $_
-                        ErrorAction  = 'Continue'
-                    }
-
-                    Write-Error @writeErrorSplat -ErrorAction Continue
-                    $PSCmdlet.ThrowTerminatingError($writeErrorHash)
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
                 }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
         }
 
-        It 'should have a RootModule of EnvironmentModule.psm1' {
+        It -Name 'should have a RootModule of EnvironmentModule.psm1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $RootModule = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'RootModule'
 
@@ -106,7 +111,7 @@ Describe -Name 'EnvironmentModule' {
             $RootModule | Should -Be 'EnvironmentModule.psm1'
         }
 
-        It 'should have a ModuleVersion greater than  1.3.0' {
+        It -Name 'should have a ModuleVersion greater than  1.3.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Version'
 
@@ -114,15 +119,15 @@ Describe -Name 'EnvironmentModule' {
             $ModuleVersion | Should -BeGreaterThan '1.3.0'
         }
 
-        It 'should have a GUID of 073AE309-6F89-42BC-BD92-306B4BB57D82' {
+        It -Name 'should have a GUID of 6e424d77-583b-40f8-968d-686ebea12ee1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be '073AE309-6F89-42BC-BD92-306B4BB57D82'
+            $Guid | Should -Be '6e424d77-583b-40f8-968d-686ebea12ee1'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Author'
 
@@ -130,7 +135,7 @@ Describe -Name 'EnvironmentModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -138,7 +143,7 @@ Describe -Name 'EnvironmentModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -146,7 +151,7 @@ Describe -Name 'EnvironmentModule' {
             $Copyright | Should -Be $COPYRIGHT_STRING
         }
 
-        It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -154,7 +159,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a Description of Enhanced interface to Process Environment Variables.' {
+        It -Name 'should have a Description of Enhanced interface to Process Environment Variables.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -162,7 +167,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Should -Be 'Enhanced interface to Process Environment Variables.'
         }
 
-        It 'should have a PowerShellVersion of 5.1' {
+        It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $PowerShellVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'PowerShellVersion'
 
@@ -170,7 +175,7 @@ Describe -Name 'EnvironmentModule' {
             $PowerShellVersion | Should -Be '5.1'
         }
 
-        It 'should have ExportedCmdlets count should equal ExportedFunctions count' {
+        It -Name 'should have ExportedCmdlets count should equal ExportedFunctions count' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
@@ -183,14 +188,14 @@ Describe -Name 'EnvironmentModule' {
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
         }
 
-        It 'should have ExportedCmdlets equal to ExportedFunctions' {
+        It -Name 'should have ExportedCmdlets equal to ExportedFunctions' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -206,8 +211,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Add-EnvironmentValue' {
-        It 'should exist' {
+    Context -Name 'Add-EnvironmentValue' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-EnvironmentValue'
 
@@ -215,7 +220,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Add-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Add-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-EnvironmentValue'
 
@@ -223,7 +255,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -231,7 +263,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Description
 
@@ -239,7 +271,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Add-EnvironmentValue' | Select-Object -ExpandProperty ModuleName
 
@@ -248,8 +280,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Copy-EnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Copy-EnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Copy-EnvironmentVariable'
 
@@ -257,7 +289,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Copy-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Copy-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Copy-EnvironmentVariable'
 
@@ -265,7 +324,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Copy-EnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -273,7 +332,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Copy-EnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -281,7 +340,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Copy-EnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -290,8 +349,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Get-EnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Get-EnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-EnvironmentVariable'
 
@@ -299,7 +358,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Get-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Get-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-EnvironmentVariable'
 
@@ -307,7 +393,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Get-EnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -315,7 +401,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Get-EnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -323,7 +409,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Get-EnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -332,8 +418,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Get-EnvironmentHashtable' {
-        It 'should exist' {
+    Context -Name 'Get-EnvironmentHashtable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-EnvironmentHashtable'
 
@@ -341,7 +427,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Get-EnvironmentHashtable') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Get-EnvironmentHashtable')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-EnvironmentHashtable'
 
@@ -349,7 +462,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Get-EnvironmentHashtable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -357,7 +470,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Get-EnvironmentHashtable' -Full | Select-Object -ExpandProperty Description
 
@@ -365,7 +478,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Get-EnvironmentHashtable' | Select-Object -ExpandProperty ModuleName
 
@@ -374,8 +487,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Join-EnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Join-EnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Join-EnvironmentVariable'
 
@@ -383,7 +496,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Join-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Join-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Join-EnvironmentVariable'
 
@@ -391,7 +531,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Join-EnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -399,7 +539,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Join-EnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -407,7 +547,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Join-EnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -416,8 +556,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'New-EnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'New-EnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'New-EnvironmentVariable'
 
@@ -425,7 +565,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'New-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'New-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'New-EnvironmentVariable'
 
@@ -433,7 +600,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'New-EnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -442,7 +609,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'New-EnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -450,7 +617,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'New-EnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -459,8 +626,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Remove-EnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Remove-EnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Remove-EnvironmentVariable'
 
@@ -468,7 +635,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Remove-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Remove-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Remove-EnvironmentVariable'
 
@@ -476,7 +670,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Remove-EnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -484,7 +678,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Remove-EnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -492,7 +686,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Remove-EnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -501,8 +695,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Out-ArrayList' {
-        It 'should exist' {
+    Context -Name 'Out-ArrayList' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Out-ArrayList'
 
@@ -510,7 +704,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Out-ArrayList') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Out-ArrayList')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Out-ArrayList'
 
@@ -518,7 +739,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Out-ArrayList' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -526,7 +747,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Out-ArrayList' -Full | Select-Object -ExpandProperty Description
 
@@ -534,7 +755,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Out-ArrayList' | Select-Object -ExpandProperty ModuleName
 
@@ -543,8 +764,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Out-Hashtable' {
-        It 'should exist' {
+    Context -Name 'Out-Hashtable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Out-Hashtable'
 
@@ -552,7 +773,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Out-Hashtable') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Out-Hashtable')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Out-Hashtable'
 
@@ -560,7 +808,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Out-Hashtable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -568,7 +816,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Out-Hashtable' -Full | Select-Object -ExpandProperty Description
 
@@ -576,7 +824,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Out-Hashtable' | Select-Object -ExpandProperty ModuleName
 
@@ -585,8 +833,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Rename-EnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Rename-EnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Rename-EnvironmentVariable'
 
@@ -594,7 +842,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Rename-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Rename-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Rename-EnvironmentVariable'
 
@@ -602,7 +877,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Rename-EnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -610,7 +885,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Rename-EnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -618,7 +893,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Rename-EnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -627,8 +902,8 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Set-EnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Set-EnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-EnvironmentVariable'
 
@@ -636,7 +911,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Set-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Set-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-EnvironmentVariable'
 
@@ -644,7 +946,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Set-EnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -652,7 +954,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Set-EnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -660,7 +962,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Set-EnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -669,8 +971,77 @@ Describe -Name 'EnvironmentModule' {
         }
     }
 
-    Context -Name 'Test-EnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Split-EnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $Command = Get-Command -Name 'Split-EnvironmentVariable'
+
+            # Assert
+            $Command | Should -Not -BeNull
+        }
+
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Split-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Split-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $Command = Get-Command -Name 'Split-EnvironmentVariable'
+
+            # Assert
+            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
+        }
+
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $Synopsis = Get-Help -Name 'Split-EnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
+
+            # Assert
+            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
+        }
+
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $Description = Get-Help -Name 'Split-EnvironmentVariable' -Full | Select-Object -ExpandProperty Description
+
+            # Assert
+            $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
+        }
+
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $ModuleName = Get-Command -Name 'Split-EnvironmentVariable' | Select-Object -ExpandProperty ModuleName
+
+            # Assert
+            $ModuleName | Should -Be 'EnvironmentModule'
+        }
+    }
+
+    Context -Name 'Test-EnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Test-EnvironmentVariable'
 
@@ -678,7 +1049,34 @@ Describe -Name 'EnvironmentModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Test-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Test-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Test-EnvironmentVariable'
 
@@ -686,7 +1084,7 @@ Describe -Name 'EnvironmentModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Test-EnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -694,7 +1092,7 @@ Describe -Name 'EnvironmentModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Test-EnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -702,7 +1100,7 @@ Describe -Name 'EnvironmentModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of EnvironmentModule' {
+        It -Name 'should have a module name of EnvironmentModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Test-EnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 

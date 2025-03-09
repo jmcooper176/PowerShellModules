@@ -1,4 +1,50 @@
-﻿#
+﻿<#
+ =============================================================================
+<copyright file="VersionModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
+    All Rights Reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+       1. Redistributions of source code must retain the above
+          copyright notice, this list of conditions and the following
+          disclaimer.
+
+       2. Redistributions in binary form must reproduce the above
+          copyright notice, this list of conditions and the following
+          disclaimer in the documentation and/or other materials
+          provided with the distribution.
+
+       3. Neither the name of the copyright holder nor the names of
+          its contributors may be used to endorse or promote products
+          derived from this software without specific prior written
+          permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+   COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+   INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+   ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+   POSSIBILITY OF SUCH DAMAGE.
+</copyright>
+<author>John Merryweather Cooper</author>
+<date>Created:  2024-9-12</date>
+<summary>
+This file "VersionModule.psm1" is part of "VersionModule".
+</summary>
+<remarks>description</remarks>
+=============================================================================
+#>
+
+#
 # VersionModule.psm1
 #
 
@@ -53,7 +99,7 @@ function Compare-PerlVersion {
         Compare the Perl version 5.0101 to the System.Version object with a major version of 5, a minor version of 10, a build version of 1, and a revision of 0.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -123,7 +169,7 @@ function Compare-PythonVersion {
         Compare the Python version 3.9.1 to the System.Version object with a major version of 3, a minor version of 9, a build version of 1, and a revision of 0.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -194,7 +240,7 @@ function Compare-StringVersion {
         Compare the System.Version object with a major version of 1, a minor version of 0, a build version of 0, and a revision of 0 to the string version '1.0.0'.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -264,7 +310,7 @@ function Compare-WindowsVersion {
         Compare the System.Version object with a major version of 10, a minor version of 0, a build version of 19041, and a revision of 0 to the Windows version 10.0.19041.0.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -331,7 +377,7 @@ function ConvertFrom-PerlVersion {
         Convert the Perl version 5.0101 to a System.Version object.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -427,7 +473,7 @@ function ConvertFrom-PythonVersion {
         Convert the Python version 3.9.1 to a System.Version object.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -497,7 +543,7 @@ function ConvertFrom-SemanticVersion {
         Convert the Semantic version 1.0.0 to a System.Version object.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -587,7 +633,7 @@ function ConvertFrom-StringVersion {
         Convert the string version '1.0.0' to a System.Version object with strict requirements.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -657,7 +703,7 @@ function ConvertFrom-WindowsVersion {
         Convert the Windows version 10.0.19041.0 to a System.Version object.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -687,7 +733,7 @@ function Get-AssemblyVersion {
     [OutputType([version])]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,
@@ -784,7 +830,7 @@ function Get-FileVersion {
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,
@@ -925,7 +971,7 @@ function Get-FileVersionInfo {
     [OutputType([System.Diagnostics.FileVersionInfo])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,
@@ -1064,7 +1110,7 @@ function Get-InformationalVersion {
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,
@@ -1251,7 +1297,7 @@ function Get-ModuleVersion {
         [version]  `Get-ModuleVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1485,7 +1531,7 @@ function Initialize-Version {
         Normalizes the version object.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1674,7 +1720,7 @@ function New-BuildNumber {
         Create a new build number.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1776,7 +1822,7 @@ function New-CalendarVersion {
         Create a new calendar version.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2537,8 +2583,8 @@ function New-PatchNumber {
 
         if ($build -gt $MaxBuild) {
             $newErrorRecordSplat = @{
-                Exception = [System.ArgumentOutOfRange]::new('build', $build, "Build portion of patch is greater than '$($MaxBuild)' and will overflow")
-                ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                Exception = [System.ArgumentOutOfRangeException]::new('build', $build, "Build portion of patch is greater than '$($MaxBuild)' and will overflow")
+                ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'LimitsExceeded'
                 TargetObject = $build
             }
@@ -2586,7 +2632,7 @@ function New-PatchNumber {
         Create a new patch number.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2686,7 +2732,7 @@ function New-PerlVersion {
         Create a new Perl version.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2843,7 +2889,7 @@ function New-PythonVersion {
         Create a new Python version.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2892,7 +2938,7 @@ function New-RevisionNumber {
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if (Test-PSParameter -Name 'Utc' -Parameters $PSBoundParameters) {
-        Write-Verbose "$($CmdletName) : UTC time '$($Utc)' passed as a parameter"
+        Write-Verbose -Message "$($CmdletName) : UTC time '$($Utc)' passed as a parameter"
     } else {
         $Utc = Get-UtcDate
     }
@@ -2931,7 +2977,7 @@ function New-RevisionNumber {
         Create a new revision number.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3007,7 +3053,7 @@ function New-SemanticVersion {
     Set-Variable -Name MAX_REVISION -Option Constant -Value 83647 -WhatIf:$false
 
     if ($PSVersionTable.PSVersion.Major -lt 6) {
-        Write-Warning "$($CmdletName) : Semantic Versions are not supported on this PowerShell Major '$($PSVersionTable.PSVersion.Major)' version"
+        Write-Warning -Message "$($CmdletName) : Semantic Versions are not supported on this PowerShell Major '$($PSVersionTable.PSVersion.Major)' version"
 
         if (Test-PSParameter -Name 'Patch' -Parameters $PSBoundParameters) {
             return New-FileVersion -Major $Major -Minor $Minor -Build $Patch
@@ -3022,7 +3068,6 @@ function New-SemanticVersion {
             [semver]::new($Value) | Write-Output
         }
         catch {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
             $Error | Write-Fatal
         }
     }
@@ -3205,7 +3250,6 @@ function New-Version {
             [version]::new($Value) | Write-Output
         }
         catch {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
             $Error | Write-Fatal
         }
     }
@@ -3252,7 +3296,7 @@ function New-Version {
         Create a new version.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3331,7 +3375,7 @@ function New-WindowsVersion {
         Generates a windows version number.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3422,7 +3466,7 @@ function Test-CPreRelease {
         Test if a string is a valid pre-release label.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3514,7 +3558,7 @@ function Test-PreRelease {
         Test if a string is a valid pre-release label.
 
         .NOTES
-        Copyright © 2024-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3534,7 +3578,7 @@ function Write-AssemblyVersionToAssemblyInfo {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,
@@ -3551,7 +3595,11 @@ function Write-AssemblyVersionToAssemblyInfo {
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        Set-Variable -Name AssemblyVersionFormat -Option Constant -Value '[assembly: AssemblyVersion("{0}")]'
         Set-Variable -Name AssemblyVersionPattern -Option Constant -Value '^\[assembly: AssemblyVersion\("(.*)"\)\]$'
+        Set-Variable -Name AssemblyVersionFormatVb -Option Constant -Value '<assembly: AssemblyVersion("{0}")>'
+        Set-Variable -Name AssemblyVersionPatternVb -Option Constant -Value '^\<assembly: AssemblyVersion\("(.*)"\)\>$'
     }
 
     PROCESS {
@@ -3561,9 +3609,14 @@ function Write-AssemblyVersionToAssemblyInfo {
                 $fullName = $_.FullName
                 $backupPath = Join-Path -Path $env:TEMP -ChildPath $fileName
 
+                Set-ItemProperty -LiteralPath $fullName -Name IsReadOnly -Value $false -Force
+
                 Get-Content -LiteralPath $fullName | ForEach-Object -Process {
                     if ($_ -match $AssemblyVersionPattern) {
-                        $_ -replace $AssemblyVersionPattern, ('[assembly: AssemblyVersion("{0}")]' -f $Version)
+                        $_ -replace $AssemblyVersionPattern, ($AssemblyVersionFormat -f $Version)
+                    }
+                    elseif ($_ -match $AssemblyVersionPatternVb) {
+                        $_ -replace $AssemblyVersionPatternVb, ($AssemblyVersionFormatVb -f $Version)
                     }
                     else {
                         # output line as is
@@ -3582,9 +3635,14 @@ function Write-AssemblyVersionToAssemblyInfo {
                 $fullName = $_.FullName
                 $backupPath = Join-Path -Path $env:TEMP -ChildPath $fileName
 
+                Set-ItemProperty -Path $fullName -Name IsReadOnly -Value $false -Force
+
                 Get-Content -Path $fullName | ForEach-Object -Process {
                     if ($_ -match $AssemblyVersionPattern) {
-                        $_ -replace $AssemblyVersionPattern, ('[assembly: AssemblyVersion("{0}")]' -f $Version)
+                        $_ -replace $AssemblyVersionPattern, ($AssemblyVersionFormat -f $Version)
+                    }
+                    elseif ($_ -match $AssemblyVersionPatternVb) {
+                        $_ -replace $AssemblyVersionPatternVb, ($AssemblyVersionFormatVb -f $Version)
                     }
                     else {
                         # output line as is
@@ -3657,6 +3715,9 @@ function Write-AssemblyVersionToAssemblyInfo {
         Set-Content
 
         .LINK
+        Set-ItemProperty
+
+        .LINK
         Set-Variable
     #>
 }
@@ -3668,7 +3729,7 @@ function Write-AssemblyFileVersionToAssemblyInfo {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,
@@ -3685,7 +3746,11 @@ function Write-AssemblyFileVersionToAssemblyInfo {
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        Set-Variable -Name AssemblyFileVersionFormat -Option Constant -Value '[assembly: AssemblyFileVersion("{0}")]'
         Set-Variable -Name AssemblyFileVersionPattern -Option Constant -Value '^\[assembly: AssemblyFileVersion\("(.*)"\)\]$'
+        Set-Variable -Name AssemblyFileVersionFormatVb -Option Constant -Value '<assembly: AssemblyFileVersion("{0}")>'
+        Set-Variable -Name AssemblyFileVersionPatternVb -Option Constant -Value '^\<assembly: AssemblyFileVersion\("(.*)"\)\>$'
     }
 
     PROCESS {
@@ -3695,9 +3760,14 @@ function Write-AssemblyFileVersionToAssemblyInfo {
                 $fullName = $_.FullName
                 $backupPath = Join-Path -Path $env:TEMP -ChildPath $fileName
 
+                Set-ItemProperty -LiteralPath $fullName -Name IsReadOnly -Value $false -Force
+
                 Get-Content -LiteralPath $fullName | ForEach-Object -Process {
                     if ($_ -match $AssemblyFileVersionPattern) {
-                        $_ -replace $AssemblyFileVersionPattern, ('[assembly: AssemblyFileVersion("{0}")]' -f $Version)
+                        $_ -replace $AssemblyFileVersionPattern, ($AssemblyFileVersionFormat -f $Version)
+                    }
+                    elseif ($_ -match $AssemblyFileVersionPatternVb) {
+                        $_ -replace $AssemblyFileVersionPatternVb, ($AssemblyFileVersionFormatVb -f $Version)
                     }
                     else {
                         # output line as is
@@ -3716,9 +3786,14 @@ function Write-AssemblyFileVersionToAssemblyInfo {
                 $fullName = $_.FullName
                 $backupPath = Join-Path -Path $env:TEMP -ChildPath $fileName
 
+                Set-ItemProperty -Path $fullName -Name IsReadOnly -Value $false -Force
+
                 Get-Content -Path $fullName | ForEach-Object -Process {
                     if ($_ -match $AssemblyFileVersionPattern) {
-                        $_ -replace $AssemblyFileVersionPattern, ('[assembly: AssemblyFileVersion("{0}")]' -f $Version)
+                        $_ -replace $AssemblyFileVersionPattern, ($AssemblyFileVersionFormat -f $Version)
+                    }
+                    elseif ($_ -match $AssemblyFileVersionPatternVb) {
+                        $_ -replace $AssemblyFileVersionPatternVb, ($AssemblyFileVersionFormatVb -f $Version)
                     }
                     else {
                         # output line as is
@@ -3800,6 +3875,9 @@ function Write-AssemblyFileVersionToAssemblyInfo {
         Set-Content
 
         .LINK
+        Set-ItemProperty
+
+        .LINK
         Set-Variable
 
         .LINK
@@ -3814,13 +3892,13 @@ function Write-FileVersionToSdkProj {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -Include '*.csproj' -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.csproj' -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
         [string[]]
         $LiteralPath,
 
@@ -3946,7 +4024,7 @@ function Write-AssemblyInformationalVersionToAssemblyInfo {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,
@@ -3965,7 +4043,11 @@ function Write-AssemblyInformationalVersionToAssemblyInfo {
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        Set-Variable -Name InformationalVersionFormat -Option Constant -Value '[assembly: AssemblyInformationalVersion("{0}")]'
         Set-Variable -Name InformationalVersionPattern -Option Constant -Value '^\[assembly: AssemblyInformationalVersion\("(.*)"\)\]$'
+        Set-Variable -Name InformationalVersionFormatVb -Option Constant -Value '<assembly: AssemblyInformationalVersion("{0}")>'
+        Set-Variable -Name InformationalVersionPatternVb -Option Constant -Value '^\<assembly: AssemblyInformationalVersion\("(.*)"\)\>$'
     }
 
     PROCESS {
@@ -3975,9 +4057,14 @@ function Write-AssemblyInformationalVersionToAssemblyInfo {
                 $fullName = $_.FullName
                 $backupPath = Join-Path -Path $env:TEMP -ChildPath $fileName
 
+                Set-ItemProperty -LiteralPath $fullName -Name IsReadOnly -Value $false -Force
+
                 Get-Content -LiteralPath $fullName | ForEach-Object -Process {
-                    if ($_ -match $AssemblyFileVersionPattern) {
-                        $_ -replace $AssemblyInformationalVersionPattern, ('[assembly: AssemblyInformationalVersion("{0}")]' -f $Version)
+                    if ($_ -match $AssemblyInformationalVersionPattern) {
+                        $_ -replace $AssemblyInformationalVersionPattern, ($AssemblyInformationalVersionFormat -f $Version)
+                    }
+                    elseif ($_ -match $AssemblyInformationalVersionPatternVb) {
+                        $_ -replace $AssemblyInformationalVersionPatternVb, ($AssemblyInformationalVersionFormatVb -f $Version)
                     }
                     else {
                         # output line as is
@@ -3996,9 +4083,14 @@ function Write-AssemblyInformationalVersionToAssemblyInfo {
                 $fullName = $_.FullName
                 $backupPath = Join-Path -Path $env:TEMP -ChildPath $fileName
 
+                Set-ItemProperty -Path $fullName -Name IsReadOnly -Value $false -Force
+
                 Get-Content -Path $fullName | ForEach-Object -Process {
-                    if ($_ -match $AssemblyFileVersionPattern) {
+                    if ($_ -match $AssemblyInformationalVersionPattern) {
                         $_ -replace $AssemblyInformationalVersionPattern, ('[assembly: AssemblyInformationalVersion("{0}")]' -f $Version)
+                    }
+                    elseif ($_ -match $AssemblyInformationalVersionPatternVb) {
+                        $_ -replace $AssemblyInformationalVersionPatternVb, ($AssemblyInformationalVersionFormatVb -f $Version)
                     }
                     else {
                         # output line as is
@@ -4078,6 +4170,9 @@ function Write-AssemblyInformationalVersionToAssemblyInfo {
         Set-Content
 
         .LINK
+        Set-ItemProperty
+
+        .LINK
         Set-Variable
 
         .LINK
@@ -4092,12 +4187,12 @@ function Write-InformationalVersionToSdkProj {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -Include '*.csproj' -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.csproj' -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
         [string[]]
         $LiteralPath,
 
@@ -4223,7 +4318,7 @@ function Write-ModuleVersion {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -Path $_ -Include '*.psd1' -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -Include '*.psd1' -PathType 'Leaf' })]
         [string]
         $Path,
 
@@ -4277,19 +4372,150 @@ function Write-ModuleVersion {
 }
 
 <#
+    Write-PackageVersionToSdkProj
+#>
+function Write-PackageVersionToSdkProj {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [string[]]
+        $LiteralPath,
+
+        [Parameter(Mandatory)]
+        [string]
+        $Version
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | ForEach-Object -Process {
+                $fileName = $_.Name
+                $fullName = $_.FullName
+                $backupPath = Join-Path -Path $env:TEMP -ChildPath $fileName
+
+                if (Select-Xml -Path $fullName -XPath '//Project/PropertyGroup/PackageVersion') {
+                    $sdkProj = [xml](Get-Content -LiteralPath $fullName)
+                    $sdkProj.Project.PropertyGroup.PackageVersion = $Version
+                    $sdkProj.Save($backupPath)
+                    Move-Item -LiteralPath $backupPath -Destination $fullName -Force
+                    Write-Verbose -Message ("$($CmdletName) : PackageVersion in File '{0}' updated to '{1}'" -f $fullName, $Version)
+                }
+                else {
+                    Write-Warning -Message ("$($CmdletName) : PackageVersion element not found in File '{0}'" -f $fullName)
+                }
+            }
+        }
+        else {
+            $Path | Resolve-Path | Get-Item | ForEach-Object -Process {
+                $fileName = $_.Name
+                $fullName = $_.FullName
+                $backupPath = Join-Path -Path $env:TEMP -ChildPath $fileName
+
+                if (Select-Xml -Path $fullName -XPath '//Project/PropertyGroup/PackageVersion') {
+                    $sdkProj = [xml](Get-Content -LiteralPath $fullName)
+                    $sdkProj.Project.PropertyGroup.PackageVersion = $Version
+                    $sdkProj.Save($backupPath)
+                    Move-Item -LiteralPath $backupPath -Destination $fullName -Force
+                    Write-Verbose -Message ("$($CmdletName) : PackageVersion in File '{0}' updated to '{1}'" -f $fullName, $Version)
+                }
+                else {
+                    Write-Warning -Message ("$($CmdletName) : PackageVersion element not found in File '{0}'" -f $fullName)
+                }
+            }
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Updates the `Version` element inner text with `PackageVersion` in an SDK .csproj file.
+
+        .DESCRIPTION
+        `Write-PackageVersionToSdkProj` updates the `PackageVersion` element inner text with `Version` in an SDK .csproj file.
+
+        .PARAMETER Path
+        Specifies one or more paths to SDK .csproj files to update.  Wildcards are supported.
+
+        .PARAMETER LiteralPath
+        Specifies one or more literal paths to SDK .csproj files to update.  Wildcards are not supports, and each path is treated
+        exactly as it is passed.
+
+        .PARAMETER Version
+        Specifies the version to write.
+
+        .INPUTS
+        [string[]]  `Write-PackageVersionToSdkProj` takes path strings as input from the PowerShell pipeline.
+
+        .OUTPUTS
+        None.  `Write-PackageVersionToSdkProj` does not output to the PowerShell pipeline.
+
+        .EXAMPLE
+        PS> Write-PackageVersionToSdkProj -Path 'C:\Path\To\SdkProject.csproj' -Version '1.2.3.4' -Verbose
+
+        VERBOSE: PackageVersion in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
+
+        .NOTES
+        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        ForEach-Object
+
+        .LINK
+        Get-Content
+
+        .LINK
+        Get-Item
+
+        .LINK
+        Initialize-PSCmdlet
+
+        .LINK
+        Join-Path
+
+        .LINK
+        Move-Item
+
+        .LINK
+        Resolve-Path
+
+        .LINK
+        Write-Output
+
+        .LINK
+        Write-Verbose
+    #>
+}
+
+<#
     Write-VersionToSdkProj
 #>
 function Write-VersionToSdkProj {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -Include '*.csproj' -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.csproj' -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
         [string[]]
         $LiteralPath,
 
@@ -4414,7 +4640,7 @@ function Write-XPathVersion {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
         [SupportsWildcards()]
         [string[]]
         $Path,

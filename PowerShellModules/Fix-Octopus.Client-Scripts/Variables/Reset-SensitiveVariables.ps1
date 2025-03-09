@@ -7,9 +7,9 @@ $octopusURL = "https://youroctourl"
 $octopusAPIKey = "API-YOURAPIKEY"
 $spaceName = "default"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 Function Clear-SensitiveVariables
 {
@@ -45,16 +45,15 @@ try
         # Clear the sensitive ones
         Clear-SensitiveVariables -VariableSetId $project.VariableSetId
     }
-    
+
     # Loop through library variable sets
     foreach ($libararySet in $repositoryForSpace.LibraryVariableSets.GetAll())
     {
         # Clear sensitive ones
         Clear-SensitiveVariables -VariableSetId $libararySet.VariableSetId
     }
-
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="MessageModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="MessageModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "MessageModule.psd1" is part of "MessageModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'MessageModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '1.3.9158.48011'
 CompatiblePSEditions = 'Desktop', 'Core'
 
 # ID used to uniquely identify this module
-GUID = '55A4EEA8-7261-469B-A81D-1AB036F74B91'
+GUID = '70f1f86a-28b1-48a2-8f3e-34c5c8363091'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -146,9 +144,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'Message','Format','Write','Debug','Error','Exception','Fatal','Metadata','Origin'
 
@@ -156,7 +152,7 @@ PrivateData = @{
         LicenseUri = 'https://opensource.org/license/BSD-3-clause'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/OCIO-DEVSECOPS/PSInstallCom/MessageModule'
+        ProjectUri = 'https://github.com/jmcooper176/PowerShellModules/MessageModule'
 
         # A URL to an icon representing this module.
         # IconUri = ''
@@ -172,9 +168,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -182,6 +176,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

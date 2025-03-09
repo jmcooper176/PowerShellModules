@@ -21,9 +21,9 @@ $includeAzureActiveDirectoryDetails = $True
 # Optional: set a path to export to csv
 $csvExportPath = "path:\to\users.csv"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get users
 $users = $repository.Users.GetAll()
@@ -33,10 +33,9 @@ $usersList = @()
 if ($includeNonActiveUsers -eq $true)
 {
     # Filter out inactive users
-    Write-Host "Filtering users who arent active from results"
-    $users = $users | Where-Object {$_.IsActive -eq $True}
+    Write-Information -MessageData "Filtering users who arent active from results"
+    $users = $users | Where-Object -FilterScript {$_.IsActive -eq $True}
 }
-
 
 # Loop through users
 foreach ($user in $users)
@@ -51,7 +50,6 @@ foreach ($user in $users)
         EmailAddress = $user.EmailAddress
     }
 
-
     # Check to see if we're including user roles
     if ($includeUserRoles -eq $true)
     {
@@ -64,7 +62,7 @@ foreach ($user in $users)
         {
             # Get the team
             $team = $repository.Teams.Get($team.Id)
-            
+
             foreach ($role in $repository.Teams.GetScopedUserRoles($team))
             {
                 $userDetails["ScopedUserRoles"] += "$(($repository.UserRoles.Get($role.UserRoleId).Name)) ($(($repository.Spaces.Get($role.SpaceId)).Name))|"
@@ -75,27 +73,26 @@ foreach ($user in $users)
     if ($includeActiveDirectoryDetails -eq $true)
     {
         # Get the identity provider object
-        $activeDirectoryIdentity = $user.Identities | Where-Object {$_.IdentityProviderName -eq "Active Directory"}
-        if ($null -ne $activeDirectoryIdentity) 
+        $activeDirectoryIdentity = $user.Identities | Where-Object -FilterScript {$_.IdentityProviderName -eq "Active Directory"}
+        if ($null -ne $activeDirectoryIdentity)
         {
-            $userDetails.Add("AD_Upn", (($activeDirectoryIdentity.Claims | ForEach-Object {"$($_.upn.Value)"}) -Join "|"))
-            $userDetails.Add("AD_Sam", (($activeDirectoryIdentity.Claims | ForEach-Object {"$($_.sam.Value)"}) -Join "|"))
-            $userDetails.Add("AD_Email", (($activeDirectoryIdentity.Claims | ForEach-Object {"$($_.email.Value)"}) -Join "|"))
-        }
-    }
-    
-    if ($includeAzureActiveDirectoryDetails -eq $true)
-    {
-        $azureAdIdentity = $user.Identities | Where-Object {$_.IdentityProviderName -eq "Azure AD"}
-        if ($null -ne $azureAdIdentity)
-        {
-            $userDetails.Add("AAD_Dn", (($azureAdIdentity.Claims | ForEach-Object {"$($_.dn.Value)"}) -Join "|"))
-            $userDetails.Add("AAD_Email", (($azureAdIdentity.Claims | ForEach-Object {"$($_.email.Value)"}) -Join "|"))
+            $userDetails.Add("AD_Upn", (($activeDirectoryIdentity.Claims | ForEach-Object -Process {"$($_.upn.Value)"}) -Join "|"))
+            $userDetails.Add("AD_Sam", (($activeDirectoryIdentity.Claims | ForEach-Object -Process {"$($_.sam.Value)"}) -Join "|"))
+            $userDetails.Add("AD_Email", (($activeDirectoryIdentity.Claims | ForEach-Object -Process {"$($_.email.Value)"}) -Join "|"))
         }
     }
 
-    
-    $usersList += $userDetails    
+    if ($includeAzureActiveDirectoryDetails -eq $true)
+    {
+        $azureAdIdentity = $user.Identities | Where-Object -FilterScript {$_.IdentityProviderName -eq "Azure AD"}
+        if ($null -ne $azureAdIdentity)
+        {
+            $userDetails.Add("AAD_Dn", (($azureAdIdentity.Claims | ForEach-Object -Process {"$($_.dn.Value)"}) -Join "|"))
+            $userDetails.Add("AAD_Email", (($azureAdIdentity.Claims | ForEach-Object -Process {"$($_.email.Value)"}) -Join "|"))
+        }
+    }
+
+    $usersList += $userDetails
 }
 
 # Write header

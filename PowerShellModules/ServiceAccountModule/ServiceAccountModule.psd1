@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ServiceAccountModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ServiceAccountModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,7 +63,7 @@ ModuleVersion = '0.0.8834'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '910B0B82-1F08-408A-84FE-F593EA6E34C6'
+GUID = '6eaaca97-0766-4129-8982-d9c43b88640d'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -73,7 +72,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Cmdlets to help with Managed Service Accounts'
@@ -151,7 +150,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = ''
+        # ReleaseNotes = ''
 
         # Prerelease string of this module
         # Prerelease = ''

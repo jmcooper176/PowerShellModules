@@ -1,4 +1,3 @@
-
 <#PSScriptInfo
 
 .VERSION 1.0.0
@@ -15,11 +14,11 @@
 
 .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-.PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/BuildScripts
+.PROJECTURI https://github.com/jmcooper176/PowerShellModules/BuildScripts
 
 .ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
 .REQUIREDSCRIPTS
 
@@ -27,17 +26,14 @@
 
 .RELEASENOTES
 
-
 .PRIVATEDATA
 
 #>
 
-<# 
+<#
 
-.DESCRIPTION 
- Test Script 
+.DESCRIPTION
+ Test Script
 
-#> 
+#>
 Param()
-
-

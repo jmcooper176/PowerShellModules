@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="RandomModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="RandomModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -76,13 +75,12 @@ function Get-RandomByte {
         $Maximum = 255
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if ($Minimum -ge $Maximum) {
         $message = 'The minimum value must be less than the maximum value.'
         $exception = [System.ArgumentOutOfRangeException]::new('Minimum', $Minimum, $message)
-        
+
         $writeErrorSplat = @{
             Exception    = $exception
             ErrorId      = "$($CmdletName)-MinimumGreaterThanMaximum-01"
@@ -152,7 +150,6 @@ function Get-RandomByte {
 
         Generates a random long integer between 128 and 192.
 
-
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
@@ -193,8 +190,7 @@ function Get-RandomDouble {
     [OutputType([double])]
     param ()
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if (-not $Script:IsInitialized) {
         Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
@@ -273,8 +269,7 @@ function Get-RandomFloat {
     [OutputType([float])]
     param ()
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if (-not $Script:IsInitialized) {
         Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
@@ -299,7 +294,7 @@ function Get-RandomFloat {
 
         .DESCRIPTION
         Generates a random floating-point number between 0.0 and 1.0.
-        
+
         .INPUTS
         None.  You cannot pipe objects to Get-RandomFloat.
 
@@ -361,8 +356,7 @@ function Get-RandomInteger {
         $Maximum = 2147483647
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if (-not $Script:IsInitialized) {
         Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
@@ -372,7 +366,7 @@ function Get-RandomInteger {
     if ($Minimum -ge $Maximum) {
         $message = 'The minimum value must be less than the maximum value.'
         $exception = [System.ArgumentOutOfRangeException]::new('Minimum', $Minimum, $message)
-        
+
         $writeErrorSplat = @{
             Exception    = $exception
             ErrorId      = "$($CmdletName)-MinimumGreaterThanMaximum-01"
@@ -386,7 +380,7 @@ function Get-RandomInteger {
     }
 
     $index = $Script:Random.Next(0, $Script:IntegerArray.Length - 1)
-    
+
     try {
         Write-Verbose -Message "$($CmdletName) : Generating random integer."
 
@@ -490,13 +484,12 @@ function Get-RandomLong {
         $Maximum = 9223372036854775807
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if ($Minimum -ge $Maximum) {
         $message = 'The minimum value must be less than the maximum value.'
         $exception = [System.ArgumentOutOfRangeException]::new('Minimum', $Minimum, $message)
-        
+
         $writeErrorSplat = @{
             Exception    = $exception
             ErrorId      = "$($CmdletName)-MinimumGreaterThanMaximum-01"
@@ -516,7 +509,7 @@ function Get-RandomLong {
 
     $index = $Script:Random.Next(0, $Script:LongArray.Length - 1)
     Write-Debug -Message "$($CmdletName) : Index = $index"
-    
+
     try {
         do {
             $result = [long](($Script:LongArray[$index] % ($Maximum - $Minimum + 1)) + $Minimum)
@@ -616,12 +609,11 @@ function Initialize-Random {
         $DefaultSeed
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if (-not (Test-PSParameter -Name 'Seed' -Parameters $PSBoundParameters) -and -not $DefaultSeed.IsPresent) {
         Write-Verbose -Message "$($CmdletName) : No seed specified. Using current UTC time in ticks as seed."
-        $Seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+        $Seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
     }
     elseif ($DefaultSeed.IsPresent) {
         Write-Verbose -Message "$($CmdletName) : Using default seed of 0."

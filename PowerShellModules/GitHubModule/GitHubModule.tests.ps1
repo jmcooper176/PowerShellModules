@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="GitHubModule.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="GitHubModule.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -59,6 +58,7 @@ This file "GitHubModule.tests.ps1" is part of "GitHubModule".
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\GitHubModule.psd1'
+    $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
     $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
     Initialize-PSTest -Name 'GitHubModule' -Path $ModulePath
@@ -68,9 +68,9 @@ AfterAll {
     Get-Module -Name 'GitHubModule' | Remove-Module -Verbose -Force
 }
 
-Describe -Name 'GitHubModule' {
-    Context -Name 'Module Manifest' {
-        It 'should exist' {
+Describe -Name 'GitHubModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleManifest = Test-ModuleManifest -Path $ModulePath
 
@@ -78,29 +78,34 @@ Describe -Name 'GitHubModule' {
             $ModuleManifest | Should -Not -BeNullOrEmpty
         }
 
-        It 'should parse' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
             $inputSource = Get-Content -LiteralPath $ModulePath -Raw
 
             [ref] $tokens = @()
             [ref] $errors = @()
-            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
 
+            # Act
             $errors.Value | ForEach-Object -Process {
-                $message = ('{0} at {1}:  Parse error generating abstract syntax tree' -f $ModuleName, $ModulePath)
-                $writeErrorSplat = @{
-                        Exception    = [System.Management.Automation.ParseException]::new($message)
-                        Category     = 'ParseError'
-                        ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                        TargetObject = $_
-                        ErrorAction  = 'Continue'
-                    }
-
-                    Write-Error @writeErrorSplat -ErrorAction Continue
-                    $PSCmdlet.ThrowTerminatingError($writeErrorHash)
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
                 }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
         }
 
-        It 'should have a RootModule of GitHubModule.psm1' {
+        It -Name 'should have a RootModule of GitHubModule.psm1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $RootModule = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'RootModule'
 
@@ -108,7 +113,7 @@ Describe -Name 'GitHubModule' {
             $RootModule | Should -Be 'GitHubModule.psm1'
         }
 
-        It 'should have a ModuleVersion greater than  1.5.0' {
+        It -Name 'should have a ModuleVersion greater than  1.5.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Version'
 
@@ -116,15 +121,15 @@ Describe -Name 'GitHubModule' {
             $ModuleVersion | Should -BeGreaterThan '1.5.0'
         }
 
-        It 'should have a GUID of E19C2FD7-B220-4844-9C62-C0E4B65FB2A7' {
+        It -Name 'should have a GUID of 883f9316-52b6-4604-ad9a-b48f5c7b75d0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be 'E19C2FD7-B220-4844-9C62-C0E4B65FB2A7'
+            $Guid | Should -Be '883f9316-52b6-4604-ad9a-b48f5c7b75d0'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Author'
 
@@ -132,7 +137,7 @@ Describe -Name 'GitHubModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -140,7 +145,7 @@ Describe -Name 'GitHubModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -148,7 +153,7 @@ Describe -Name 'GitHubModule' {
             $Copyright | Should -Be $COPYRIGHT_STRING
         }
 
-        It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -156,7 +161,7 @@ Describe -Name 'GitHubModule' {
             $Description | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a Description of Utility Module that provides functionality useful with GitHub steps.' {
+        It -Name 'should have a Description of Utility Module that provides functionality useful with GitHub steps.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -164,7 +169,7 @@ Describe -Name 'GitHubModule' {
             $Description | Should -Be 'Utility Module that provides functionality useful with GitHub steps.'
         }
 
-        It 'should have a PowerShellVersion of 5.1' {
+        It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $PowerShellVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'PowerShellVersion'
 
@@ -172,7 +177,7 @@ Describe -Name 'GitHubModule' {
             $PowerShellVersion | Should -Be '5.1'
         }
 
-        It 'should have ExportedCmdlets count should equal ExportedFunctions count' {
+        It -Name 'should have ExportedCmdlets count should equal ExportedFunctions count' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
@@ -185,14 +190,14 @@ Describe -Name 'GitHubModule' {
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
         }
 
-        It 'should have ExportedCmdlets equal to ExportedFunctions' {
+        It -Name 'should have ExportedCmdlets equal to ExportedFunctions' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -208,8 +213,8 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Add-MultilineStepSummary' {
-        It 'should exist' {
+    Context -Name 'Add-MultilineStepSummary' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-MultilineStepSummary'
 
@@ -217,7 +222,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Add-MultilineStepSummary') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Add-MultilineStepSummary')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-MultilineStepSummary'
 
@@ -225,7 +257,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Add-MultilineStepSummary' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -233,7 +265,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Add-MultilineStepSummary' -Full | Select-Object -ExpandProperty Description
 
@@ -241,7 +273,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Add-MultilineStepSummary' | Select-Object -ExpandProperty ModuleName
 
@@ -250,8 +282,8 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Add-StepSummary' {
-        It 'should exist' {
+    Context -Name 'Add-StepSummary' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-StepSummary'
 
@@ -259,7 +291,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Add-StepSummary') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Add-StepSummary')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-StepSummary'
 
@@ -267,7 +326,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Add-StepSummary' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -275,7 +334,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Add-StepSummary' -Full | Select-Object -ExpandProperty Description
 
@@ -283,7 +342,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Add-StepSummary' | Select-Object -ExpandProperty ModuleName
 
@@ -292,8 +351,8 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Add-SystemPath' {
-        It 'should exist' {
+    Context -Name 'Add-SystemPath' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-SystemPath'
 
@@ -301,7 +360,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Add-SystemPath') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Add-SystemPath')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-SystemPath'
 
@@ -309,7 +395,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Add-SystemPath' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -317,7 +403,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Add-SystemPath' -Full | Select-Object -ExpandProperty Description
 
@@ -325,7 +411,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Add-SystemPath' | Select-Object -ExpandProperty ModuleName
 
@@ -334,8 +420,8 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'ConvertTo-Tuple' {
-        It 'should exist' {
+    Context -Name 'ConvertTo-Tuple' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'ConvertTo-Tuple'
 
@@ -343,7 +429,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'ConvertTo-Tuple') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'ConvertTo-Tuple')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'ConvertTo-Tuple'
 
@@ -351,7 +464,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'ConvertTo-Tuple' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -359,7 +472,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'ConvertTo-Tuple' -Full | Select-Object -ExpandProperty Description
 
@@ -367,7 +480,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'ConvertTo-Tuple' | Select-Object -ExpandProperty ModuleName
 
@@ -375,7 +488,7 @@ Describe -Name 'GitHubModule' {
             $ModuleName | Should -Be 'GitHubModule'
         }
 
-        It 'should return a tuple object' {
+        It -Name 'should return a tuple object' -Tag 'Unit', 'Test' {
             # Arrange
             $value = 'GITHUB_OUTPUT, 1.2.3.4'
 
@@ -386,7 +499,7 @@ Describe -Name 'GitHubModule' {
             $result | Should -BeOfType [object]
         }
 
-        It 'should return a tuple where Item1 is string' {
+        It -Name 'should return a tuple where Item1 is string' -Tag 'Unit', 'Test' {
             # Arrange
             $value = 'GITHUB_OUTPUT, 1.2.3.4'
 
@@ -397,7 +510,7 @@ Describe -Name 'GitHubModule' {
             $result.Item1 | Should -BeOfType [string]
         }
 
-        It 'should return a tuple where Item2 is string' {
+        It -Name 'should return a tuple where Item2 is string' -Tag 'Unit', 'Test' {
             # Arrange
             $value = 'GITHUB_OUTPUT, 1.2.3.4'
 
@@ -408,7 +521,7 @@ Describe -Name 'GitHubModule' {
             $result.Item2 | Should -BeOfType [string]
         }
 
-        It 'should return a tuple with Item1 equal to EnvironmentFile' {
+        It -Name 'should return a tuple with Item1 equal to EnvironmentFile' -Tag 'Unit', 'Test' {
             # Arrange
             $value = 'GITHUB_OUTPUT, 1.2.3.4'
             $expected = 'GITHUB_OUTPUT'
@@ -420,7 +533,7 @@ Describe -Name 'GitHubModule' {
             $result.Item1 | Should -Be $expected
         }
 
-        It 'should return a tuple with Item2 equal to Content' {
+        It -Name 'should return a tuple with Item2 equal to Content' -Tag 'Unit', 'Test' {
             # Arrange
             $value = 'GITHUB_OUTPUT, 1.2.3.4'
             $expected = '1.2.3.4'
@@ -433,26 +546,26 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Export-EnvironmentVariableFile' {
+    Context -Name 'Export-EnvironmentVariableFile' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
         BeforeEach {
-            'env.txt', 'output.txt', 'path.txt', 'save.txt', 'step_summary.txt' | ForEach-Object {
+            'env.txt', 'output.txt', 'path.txt', 'save.txt', 'step_summary.txt' | ForEach-Object -Process {
                 $removePath = Join-Path -Path $env:TEMP -ChildPath $_
                 Remove-Item -LiteralPath $removePath -Force -ErrorAction SilentlyContinue
             }
         }
 
         AfterEach {
-            'GITHUB_ENV', 'GITHUB_OUTPUT', 'GITHUB_PATH', 'GITHUB_SAVE', 'GITHUB_STEP_SUMMARY' | ForEach-Object {
+            'GITHUB_ENV', 'GITHUB_OUTPUT', 'GITHUB_PATH', 'GITHUB_SAVE', 'GITHUB_STEP_SUMMARY' | ForEach-Object -Process {
                 Remove-Item -LiteralPath env:$_ -ErrorAction SilentlyContinue
             }
 
-            'env.txt', 'output.txt', 'path.txt', 'save.txt', 'step_summary.txt' | ForEach-Object {
+            'env.txt', 'output.txt', 'path.txt', 'save.txt', 'step_summary.txt' | ForEach-Object -Process {
                 $removePath = Join-Path -Path $env:TEMP -ChildPath $_
                 Remove-Item -LiteralPath $removePath -Force -ErrorAction SilentlyContinue
             }
         }
 
-        It 'should exist' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Export-EnvironmentVariableFile'
 
@@ -460,7 +573,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Export-EnvironmentVariableFile') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Export-EnvironmentVariableFile')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Export-EnvironmentVariableFile'
 
@@ -468,7 +608,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Export-EnvironmentVariableFile' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -476,7 +616,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Export-EnvironmentVariableFile' -Full | Select-Object -ExpandProperty Description
 
@@ -484,7 +624,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Export-EnvironmentVariableFile' | Select-Object -ExpandProperty ModuleName
 
@@ -492,7 +632,7 @@ Describe -Name 'GitHubModule' {
             $ModuleName | Should -Be 'GitHubModule'
         }
 
-        It 'should set file pointed to by GITHUB_ENV' {
+        It -Name 'should set file pointed to by GITHUB_ENV' -Tag 'Unit', 'Test' {
             # Arrange
             $envPath = Join-Path -Path $env:TEMP -ChildPath 'env.txt'
             $env:GITHUB_ENV = $envPath
@@ -506,7 +646,7 @@ Describe -Name 'GitHubModule' {
             $fileContent | Should -Be $expected
         }
 
-        It 'should set file pointed to by GITHUB_OUTPUT' {
+        It -Name 'should set file pointed to by GITHUB_OUTPUT' -Tag 'Unit', 'Test' {
             # Arrange
             $outputPath = Join-Path -Path $env:TEMP -ChildPath 'output.txt'
             $env:GITHUB_OUTPUT = $outputPath
@@ -520,7 +660,7 @@ Describe -Name 'GitHubModule' {
             $fileContent | Should -Be $expected
         }
 
-        It 'should set file pointed to by GITHUB_PATH' {
+        It -Name 'should set file pointed to by GITHUB_PATH' -Tag 'Unit', 'Test' {
             # Arrange
             $pathPath = Join-Path -Path $env:TEMP -ChildPath 'path.txt'
             $env:GITHUB_PATH = $pathPath
@@ -534,7 +674,7 @@ Describe -Name 'GitHubModule' {
             $fileContent | Should -Be $expected
         }
 
-        It 'should set file pointed to by GITHUB_SAVE' {
+        It -Name 'should set file pointed to by GITHUB_SAVE' -Tag 'Unit', 'Test' {
             # Arrange
             $savePath = Join-Path -Path $env:TEMP -ChildPath 'save.txt'
             $env:GITHUB_SAVE = $savePath
@@ -548,7 +688,7 @@ Describe -Name 'GitHubModule' {
             $fileContent | Should -Be $expected
         }
 
-        It 'should set file pointed to by GITHUB_STEP_SUMMARY' {
+        It -Name 'should set file pointed to by GITHUB_STEP_SUMMARY' -Tag 'Unit', 'Test' {
             # Arrange
             $stepSummaryPath = Join-Path -Path $env:TEMP -ChildPath 'step_summary.txt'
             $env:GITHUB_STEP_SUMMARY = $stepSummaryPath
@@ -563,8 +703,8 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Get-GitHubEnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Get-GitHubEnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-GitHubEnvironmentVariable'
 
@@ -572,7 +712,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Get-GitHubEnvironmentVariable') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Get-GitHubEnvironmentVariable')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Get-GitHubEnvironmentVariable'
 
@@ -580,7 +747,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Get-GitHubEnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -588,7 +755,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Get-GitHubEnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -596,7 +763,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Get-GitHubEnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -605,8 +772,8 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Remove-StepSummary' {
-        It 'should exist' {
+    Context -Name 'Remove-StepSummary' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Remove-StepSummary'
 
@@ -614,7 +781,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Remove-StepSummary') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Remove-StepSummary')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Remove-StepSummary'
 
@@ -622,7 +816,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Remove-StepSummary' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -630,7 +824,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Remove-StepSummary' -Full | Select-Object -ExpandProperty Description
 
@@ -638,7 +832,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Remove-StepSummary' | Select-Object -ExpandProperty ModuleName
 
@@ -647,8 +841,8 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Set-GitHubEnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Set-GitHubEnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-GitHubEnvironmentVariable'
 
@@ -656,7 +850,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Set-GitHubEnvironmentVariable') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Set-GitHubEnvironmentVariable')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-GitHubEnvironmentVariable'
 
@@ -664,7 +885,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Set-GitHubEnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -672,7 +893,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Set-GitHubEnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -680,7 +901,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Set-GitHubEnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -689,8 +910,8 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Set-MultilineEnvironmentVariable' {
-        It 'should exist' {
+    Context -Name 'Set-MultilineEnvironmentVariable' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-MultilineEnvironmentVariable'
 
@@ -698,7 +919,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Set-MultilineEnvironmentVariable') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Set-MultilineEnvironmentVariable')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-MultilineEnvironmentVariable'
 
@@ -706,7 +954,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Set-MultilineEnvironmentVariable' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -714,7 +962,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Set-MultilineEnvironmentVariable' -Full | Select-Object -ExpandProperty Description
 
@@ -722,7 +970,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Set-MultilineEnvironmentVariable' | Select-Object -ExpandProperty ModuleName
 
@@ -731,8 +979,8 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Set-MultilineStepSummary' {
-        It 'should exist' {
+    Context -Name 'Set-MultilineStepSummary' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-MultilineStepSummary'
 
@@ -740,7 +988,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Set-MultilineStepSummary') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Set-MultilineStepSummary')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-MultilineStepSummary'
 
@@ -748,7 +1023,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Set-MultilineStepSummary' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -756,7 +1031,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
             # Arrange and Act
             $Description = Get-Help -Name 'Set-MultilineStepSummary' -Full | Select-Object -ExpandProperty Description
 
@@ -764,7 +1039,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Set-MultilineStepSummary' | Select-Object -ExpandProperty ModuleName
 
@@ -773,26 +1048,26 @@ Describe -Name 'GitHubModule' {
         }
     }
 
-    Context -Name 'Set-OutputParameter' {
+    Context -Name 'Set-OutputParameter' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
         BeforeEach {
-            'setOutputParameter.txt' | ForEach-Object {
+            'setOutputParameter.txt' | ForEach-Object -Process {
                 $removePath = Join-Path -Path $env:TEMP -ChildPath $_
                 Remove-Item -LiteralPath $removePath -Force -ErrorAction SilentlyContinue
             }
         }
 
         AfterEach {
-            'GITHUB_OUTPUT' | ForEach-Object {
+            'GITHUB_OUTPUT' | ForEach-Object -Process {
                 Remove-Item -LiteralPath env:$_ -ErrorAction SilentlyContinue
             }
 
-            'setOutputParameter.txt' | ForEach-Object {
+            'setOutputParameter.txt' | ForEach-Object -Process {
                 $removePath = Join-Path -Path $env:TEMP -ChildPath $_
                 Remove-Item -LiteralPath $removePath -Force -ErrorAction SilentlyContinue
             }
         }
 
-        It 'should exist' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-OutputParameter'
 
@@ -800,7 +1075,34 @@ Describe -Name 'GitHubModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Set-OutputParameter') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Set-OutputParameter')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Set-OutputParameter'
 
@@ -808,7 +1110,7 @@ Describe -Name 'GitHubModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Set-OutputParameter' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -816,7 +1118,7 @@ Describe -Name 'GitHubModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Set-OutputParameter' -Full | Select-Object -ExpandProperty Description
 
@@ -824,7 +1126,7 @@ Describe -Name 'GitHubModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of GitHubModule' {
+        It -Name 'should have a module name of GitHubModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Set-OutputParameter' | Select-Object -ExpandProperty ModuleName
 
@@ -832,7 +1134,7 @@ Describe -Name 'GitHubModule' {
             $ModuleName | Should -Be 'GitHubModule'
         }
 
-        It 'should set file pointed to by GITHUB_OUTPUT to version' {
+        It -Name 'should set file pointed to by GITHUB_OUTPUT to version' -Tag 'Unit', 'Test' {
             # Arrange
             $outputPath = Join-Path -Path $env:TEMP -ChildPath 'setOutputParameter.txt'
             $env:GITHUB_OUTPUT = $outputPath
@@ -846,7 +1148,7 @@ Describe -Name 'GitHubModule' {
             $fileContent | Should -Be $expected
         }
 
-        It 'should set file pointed to by GITHUB_OUTPUT to path' {
+        It -Name 'should set file pointed to by GITHUB_OUTPUT to path' -Tag 'Unit', 'Test' {
             # Arrange
             $outputPath = Join-Path -Path $env:TEMP -ChildPath 'setOutputParameter.txt'
             $env:GITHUB_OUTPUT = $outputPath

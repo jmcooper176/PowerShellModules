@@ -13,9 +13,9 @@ $optionalTags = @{}
 $optionalTags.Add("Early Adopter", "#ECAD3F")
 $optionalTags.Add("Stable", "#36A766")
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -25,18 +25,17 @@ try
 
     # Create or modify tagset
     $tagsetEditor = $repositoryForSpace.TagSets.CreateOrModify($tagsetName, $tagsetDescription)
-    
+
     # Add optional tags
     if($optionalTags.Count -gt 0)
     {
         foreach ($tagName in $optionalTags.Keys) {
             $tagsetEditor.AddOrUpdateTag($tagName, "", $optionalTags.Item($tagName))
         }
-        
     }
     $tagsetEditor.Save()
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

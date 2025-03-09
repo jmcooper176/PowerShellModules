@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="post-build.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="post-build.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "post-build.ps1" is part of "BuildScripts".
 
     .VERSION 1.0.0
 
-    .GUID C3900B3D-8637-47CA-AF04-140F8A784EB8
+    .GUID 5758B7FA-9405-40FA-A311-255E0FA7A712
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "post-build.ps1" is part of "BuildScripts".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/BuildScripts
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/BuildScripts
 
     .ICONURI
 
@@ -73,7 +72,6 @@ This file "post-build.ps1" is part of "BuildScripts".
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -82,7 +80,6 @@ This file "post-build.ps1" is part of "BuildScripts".
     .DESCRIPTION
     Post-build processing.
 #>
-
 
 [CmdletBinding()]
 param ()

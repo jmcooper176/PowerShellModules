@@ -11,10 +11,9 @@ $spaceName = "default"
 $environmentNames = @("Development", "Production")
 $roles = @("MyRole")
 
-
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -23,22 +22,22 @@ try
     $repositoryForSpace = $client.ForSpace($space)
 
     # Get environment ids
-    $environments = $repositoryForSpace.Environments.FindAll() | Where-Object {$environmentNames -contains $_.Name}
+    $environments = $repositoryForSpace.Environments.FindAll() | Where-Object -FilterScript {$environmentNames -contains $_.Name}
 
     # Get Azure account
     $azureAccount = $repositoryForSpace.Accounts.FindByName($azureServicePrincipalName)
 
     # Create new Azure Web App object
-    $azureWebAppTarget = New-Object Octopus.Client.Model.Endpoints.AzureWebAppEndpointResource
+    $azureWebAppTarget = New-Object -TypeName Octopus.Client.Model.Endpoints.AzureWebAppEndpointResource
     $azureWebAppTarget.AccountId = $azureAccount.Id
     $azureWebAppTarget.ResourceGroupName = $azureResourceGroupName
     $azureWebAppTarget.WebAppName = $azureWebAppName
 
     # Create new machine object
-    $machine = New-Object Octopus.Client.Model.MachineResource
+    $machine = New-Object -TypeName Octopus.Client.Model.MachineResource
     $machine.Endpoint = $azureWebAppTarget
     $machine.Name = $azureWebAppName
-    
+
     # Add Environments
     foreach ($environment in $environments)
     {
@@ -51,11 +50,11 @@ try
     {
         $machine.Roles.Add($role)
     }
-        
+
     # Add to machine to space
     $repositoryForSpace.Machines.Create($machine)
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

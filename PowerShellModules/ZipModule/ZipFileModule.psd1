@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ZipFileModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ZipFileModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "ZipFileModule.psd1" is part of "ZipModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'ZipFileModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '1.0.9130.49036'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '6958D02E-4E35-4A42-A6CF-4FC362E47666'
+GUID = '8a8686bf-aced-49f2-a396-6f6830ad3b52'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -116,11 +114,11 @@ RequiredModules = @('ErrorRecordModule')
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-Entries', 'Get-Content', 'Get-Data', 'Write-Entry', 
+FunctionsToExport = 'Get-Entries', 'Get-Content', 'Get-Data', 'Write-Entry',
                'Write-LineEntry'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Get-Entries', 'Get-Content', 'Get-Data', 'Write-Entry', 
+CmdletsToExport = 'Get-Entries', 'Get-Content', 'Get-Data', 'Write-Entry',
                'Write-LineEntry'
 
 # Variables to export from this module
@@ -140,9 +138,7 @@ AliasesToExport = '*'
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'zip','archive','compression','decompression','zipping','unzipping'
 
@@ -159,16 +155,14 @@ PrivateData = @{
         # ReleaseNotes = ''
 
         # Prerelease string of this module
-        Prerelease = ''
+        # Prerelease = ''
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
         # RequireLicenseAcceptance = $false
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -176,6 +170,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 DefaultCommandPrefix = 'Zip'
-
 }
-

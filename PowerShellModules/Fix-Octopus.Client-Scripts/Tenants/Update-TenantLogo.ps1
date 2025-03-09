@@ -12,12 +12,22 @@ function Invoke-OctopusLogoUpload
     )
     BEGIN
     {
-        if (-not (Test-Path $InFile))
+        if (-not (Test-Path -LiteralPath $InFile -PathType Leaf))
         {
             $errorMessage = ("File {0} missing or unable to read." -f $InFile)
-            $exception =  New-Object System.Exception $errorMessage
-			$errorRecord = New-Object System.Management.Automation.ErrorRecord $exception, 'MultipartFormDataUpload', ([System.Management.Automation.ErrorCategory]::InvalidArgument), $InFile
-			$PSCmdlet.ThrowTerminatingError($errorRecord)
+
+            $newObjectSplat = @{
+                TypeName = System.Management.Automation.ErrorRecord
+                ArgumentList = @(
+                    [System.IO.FileNotFoundException]::new($InFile, ("File {0} missing or unable to read." -f $InFile)),
+                    'ObjectNotFound',
+                    "InvokeOctopusLogoUpload-FileNotFoundException-01",
+                    $InFile
+                )
+            }
+
+            $errorRecord = New-Object @newObjectSplat
+            $PSCmdlet.ThrowTerminatingError($errorRecord)
         }
 
         if (-not $ContentType)
@@ -25,7 +35,7 @@ function Invoke-OctopusLogoUpload
             Add-Type -AssemblyName System.Web
 
             $mimeType = [System.Web.MimeMapping]::GetMimeMapping($InFile)
-            
+
             if ($mimeType)
             {
                 $ContentType = $mimeType
@@ -40,41 +50,42 @@ function Invoke-OctopusLogoUpload
     {
         Add-Type -AssemblyName System.Net.Http
 
-		$httpClientHandler = New-Object System.Net.Http.HttpClientHandler
+        $httpClientHandler = New-Object -TypeName System.Net.Http.HttpClientHandler
 
-        $httpClient = New-Object System.Net.Http.HttpClient $httpClientHandler
+        $httpClient = New-Object -TypeName System.Net.Http.HttpClient -ArgumentList $httpClientHandler
         $httpClient.DefaultRequestHeaders.Add("X-Octopus-ApiKey", $ApiKey)
 
-        $packageFileStream = New-Object System.IO.FileStream @($InFile, [System.IO.FileMode]::Open)
-        
-		$contentDispositionHeaderValue = New-Object System.Net.Http.Headers.ContentDispositionHeaderValue "form-data"
-	    $contentDispositionHeaderValue.Name = "fileData"
-		$contentDispositionHeaderValue.FileName = (Split-Path $InFile -leaf)
+        $packageFileStream = New-Object -TypeName System.IO.FileStream -ArgumentList @($InFile, [System.IO.FileMode]::Open)
 
-        $streamContent = New-Object System.Net.Http.StreamContent $packageFileStream
+        $contentDispositionHeaderValue = New-Object -TypeName System.Net.Http.Headers.ContentDispositionHeaderValue -ArgumentList "form-data"
+        $contentDispositionHeaderValue.Name = "fileData"
+        $contentDispositionHeaderValue.FileName = (Split-Path $InFile -leaf)
+
+        $streamContent = New-Object -TypeName System.Net.Http.StreamContent -ArgumentList $packageFileStream
         $streamContent.Headers.ContentDisposition = $contentDispositionHeaderValue
-        $streamContent.Headers.ContentType = New-Object System.Net.Http.Headers.MediaTypeHeaderValue $ContentType
-        
-        $content = New-Object System.Net.Http.MultipartFormDataContent
+        $streamContent.Headers.ContentType = New-Object -TypeName System.Net.Http.Headers.MediaTypeHeaderValue -ArgumentList $ContentType
+
+        $content = New-Object -TypeName System.Net.Http.MultipartFormDataContent
         $content.Add($streamContent)
 
         try
         {
-			$response = $httpClient.PostAsync($Uri, $content).Result
+            $response = $httpClient.PostAsync($Uri, $content).Result
 
-			if (!$response.IsSuccessStatusCode)
-			{
-				$responseBody = $response.Content.ReadAsStringAsync().Result
-				$errorMessage = "Status code {0}. Reason {1}. Server reported the following message: {2}." -f $response.StatusCode, $response.ReasonPhrase, $responseBody
+            if (!$response.IsSuccessStatusCode)
+            {
+                $responseBody = $response.Content.ReadAsStringAsync().Result
+                $errorMessage = "Status code {0}. Reason {1}. Server reported the following message: {2}." -f $response.StatusCode, $response.ReasonPhrase, $responseBody
 
-				throw [System.Net.Http.HttpRequestException] $errorMessage
-			}
+                throw [System.Net.Http.HttpRequestException] $errorMessage
+            }
 
-			return $response.Content.ReadAsStringAsync().Result
+            return $response.Content.ReadAsStringAsync().Result
         }
         catch [Exception]
         {
-			$PSCmdlet.ThrowTerminatingError($_)
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            $PSCmdlet.ThrowTerminatingError($Error[0])
         }
         finally
         {
@@ -101,18 +112,18 @@ $octopusUri = "https://your.octopus.url"
 # API Key
 $apiKey = "API-AKEY"
 # Enter tenant name
-$tenantName = 'MyTenant' 
+$tenantName = 'MyTenant'
 $spaceName="Default"
 
 # any supported image format
-$imageFilePath = "C:\temp\logo.png" 
+$imageFilePath = "C:\temp\logo.png"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI, $apiKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI, $apiKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 # Get Space
 $space = $repository.Spaces.FindByName($spaceName)
-Write-Host "Using Space named $($space.Name) with id $($space.Id)"
+Write-Information -MessageData "Using Space named $($space.Name) with id $($space.Id)"
 
 # Create space specific repository
 $repositoryForSpace = [Octopus.Client.OctopusRepositoryExtensions]::ForSpace($repository, $space)

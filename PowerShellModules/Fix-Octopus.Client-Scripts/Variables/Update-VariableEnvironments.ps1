@@ -3,9 +3,9 @@
 .SYNOPSIS
 Updates the environment IDs in variable scopes.
 
-Use case: After using Copy-LibraryVariables.ps1, the scopes of some variables in 
+Use case: After using Copy-LibraryVariables.ps1, the scopes of some variables in
 the target space include "Missing Resource" tags. By passing this script a list
-of mappings between environment IDs in the source and target space the "missing 
+of mappings between environment IDs in the source and target space the "missing
 resource" tags become the desired target-space environment tags after the fact.
 
 You can find the environment IDs and names for each space using urls in the form
@@ -17,7 +17,7 @@ Example:
 -OctopusUri 'https://foo.com/api'
 
 .PARAMETER OctopusApiKey
-Note: Ensure that the account corresponding to the API key has the requisite 
+Note: Ensure that the account corresponding to the API key has the requisite
 permissions in the space designated by SpaceName.
 
 .PARAMETER NugetPath
@@ -52,8 +52,8 @@ if ($PSBoundParameters['Debug']) {
 function AcquireAssemblies() {
 	[CmdletBinding()]
 	Param()
-	Write-Host 'Acquiring dependent assemblies'
-	@('Octopus.Client') | % { 
+	Write-Information -MessageData 'Acquiring dependent assemblies'
+	@('Octopus.Client') |ForEach-Object -Process{
 		& $NugetPath install $_ $nugetSourceArg $NugetSource -ExcludeVersion -PackageSaveMode nuspec -Framework net45 -Verbosity $script:NugetVerbosity -NonInteractive
 	}
 }
@@ -61,17 +61,16 @@ function AcquireAssemblies() {
 function LoadAssemblies() {
 	[CmdletBinding()]
 	Param()
-	Write-Verbose 'Loading dependent assemblies'
+	Write-Verbose -Message 'Loading dependent assemblies'
 	@(
 		'.\Octopus.Client\lib\net452\Octopus.Client.dll'
-	) | % { Add-Type -Path $_ }
+	) |ForEach-Object -Process{ Add-Type -Path $_ }
 }
 
-
-if ($VerbosePreference -eq 'SilentlyContinue') { 
-	$script:NugetVerbosity = 'quiet' 
+if ($VerbosePreference -eq 'SilentlyContinue') {
+	$script:NugetVerbosity = 'quiet'
 } else {
-	$script:NugetVerbosity = 'normal' 
+	$script:NugetVerbosity = 'normal'
 }
 AcquireAssemblies
 LoadAssemblies
@@ -81,7 +80,7 @@ function UpdateEnvironments() {
 	Param(
 		[parameter(Mandatory = $true)][string]$VariableSetId
 	)
-	Write-Host "Processing variable set '$VariableSetId'"
+	Write-Information -MessageData "Processing variable set '$VariableSetId'"
 	$variableSets = $repository.VariableSets.Get($VariableSetId)
 	if ($variableSets.Count -ne 1) {
 		throw "Expected 1 variable set with id '$($VariableSetId)' but there were $($variableSets.Count)"
@@ -90,7 +89,7 @@ function UpdateEnvironments() {
 	$changeMade = $false
 	foreach ($variable in $variableSet.Variables.Where( { $_.Scope['Environment'] } )) {
 		# A ScopeValue is a HashSet
-		Write-Host "Processing variable '$($variable.Name)'"
+		Write-Information -MessageData "Processing variable '$($variable.Name)'"
 		[Octopus.Client.Model.ScopeValue]$environmentScope = $variable.Scope['Environment']
 		$originalEnvironmentScope = $environmentScope.Clone()
 		foreach ($environmentId in $originalEnvironmentScope) {
@@ -98,9 +97,9 @@ function UpdateEnvironments() {
 				$environmentScope.Remove($key) | Out-Null
 				$message = "'$key' will be removed; '$($EnvironmentIDMappings[$key])'"
 				if ($environmentScope.Add($EnvironmentIDMappings[$key])) {
-					Write-Host ($message + " will be added in its place" )
+					Write-Information -MessageData ($message + " will be added in its place" )
 				} else {
-					Write-Warning ($message + " was already present alongside it" )
+					Write-Warning -Message ($message + " was already present alongside it" )
 				}
 				$changeMade = $true
 			}
@@ -109,24 +108,24 @@ function UpdateEnvironments() {
 	if ($changeMade) {
 		$operation = 'Updating IDs of environments scoped to variables'
 		if ($PSCmdlet.ShouldProcess($variableSet.Id, $operation)) {
-			Write-Host "$operation in '$($variableSet.Id)'"
+			Write-Information -MessageData "$operation in '$($variableSet.Id)'"
 			$repository.VariableSets.Modify($variableSets)
 		}
 	}
 }
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $OctopusUri, $OctopusApiKey 
-$defaultSpaceRepository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $OctopusUri, $OctopusApiKey
+$defaultSpaceRepository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 $repository = $defaultSpaceRepository.Client.ForSpace($defaultSpaceRepository.Spaces.FindByName($SpaceName))
 
 $variableSetIds = @()
 (
 	$repository.LibraryVariableSets.GetAll() +
 	$repository.Projects.GetAll()
-) | % {
+) |ForEach-Object -Process{
 	$variableSetIds += $_.VariableSetId
 }
 
-$variableSetIds | % {
+$variableSetIds |ForEach-Object -Process{
 	UpdateEnvironments($_)
 }

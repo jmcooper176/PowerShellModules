@@ -1,5 +1,5 @@
 #
-# RELEASENOTES - StringBuilderModule and StringBuilder Class
+# RELEASENOTES - PowerShellModule
 #
 
 DateTime               Notes

@@ -1,8 +1,7 @@
-<#
+﻿<#
  =============================================================================
-<copyright file="build.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="build.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,19 +48,19 @@ This file "build.ps1" is part of "ApplyVersionToAssemblies".
 
     .VERSION 1.0.0
 
-    .GUID F65C5682-EDAF-4124-BECC-B6AB48DCF671
+    .GUID A7AFC2FB-C6CA-41EF-A198-893500E9E252
 
     .AUTHOR John Merryweather Cooper
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
     .TAGS
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/Generate-ExternalContributors
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/Generate-ExternalContributors
 
     .ICONURI
 
@@ -72,7 +71,6 @@ This file "build.ps1" is part of "ApplyVersionToAssemblies".
     .EXTERNALSCRIPTDEPENDENCIES
 
     .RELEASENOTES
-
 
     .PRIVATEDATA
 
@@ -85,7 +83,6 @@ This file "build.ps1" is part of "ApplyVersionToAssemblies".
     .DESCRIPTION
     Build script for dotnet projects.
 #>
-
 
 [CmdletBinding()]
 param (

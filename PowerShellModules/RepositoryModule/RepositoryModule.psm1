@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Repo-Tasks.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Repo-Tasks.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,46 +38,51 @@ Management">
 <author>John Merryweather Cooper</author>
 <date>Created:  2024-9-12</date>
 <summary>
-This file "Repo-Tasks.tests.ps1" is part of "Repo-Tasks".
+This file "Repo-Tasks.psm1" is part of "Repo-Tasks".
 </summary>
 <remarks>description</remarks>
 =============================================================================
 #>
 
-#
-# This is a PowerShell Unit Test file.
-# You need a unit test framework such as Pester to run PowerShell Unit tests.
-# You can download Pester from https://go.microsoft.com/fwlink/?LinkID=534084
-#
+Import-Module -Name ".\Modules\Build-Tasks.psd1"
+Import-Module -Name ".\Modules\TestFx-Tasks.psd1"
 
-AfterAll {
-    Pop-Location
+$taskScriptDir = Get-Item -LiteralPath $PSCommandPath
+$env:repoRoot = Get-Item -LiteralPath $taskScriptDir
+$userPsFileDir = [string]::Empty
+
+Function Init() {
+    [CmdletBinding()]
+    param()
+
+    #Initialize Code
 }
 
-BeforeAll {
-    Push-Location -LiteralPath $PSScriptRoot
-
-    $psModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'PowerShellModule.psd1'
-
-    if (Test-Path -LiteralPath $psModulePath -PathType Leaf) {
-        Import-Module -Name $psModulePath -Force
-    }
-
-    Initialize-PSTest -Name 'PowerShellModule' -Path $PSCommandPath
-
-    if (Test-Path -LiteralPath $SourceToTestPath -PathType Leaf) {
-        Write-Information -MessageData "$($ScriptName):  Dot Sourcing -> '$($SourceToTestPath)'" -InformationAction Continue -Tags @('dot', 'source', 'test', 'path')
-        . $SourceToTestPath
-    }
-    else {
-        Write-Information -MessageData "$($ModuleName):  Importing Module -> '$($ModulePath)'" -InformationAction Continue -Tags @('import', 'module', 'path')
-        Import-Module -Name $ModulePath -Force
-    }
+<#
+We allow users to include any helper powershell scripts they would like to include in the current session
+Currently we support two ways to include helper powershell scripts
+1) psuserspreferences environment variable
+2) $env:USERPROFILE\psFiles directory
+We will include all *.ps1 files from any of the above mentioned locations
+#>
+if (Test-Path -LiteralPath $env:psuserpreferences -PathType Container) {
+    $userPsFileDir = $env:psuserpreferences
+}
+elseif (Test-Path -LiteralPath "$env:USERPROFILE\psFiles" -PathType Container) {
+    $userPsFileDir = "$env:USERPROFILE\psFiles"
 }
 
-Describe "Get-Function" {
-    Context "Function Exists" {
-        It "Should Return" {
-        }
+if (-not [string]::IsNullOrEmpty($userPsFileDir)) {
+    Get-ChildItem -LiteralPath $userPsFileDir | Where-Object -FilterScript { $_.Name -like "*.ps1" } | ForEach-Object -Process {
+        Write-Information -MessageData "Including $_" -InformationAction Continue
+        . $userPsFileDir\$_
     }
 }
+else {
+    Write-Information -MessageData "Loading skipped. '$env:PSUSERPREFERENCES' environment variable was not set to load user preferences." -InformationAction Continue
+}
+
+Write-Information -MessageData "For more information on the Repo-Tasks module, please see the following: https://github.com/Azure/azure-powershell/blob/preview/documentation/testing-docs/repo-tasks-module.md" -InformationAction Continue
+
+#Execute Init
+#Init

@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="StringBuilder.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="StringBuilder.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -67,8 +66,6 @@ This file "StringBuilder.psm1" is part of "StringBuilderModule".
 
     .NOTES
     Copyright © 2022-2025, John Merryweather Cooper.  All Rigths Reserved.
-    License:  https://www.opensource.org/licenses/BSD-3-Clause
-    ProjectUri:  https://github.com/OCIO-DEVSECOPS/PSInstallCom/StringBuilderModule/
 
     .LINK
     about_Classes

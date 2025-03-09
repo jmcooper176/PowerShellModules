@@ -7,9 +7,9 @@ $octopusURL = "https://your.octopus.app/api"
 $octopusAPIKey = "API-YOURAPIKEY"
 $spaceName = "Default"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try {
     # Get space
@@ -21,18 +21,18 @@ try {
     $workers = $repositoryForSpace.Workers.GetAll()
 
     ($targets + $workers)
-    | Where-Object { $_.Endpoint -and $_.Endpoint.TentacleVersionDetails }
-    | ForEach-Object {
-        Write-Host "Checking Tentacle version for $($_.Name)"
+    | Where-Object -FilterScript { $_.Endpoint -and $_.Endpoint.TentacleVersionDetails }
+    | ForEach-Object -Process {
+        Write-Information -MessageData "Checking Tentacle version for $($_.Name)"
         $details = $_.Endpoint.TentacleVersionDetails
 
-        Write-Host "`tTentacle status: $($_.HealthStatus)"
-        Write-Host "`tCurrent version: $($details.Version)"
-        Write-Host "`tUpgrade suggested: $($details.UpgradeSuggested)"
-        Write-Host "`tUpgrade required: $($details.UpgradeRequired)"
+        Write-Information -MessageData "`tTentacle status: $($_.HealthStatus)"
+        Write-Information -MessageData "`tCurrent version: $($details.Version)"
+        Write-Information -MessageData "`tUpgrade suggested: $($details.UpgradeSuggested)"
+        Write-Information -MessageData "`tUpgrade required: $($details.UpgradeRequired)"
     }
 }
 catch {
-    Write-Host "There was an error during the request: $($octoError.Message)"
-    exit
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+    throw $Error[0]
 }

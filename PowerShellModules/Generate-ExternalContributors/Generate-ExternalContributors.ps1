@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Generate-ExternalContributors.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Generate-ExternalContributors.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "Generate-ExternalContributors.ps1" is part of "Generate-ExternalContr
 
     .VERSION 1.0.0
 
-    .GUID 7BA9DE5F-7344-4822-AE9D-1BD05B2FF91D
+    .GUID 56A0354F-3810-4D63-9236-9C475E9DEAE5
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "Generate-ExternalContributors.ps1" is part of "Generate-ExternalContr
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/Generate-ExternalContributors
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/Generate-ExternalContributors
 
     .ICONURI
 
@@ -72,7 +71,6 @@ This file "Generate-ExternalContributors.ps1" is part of "Generate-ExternalContr
     .EXTERNALSCRIPTDEPENDENCIES
 
     .RELEASENOTES
-
 
     .PRIVATEDATA
 
@@ -102,7 +100,6 @@ This file "Generate-ExternalContributors.ps1" is part of "Generate-ExternalContr
     Invoke-RestMethod: https://learn.microsoft.com/en-us/powershell/module/Microsoft.PowerShell.Utility/Invoke-RestMethod?view=powershell-7
 #>
 
-
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
@@ -114,14 +111,14 @@ param(
     $DaysBack = 28
 )
 
-$SinceDate = (Get-Date).AddDays((0 - $DaysBack))
+$SinceDate = (Microsoft.PowerShell.Utility\Get-Date).AddDays((0 - $DaysBack))
 $SinceDateStr = $SinceDate.ToString('yyyy-MM-ddTHH:mm:ssZ')
 $Branch = git branch --show-current # The Git 2.22 and above support.
 $rootPath = "$PSScriptRoot\.."
 $changeLogFile = Get-Item -Path "..\ChangeLog.md"
-$changeLogContent = Get-Content -Path $changeLogFile.FullName | Out-String
+$changeLogContent = Get-Content -LiteralPath $changeLogFile.FullName | Out-String
 
-Write-Debug 'Create ExternalContributors.md'
+Write-Debug -Message 'Create ExternalContributors.md'
 # Create md file to store contributors information.
 $contributorsMDFile = Join-Path $PSScriptRoot 'ExternalContributors.md'
 
@@ -151,7 +148,7 @@ for ($pageNumber = 1; $pageNumber -le $commintsLastPageNumber; $pageNumber++) {
     $PRs += Invoke-RestMethod -Uri $commitsPageUrl -Authentication Bearer -Token $token -ResponseHeadersVariable 'ResponseHeaders'
 }
 
-Write-Debug "The PR count: $($PRs.Count)"
+Write-Debug -Message "The PR count: $($PRs.Count)"
 
 # Remove already existed commits
 $validPRs = @()

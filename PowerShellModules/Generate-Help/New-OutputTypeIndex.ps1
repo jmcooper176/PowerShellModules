@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="New-OutputTypeIndex.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="New-OutputTypeIndex.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "New-OutputTypeIndex.ps1" is part of "Generate-Help".
 
     .VERSION 1.0.0
 
-    .GUID 31D80157-8FC5-44E9-8E5E-0FE164318137
+    .GUID 27EE627D-B62E-4A01-9F92-9626CE673C27
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "New-OutputTypeIndex.ps1" is part of "Generate-Help".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/Generate-ExternalContributors
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/Generate-ExternalContributors
 
     .ICONURI
 
@@ -73,7 +72,6 @@ This file "New-OutputTypeIndex.ps1" is part of "Generate-Help".
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -82,7 +80,6 @@ This file "New-OutputTypeIndex.ps1" is part of "Generate-Help".
     .DESCRIPTION
     Generate a list of all output types in the module.
 #>
-
 
 [CmdletBinding()]
 param(
@@ -97,7 +94,7 @@ param(
 # Get all psd1 files
 $psd1Files = Get-Item $PSScriptRoot\..\artifacts\$BuildConfig\Az.*\Az.*.psd1
 
-$profilePsd1 = $psd1Files | Where-Object {$_.Name -like "*Az.Accounts.psd1"}
+$profilePsd1 = $psd1Files | Where-Object -FilterScript {$_.Name -like "*Az.Accounts.psd1"}
 Import-LocalizedData -BindingVariable "psd1File" -BaseDirectory $profilePsd1.DirectoryName -FileName $profilePsd1.Name
 
 foreach ($nestedModule in $psd1File.RequiredAssemblies)
@@ -106,7 +103,7 @@ foreach ($nestedModule in $psd1File.RequiredAssemblies)
     $Assembly = [Reflection.Assembly]::LoadFrom($dllPath)
 }
 
-$outputTypes = New-Object System.Collections.Generic.HashSet[string]
+$outputTypes = New-Object -TypeName System.Collections.Generic.HashSet[string]
 
 $psd1Files | ForEach -Process {
     Import-LocalizedData -BindingVariable "psd1File" -BaseDirectory $_.DirectoryName -FileName $_.Name
@@ -136,7 +133,7 @@ $psd1Files | ForEach -Process {
                 }
             }
 
-            foreach ($property in $exportedType.GetProperties() | Where-Object {$_.CustomAttributes.AttributeType.Name -contains "ParameterAttribute"})
+            foreach ($property in $exportedType.GetProperties() | Where-Object -FilterScript {$_.CustomAttributes.AttributeType.Name -contains "ParameterAttribute"})
             {
                 if ($property.PropertyType.FullName -like "*System.Nullable*``[``[*")
                 {

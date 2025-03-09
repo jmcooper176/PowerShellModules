@@ -1,6 +1,6 @@
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -Path 'Octopus.Client.dll' 
+Add-Type -Path 'Octopus.Client.dll'
 
 $apikey = 'API-MYAPIKEY' # Get this from your profile
 $octopusURI = 'http://MY-OCTOPUS' # Your server address
@@ -8,17 +8,17 @@ $octopusURI = 'http://MY-OCTOPUS' # Your server address
 $triggerEnvironment = "Dev" # Set this to whatever environment should auto deploy
 $triggerRole = "Web-server" # Set this to the deployment target role that should auto deploy
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$apikey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 $environment = $repository.Environments.FindByName($triggerEnvironment)
 
-$triggerFilter = New-Object Octopus.Client.Model.Triggers.MachineFilterResource
+$triggerFilter = New-Object -TypeName Octopus.Client.Model.Triggers.MachineFilterResource
 $triggerFilter.EnvironmentIds.Add($environment.Id)
 $triggerFilter.Roles.Add($triggerRole)
 $triggerFilter.EventGroups.Add("MachineAvailableForDeployment")
 
-$triggerAction = New-Object Octopus.Client.Model.Triggers.AutoDeployActionResource
+$triggerAction = New-Object -TypeName Octopus.Client.Model.Triggers.AutoDeployActionResource
 $triggerAction.ShouldRedeployWhenMachineHasBeenDeployedTo = $false
 
 $projects = $repository.Projects.GetAll()

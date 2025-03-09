@@ -8,9 +8,9 @@ $octopusAPIKey = "API-YOURAPIKEY"
 $spaceName = "default"
 $roleName = "My role"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get space
 $space = $repository.Spaces.FindByName($spaceName)
@@ -22,7 +22,7 @@ $projectList = $repositoryForSpace.Projects.GetAll()
 
 foreach($project in $projectList)
 {
-    # Get deployment process    
+    # Get deployment process
     $deploymentProcess = $repositoryForSpace.DeploymentProcesses.Get($project)
 
     # Loop through steps

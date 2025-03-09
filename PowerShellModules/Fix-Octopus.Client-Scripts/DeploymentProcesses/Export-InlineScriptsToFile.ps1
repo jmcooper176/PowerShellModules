@@ -9,9 +9,9 @@ Add-Type -Path 'Octopus.Client.dll'
 $apiKey = "API-1234567890ABCDEFG"
 $octopusURI = "https://octopus.example.com"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI, $apiKey
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI, $apiKey
 $client = [Octopus.Client.OctopusAsyncClient]::Create($endpoint).Result
-$repository = New-Object Octopus.Client.OctopusAsyncRepository $client
+$repository = New-Object -TypeName Octopus.Client.OctopusAsyncRepository -ArgumentList $client
 
 $allProjects = $Repository.Projects.FindAll().Result
 
@@ -23,15 +23,14 @@ foreach ($project in $allProjects) {
                 if ($action.Properties['Octopus.Action.Script.ScriptSource'].value -eq "Inline"){
                     # exclude step templates
                     if ($null -eq $action.Properties['Octopus.Action.Template.Id']) {
-
                         $directoryName = $project.Name -replace ' ', ''
-                        if (-not (Test-Path $directoryName)) {
+                        if (-not (Test-Path -LiteralPath $directoryName -PathType Container)) {
                             New-Item -Type Directory $directoryName
                         }
                         $fileName = "$($action.Name -replace ' ', '').ps1"
 
-                        $fileContent = ($action.Properties['Octopus.Action.Script.ScriptBody'].value -split '\n') | foreach-object { $_.TrimEnd() }
-                        write-host "Dumping inline script for $($project.Name) :: $($step.Name) :: $($action.Name) to $directoryName/$fileName"
+                        $fileContent = ($action.Properties['Octopus.Action.Script.ScriptBody'].value -split '\n') | ForEach-Object -Process { $_.TrimEnd() }
+                        Write-Information -MessageData "Dumping inline script for $($project.Name) :: $($step.Name) :: $($action.Name) to $directoryName/$fileName"
                         Set-Content -Path "$directoryName/$fileName" -Value $fileContent.TrimEnd()
                     }
                 }

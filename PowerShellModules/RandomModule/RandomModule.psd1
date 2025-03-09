@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="RandomModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="RandomModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "RandomModule.psd1" is part of "RandomModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'RandomModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '1.2.9157.13337'
 CompatiblePSEditions = @('Desktop', 'Core')
 
 # ID used to uniquely identify this module
-GUID = 'E62EF891-3230-41B9-ABCA-3776C1C42661'
+GUID = 'c9b58d55-bc90-4b0a-943f-42b1ec7a9691'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -74,7 +72,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2022-2025, U.S. Office of Personnel.  All Rights Reserved.'
+Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Cmdlets/functions for the generation of pseudo-random numbers.'
@@ -140,9 +138,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'Random','Number','Pseudo-Random'
 
@@ -153,7 +149,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/jmcooper176/TDDForPowerShellClass'
 
         # A URL to an icon representing this module.
-        IconUri = 'https://github.com/jmcooper176/TDDForPowerShellClass/vine.ico'
+        # IconUri = ''
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
@@ -166,9 +162,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -176,6 +170,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

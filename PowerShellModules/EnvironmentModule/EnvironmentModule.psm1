@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="EnvironmentModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="EnvironmentModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -56,7 +55,7 @@ This file "EnvironmentModule.psm1" is part of "EnvironmentModule".
     Add-EnvironmentValue
 #>
 function Add-EnvironmentValue {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
     param (
         [Parameter(Mandatory)]
@@ -70,7 +69,10 @@ function Add-EnvironmentValue {
         $Value,
 
         [switch]
-        $Sort
+        $Descending,
+
+        [switch]
+        $NoSort
     )
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
@@ -79,26 +81,37 @@ function Add-EnvironmentValue {
         $path = Get-EnvironmentVariable -Name $Name
 
         if ($path.Contains([System.IO.Path]::PathSeparator)) {
-            $pathList = [System.Collections.ArrayList]::new(($path.Split([System.IO.Path]::PathSeparator, [System.StringSplitOptions]::RemoveEmptyEntries)))
-            $pathList.Add($Value) | Out-Null
+            $pathList = Split-EnvironmentVariable -Name $Name -Delimiter ([System.IO.Path]::PathSeparator)
+            $pathList.Add($Value)
 
-            if ($Sort.IsPresent) {
-                (($pathList.ToArray() | Sort-Object -Descending -Unique) -join [System.IO.Path]::PathSeparator) | Write-Output
+            if ($NoSort.IsPresent) {
+                if ($PSCmdlet.ShouldProcess("Adding Value '$($Value)' to '$($Name)' Unsorted", $CmdletName)) {
+                    (($pathList) -join [System.IO.Path]::PathSeparator) | Write-Output
+                }
+            }
+            elseif ($Descending.IsPresent) {
+                if ($PSCmdlet.ShouldProcess("Adding Value '$($Value)' to '$($Name)' Unique Sorted Descending", $CmdletName)) {
+                    (($pathList | Sort-Object -Unique) -join [System.IO.Path]::PathSeparator) | Write-Output
+                }
             }
             else {
-                (($pathList.ToArray() | Sort-Object -Unique) -join [System.IO.Path]::PathSeparator) | Write-Output
+                if ($PSCmdlet.ShouldProcess("Adding Value '$($Value)' to '$($Name)' Unique Sorted Ascending", $CmdletName)) {
+                    (($pathList | Sort-Object -Unique) -join [System.IO.Path]::PathSeparator) | Write-Output
+                }
             }
-        } else {
+        }
+        else {
             Write-Warning -Message "$($CmdletName) : Environment Variable '$($Name)' has nothing to split"
             $path | Write-Output
         }
-    } else {
+    }
+    else {
         $newErrorRecordSplat = @{
-            Exception = [System.Management.Automation.ItemNotFoundException]::new("Environment Variable '$($Name)' does not exit")
+            Exception     = [System.Management.Automation.ItemNotFoundException]::new("Environment Variable '$($Name)' does not exit")
             ErrorCategory = 'ObjectNotFound'
-            ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ItemNotFoundException' -Position $MyInvocation.ScriptLineNumber
-            TargetObject = $Name
-            TargetName = 'Name'
+            ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ItemNotFoundException' -Position $MyInvocation.ScriptLineNumber
+            TargetObject  = $Name
+            TargetName    = 'Name'
         }
 
         New-ErrorRecord @newErrorRecordSplat | Write-Fatal
@@ -176,17 +189,22 @@ function Add-EnvironmentValue {
     Copy-EnvironmentVariable
 #>
 function Copy-EnvironmentVariable {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingArray')]
+    [OutputType([void])]
     param (
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingArray')]
         [ValidateNotNullOrEmpty()]
         [string[]]
         $Name,
 
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingArray')]
         [ValidateNotNullOrEmpty()]
-        [string]
+        [string[]]
         $NewName,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPiplineByPropertyName, ParameterSetName = 'UsingHashtable')]
+        [hashtable]
+        $Table,
 
         [switch]
         $Force
@@ -194,14 +212,69 @@ function Copy-EnvironmentVariable {
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($PSBoundParameters.ContainsKey('Table') -and ($Table.Keys.Count -ne $Table.Values.Count)) {
+            $newErrorRecordSplat = @{
+                Exception     = [System.ArgumentException]::new("`Table` must have the same number of keys and values")
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                TargetObject  = $Table
+            }
+
+            New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+        }
+        elseif ($Name.Length -ne $NewName.Length) {
+            $newErrorRecordSplat = @{
+                Exception     = [System.ArgumentException]::new("`Name` and `NewName must have the same number elements")
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                TargetObject  = @{ Name = $Name; NewName = $NewName }
+            }
+
+            New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+        }
     }
 
     PROCESS {
-        $Name | ForEach-Object -Process {
-            $path = Join-Path -Path Env: -ChildPath $_
-            $newPath = Join-Path -Path Env: -ChildPath $NewName
+        if ($PSCmdlet.ParameterSetName -eq 'UsingHashtable') {
+            $Table.GetEnumerator() | ForEach-Object -Process {
+                $sourcePath = Join-Path -Path Env: -ChildPath $_.Key
+                $destinationPath = Join-Path -Path Env: -ChildPath $_.Value
 
-            Copy-Item -LiteralPath $path -Destination $newPath -Force:$Force.IsPresent
+                if (Test-EnvironmentVariable -Name $_.Key) {
+                    Copy-Item -LiteralPath $sourcePath -Destination $destinationPath -Force:$Force.IsPresent
+                }
+                else {
+                    $newErrorRecordSplat = @{
+                        Exception     = [System.ArgumentException]::new("`Key` instance '$($_.Key)' does not exist")
+                        ErrorCategory = 'ObjectNotFound'
+                        ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                        TargetObject  = $Name
+                    }
+
+                    New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+                }
+            }
+        }
+        else {
+            for ($i = 0; $i -lt $Name.Length; $i++) {
+                $sourcePath = Join-Path -Path Env: -ChildPath $Name[$i]
+                $destinationPath = Join-Path -Path Env: -ChildPath $NewName[$i]
+
+                if (Test-EnvironmentVariable -Name $Name[$i]) {
+                    Copy-Item -LiteralPath $sourcePath -Destination $destinationPath -Force:$Force.IsPresent
+                }
+                else {
+                    $newErrorRecordSplat = @{
+                        Exception     = [System.ArgumentException]::new("`Name` instance '$($Name)' does not exist")
+                        ErrorCategory = 'ObjectNotFound'
+                        ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                        TargetObject  = $Name
+                    }
+
+                    New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+                }
+            }
         }
     }
 
@@ -287,16 +360,8 @@ function Get-EnvironmentVariable {
         $Name | ForEach-Object -Process {
             $path = Join-Path -Path 'Env:' -ChildPath $_
 
-            if ($AsString.IsPresent -and $AsHashtable.IsPresent) {
-                $newErrorRecordSplat = @{
-                    Exception = [System.ArgumentException]::new("Cannot specify both 'AsString' and 'AsHashtable'")
-                    ErrorCategory = 'InvalidArgument'
-                    ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
-                    TargetObject = @{ AsString = $AsString; AsHashtable = $AsHashtable }
-                    TargetName = 'AsString or AsHashtable'
-                }
-
-                New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+            if (-not(Test-Path -LiteralPath $path)) {
+                [string]::Empty | Write-Output
             }
             elseif ($AsString.IsPresent) {
                 Get-Item -LiteralPath $path | ForEach-Object -Process { ('{0}, {1}' -f $_.Key, $_.Value) }
@@ -304,7 +369,7 @@ function Get-EnvironmentVariable {
             elseif ($AsHashtable.IsPresent) {
                 # output as hashtable
                 $result = @{}
-                Get-Item -LiteralPath $path | ForEach-Object -Process { $result.Add($_.Key, $_.Value) }
+                Get-Item -LiteralPath $path | ForEach-Object -Process { $result.Add($_.Key, $_.Value) | Out-Null }
                 $result | Write-Output
             }
             else {
@@ -406,13 +471,11 @@ function Get-EnvironmentHashtable {
         .EXAMPLE
         PS> Get-EnvironmentHashtable
 
-
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> Get-EnvironmentHashtable
-
 
         .LINK
         about_CommonParameters
@@ -438,15 +501,15 @@ function Get-EnvironmentHashtable {
     Join-EnvironmentVariable
 #>
 function Join-EnvironmentVariable {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Name,
 
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
         [string[]]
         $Value,
@@ -464,36 +527,35 @@ function Join-EnvironmentVariable {
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-        if (Test-EnvironmentVariable =Name $Name) {
-            $path = Get-EnvironmentVariable -Name $Name
-
-            if ($path.Contains([System.IO.Path]::PathSeparator)) {
-                $pathList = [System.Collections.ArrayList]::new(($path -split [System.IO.Path]::PathSeparator)) | Out-Null
-            } else {
-                Write-Warning -Message "$($CmdletName):  Environment Variable '$($Name)' has nothing to split"
-                return
-            }
-        }
-        else {
-            Write-Error -Message "$($CmdletName):  Environment Variable '$($Name)' does not exit" -ErrorAction Continue
-            return
-        }
+        $pathList = [System.Collections.ArrayList]::new() | Out-Null
     }
 
     PROCESS {
-        $Value | ForEach-Object -Process {
-            $pathList.Add($_) | Out-Null
-        }
+        $pathList.Clear() | Out-Null
 
-        if ($NoSort.IsPresent) {
-            (($pathList.ToArray() -join [System.IO.Path]::PathSeparator) |
-                Set-EnvironmentVariable -Name $Name -PassThru:$PassThru.IsPresent) |
-                    Write-Output
-        }
-        else {
-            (($pathList.ToArray() | Sort-Object -Descending:$Descending.IsPresent -Unique) -join [System.IO.Path]::PathSeparator) |
-                Set-EnvironmentVariable -Name $Name -PassThru:$PassThru.IsPresent |
-                    Write-Output
+        $Value | ForEach-Object -Process {
+            if ($PassThru.IsPresent) {
+                if ($NoSort.IsPresent) {
+                    Add-EnvironmentVariable -Name $Name -Value $_ -NoSort:$true | Write-Output
+                }
+                elseif ($Descending.IsPresent) {
+                    Add-EnvironmentVariable -Name $Name -Value $_ -Descending:$true | Write-Output
+                }
+                else {
+                    Add-EnvironmentVariable -Name $Name -Value $_ | Write-Output
+                }
+            }
+            else {
+                if ($NoSort.IsPresent) {
+                    Add-EnvironmentVariable -Name $Name -Value $_ -NoSort:$true | Out-Null
+                }
+                elseif ($Descending.IsPresent) {
+                    Add-EnvironmentVariable -Name $Name -Value $_ -Descending:$true | Out-Null
+                }
+                else {
+                    Add-EnvironmentVariable -Name $Name -Value $_ | Out-Null
+                }
+            }
         }
     }
 
@@ -581,29 +643,178 @@ function Join-EnvironmentVariable {
 }
 
 <#
+    Move-EnvironmentVariable
+#>
+function Move-EnvironmentVariable {
+    [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingArray')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingArray')]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $Name,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingArray')]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $NewName,
+
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingHashtable')]
+        [hashtable]
+        $Table,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Name.Length -ne $NewName.Length) {
+            $newErrorRecordSplat = @{
+                Exception     = [System.ArgumentException]::new("`Name` and `NewName` must have the same number of corresponding elements")
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                TargetObject  = @{ Name = $Name; NewName = $NewName }
+            }
+
+            New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingHashtable') {
+            $Table.GetEnumerator() | ForEach-Object -Process {
+                $sourcePath = Join-Path -Path Env: -ChildPath $_.Key
+                $destinationPath = Join-Path -Path Env: -ChildPath $_.Value
+
+                if (Test-EnvironmentVariable -Name $_.Key) {
+                    Move-Item -LiteralPath $sourcePath -Destination $destinationPath -Force:$Force.IsPresent
+                }
+                else {
+                    $newErrorRecordSplat = @{
+                        Exception     = [System.ArgumentException]::new("`Key` instance '$($_.Key)' does not exist")
+                        ErrorCategory = 'ObjectNotFound'
+                        ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                        TargetObject  = $Name
+                    }
+
+                    New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+                }
+            }
+        }
+        else {
+            for ($i = 0; $i -lt $Name.Length; $i++) {
+                $sourcePath = Join-Path -Path Env: -ChildPath $Name[$i]
+                $destinationPath = Join-Path -Path Env: -ChildPath $NewName[$i]
+
+                if (Test-EnvironmentVariable -Name $Name[$i]) {
+                    Move-Item -LiteralPath $sourcePath -Destination $destinationPath -Force:$Force.IsPresent
+                }
+                else {
+                    $newErrorRecordSplat = @{
+                        Exception     = [System.ArgumentException]::new("`Name` instance '$($Name)' does not exist")
+                        ErrorCategory = 'ObjectNotFound'
+                        ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                        TargetObject  = $Name
+                    }
+
+                    New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+                }
+            }
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Copies an environment variable from `Name` to `NewName`.
+
+        .DESCRIPTION
+        `Move-EnvironmentVariable` copies the environment variable `Name` to `NewName`.
+
+        .PARAMETER Name
+        Specifies the source environment variable name to be copied.
+
+        .PARAMETER NewName
+        Specifies the destination environment variable name to be copied.
+
+        .PARAMETER Force
+        Specifies that the destination environment variable is overwritten if it already exists.
+
+        .INPUTS
+        [string[]]  `Move-EnvironmentVariable` takes an array of strings as the source environment variable input.
+
+        [string]  `Move-EnvironmentVariable` takes a string as the destination environment variable input.
+
+        .OUTPUTS
+        None.  `Move-EnvironmentVariable` does not return any output.
+
+        .EXAMPLE
+        PS> Move-EnvironmentVariable -Name 'Path' -NewName 'NewPath'
+        PS> Test-Path -LiteralPath 'Env:\Path'
+
+        False
+
+        PS> Test-Path -LiteralPath 'Env:\NewPath'
+
+        True
+
+        Moved environment variable `Path` to `NewPath`.
+
+        .NOTES
+        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
+
+        .LINK
+        Copy-Item
+
+        .LINK
+        ForEach-Object
+
+        .LINK
+        Initialize-PSCmdlet
+
+        .LINK
+        Join-Path
+    #>
+}
+
+<#
     New-EnvironmentVariable
 #>
 function New-EnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Name,
 
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $Value
+        [object]
+        $Value,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-        $path = Join-Path -Path Env: -ChildPath $Name
     }
 
     PROCESS {
-        $Value | New-Item -LiteralPath $path
+        $Value | ForEach-Object -Process {
+            $path = Join-Path -Path Env: -ChildPath $Name
+
+            if ($PSCmdlet.ShouldProcess("Creating Process Environment Variable '$($Name)' with Value '$($_)'", $CmdletName)) {
+                New-Item -LiteralPath $path -Value $_ -Force:$Force.IsPresent
+            }
+        }
     }
 
     <#
@@ -652,6 +863,61 @@ function New-EnvironmentVariable {
 }
 
 <#
+    Optimize-Path
+#>
+function Optimize-Path {
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType(string)]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Name
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        $statistic = @{}
+        $result = [System.Collections.ArrayList]::new()
+    }
+
+    PROCESS {
+        $statistic.Clear()
+
+        $raw = Get-EnvironmentVariable -Name $Name
+
+        if ([System.IO.Path]::PathSeparator -notin $raw) {
+            Write-Warning -Message "$($Cmdlet) : `Name` has nothing to split"
+            return $raw
+        }
+
+        Split-EnvironmentVariable -Name $Name -Delimiter ([System.IO.Path]::PathSeparator) | ForEach-Object -Process {
+            $entryInfo = Get-Item -LiteralPath $_
+            $executableCount = 0
+
+            Get-Command -All | ForEach-Object -Process {
+                $fileInfo = Get-Item -LiteralPath $_.Path
+
+                if ($fileInfo.DirectoryName -eq $entryInfo.FullName) {
+                    $executableCount++
+                }
+            }
+
+            $statistic.Add($entryInfo.FullName, $executableCount)
+        }
+
+        $statistic.GetEnumerator() | Sort-Object -Property Value -Descending -Unique | ForEach-Object -Process {
+            $result.Add($_.Key) | Out-Null
+        }
+
+        if ($PSCmdlet.ShouldProcess("Optimizing '$($Name)'", $CmdletName)) {
+            ($result.ToArray() -join [System.IO.Path]::PathSeparator) | Write-Output
+        }
+    }
+}
+
+<#
     Out-ArrayList
 #>
 function Out-ArrayList {
@@ -692,7 +958,8 @@ function Out-ArrayList {
                     if ($PSCmdlet.ShouldProcess($Capacity, $CmdletName)) {
                         [System.Collections.ArrayList]::new($Capacity) | Write-Output
                     }
-                } else {
+                }
+                else {
                     if ($PSCmdlet.ShouldProcess('Default', $CmdletName)) {
                         [System.Collections.ArrayList]::new() | Write-Output
                     }
@@ -704,7 +971,7 @@ function Out-ArrayList {
             default {
                 if ($PSCmdlet.ShouldProcess('Elements', $CmdletName)) {
                     $arrayList = [System.Collections.ArrayList]::new() | Out-Null
-                    $Element | ForEach-Object -Process { $arrayList.Add($_) }
+                    $Element | ForEach-Object -Process { $arrayList.Add($_) | Out-Null }
                     $arrayList | Write-Output
                 }
 
@@ -746,7 +1013,6 @@ function Out-ArrayList {
         -----
         Element1
         Element2
-
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
@@ -817,9 +1083,11 @@ function Out-Hashtable {
 
         if (($Capacity -gt 0) -and (Test-PSParameter -Name 'LoadFactor' -Parameters $PSBoundParameters)) {
             $resultHash = [System.Collections.Hashtable]::new($Capacity, $LoadFactor, $CaseInsensitiveComparer)
-        } elseif ($Capacity -gt 0) {
+        }
+        elseif ($Capacity -gt 0) {
             $resultHash = [System.Collections.Hashtable]::new($Capacity, $CaseInsensitiveComparer)
-        } else {
+        }
+        else {
             $resultHash = [System.Collections.Hashtable]::new($CaseInsensitiveComparer)
         }
     }
@@ -844,7 +1112,8 @@ function Out-Hashtable {
                         if ($resultHash.ContainsKey($_.Key)) {
                             Write-Warning -Message "$($CmdletName) : Key '$($_.Key)' is non-unique.  Overwriting"
                             $resultHash[$_.Key] = $_.Value
-                        } else {
+                        }
+                        else {
                             $resultHash.Add($_.Key, $_.Value) | Out-Null
                         }
                     }
@@ -859,11 +1128,11 @@ function Out-Hashtable {
                 if ($PSCmdlet.ShouldProcess('Key and Value Arrays', $CmdletName)) {
                     if ($Key.Length -ne $Value.Length) {
                         $newErrorRecordSplat = @{
-                            Exception = [System.ArgumentException]::new("Key and Value arrays must be the same length")
+                            Exception     = [System.ArgumentException]::new("Key and Value arrays must be the same length")
                             ErrorCategory = 'InvalidArgument'
-                            ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
-                            TargetObject = @{ KeyLength = $Key.Length; ValueLength = $Value.Length }
-                            TargetName = 'Key or Value'
+                            ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                            TargetObject  = @{ KeyLength = $Key.Length; ValueLength = $Value.Length }
+                            TargetName    = 'Key or Value'
                         }
 
                         New-ErrorRecord @newErrorRecordSplat | Write-Fatal
@@ -897,7 +1166,8 @@ function Out-Hashtable {
                         if ($resultHash.ContainsKey($_.Key)) {
                             Write-Warning -Message "$($CmdletName) : Key '$($_.Key)' is non-unique.  Overwriting"
                             $resultHash[$_.Key] = $_.Value
-                        } else {
+                        }
+                        else {
                             $resultHash.Add($_.Key, $_.Value) | Out-Null
                         }
                     }
@@ -916,7 +1186,8 @@ function Out-Hashtable {
                         if ($resultHash.ContainsKey($_.Key)) {
                             Write-Warning -Message "$($CmdletName) : Key '$($_.Key)' is non-unique.  Overwriting"
                             $resultHash[$_.Key] = $_.Value
-                        } else {
+                        }
+                        else {
                             $resultHash.Add($_.Key, $_.Value) | Out-Null
                         }
                     }
@@ -1025,14 +1296,26 @@ function Remove-EnvironmentVariable {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string]
-        $Name
+        [string[]]
+        $Name,
+
+        [switch]
+        $Force
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
 
-    $path = Join-Path -Path Env: -ChildPath $Name
-    Remove-Item -LiteralPath $path
+    PROCESS {
+        $Name | ForEach-Object -Process {
+            $path = Join-Path -Path Env: -ChildPath $_
+
+            if ($PSCmdlet.ShouldProcess("Removing '$($_)' from the process environment", $CmdletName)) {
+                Remove-Item -LiteralPath $path -Force:$Force.IsPresent
+            }
+        }
+    }
 
     <#
         .SYNOPSIS
@@ -1088,12 +1371,12 @@ function Remove-EnvironmentVariable {
 function Rename-EnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-EnvironmentVariable -Name $_ })]
         [string]
         $Name,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
         [string]
         $NewName,
@@ -1102,10 +1385,17 @@ function Rename-EnvironmentVariable {
         $Force
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
 
-    $path = Join-Path -Path Env: -ChildPath $Name
-    Rename-Item -LiteralPath $path -NewName $NewName -Force:$Force.IsPresent
+    PROCESS {
+        $path = Join-Path -Path Env: -ChildPath $Name
+
+        if ($PSCmdlet.ShouldProcess("Renaming '$($Name)' to '$($NewName)'", $CmdletName)) {
+            Rename-Item -LiteralPath $path -NewName $NewName -Force:$Force.IsPresent
+        }
+    }
 
     <#
         .SYNOPSIS
@@ -1135,15 +1425,18 @@ function Set-EnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
-        [string]
+        [string[]]
         $Name,
 
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateNotNullOrEmpty()]
-        [string[]]
+        [AllowNull()]
+        [object]
         $Value,
+
+        [switch]
+        $Force,
 
         [switch]
         $PassThru
@@ -1151,12 +1444,16 @@ function Set-EnvironmentVariable {
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $path = Join-Path -Path Env: -ChildPath $Name
     }
 
     PROCESS {
-        $Value | Set-Item -LiteralPath $path -PassThru:$PassThru.IsPresent | Write-Output
+        $Name | ForEach-Object -Process {
+            $path = Join-Path -Path Env: -ChildPath $_
+
+            if ($PSCmdlet.ShouldProcess("Set '$($_)' to '$($Value)'", $CmdletName)) {
+                $Value | Set-Item -LiteralPath $path -Force:$Force.IsPresent -PassThru:$PassThru.IsPresent | Write-Output
+            }
+        }
     }
 
     <#
@@ -1174,6 +1471,87 @@ function Set-EnvironmentVariable {
         .LINK
         about_Functions_Advanced
     #>
+}
+
+<#
+    Split-EnvironmentVariable
+#>
+function Split-EnvironmentVariable {
+    [CmdletBinding(DefaultParameterSetName = 'UsingDelimiter')]
+    [OutputType([string[]])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string[]]
+        $Name,
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingDelimiter')]
+        [AllowEmptyString()]
+        [AllowEmptyCollection()]
+        [string]
+        $Delimiter,
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingScriptBlock')]
+        [scriptblock]
+        $ScriptBlock,
+
+        [ValidateRange(0, 2147483647)]
+        [int]
+        $MaxSubstrings = 0,
+
+        [ValidateSet('SimpleMatch', 'RegexMatch', 'IgnoreCase', 'CultureInvariant', 'IgnorePatternWhitespace', 'ExplicitCapture', 'SingleLine', 'MultiLine')]
+        [string[]]
+        $Options = 'SimpleMatch'
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if (-not ($PSBoundParameters.ContainsKey('Delimiter'))) {
+            $Delimiter = [System.IO.Path]::PathSeparator
+        }
+
+        $result = [System.Collections.ArrayList]::new() | Out-Null
+
+        if (('SimpleMatch' -in $Options) -and ('RegexMatch' -in $Options)) {
+            $Options.Remove('SimpleMatch')
+        }
+
+        if (('SimpleMatch' -in $Options)) {
+            @('CultureInvariant', 'IgnorePatternWhitespace', 'ExplicitCapture', 'SingleLine', 'MultiLine') | ForEach-Object -Process {
+                if ($_ -in $Options) {
+                    $Options.Remove($_)
+                }
+            }
+        }
+
+        $optionString = ($Options -join ',')
+    }
+
+    PROCESS {
+        $result.Clear() | Out-Null
+
+        $value = Get-EnvironmentVariable -Name $Name
+
+        if ($Delimiter.Length -lt 1 -or [string]::IsNullOrWhiteSpace($Delimiter)) {
+            $splitArgumentList = [string]::Empty
+        }
+        elseif ($Delimiter.Length -gt 1) {
+            $splitArgumentList = ('({0}' -f $Delimiter)
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq 'UsingScriptBlock') {
+            $splitArgumentList = ('{0},{1}' -f $ScriptBlock, $MaxSubStrings)
+        }
+        else {
+            $splitArgumentList = ('{0},{1},"{2}"' -f $Delimiter, $MaxSubstrings, $optionString)
+        }
+
+        $result.AddRange(($value -split $splitArgumentList)) | Out-Null
+        $result.ToArray() | Write-Output
+    }
+
+    END {
+        $result.Clear()
+    }
 }
 
 <#
@@ -1264,8 +1642,10 @@ function Test-EnvironmentVariable {
             $false | Write-Output
         }
         else {
-            $path = Join-Path -Path Env: -ChildPath $Name
-            Test-Path -LiteralPath $path | Write-Output
+            $Name | ForEach-Object -Process {
+                $path = Join-Path -Path Env: -ChildPath $Name
+                Test-Path -LiteralPath $path | Write-Output
+            }
         }
     }
 

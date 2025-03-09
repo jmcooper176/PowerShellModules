@@ -34,9 +34,9 @@ $runbookTriggerStartTime = "2021-07-22T09:00:00.000Z"
 # Script variables
 $runbookEnvironmentIds = @()
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get space
 $space = $repository.Spaces.FindByName($spaceName)
@@ -53,16 +53,16 @@ foreach($environmentName in $runbookEnvironmentNames) {
     $runbookEnvironmentIds += $environment.Id
 }
 
-$runbookScheduledTrigger = New-Object Octopus.Client.Model.ProjectTriggerResource
+$runbookScheduledTrigger = New-Object -TypeName Octopus.Client.Model.ProjectTriggerResource
 
-$runbookScheduledTriggerFilter = New-Object Octopus.Client.Model.Triggers.ScheduledTriggers.OnceDailyScheduledTriggerFilterResource
+$runbookScheduledTriggerFilter = New-Object -TypeName Octopus.Client.Model.Triggers.ScheduledTriggers.OnceDailyScheduledTriggerFilterResource
 $runbookScheduledTriggerFilter.Timezone = $runbookTriggerTimezone
 $runbookScheduledTriggerFilter.StartTime = (Get-Date -Date $runbookTriggerStartTime)
 $runbookScheduledTriggerFilter.DaysOfWeek = $runbookTriggerDaysOfWeekToRun
 
-$runbookScheduledTriggerAction = New-Object Octopus.Client.Model.Triggers.RunRunbookActionResource
+$runbookScheduledTriggerAction = New-Object -TypeName Octopus.Client.Model.Triggers.RunRunbookActionResource
 $runbookScheduledTriggerAction.RunbookId = $runbook.Id
-$runbookScheduledTriggerAction.EnvironmentIds = New-Object Octopus.Client.Model.ReferenceCollection($runbookEnvironmentIds)
+$runbookScheduledTriggerAction.EnvironmentIds = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $runbookEnvironmentIds
 
 $runbookScheduledTrigger.ProjectId = $project.Id
 $runbookScheduledTrigger.Name = $runbookTriggerName
@@ -72,4 +72,4 @@ $runbookScheduledTrigger.Filter = $runbookScheduledTriggerFilter
 $runbookScheduledTrigger.Action = $runbookScheduledTriggerAction
 
 $createdRunbookTrigger = $repositoryForSpace.ProjectTriggers.Create($runbookScheduledTrigger);
-Write-Host "Created runbook trigger: $($createdRunbookTrigger.Id) ($runbookTriggerName)"
+Write-Information -MessageData "Created runbook trigger: $($createdRunbookTrigger.Id) ($runbookTriggerName)"

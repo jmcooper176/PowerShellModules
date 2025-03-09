@@ -9,14 +9,14 @@ $octopusAPIKey = "API-YOURAPIKEY"
 $spaceName = "default"
 $feedName = "nuget.org"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 try
 {
     # Get space id
     $space = $repository.Spaces.FindByName($spaceName)
-    Write-Host "Using Space named $($space.Name) with id $($space.Id)"
+    Write-Information -MessageData "Using Space named $($space.Name) with id $($space.Id)"
 
     # Create space specific repository
     $repositoryForSpace = [Octopus.Client.OctopusRepositoryExtensions]::ForSpace($repository, $space)
@@ -28,5 +28,5 @@ try
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

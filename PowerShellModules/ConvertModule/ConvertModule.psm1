@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ConvertModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ConvertModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -61,8 +60,7 @@ function ConvertFrom-Type {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -143,8 +141,7 @@ function ConvertTo-Type {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -269,8 +266,7 @@ function ConvertTo-Boolean {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -559,8 +555,7 @@ function ConvertTo-Byte {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -842,8 +837,7 @@ function ConvertTo-Char {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -1245,8 +1239,7 @@ function ConvertTo-Decimal {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -1537,8 +1530,7 @@ function ConvertTo-Double {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -1829,8 +1821,7 @@ function ConvertTo-Float {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -2125,8 +2116,7 @@ function ConvertTo-Integer {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -2427,8 +2417,7 @@ function ConvertTo-Long {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -2729,8 +2718,7 @@ function ConvertTo-Short {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -3031,8 +3019,7 @@ function ConvertTo-SignedByte {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -3326,8 +3313,7 @@ function ConvertTo-String {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -3633,8 +3619,7 @@ function ConvertTo-UnsignedInteger {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -3935,8 +3920,7 @@ function ConvertTo-UnsignedLong {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -4237,8 +4221,7 @@ function ConvertTo-UnsignedShort {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {

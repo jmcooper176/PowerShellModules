@@ -1,8 +1,7 @@
-﻿<#
+<#
  =============================================================================
-<copyright file="CommandLineModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2025, John Merryweather Cooper.
+<copyright file="CommandLineModule.psm1" company="John Merryweather Cooper">
+    Copyright (c) 2025 John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -93,7 +92,7 @@ class CommandLine {
     CommandLine([hashtable]$Properties) {
         $ClassName = Initialize-PSClass -Name [CommandLine].Name
 
-        $Properties.GetEnumerator() | ForEach-Object {
+        $Properties.GetEnumerator() | ForEach-Object -Process {
             switch ($_.Key) {
                 'CommandLine' {
                     Write-Warning -Message "$($ClassName) : The property 'CommandLine' is read-only and cannot be set."
@@ -144,7 +143,7 @@ class CommandLine {
             Update-TypeData -TypeName [CommandLine].Name @DefinitionSplat
         }
 
-        $Properties.GetEnumerator() | ForEach-Object {
+        $Properties.GetEnumerator() | ForEach-Object -Process {
             switch ($_.Key) {
                 'CommandLine' {
                     break

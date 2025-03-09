@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="COutModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="COutModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "COutModule.psd1" is part of "COutModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'COutModule.psm1'
 
@@ -65,16 +63,16 @@ ModuleVersion = '1.2.9157.12465'
 CompatiblePSEditions = @('Desktop', 'Core')
 
 # ID used to uniquely identify this module
-GUID = '7AB73082-9806-4922-9DE2-B721A973D950'
+GUID = '4f5a8f36-f1ac-4fbf-9257-614fb7d06278'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
 
 # Company or vendor of this module
-CompanyName = 'Ram Tuned Mega Code'
+CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Functions/Cmdlets to write to stdout/stderr.'
@@ -138,9 +136,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'stdout','stderr'
 
@@ -151,7 +147,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/jmcooper176/TDDForPowerShellClass'
 
         # A URL to an icon representing this module.
-        IconUri = 'https://github.com/jmcooper176/TDDForPowerShellClass/vine.ico'
+        # IconUri = ''
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
@@ -164,9 +160,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -174,6 +168,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

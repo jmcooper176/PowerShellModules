@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ConvertModule.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ConvertModule.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,18 +50,19 @@ This file "ConvertModule.tests.ps1" is part of "ConvertModule".
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\ConvertModule.psd1'
+    $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
     $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
-    Initialize-PSTest -Name $ModuleName -Path $ModulePath
+    Initialize-PSTest -Name 'ConvertModule' -Path $ModulePath
 }
 
 AfterAll {
     Get-Module -Name 'ConvertModule' | Remove-Module -Verbose -Force
 }
 
-Describe -Name 'ConvertModule' {
-    Context -Name 'Module Manifest' {
-        It 'should exist' {
+Describe -Name 'ConvertModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleManifest = Test-ModuleManifest -Path $ModulePath
 
@@ -70,29 +70,34 @@ Describe -Name 'ConvertModule' {
             $ModuleManifest | Should -Not -BeNullOrEmpty
         }
 
-        It 'should parse' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
             $inputSource = Get-Content -LiteralPath $ModulePath -Raw
 
             [ref] $tokens = @()
             [ref] $errors = @()
-            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
 
+            # Act
             $errors.Value | ForEach-Object -Process {
-                $message = ('{0} at {1}:  Parse error generating abstract syntax tree' -f $ModuleName, $ModulePath)
-                $writeErrorSplat = @{
-                        Exception    = [System.Management.Automation.ParseException]::new($message)
-                        Category     = 'ParseError'
-                        ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                        TargetObject = $_
-                        ErrorAction  = 'Continue'
-                    }
-
-                    Write-Error @writeErrorSplat -ErrorAction Continue
-                    $PSCmdlet.ThrowTerminatingError($writeErrorHash)
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
                 }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
         }
 
-        It 'should have a RootModule of ConvertModule.psm1' {
+        It -Name 'should have a RootModule of ConvertModule.psm1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $RootModule = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'RootModule'
 
@@ -100,7 +105,7 @@ Describe -Name 'ConvertModule' {
             $RootModule | Should -Be 'ConvertModule.psm1'
         }
 
-        It 'should have a ModuleVersion greater than  1.3.0' {
+        It -Name 'should have a ModuleVersion greater than  1.3.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Version'
 
@@ -108,15 +113,15 @@ Describe -Name 'ConvertModule' {
             $ModuleVersion | Should -BeGreaterThan '1.3.0'
         }
 
-        It 'should have a GUID of AE4C8A38-28C0-471F-9F86-D7C8226CAD24' {
+        It -Name 'should have a GUID of 6e424d77-583b-40f8-968d-686ebea12ee1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be 'AE4C8A38-28C0-471F-9F86-D7C8226CAD24'
+            $Guid | Should -Be '6e424d77-583b-40f8-968d-686ebea12ee1'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Author'
 
@@ -124,7 +129,7 @@ Describe -Name 'ConvertModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -132,7 +137,7 @@ Describe -Name 'ConvertModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -140,7 +145,7 @@ Describe -Name 'ConvertModule' {
             $Copyright | Should -Be $COPYRIGHT_STRING
         }
 
-        It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -148,7 +153,7 @@ Describe -Name 'ConvertModule' {
             $Description | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a Description of Enhanced interface to Process Environment Variables.' {
+        It -Name 'should have a Description of Enhanced interface to Process Environment Variables.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -156,17 +161,52 @@ Describe -Name 'ConvertModule' {
             $Description | Should -Be 'Enhanced interface to Process Environment Variables.'
         }
 
-        It 'should have a PowerShellVersion of 5.1' {
+        It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $PowerShellVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'PowerShellVersion'
 
             # Assert
             $PowerShellVersion | Should -Be '5.1'
         }
+
+        It -Name 'should have ExportedCmdlets count should equal ExportedFunctions count' -Tag 'Unit', 'Test' {
+            # Arrange
+            $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedCmdlets' |
+                    Sort-Object -Unique
+            $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedFunctions' |
+                    Sort-Object -Unique
+
+            # Act And Assert
+            $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
+        }
+
+        It -Name 'should have ExportedCmdlets equal to ExportedFunctions' -Tag 'Unit', 'Test' {
+            # Arrange
+            $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedCmdlets' |
+                    Sort-Object -Unique -Descending
+            $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedFunctions' |
+                    Sort-Object -Unique -Descending
+
+            # Act
+            for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
+                $result = $exportedCmdlets[$i] -eq $exportedFunctions[$i]
+
+                if (-not $result) {
+                    break
+                }
+            }
+
+            # Assert
+            $result | Should -BeTrue
+        }
     }
 
-    Context -Name 'Add-EnvironmentValue' {
-        It 'should exist' {
+    Context -Name 'Add-EnvironmentValue' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-EnvironmentValue'
 
@@ -174,7 +214,34 @@ Describe -Name 'ConvertModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
+            $inputSource = Get-Content -LiteralPath (Join-Path -Path Function: -ChildPath 'Add-EnvironmentValue') -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Add-EnvironmentValue')
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-EnvironmentValue'
 
@@ -182,7 +249,7 @@ Describe -Name 'ConvertModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -190,7 +257,7 @@ Describe -Name 'ConvertModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Description
 
@@ -198,7 +265,7 @@ Describe -Name 'ConvertModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of ConvertModule' {
+        It -Name 'should have a module name of ConvertModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Add-EnvironmentValue' | Select-Object -ExpandProperty ModuleName
 

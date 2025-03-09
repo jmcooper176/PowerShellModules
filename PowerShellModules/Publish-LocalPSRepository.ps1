@@ -14,7 +14,7 @@
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules
 
     .ICONURI
 
@@ -25,7 +25,6 @@
     .EXTERNALSCRIPTDEPENDENCIES
 
     .RELEASENOTES
-
 
     .PRIVATEDATA
 
@@ -54,12 +53,11 @@ param (
 )
 
 BEGIN {
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $ScriptName = Initialize-PSScript -MyInvocation $MyInvocation
 }
 
 PROCESS {
-    # Publish to a NuGet Server repository using my NuGetAPI key
+    # Publish to a NuGet Server repository using my NuGet API Key
     $publishModuleSplat = @{
         Path = $Path
         Repository = $Repository

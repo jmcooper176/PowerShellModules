@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Stack.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Stack.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,7 +63,7 @@ This file "Stack.psd1" is part of "ContainersModule".
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID              = '7D2A51A4-D538-42E7-AD2B-ABD80267E4EC'
+    GUID              = '99cf727e-6382-4ca7-bba8-f2c44f7a4a07'
 
     # Author of this module
     Author            = 'John Merryweather Cooper'
@@ -142,10 +141,10 @@ This file "Stack.psd1" is part of "ContainersModule".
             # Tags = @()
 
             # A URL to the license for this module.
-            # LicenseUri = ''
+            LicenseUri = 'https://opensource.org/license/BSD-3-clause'
 
             # A URL to the main website for this project.
-            # ProjectUri = ''
+            ProjectUri = 'https://github.com/jmcooper176/PowerShellModules'
 
             # A URL to an icon representing this module.
             # IconUri = ''

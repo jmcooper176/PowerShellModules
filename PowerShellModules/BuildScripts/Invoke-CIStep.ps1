@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="Invoke-CIStep.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="Invoke-CIStep.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "Invoke-CIStep.ps1" is part of "BuildScripts".
 
     .VERSION 1.0.0
 
-    .GUID 5DBFA61F-A8D3-4F49-B9EB-2C5FF9D059FD
+    .GUID 704198AC-6345-44A3-9087-C253BC711E26
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "Invoke-CIStep.ps1" is part of "BuildScripts".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/BuildScripts
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/BuildScripts
 
     .ICONURI
 
@@ -72,7 +71,6 @@ This file "Invoke-CIStep.ps1" is part of "BuildScripts".
     .EXTERNALSCRIPTDEPENDENCIES
 
     .RELEASENOTES
-
 
     .PRIVATEDATA
 
@@ -86,7 +84,6 @@ This file "Invoke-CIStep.ps1" is part of "BuildScripts".
             2. Can be used to do static analysis in local env. Such as: .\tools\ExecuteCIStep.ps1 -StaticAnalysisSignature -TargetModule "Accounts;Compute"
             3. Can run static analyis for all the module built in artifacts. Such as: .\tools\ExecuteCIStep.ps1 -StaticAnalysisSignature will run static analysis signature check for all the modules under artifacts/debug.
 #>
-
 
 [CmdletBinding()]
 param(
@@ -206,10 +203,10 @@ Function Set-ModuleTestStatusInPipelineResult
         [String]
         $Content=""
     )
-    Write-Warning "Set-ModuleTestStatusInPipelineResult $ModuleName - $Status"
-    if (Test-Path $PipelineResultPath)
+    Write-Warning -Message "Set-ModuleTestStatusInPipelineResult $ModuleName - $Status"
+    if (Test-Path -LiteralPath $PipelineResultPath -PathType Leaf)
     {
-        $PipelineResult = Get-Content $PipelineResultPath | ConvertFrom-Json
+        $PipelineResult = Get-Content -LiteralPath $PipelineResultPath | ConvertFrom-Json
         $Platform = Get-PlatformInfo
         $PipelineResult.test.Details[0].Platform = $Platform
         Foreach ($ModuleInfo in $PipelineResult.test.Details[0].Modules)
@@ -245,9 +242,9 @@ if ($Build)
 
     & $buildCmdResult
 
-    if (Test-Path -Path "$RepoArtifacts/PipelineResult")
+    if (Test-Path -LiteralPath "$RepoArtifacts/PipelineResult" -PathType Container)
     {
-        $LogContent = Get-Content $LogFile
+        $LogContent = Get-Content -LiteralPath $LogFile
         $BuildResultArray = @()
         foreach ($Line In $LogContent)
         {
@@ -277,12 +274,12 @@ if ($Build)
 
         #Region produce result.json for GitHub bot to comsume
         $Platform = Get-PlatformInfo
-        $Template = Get-Content "$PSScriptRoot/PipelineResultTemplate.json" | ConvertFrom-Json
+        $Template = Get-Content -LiteralPath "$PSScriptRoot/PipelineResultTemplate.json" | ConvertFrom-Json
         $ModuleBuildInfoList = @()
-        $CIPlan = Get-Content "$RepoArtifacts/PipelineResult/CIPlan.json" | ConvertFrom-Json
+        $CIPlan = Get-Content -LiteralPath "$RepoArtifacts/PipelineResult/CIPlan.json" | ConvertFrom-Json
         foreach ($ModuleName In $CIPlan.build)
         {
-            $BuildResultOfModule = $BuildResultArray | Where-Object { $_.Module -Eq "Az.$ModuleName" }
+            $BuildResultOfModule = $BuildResultArray | Where-Object -FilterScript { $_.Module -Eq "Az.$ModuleName" }
             if ($BuildResultOfModule.Length -Eq 0)
             {
                 $ModuleBuildInfoList += @{
@@ -329,15 +326,15 @@ if ($Build)
         }
         $Template.Build.Details += $BuildDetail
 
-        $DependencyStepList = $Template | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name | Where-Object { $_ -Ne "build" }
+        $DependencyStepList = $Template | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name | Where-Object -FilterScript { $_ -Ne "build" }
 
         # In generated based branch, the Accounts is cloned from latest main branch but the environment will be cleaned after build job.
         # Also the analysis check and test is not necessary for Az.Accounts in these branches.
         if ($Env:IsGenerateBased -eq "true")
         {
-            foreach ($phase In ($CIPlan | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name | Where-Object { $_ -Ne "build" }))
+            foreach ($phase In ($CIPlan | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name | Where-Object -FilterScript { $_ -Ne "build" }))
             {
-                $CIPlan.$phase = $CIPlan.$phase | Where-Object { $_ -Ne "Accounts" }
+                $CIPlan.$phase = $CIPlan.$phase | Where-Object -FilterScript { $_ -Ne "Accounts" }
             }
             ConvertTo-Json -Depth 10 -InputObject $CIPlan | Out-File -FilePath $CIPlanPath
         }
@@ -369,9 +366,9 @@ if ($Build)
     Return
 }
 
-if (Test-Path $CIPlanPath)
+if (Test-Path -LiteralPath $CIPlanPath -PathType Leaf)
 {
-    $CIPlan = Get-Content $CIPlanPath | ConvertFrom-Json
+    $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
 }
 elseIf (-not (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters))
 {
@@ -382,19 +379,19 @@ elseIf (-not (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParamete
 # Run the test-module.ps1 in current folder and set the test status in pipeline result
 if ($TestAutorest)
 {
-    if (-not (Test-Path "$AutorestDirectory/test-module.ps1"))
+    if (-not (Test-Path -LiteralPath "$AutorestDirectory/test-module.ps1" -PathType Leaf))
     {
-        Write-Warning "There is no test-module.ps1 found in the folder: $AutorestDirectory"
+        Write-Warning -Message "There is no test-module.ps1 found in the folder: $AutorestDirectory"
         Return
     }
     $ModuleName = Split-Path -Path $AutorestDirectory | Split-Path -Leaf
     $ModuleFolderName = $ModuleName.Split(".")[1]
-    if (Test-Path $CIPlanPath)
+    if (Test-Path -LiteralPath $CIPlanPath -PathType Leaf)
     {
-        $CIPlan = Get-Content $CIPlanPath | ConvertFrom-Json
+        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
         if (-not ($CIPlan.test.Contains($ModuleFolderName)))
         {
-            Write-Debug "Skip test for $ModuleName because it is not in the test plan."
+            Write-Debug -Message "Skip test for $ModuleName because it is not in the test plan."
             Return
         }
         . $AutorestDirectory/test-module.ps1
@@ -415,12 +412,12 @@ if ($Test.IsPresent -and (($CIPlan.test.Length -Ne 0) -or (Test-PSParameter -Nam
 {
     dotnet test $RepoArtifacts/Azure.PowerShell.sln --filter "AcceptanceType=CheckIn&RunType!=DesktopOnly" --configuration $Configuration --framework $TestFramework --logger trx --results-directory $TestOutputDirectory
 
-    $TestResultFiles = Get-ChildItem "$RepoArtifacts/TestResults/" -Filter *.trx
+    $TestResultFiles = Get-ChildItem -LiteralPath "$RepoArtifacts/TestResults/" -Filter *.trx
     $FailedTestCases = @{}
     foreach ($TestResultFile in $TestResultFiles)
     {
-        $Content = Get-Content -Path $TestResultFile
-        $XmlDocument = New-Object System.Xml.XmlDocument
+        $Content = Get-Content -LiteralPath $TestResultFile
+        $XmlDocument = New-Object -TypeName System.Xml.XmlDocument
         $XmlDocument.LoadXml($Content)
         $FailedTestIdList = $XmlDocument.TestRun.Results.UnitTestResult | Where-Object -FilterScript { $_.outcome -eq "Failed" } | ForEach-Object -Process { $_.testId }
         Foreach ($FailedTestId in $FailedTestIdList)
@@ -438,9 +435,9 @@ if ($Test.IsPresent -and (($CIPlan.test.Length -Ne 0) -or (Test-PSParameter -Nam
             }
         }
     }
-    if (Test-Path $PipelineResultPath)
+    if (Test-Path -LiteralPath $PipelineResultPath -PathType Leaf)
     {
-        $PipelineResult = Get-Content $PipelineResultPath | ConvertFrom-Json
+        $PipelineResult = Get-Content -LiteralPath $PipelineResultPath | ConvertFrom-Json
         Foreach ($ModuleInfo in $PipelineResult.test.Details[0].Modules)
         {
             if ($FailedTestCases.ContainsKey($ModuleInfo.Module))
@@ -517,7 +514,7 @@ if ($StaticAnalysis)
     if ($FailedTasks.Length -ne 0)
     {
         Write-Information -MessageData "There are failed tasks: $FailedTasks" -InformationAction Continue
-        $ErrorLog = Get-Content -Path $ErrorLogPath | Join-String -Separator "`n"
+        $ErrorLog = Get-Content -LiteralPath $ErrorLogPath | Join-String -Separator "`n"
         Write-Error $ErrorLog
     }
     Return 0

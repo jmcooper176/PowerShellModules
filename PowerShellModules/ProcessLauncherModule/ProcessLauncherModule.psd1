@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ProcessLauncherModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ProcessLauncherModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,7 +63,7 @@ This file "ProcessLauncherModule.psd1" is part of "ProcessLauncherModule".
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID              = '61B0F81A-521B-45A9-9701-FDA05742F073'
+    GUID              = '5905237b-64e0-4504-a85b-b701243c40cc'
 
     # Author of this module
     Author            = 'John Merryweather Cooper'
@@ -142,10 +141,10 @@ This file "ProcessLauncherModule.psd1" is part of "ProcessLauncherModule".
             # Tags = @()
 
             # A URL to the license for this module.
-            # LicenseUri = ''
+            LicenseUri = 'https://opensource.org/license/BSD-3-clause'
 
             # A URL to the main website for this project.
-            # ProjectUri = ''
+            ProjectUri = 'https://github.com/jmcooper176/PowerShellModules'
 
             # A URL to an icon representing this module.
             # IconUri = ''

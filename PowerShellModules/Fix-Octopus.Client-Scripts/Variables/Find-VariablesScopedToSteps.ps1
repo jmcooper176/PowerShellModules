@@ -8,17 +8,17 @@ $octopusURI = 'https://octopus.url' # Your Octopus Server address
 
 $projectName = "TestProp"  # Enter project you want to search
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI, $apiKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI, $apiKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 $project = $repository.Projects.FindByName($projectName)
 $projectVariables = $repository.VariableSets.Get($project.VariableSetId)
 
 foreach ($variables in $projectVariables.Variables)  # For each Variable in referenced project - Return Variable Name & Value
 {
-    Write-Host "###########################"
-    Write-Host "Variable Name = ", $variables.Name
-    Write-Host "Variable Value = ", $variables.Value
+    Write-Information -MessageData "###########################"
+    Write-Information -MessageData "Variable Name = ", $variables.Name
+    Write-Information -MessageData "Variable Value = ", $variables.Value
 
     $scopeId = $variables.Scope.Values  # Get Scope ID for each Variable
 
@@ -26,7 +26,7 @@ foreach ($variables in $projectVariables.Variables)  # For each Variable in refe
         {
             if ($x.Id -eq $scopeId)  # Return Scope Name if ID matches
             {
-                Write-Host "Scoped to Step = ", $x.Name
+                Write-Information -MessageData "Scoped to Step = ", $x.Name
             }
         }
 }

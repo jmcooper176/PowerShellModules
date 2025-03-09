@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="LocalAccountModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="LocalAccountModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "LocalAccountModule.psd1" is part of "LocalAccountModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'LocalAccountModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '0.0.9127.52003'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '0232366F-FDEA-4B74-BE3C-5B15A3214AA6'
+GUID = '3e6a7a31-bf65-4b09-8e77-be2f1d29023f'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -74,7 +72,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Cmdlets for working with Active Directory Local Accounts'
@@ -138,9 +136,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'Active','Directory','Local','Account'
 
@@ -154,7 +150,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = ''
+        # ReleaseNotes = ''
 
         # Prerelease string of this module
         # Prerelease = ''
@@ -164,9 +160,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -174,6 +168,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

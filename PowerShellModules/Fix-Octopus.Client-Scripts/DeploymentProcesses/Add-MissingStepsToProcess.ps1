@@ -1,6 +1,6 @@
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -Path 'Octopus.Client.dll' 
+Add-Type -Path 'Octopus.Client.dll'
 
 # If $true, will just run a what-if
 $previewOnly = $false
@@ -18,9 +18,9 @@ $targetRole = 'web-app-test'                                                    
 $runOnServer = 'false'                                                              # Set this to true to run the step on the Octopus Server (Must be string "true"|"false")
 $environmentName = ''                                                               # Name of Environment on which you want this step to run
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusURI, $apikey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-$client = New-Object Octopus.Client.OctopusClient($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI, $apikey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 # Get space
 $space = $repository.Spaces.FindByName($spaceName)
@@ -51,25 +51,25 @@ function Add-Action($stepName, $stepTemplateName, $append, $index, $processSteps
     $alreadyAdded = Get-AddedAlreadyStatus $actionTemplateId  $processSteps
 
     if ($alreadyAdded -eq $true){
-        Write-Host "--->    Step: $($stepTemplateName) - Already in project, will not add."  -ForegroundColor Yellow
+        Write-Information -MessageData "--->    Step: $($stepTemplateName) - Already in project, will not add."  -ForegroundColor Yellow
         return;
     }
-    
-    $step = New-Object Octopus.Client.Model.DeploymentStepResource
+
+    $step = New-Object -TypeName Octopus.Client.Model.DeploymentStepResource
     $step.Name = $stepName
     $step.Condition = [Octopus.Client.Model.DeploymentStepCondition]::Success
     if (![string]::IsNullOrEmpty($targetRole)) {
         $step.Properties["Octopus.Action.TargetRoles"] = $targetRole
     }
 
-    $action = New-Object Octopus.Client.Model.DeploymentActionResource
+    $action = New-Object -TypeName Octopus.Client.Model.DeploymentActionResource
     $action.Name = $stepName
     $action.ActionType = $actionTemplate.ActionType
 
     if (![string]::IsNullOrEmpty($environmentName)) {
         $action.Environments.Add($environmentId) | Out-Null
     }
-    
+
     #Generic properties
     foreach ($property in $actionTemplate.Properties.GetEnumerator()) {
         $action.Properties[$property.Key] = $property.Value
@@ -97,13 +97,13 @@ function Add-Action($stepName, $stepTemplateName, $append, $index, $processSteps
         } else {
             $process.Steps.Insert($index, $step)
         }
-        Write-Host "--->    Step: $($stepTemplateName) - Adding step into project. " -ForegroundColor Green
+        Write-Information -MessageData "--->    Step: $($stepTemplateName) - Adding step into project. " -ForegroundColor Green
 
         try {
             $repositoryForSpace.DeploymentProcesses.Modify($process)
         }
         catch {
-            Write-Warning $_.Exception.InnerException.Details.Name.ToString()
+            $Error | ForEach-Object -Process { Write-Warning -Message $_.Exception.InnerException.Details.Name.ToString() }
         }
     }
 }
@@ -112,8 +112,8 @@ function Add-Action($stepName, $stepTemplateName, $append, $index, $processSteps
 
 foreach ($name in $projectNames) {
     $project = $repositoryForSpace.Projects.FindByName($name)
-    Write-Host "-------------------------------------------"  -ForegroundColor Green
-    Write-Host "--->  Project: $($name)"  -ForegroundColor Blue
+    Write-Information -MessageData "-------------------------------------------"  -ForegroundColor Green
+    Write-Information -MessageData "--->  Project: $($name)"  -ForegroundColor Blue
     $process = $repositoryForSpace.DeploymentProcesses.Get($project.DeploymentProcessId)
 
     # reset indexes
@@ -125,12 +125,12 @@ foreach ($name in $projectNames) {
     if($process.Steps[0].Actions[0].ActionType -eq "Octopus.Manual") {
         $insertPreStepIndex = 1;
     }
-    
+
     $environmentId = $repositoryForSpace.Environments.FindByName($environmentName).Id
 
     Add-Action $stepNamePre $stepTemplateNamePre $false $insertPreStepIndex $process.Steps
 
-    # reload process as it's changed since we loaded it 
+    # reload process as it's changed since we loaded it
     $process = $repositoryForSpace.DeploymentProcesses.Get($project.DeploymentProcessId)
 
     Add-Action $stepNamePost $stepTemplateNamePost $appendPostStepAtEnd $insertPostStepIndex $process.Steps

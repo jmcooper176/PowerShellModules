@@ -3,12 +3,12 @@ Add-Type -Path "C:\Tools\Octopus.Client.dll"
 $apikey = '' #Your Octopus API Key
 $octopusURI = '' #Your Octopus instance URL
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI, $apiKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI, $apiKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 $tagset = $repository.TagSets.FindByName("MyTagset")
 
-$newtag = New-Object Octopus.Client.Model.TagResource
+$newtag = New-Object -TypeName Octopus.Client.Model.TagResource
 
 $newtag.Name = "MyNewTag"
 $newtag.Color = "#232323"

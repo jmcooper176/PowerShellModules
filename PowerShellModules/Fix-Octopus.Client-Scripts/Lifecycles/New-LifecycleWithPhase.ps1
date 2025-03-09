@@ -1,15 +1,15 @@
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-#Add-Type -Path 'Octopus.Client.dll' 
+#Add-Type -Path 'Octopus.Client.dll'
 
 $apikey = '' # Get this from your profile
 $octopusURI = '' # Your Octopus Server address
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$apikey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 #Creating lifecycle
-$lifecycle = New-Object Octopus.Client.Model.LifecycleResource
+$lifecycle = New-Object -TypeName Octopus.Client.Model.LifecycleResource
 $lifecycle.Name = '' #Name of the lifecycle
 
 #Default Retention Policy
@@ -19,7 +19,7 @@ $lifecycle.TentacleRetentionPolicy = [Octopus.Client.Model.RetentionPeriod]::new
 #$lifecycle.TentacleRetentionPolicy = [Octopus.Client.Model.RetentionPeriod]::new(10,[Octopus.Client.Model.RetentionUnit]::Days) #10 days
 
 #Creating Phase
-$phase = New-Object Octopus.Client.Model.PhaseResource
+$phase = New-Object -TypeName Octopus.Client.Model.PhaseResource
 
 $phase.Name = "Dev" #Name of the phase
 $phase.OptionalDeploymentTargets.Add("Environments-1") #Adding optional Environment to phase

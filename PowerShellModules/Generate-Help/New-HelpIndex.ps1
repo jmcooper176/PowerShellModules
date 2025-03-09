@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="New-HelpIndex.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="New-HelpIndex.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -49,7 +48,7 @@ This file "New-HelpIndex.ps1" is part of "Generate-Help".
 
     .VERSION 1.0.0
 
-    .GUID 12508E6B-6668-498F-8E86-9B619032B46A
+    .GUID 59512078-FE9F-43D6-A817-59592B371E9A
 
     .AUTHOR John Merryweather Cooper
 
@@ -61,7 +60,7 @@ This file "New-HelpIndex.ps1" is part of "Generate-Help".
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom/Generate-ExternalContributors
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules/Generate-ExternalContributors
 
     .ICONURI
 
@@ -73,7 +72,6 @@ This file "New-HelpIndex.ps1" is part of "Generate-Help".
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -82,7 +80,6 @@ This file "New-HelpIndex.ps1" is part of "Generate-Help".
     .DESCRIPTION
     Generate help index.
 #>
-
 
 [CmdletBinding(SupportsShouldProcess)]
 param(
@@ -112,20 +109,20 @@ Import-LocalizedData -BindingVariable "Azpsd1" -BaseDirectory $PSScriptRoot/Az -
 if ([string]::isNullOrEmpty($Version))
 {
     $Version = $Azpsd1.ModuleVersion
-    Write-Host "Using version obtained from Az.psd1: $Version." -ForegroundColor Green;
+    Write-Information -MessageData "Using version obtained from Az.psd1: $Version."
 }
 
 if ([string]::isNullOrEmpty($SourceBaseUri))
 {
     $tag = $Azpsd1.PrivateData.PSData.ReleaseNotes.Split("`n")[0].Replace(" ", "").Trim("`r")
     $SourceBaseUri = "https://github.com/Azure/azure-powershell/tree/v$tag"
-    Write-Host "Using default SourceBaseUri: $SourceBaseUri." -ForegroundColor Green;
+    Write-Information -MessageData "Using default SourceBaseUri: $SourceBaseUri."
 }
 
 if ([string]::isNullOrEmpty($EditBaseUri))
 {
     $EditBaseUri = "https://github.com/Azure/azure-powershell/blob/main"
-    Write-Host "Using default EditBaseUri: $EditBaseUri." -ForegroundColor Green;
+    Write-Information -MessageData "Using default EditBaseUri: $EditBaseUri."
 }
 
 $output = @{}
@@ -137,14 +134,14 @@ $outputModules = @{}
 
 #Create mappings file
 & "$PSScriptRoot/CreateMappings.ps1" -OutputFile $OutputFile/../groupMapping.json -WarningFile $OutputFile/../groupMappingWarnings.json
-$labelMapping = Get-Content -Raw $OutputFile/../groupMapping.json | ConvertFrom-Json
+$labelMapping = Get-Content -LiteralPath $OutputFile/../groupMapping.json -Raw | ConvertFrom-Json
 
 $RMpsd1s = @()
 $HelpFolders = @()
 
 $resourceManagerPath = "$PSScriptRoot/../artifacts/$BuildConfig/"
 
-$RMpsd1s += Get-ChildItem -Path $resourceManagerPath -Depth 1 | Where-Object {
+$RMpsd1s += Get-ChildItem -Path $resourceManagerPath -Depth 1 | Where-Object -FilterScript {
     $_.Name -like "*.psd1" -and $_.FullName -notlike "*dll-Help*"
 }
 
@@ -172,8 +169,8 @@ $RMpsd1s | ForEach-Object -Process {
 
     $outputCmdlets = @{}
 
-    $cmdletsToExport = $parsedPsd1.CmdletsToExport | Where-Object { $_ }
-    $functionsToExport = $parsedPsd1.FunctionsToExport | Where-Object { $_ }
+    $cmdletsToExport = $parsedPsd1.CmdletsToExport | Where-Object -FilterScript { $_ }
+    $functionsToExport = $parsedPsd1.FunctionsToExport | Where-Object -FilterScript { $_ }
     $cmdletsToExport = @() + $cmdletsToExport + $functionsToExport
 
     $cmdletsToExport | ForEach-Object -Process {
@@ -212,5 +209,5 @@ $RMpsd1s | ForEach-Object -Process {
 
 $output.Add("modules", $outputModules)
 $json = ConvertTo-Json $output -Depth 4
-Write-Host "Index file successfully created: $OutputFile." -ForegroundColor Green;
+Write-Information -MessageData "Index file successfully created: $OutputFile."
 $json | Out-File $OutputFile

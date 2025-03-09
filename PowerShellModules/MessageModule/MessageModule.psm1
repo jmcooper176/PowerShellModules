@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="MessageModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="MessageModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -63,8 +62,7 @@ function Add-SeparatorIfNotNullOrEmpty {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -153,8 +151,7 @@ function Format-Debug {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -259,8 +256,7 @@ function Format-Error {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -378,8 +374,7 @@ function Format-Information {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -498,8 +493,7 @@ function Format-Message {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
         $buffer = [System.Text.StringBuilder]::new()
 
@@ -686,8 +680,7 @@ function Format-Origin {
         $UseGccBrief
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     # Current use
     Set-Variable -Name MICROSOFT_TWO_PLACE_COMPILER_MESSAGE_FORMAT -Option Constant -Value '{0}({1},{2})'
@@ -725,10 +718,10 @@ function Format-Origin {
     }
 
     if ($Timestamp.IsPresent -and $AsLocal.IsPresent) {
-        $time = Get-Date -Format 's'
+        $time = Microsoft.PowerShell.Utility\Get-Date -Format 's'
     }
     elseif ($Timestamp.IsPresent) {
-        $time = Get-Date -AsUTC -Format 's'
+        $time = Microsoft.PowerShell.Utility\Get-Date -AsUTC -Format 's'
     }
 
     if ($column -gt 132 -and -not $UseGccBrief.IsPresent) {
@@ -842,8 +835,7 @@ function Format-Verbose {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {
@@ -948,8 +940,7 @@ function Format-Warning {
     )
 
     BEGIN {
-        Set-StrictMode -Version 3.0
-        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
     }
 
     PROCESS {

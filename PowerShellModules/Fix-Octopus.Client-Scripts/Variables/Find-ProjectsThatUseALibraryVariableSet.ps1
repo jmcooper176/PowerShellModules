@@ -7,9 +7,9 @@ $octopusAPIKey = "API-YOURAPIKEY"
 $spaceName = "default"
 $librarySetName = "MyLibrarySet"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -19,21 +19,21 @@ try
 
     # Get Library set
     $librarySet = $repositoryForSpace.LibraryVariableSets.FindByName($librarySetName)
-    
+
     # Get Projects
     $projects = $repositoryForSpace.Projects.GetAll()
 
     # Show all projects using set
-    Write-Host "The following projects are using $librarySetName"
+    Write-Information -MessageData "The following projects are using $librarySetName"
     foreach ($project in $projects)
     {
         if ($project.IncludedLibraryVariableSetIds -contains $librarySet.Id)
         {
-            Write-Host "$($project.Name)"
+            Write-Information -MessageData "$($project.Name)"
         }
     }
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

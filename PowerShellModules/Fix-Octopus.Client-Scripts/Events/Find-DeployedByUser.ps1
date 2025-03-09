@@ -7,8 +7,8 @@ Add-Type -Path 'Octopus.Client.dll'
 $apikey = 'API-KEY' # Get this from your profile
 $octopusURI = 'https://octopus.url' # Your server address
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$apikey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 # This script searches the Events (Audit log) for events of Category Queued and looks into the RelatedDocumentIds field for further refining.
 # This script will return the name of a user who started a deployment (queued), but you need to enter one or more of the following.
@@ -25,6 +25,6 @@ $repository.Events.FindMany(
     {param($e) if(($e.Category -match "Queued") -and ($e.RelatedDocumentIds -contains $serverTasksID))
         {
         #$True # Uncomment this to return the entire object.
-        Write-Host "The account which :" $e.message ": Was :" $e.username
+        Write-Information -MessageData "The account which :" $e.message ": Was :" $e.username
         }
     })

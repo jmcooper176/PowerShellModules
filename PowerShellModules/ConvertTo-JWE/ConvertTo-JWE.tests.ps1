@@ -1,7 +1,6 @@
 ﻿<#
  =============================================================================
-<copyright file="ConvertTo-JWE.tests.ps1" company="U.S. Office of Personnel
-Management">
+<copyright file="ConvertTo-JWE.tests.ps1" company="John Merryweather Cooper">
     Copyright (c) 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 

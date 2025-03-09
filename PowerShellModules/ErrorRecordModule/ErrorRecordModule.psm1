@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ErrorRecordModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ErrorRecordModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -137,7 +136,7 @@ function Confirm-ArgumentInRange {
         Index of 5 is in range [0, 9).
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -727,7 +726,7 @@ function Format-Exception {
         The string representation of the Exception object is output to the pipeline.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -846,7 +845,7 @@ function Format-LastExitCode {
         . . . "Last Exit Code '0x00000000|0' indicates success"
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
 
         .LINKS
         about_CommonParameters
@@ -1334,7 +1333,7 @@ function Test-ObjectNotFound {
         . . . Target object not found
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
 
         .LINKS
         about_CommonParameters

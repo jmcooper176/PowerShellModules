@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="AntModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="AntModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -50,8 +49,7 @@ using module ProcessLauncher
 
 <#
  =============================================================================
-<copyright file="AntModule.psm1" company="U.S. Office of Personnel
-Management">
+<copyright file="AntModule.psm1" company="John Merryweather Cooper">
     Copyright © 2022-2025, John Merryweather Cooper.  All Rights
     Reserved.
 
@@ -105,16 +103,16 @@ function Get-AntPath {
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     # search on the path
-    $antPath = Get-Command -Name 'ant.exe' -CommandType Application | Select-Object -ExpandProperty Path
+    $antPath = Get-Command -Name 'ant' -CommandType Application | Select-Object -ExpandProperty Path
 
     # search on ANT_HOME
-    if (-not (Test-Path -Path $antPath -PathType Leaf)) {
+    if (-not (Test-Path -LiteralPath $antPath -PathType Leaf)) {
         $antPath = Join-Path -Path $env:ANT_HOME -ChildPath 'bin' -AdditionalChildPath 'ant.exe'
     }
 
     # default to fileName
-    if (-not (Test-Path -Path $antPath -PathType Leaf)) {
-        $antPath = 'ant.exe'
+    if (-not (Test-Path -LiteralPath $antPath -PathType Leaf)) {
+        $antPath = 'ant'
     }
 
     $antPath | Write-Output

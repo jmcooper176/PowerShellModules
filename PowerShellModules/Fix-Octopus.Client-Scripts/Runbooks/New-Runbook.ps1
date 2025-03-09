@@ -10,9 +10,9 @@ $spaceName = "default"
 $projectName = "MyProject"
 $runbookName = "MyRunbook"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -24,21 +24,20 @@ try
     $project = $repositoryForSpace.Projects.FindByName($projectName)
 
     # Create runbook retention object
-    $runbookRetentionPolicy = New-Object Octopus.Client.Model.RunbookRetentionPeriod
+    $runbookRetentionPolicy = New-Object -TypeName Octopus.Client.Model.RunbookRetentionPeriod
     $runbookRetentionPolicy.QuantityToKeep = 100
     $runbookRetentionPolicy.ShouldKeepForever = $false
 
-
     # Create runbook object
-    $runbook = New-Object Octopus.Client.Model.RunbookResource
+    $runbook = New-Object -TypeName Octopus.Client.Model.RunbookResource
     $runbook.Name = $runbookName
     $runbook.ProjectId = $project.Id
     $runbook.RunRetentionPolicy = $runbookRetentionPolicy
-    
+
     # Save
     $repositoryForSpace.Runbooks.Create($runbook)
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

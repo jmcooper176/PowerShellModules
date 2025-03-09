@@ -13,9 +13,9 @@ $environmentNames = @("Test", "Production")
 $tenantName = ""
 $tenantId = $null
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
-$client = New-Object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
 try
 {
@@ -27,10 +27,10 @@ try
     $project = $repositoryForSpace.Projects.FindByName($projectName)
 
     # Get runbook
-    $runbook = $repositoryForSpace.Runbooks.FindMany({param($r) $r.Name -eq $runbookName}) | Where-Object {$_.ProjectId -eq $project.Id}
+    $runbook = $repositoryForSpace.Runbooks.FindMany({param($r) $r.Name -eq $runbookName}) | Where-Object -FilterScript {$_.ProjectId -eq $project.Id}
 
     # Get environments
-    $environments = $repositoryForSpace.Environments.GetAll() | Where-Object {$environmentNames -contains $_.Name}
+    $environments = $repositoryForSpace.Environments.GetAll() | Where-Object -FilterScript {$environmentNames -contains $_.Name}
 
     # Optionally get tenant
     if (![string]::IsNullOrEmpty($tenantName)) {
@@ -42,7 +42,7 @@ try
     foreach ($environment in $environments)
     {
         # Create a new runbook run object
-        $runbookRun = New-Object Octopus.Client.Model.RunbookRunResource
+        $runbookRun = New-Object -TypeName Octopus.Client.Model.RunbookRunResource
         $runbookRun.EnvironmentId = $environment.Id
         $runbookRun.ProjectId = $project.Id
         $runbookRun.RunbookSnapshotId = $runbook.PublishedRunbookSnapshotId
@@ -55,5 +55,5 @@ try
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

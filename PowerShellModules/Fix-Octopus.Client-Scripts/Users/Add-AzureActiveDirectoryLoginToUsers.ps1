@@ -19,20 +19,20 @@ function AddAzureLogins
     [Boolean]$DebugLogging = $False
 )
 {
-    Write-Host "OctopusURL: $OctopusURL"
-    Write-Host "OctopusAPIKey: ********"
-    Write-Host "Path: $Path"
-    Write-Host "OctopusUsername: $OctopusUsername"
-    Write-Host "AzureEmailAddress: $AzureEmailAddress"
-    Write-Host "AzureDisplayName: $AzureDisplayName"
-    Write-Host "UpdateOctopusEmailAddress: $UpdateOctopusEmailAddress"
-    Write-Host "UpdateOctopusDisplayName: $UpdateOctopusDisplayName"
-    Write-Host "ContinueOnError: $ContinueOnError"
-    Write-Host "Force: $Force"
-    Write-Host "WhatIf: $WhatIf"
-    Write-Host "DebugLogging: $DebugLogging"
-    Write-Host $("=" * 60)
-    Write-Host
+    Write-Information -MessageData "OctopusURL: $OctopusURL"
+    Write-Information -MessageData "OctopusAPIKey: ********"
+    Write-Information -MessageData "Path: $Path"
+    Write-Information -MessageData "OctopusUsername: $OctopusUsername"
+    Write-Information -MessageData "AzureEmailAddress: $AzureEmailAddress"
+    Write-Information -MessageData "AzureDisplayName: $AzureDisplayName"
+    Write-Information -MessageData "UpdateOctopusEmailAddress: $UpdateOctopusEmailAddress"
+    Write-Information -MessageData "UpdateOctopusDisplayName: $UpdateOctopusDisplayName"
+    Write-Information -MessageData "ContinueOnError: $ContinueOnError"
+    Write-Information -MessageData "Force: $Force"
+    Write-Information -MessageData "WhatIf: $WhatIf"
+    Write-Information -MessageData "DebugLogging: $DebugLogging"
+    Write-Information -MessageData $("=" * 60)
+    Write-Information -MessageData
 
     if (-not [string]::IsNullOrWhiteSpace($OctopusURL)) {
         $OctopusURL = $OctopusURL.TrimEnd('/')
@@ -42,17 +42,16 @@ function AddAzureLogins
         $DebugPreference = "Continue"
     }
 
-    
-    $endpoint = New-Object Octopus.Client.OctopusServerEndpoint($OctopusURL, $OctopusAPIKey)
-    $repository = New-Object Octopus.Client.OctopusRepository($endpoint)
-    $client = New-Object Octopus.Client.OctopusClient($endpoint)
+    $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $OctopusURL, $OctopusAPIKey
+    $repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
+    $client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 
     $usersToUpdate = @()
     $recordsUpdated = 0
     # Validate we have minimum required details.
     if ([string]::IsNullOrWhiteSpace($Path) -eq $true) {
         if([string]::IsNullOrWhiteSpace($OctopusUsername) -eq $true -or [string]::IsNullOrWhiteSpace($AzureEmailAddress) -eq $true) {
-            Write-Warning "Path not supplied. OctopusUsername or AzureEmailAddress are either null, or an empty string."
+            Write-Warning -Message "Path not supplied. OctopusUsername or AzureEmailAddress are either null, or an empty string."
             return
         }
         $usersToUpdate += [PSCustomObject]@{
@@ -62,27 +61,27 @@ function AddAzureLogins
         }
     }
     else {
-        # Validate path 
-        if(-not (Test-Path $Path)) {
-            Write-Warning "Path '$Path' not found. Does a file exist at that location?"
+        # Validate path
+        if(-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+            Write-Warning -Message "Path '$Path' not found. Does a file exist at that location?"
             return
         }
 
         $usersToUpdate = Import-Csv -Path $Path -Delimiter ","
     }
-    
+
     # Check if we have any users. If we do, get existing octopus users
     if($usersToUpdate.Count -gt 0) {
-        Write-Host "Users to update: $($usersToUpdate.Count)"
+        Write-Information -MessageData "Users to update: $($usersToUpdate.Count)"
         $ExistingOctopusUsers = @()
 
         # Loop through users
         foreach ($user in $usersToUpdate)
         {
             # Retrieve user account from Octopus
-            Write-Host "Searching Octopus users for $($user.OctopusUsername) ..."
+            Write-Information -MessageData "Searching Octopus users for $($user.OctopusUsername) ..."
             $existingOctopusUser = $client.Repository.Users.FindByUsername($user.OctopusUsername)
-            
+
             # Check for null
             if ($null -ne $existingOctopusUser)
             {
@@ -90,7 +89,7 @@ function AddAzureLogins
                 if ($existingOctopusUser.IsService)
                 {
                     # This is a service account and will not be updated
-                    Write-Warning "$($user.OctopusUsername) is a service account, skipping ..."
+                    Write-Warning -Message "$($user.OctopusUsername) is a service account, skipping ..."
 
                     continue
                 }
@@ -98,40 +97,40 @@ function AddAzureLogins
                 if ($existingOctopusUser.IsActive -eq $False)
                 {
                     # Inactive user skipping
-                    Write-Warning "$($user.OctopusUsername) is an inactive account, skipping ..."
+                    Write-Warning -Message "$($user.OctopusUsername) is an inactive account, skipping ..."
 
                     continue
                 }
 
                 # Check to see if there's already an Azure identity
-                $azureAdIdentity = $existingOctopusUser.Identities | Where-Object {$_.IdentityProviderName -eq "Azure AD"}
-                if($null -ne $azureAdIdentity) 
+                $azureAdIdentity = $existingOctopusUser.Identities | Where-Object -FilterScript {$_.IdentityProviderName -eq "Azure AD"}
+                if($null -ne $azureAdIdentity)
                 {
-                    Write-Debug "Found existing AzureAD login for user $($user.OctopusUsername)"
-                    if($Force -eq $True) 
+                    Write-Debug -Message "Found existing AzureAD login for user $($user.OctopusUsername)"
+                    if($Force -eq $True)
                     {
-                        Write-Debug "Force set to true. Replacing existing AzureAD Claims for Display Name and Email for user $($user.OctopusUsername)"
+                        Write-Debug -Message "Force set to true. Replacing existing AzureAD Claims for Display Name and Email for user $($user.OctopusUsername)"
                         $azureAdIdentity.Claims.email.Value = $User.AzureEmailAddress
                         $azureAdIdentity.Claims.dn.Value = $User.AzureDisplayName
                     }
-                    else 
+                    else
                     {
-                        Write-Warning "Force set to false. Skipping replacing existing AzureAD Claims for Display Name and Email for user $($user.OctopusUsername)"
+                        Write-Warning -Message "Force set to false. Skipping replacing existing AzureAD Claims for Display Name and Email for user $($user.OctopusUsername)"
                     }
                 }
-                else 
+                else
                 {
-                    Write-Debug "No existing AzureAD login found for user $($user.OctopusUsername), creating new"
-                    $newAzureADIdentity = New-Object Octopus.Client.Model.IdentityResource
+                    Write-Debug -Message "No existing AzureAD login found for user $($user.OctopusUsername), creating new"
+                    $newAzureADIdentity = New-Object -TypeName Octopus.Client.Model.IdentityResource
                     $newAzureADIdentity.IdentityProviderName = "Azure AD"
-                    
-                    $newEmailClaim = New-Object Octopus.Client.Model.IdentityClaimResource
+
+                    $newEmailClaim = New-Object -TypeName Octopus.Client.Model.IdentityClaimResource
                     $newEmailClaim.IsIdentifyingClaim = $True
                     $newEmailClaim.Value = $user.AzureEmailAddress
 
                     $newAzureADIdentity.Claims.Add("email", $newEmailClaim) # Claims is a Dictionary object
 
-                    $newDisplayClaim = New-Object Octopus.Client.Model.IdentityClaimResource
+                    $newDisplayClaim = New-Object -TypeName Octopus.Client.Model.IdentityClaimResource
                     $newDisplayClaim.IsIdentifyingClaim = $False
                     $newDisplayClaim.Value = $user.AzureDisplayName
 
@@ -141,28 +140,28 @@ function AddAzureLogins
                 }
 
                 # Update user's email address if set AND the value isnt empty.
-                if($UpdateOctopusEmailAddress -eq $True -and -not([string]::IsNullOrWhiteSpace($User.AzureEmailAddress) -eq $true)) 
+                if($UpdateOctopusEmailAddress -eq $True -and -not([string]::IsNullOrWhiteSpace($User.AzureEmailAddress) -eq $true))
                 {
-                    Write-Debug "Setting Octopus email address to: $($User.AzureEmailAddress)"
+                    Write-Debug -Message "Setting Octopus email address to: $($User.AzureEmailAddress)"
                     $existingOctopusUser.EmailAddress = $User.AzureEmailAddress
                 }
 
                 # Update user's display name if set AND the value isnt empty.
-                if($UpdateOctopusDisplayName -eq $True -and -not([string]::IsNullOrWhiteSpace($User.AzureDisplayName) -eq $true)) 
+                if($UpdateOctopusDisplayName -eq $True -and -not([string]::IsNullOrWhiteSpace($User.AzureDisplayName) -eq $true))
                 {
-                    Write-Debug "Setting Octopus display name to: $($User.AzureDisplayName)"
+                    Write-Debug -Message "Setting Octopus display name to: $($User.AzureDisplayName)"
                     $existingOctopusUser.DisplayName = $User.AzureDisplayName
                 }
 
-                if($WhatIf -eq $True) 
+                if($WhatIf -eq $True)
                 {
-                    Write-Host "What If set to true, skipping update for user $($User.OctopusUsername). For details of the payload, set DebugLogging to True"
-                    Write-Debug "Would have done a POST to $OctopusUrl/api/users/$($existingOctopusUser.Id) with body:"
-                    Write-Debug $userJsonPayload
-                } 
-                else 
+                    Write-Information -MessageData "What If set to true, skipping update for user $($User.OctopusUsername). For details of the payload, set DebugLogging to True"
+                    Write-Debug -Message "Would have done a POST to $OctopusUrl/api/users/$($existingOctopusUser.Id) with body:"
+                    Write-Debug -Message $userJsonPayload
+                }
+                else
                 {
-                    Write-Host "Updating the user $($User.OctopusUsername) in Octopus Deploy"
+                    Write-Information -MessageData "Updating the user $($User.OctopusUsername) in Octopus Deploy"
                     $client.Repository.Users.Modify($existingOctopusUser)
                     $recordsUpdated += 1
                 }
@@ -170,13 +169,13 @@ function AddAzureLogins
             else
             {
                 # User not found
-                Write-Warning "$($user.OctopusUsername) not found!"
+                Write-Warning -Message "$($user.OctopusUsername) not found!"
             }
         }
-        Write-Debug "Found $($ExistingOctopusUsers.Count) existing Octopus users"
+        Write-Debug -Message "Found $($ExistingOctopusUsers.Count) existing Octopus users"
     }
     else {
-        Write-Host "No users to update, exiting."
+        Write-Information -MessageData "No users to update, exiting."
         return
     }
 }

@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="LogModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="LogModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "LogModule.psd1" is part of "LogModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'LogModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '0.0.9130.49036'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = 'BDBA00C1-5F62-4873-80FC-DF0CF0A4445B'
+GUID = '463077e8-3aa4-42a9-8f6f-9163f3423217'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -140,9 +138,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'Logging','Console','File'
 
@@ -156,7 +152,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = ''
+        # ReleaseNotes = ''
 
         # Prerelease string of this module
         # Prerelease = ''
@@ -166,9 +162,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -176,6 +170,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

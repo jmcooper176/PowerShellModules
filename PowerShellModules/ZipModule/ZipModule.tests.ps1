@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ZipModule.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ZipModule.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -56,6 +55,8 @@ This file "ZipModule.tests.ps1" is part of "ZipModule".
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\ZipModule.psd1'
+    $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
+    $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
     Initialize-PSTest -Name 'ZipModule' -Path $ModulePath
 }
@@ -64,9 +65,9 @@ AfterAll {
     Get-Module -Name 'ZipModule' | Remove-Module -Verbose -Force
 }
 
-Describe -Name 'ZipModule' {
-    Context -Name 'Module Manifest' {
-        It 'should exist' {
+Describe -Name 'ZipModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleManifest = Test-ModuleManifest -Path $ModulePath
 
@@ -74,7 +75,7 @@ Describe -Name 'ZipModule' {
             $ModuleManifest | Should -Not -BeNullOrEmpty
         }
 
-        It 'should have a RootModule of ZipModule.psm1' {
+        It -Name 'should have a RootModule of ZipModule.psm1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $RootModule = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'RootModule'
 
@@ -82,7 +83,7 @@ Describe -Name 'ZipModule' {
             $RootModule | Should -Be 'ZipModule.psm1'
         }
 
-        It 'should have a ModuleVersion greater than  1.3.0' {
+        It -Name 'should have a ModuleVersion greater than  1.3.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Version'
 
@@ -90,15 +91,15 @@ Describe -Name 'ZipModule' {
             $ModuleVersion | Should -BeGreaterThan '1.3.0'
         }
 
-        It 'should have a GUID of 10F71FD2-E8EF-4E40-8767-004E9908E73E' {
+        It -Name 'should have a GUID of 6e424d77-583b-40f8-968d-686ebea12ee1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be '10F71FD2-E8EF-4E40-8767-004E9908E73E'
+            $Guid | Should -Be '6e424d77-583b-40f8-968d-686ebea12ee1'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Author'
 
@@ -106,7 +107,7 @@ Describe -Name 'ZipModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -114,7 +115,7 @@ Describe -Name 'ZipModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -122,7 +123,7 @@ Describe -Name 'ZipModule' {
             $Copyright | Should -Be $COPYRIGHT_STRING
         }
 
-        It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -130,7 +131,7 @@ Describe -Name 'ZipModule' {
             $Description | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a Description of Enhanced interface to Process Environment Variables.' {
+        It -Name 'should have a Description of Enhanced interface to Process Environment Variables.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -138,17 +139,52 @@ Describe -Name 'ZipModule' {
             $Description | Should -Be 'Enhanced interface to Process Environment Variables.'
         }
 
-        It 'should have a PowerShellVersion of 5.1' {
+        It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $PowerShellVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'PowerShellVersion'
 
             # Assert
             $PowerShellVersion | Should -Be '5.1'
         }
+
+        It -Name 'should have ExportedCmdlets count should equal ExportedFunctions count' -Tag 'Unit', 'Test' {
+            # Arrange
+            $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedCmdlets' |
+                    Sort-Object -Unique
+            $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedFunctions' |
+                    Sort-Object -Unique
+
+            # Act And Assert
+            $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
+        }
+
+        It -Name 'should have ExportedCmdlets equal to ExportedFunctions' -Tag 'Unit', 'Test' {
+            # Arrange
+            $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedCmdlets' |
+                    Sort-Object -Unique -Descending
+            $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
+                Select-Object -ExpandProperty 'ExportedFunctions' |
+                    Sort-Object -Unique -Descending
+
+            # Act
+            for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
+                $result = $exportedCmdlets[$i] -eq $exportedFunctions[$i]
+
+                if (-not $result) {
+                    break
+                }
+            }
+
+            # Assert
+            $result | Should -BeTrue
+        }
     }
 
-    Context -Name 'Add-EnvironmentValue' {
-        It 'should exist' {
+    Context -Name 'Add-EnvironmentValue' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-EnvironmentValue'
 
@@ -156,7 +192,7 @@ Describe -Name 'ZipModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-EnvironmentValue'
 
@@ -164,7 +200,7 @@ Describe -Name 'ZipModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -172,7 +208,7 @@ Describe -Name 'ZipModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Description
 
@@ -180,7 +216,7 @@ Describe -Name 'ZipModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of ZipModule' {
+        It -Name 'should have a module name of ZipModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Add-EnvironmentValue' | Select-Object -ExpandProperty ModuleName
 

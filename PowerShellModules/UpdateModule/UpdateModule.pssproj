@@ -40,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Update-Modules.ps1" />
+    <Compile Include="Update-Module.ps1" />
     <Compile Include="UpdateModule.psd1" />
     <Compile Include="UpdateModule.psm1" />
     <Compile Include="UpdateModule.tests.ps1" />

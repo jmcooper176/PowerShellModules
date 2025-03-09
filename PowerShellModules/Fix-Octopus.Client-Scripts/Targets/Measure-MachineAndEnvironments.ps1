@@ -8,8 +8,8 @@ $spaceName = "Default" # Name of the Space
 Add-Type -Path 'Octopus.Client.dll'
 ​
 # Set up endpoint and Spaces repository
-$endpoint = new-object Octopus.Client.OctopusServerEndpoint $OctopusUrl, $APIKey
-$client = new-object Octopus.Client.OctopusClient $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $OctopusUrl, $APIKey
+$client = New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $endpoint
 ​
 # Find Space
 $space = $client.ForSystem().Spaces.FindByName($spaceName)
@@ -18,9 +18,9 @@ $spaceRepository = $client.ForSpace($space)
 # Get Counts
 $environments = $spaceRepository.Environments.FindAll()
 $envCount = $environments.Count
-$machines = $spaceRepository.Machines.FindAll() 
+$machines = $spaceRepository.Machines.FindAll()
 $machineCount = $machines.Count
-$projects = $spaceRepository.Projects.FindAll() 
+$projects = $spaceRepository.Projects.FindAll()
 $projCount = $projects.Count
 ​
 Write-Output "Space '$spaceName' has Environment count: $envCount"

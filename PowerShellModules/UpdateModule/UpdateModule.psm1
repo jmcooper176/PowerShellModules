@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="UpdateModule.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="UpdateModule.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -53,14 +52,14 @@ Set-Variable -Name TemplateLocation -Option Constant -Value (Join-Path -Path $PS
 # Specialty-Scopes used by cmdlets
 Set-Variable -Name AzureRMScopes -Option ReadOnly -Value @('All', 'Latest')
 Set-Variable -Name StorageScopes -Option ReadOnly -Value @('All', 'Latest', 'AzureStorage')
-Set-Variable -Name ServiceScopes -Option ReadOnly -Value @('All', 'Latest', 'ServiceManagement')
+Set-Variable -Name ServiceScopes -Option ReadOnly -Value @('All', 'Latest', 'Service')
 
 # Package locations
 Set-Variable -Name AzurePackages -Option ReadOnly -Value (Join-Path -Path $PSScriptRoot -ChildPath '..\artifacts')
 Set-Varible -Name StackPackages -Option ReadOnly -Value (Join-Path -Path $PSScriptRoot -ChildPath '..\src\Stack')
 Set-Variable -Name StackProjects -Option ReadOnly -Value (Join-Path -Path $PSScriptRoot -ChildPath '..\src\StackAdmin')
 
-# Resource Management folders
+# Resource  folders
 Set-Variable -Name AzureRMRoot -Option ReadOnly -Value (Join-Path -Path $AzurePackages -ChildPath $buildConfig)
 Set-Variable -Name StackRMRoot -Option ReadOnly -Value (Join-Path -Path $StackPackages -ChildPath $buildConfig)
 
@@ -140,22 +139,25 @@ function New-ModulePsm1 {
 
         if ($isAzAccounts) {
             $preloadAssemblies += 'if ($PSEdition -eq "Desktop") {
-    [Microsoft.Azure.PowerShell.AssemblyLoading.ConditionalAssemblyProvider]::GetAssemblies().Values | ForEach-Object {
+    [Microsoft.Azure.PowerShell.AssemblyLoading.ConditionalAssemblyProvider]::GetAssemblies().Values | ForEach-Object -Process {
         $path = $$_.Item1
         try {
             Add-Type -Path $path -ErrorAction Ignore | Out-Null
         }
         catch {
-            Write-Verbose "Could not preload $path"
+            $Error | ForEach-Object -Process {
+                Write-Warning -Message "Could not preload $path"
+                Write-Warning -Message $_.Exception.Message
+            }
         }
     }
 }'
         }
 
         # Grab the template and replace with information.
-        $template = Get-Content -Path $TemplatePath
+        $template = Get-Content -LiteralPath $TemplatePath
         $template = $template -replace "%MODULE-NAME%", $manifestPath.BaseName
-        $template = $template -replace "%DATE%", [string](Get-Date)
+        $template = $template -replace "%DATE%", [string](Microsoft.PowerShell.Utility\Get-Date)
         $template = $template -replace "%IMPORTED-DEPENDENCIES%", $importedModules
         $template = $template -replace "%PRELOAD-ASSEMBLY%", $preloadAssemblies
 
@@ -178,7 +180,7 @@ if (%ISAZMODULE% -and (`$PSEdition -eq 'Core'))
     }
     if (`$PSVersionTable.PSVersion -lt [Version]'7.0.6')
     {
-        Write-Warning "This version of Az.Accounts is only supported on Windows PowerShell 5.1 and PowerShell 7.0.6 or greater, open https://aka.ms/install-powershell to learn how to upgrade. For further information, go to https://aka.ms/azpslifecycle."
+        Write-Warning -Message "This version of Az.Accounts is only supported on Windows PowerShell 5.1 and PowerShell 7.0.6 or greater, open https://aka.ms/install-powershell to learn how to upgrade. For further information, go to https://aka.ms/azpslifecycle."
     }
 }
 "@
@@ -246,7 +248,7 @@ if (%ISAZMODULE% -and (`$PSEdition -eq 'Core'))
         Path to the template
 
         .PARAMETER IsRMModule
-        Specifies if resource management module.
+        Specifies if resource  module.
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
@@ -278,7 +280,7 @@ function Get-Cmdlet {
 
         if ($dllPath.EndsWith("dll")) {
             $Assembly = [Reflection.Assembly]::LoadFrom($dllPath)
-            $dllCmdlets = $Assembly.GetTypes() | Where-Object {$_.CustomAttributes.AttributeType.Name -contains "CmdletAttribute"}
+            $dllCmdlets = $Assembly.GetTypes() | Where-Object -FilterScript {$_.CustomAttributes.AttributeType.Name -contains "CmdletAttribute"}
             $cmdlets += $dllCmdlets
         }
     }
@@ -328,7 +330,7 @@ function Find-DefaultResourceGroupCmdlet {
 
         if ($IsRMModule) {
             $AllCmdlets = Get-Cmdlet -ModuleMetadata $ModuleMetadata -ModulePath $ModulePath
-            $FilteredCommands = $AllCmdlets | Where-Object {Test-CmdletRequiredParameter -Cmdlet $_ -Parameter "ResourceGroupName"}
+            $FilteredCommands = $AllCmdlets | Where-Object -FilterScript {Test-CmdletRequiredParameter -Cmdlet $_ -Parameter "ResourceGroupName"}
 
             foreach ($command in $FilteredCommands) {
                 $contructedCommands += "'" + $command.GetCustomAttributes("System.Management.Automation.CmdletAttribute").VerbName + "-" + $command.GetCustomAttributes("System.Management.Automation.CmdletAttribute").NounName + ":ResourceGroupName" + "',"
@@ -343,7 +345,7 @@ function Find-DefaultResourceGroupCmdlet {
 
     <#
         .SYNOPSIS
-        Handle nested modules for resource management modules which required ResourceGroupName
+        Handle nested modules for resource  modules which required ResourceGroupName
 
         .PARAMETER ModuleMetadata
         Module metadata.
@@ -352,7 +354,7 @@ function Find-DefaultResourceGroupCmdlet {
         Path to the module.
 
         .PARAMETER IsRMModule
-        Specifies if resource management module.
+        Specifies if resource  module.
 
         .NOTES
         Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
@@ -537,8 +539,8 @@ function Update-Azure {
     }
 
     if ($scope -in $script:ServiceScopes) {
-        $modulePath = (Join-Path -Path $AzurePackages -ChildPath "$buildConfig\ServiceManagement\Azure")
-        Write-Information -MessageData "Updating ServiceManagement(aka Azure) module from $modulePath" -InformationAction Continue
+        $modulePath = (Join-Path -Path $AzurePackages -ChildPath "$buildConfig\Service\Azure")
+        Write-Information -MessageData "Updating Service(aka Azure) module from $modulePath" -InformationAction Continue
         New-ModulePsm1 -ModulePath $modulePath -TemplatePath $TemplateLocation
         Write-Information -MessageData " " -InformationAction Continue
     }

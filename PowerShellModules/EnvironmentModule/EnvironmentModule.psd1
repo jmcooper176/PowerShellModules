@@ -7,7 +7,6 @@
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'EnvironmentModule.psm1'
 
@@ -18,7 +17,7 @@ ModuleVersion = '1.3.9168.58670'
 CompatiblePSEditions = 'Desktop', 'Core'
 
 # ID used to uniquely identify this module
-GUID = '073AE309-6F89-42BC-BD92-306B4BB57D82'
+GUID = '6e424d77-583b-40f8-968d-686ebea12ee1'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -51,7 +50,7 @@ PowerShellVersion = '5.1'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @('ErrorRecordModule', 
+RequiredModules = @('ErrorRecordModule',
                'PowerShellModule')
 
 # Assemblies that must be loaded prior to importing this module
@@ -70,19 +69,29 @@ RequiredModules = @('ErrorRecordModule',
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Add-EnvironmentValue', 'Copy-EnvironmentVariable', 
-               'Get-EnvironmentVariable', 'Get-EnvironmentHashtable', 
-               'Join-EnvironmentVariable', 'New-EnvironmentVariable', 
-               'Out-Hashtable', 'Out-ArrayList', 'Remove-EnvironmentVariable', 
-               'Rename-EnvironmentVariable', 'Set-EnvironmentVariable', 
+FunctionsToExport = 'Add-EnvironmentValue',
+               'Copy-EnvironmentVariable',
+               'Get-EnvironmentVariable', 'Get-EnvironmentHashtable',
+               'Join-EnvironmentVariable', 'Move-EnvironmentVariable', 'New-EnvironmentVariable',
+               'Optimize-Path',
+               'Out-Hashtable', 'Out-ArrayList',
+               'Remove-EnvironmentVariable',
+               'Rename-EnvironmentVariable',
+               'Set-EnvironmentVariable',
+               'Split-EnvironmentVariable',
                'Test-EnvironmentVariable'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Add-EnvironmentValue', 'Copy-EnvironmentVariable', 
-               'Get-EnvironmentVariable', 'Get-EnvironmentHashtable', 
-               'Join-EnvironmentVariable', 'New-EnvironmentVariable', 
-               'Out-Hashtable', 'Out-ArrayList', 'Remove-EnvironmentVariable', 
-               'Rename-EnvironmentVariable', 'Set-EnvironmentVariable', 
+CmdletsToExport = 'Add-EnvironmentValue',
+               'Copy-EnvironmentVariable',
+               'Get-EnvironmentVariable', 'Get-EnvironmentHashtable',
+               'Join-EnvironmentVariable', 'Move-EnvironmentVariable', 'New-EnvironmentVariable',
+               'Optimize-Path',
+               'Out-Hashtable', 'Out-ArrayList',
+               'Remove-EnvironmentVariable',
+               'Rename-EnvironmentVariable',
+               'Set-EnvironmentVariable',
+               'Split-EnvironmentVariable',
                'Test-EnvironmentVariable'
 
 # Variables to export from this module
@@ -102,9 +111,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'process','environment'
 
@@ -118,7 +125,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = ''
+        # ReleaseNotes = ''
 
         # Prerelease string of this module
         # Prerelease = ''
@@ -128,9 +135,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -138,6 +143,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

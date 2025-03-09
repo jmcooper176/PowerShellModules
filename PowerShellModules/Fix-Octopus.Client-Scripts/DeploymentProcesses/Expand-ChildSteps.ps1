@@ -6,9 +6,9 @@ $octopusURI = "http://localhost" # Your server address
 $apiKey = 'API-IQW9QGGWJE5T4KFVQLL15PUY' # Get this from your profile
 $projectName = "Project Name" # The name of the project
 
-$endpoint = new-object Octopus.Client.OctopusServerEndpoint $octopusURI, $apiKey 
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI, $apiKey
 
-$repository = new-object Octopus.Client.OctopusRepository $endpoint
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 Function Copy-Dictionary {
     param($source, $destination)
@@ -25,13 +25,13 @@ $process = $repository.DeploymentProcesses.Get($project.DeploymentProcessId)
 
 $step = $process.Steps | Select-Object -first 1
 foreach ($action in $step.Actions) {
-    $newStep = New-Object Octopus.Client.Model.DeploymentStepResource
+    $newStep = New-Object -TypeName Octopus.Client.Model.DeploymentStepResource
     $newStep.Name = $action.Name
     $newStep.Condition = $step.Condition
     $newStep.StartTrigger = $step.StartTrigger
     $newStep.RequiresPackagesToBeAcquired = $step.RequiresPackagesToBeAcquired
-    $newStep.Actions.Add($action)    
-    
+    $newStep.Actions.Add($action)
+
     Copy-Dictionary $step.Properties $newStep.Properties
     Copy-Dictionary $step.SensitiveProperties $newStep.SensitiveProperties
 

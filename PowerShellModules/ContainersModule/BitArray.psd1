@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="BitArray.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="BitArray.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,7 +63,7 @@ This file "BitArray.psd1" is part of "ContainersModule".
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID              = '48EACFDA-2063-41EF-B6C7-4B0DEE773D89'
+    GUID              = '3a5973c4-a431-495e-a67f-73120d7f8852'
 
     # Author of this module
     Author            = 'John Merryweather Cooper'

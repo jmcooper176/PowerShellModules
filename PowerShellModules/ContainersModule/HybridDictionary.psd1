@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="HybridDictionary.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="HybridDictionary.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,7 +63,7 @@ This file "HybridDictionary.psd1" is part of "ContainersModule".
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID              = '31149D49-B2A5-4337-A0DF-E253291D8217'
+    GUID              = 'ef06bde8-422e-4101-8759-2e849d468d17'
 
     # Author of this module
     Author            = 'John Merryweather Cooper'

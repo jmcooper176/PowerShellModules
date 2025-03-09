@@ -12,7 +12,7 @@
 #>
 Function Update-StepTemplatesOnDeploymentProcesses
 {
-    [CmdletBinding()]        
+    [CmdletBinding()]
     Param
     (
         # Action Template ID. Use when you only want to update the deployment processes that only use this Action Template.
@@ -38,10 +38,9 @@ Function Update-StepTemplatesOnDeploymentProcesses
 
     Begin
     {
-        if(!(Test-Path "$OctopusClientDLLPath")){
-
-            Write-Warning "Octopus Tentacle doesnt seem to be insalled on '$OctopusClientDLLPath'. Please use the parameter -OctopusClientDLLPath to specify the path where the Octopus Tentacle was installed. `nTIP - This path should be the parent directory of: Octopus.Client.dll"             
-            break 
+        if(!(Test-Path -LiteralPath "$OctopusClientDLLPath" -PathType Leaf)){
+            Write-Warning -Message "Octopus Tentacle doesn't seem to be installed on '$OctopusClientDLLPath'. Please use the parameter -OctopusClientDLLPath to specify the path where the Octopus Tentacle was installed. `nTIP - This path should be the parent directory of: Octopus.Client.dll"
+            break
         }
         else{
             Add-Type -Path $OctopusClientDLLPath -ErrorAction SilentlyContinue
@@ -49,57 +48,48 @@ Function Update-StepTemplatesOnDeploymentProcesses
         $headers = @{"X-Octopus-ApiKey"="$($apikey)";}
 
         #Create endpoint connection
-        $endpoint = new-object Octopus.Client.OctopusServerEndpoint "$($OctopusURI)","$($apikey)"
-        $repository = new-object Octopus.Client.OctopusRepository $endpoint
-
-
+        $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList "$($OctopusURI)","$($apikey)"
+        $repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
     }
     Process
     {
         If($PSCmdlet.ParameterSetName -eq "SingleActionTemplate"){
             $templates = Invoke-WebRequest -Uri "$($OctopusURI)/api/actiontemplates/$ActionTemplateID" -Method Get -Headers $headers | select -ExpandProperty content| ConvertFrom-Json
         }
-        
+
         Else{$templates = Invoke-WebRequest -Uri "$($OctopusURI)/api/actiontemplates/All" -Method Get -Headers $headers | select -ExpandProperty content| ConvertFrom-Json}
-        
+
         Foreach ($template in $templates){
-
             $usage = Invoke-WebRequest -Uri "$($OctopusURI)/api/actiontemplates/$($template.ID)/usage" -Method Get -Headers $headers | select -ExpandProperty content | ConvertFrom-Json
-        
-            #Getting all the DeploymentProcesses that need to be updated
-            $deploymentprocesstoupdate = $usage | ? {$_.version -ne $template.Version}
 
-            write-host "Template: $($template.name)" -ForegroundColor Magenta
+            #Getting all the DeploymentProcesses that need to be updated
+            $deploymentprocesstoupdate = $usage | Where-Object -FilterScript {$_.version -ne $template.Version}
+
+            Write-Information -MessageData "Template: $($template.name)" -ForegroundColor Magenta
 
             If($deploymentprocesstoupdate -eq $null){
-
-                Write-host "`t--All deployment processes up to date" -ForegroundColor Green
-
+                Write-Information -MessageData "`t--All deployment processes up to date" -ForegroundColor Green
             }
 
             Else{
-
                 Foreach($d in $deploymentprocesstoupdate){
-
                     #Getting DeploymentProcess obj
                     $process = $repository.DeploymentProcesses.Get($d.DeploymentProcessId)
 
                     #Finding the step that uses the step template
-                    $steps = $process.Steps | ?{$_.actions.properties.values.value -eq $template.Id}
+                    $steps = $process.Steps | Where-Object -FilterScript{$_.actions.properties.values.value -eq $template.Id}
 
                     try{
-
                         foreach($step in $steps){
-
-                            Write-host "`t--Updating Step [$($step.name)] of project [$($d.projectname)]" -ForegroundColor Yellow
+                            Write-Information -MessageData "`t--Updating Step [$($step.name)] of project [$($d.projectname)]" -ForegroundColor Yellow
 
                             $step.Actions.properties.'Octopus.Action.Script.Scriptbody' = $template.Properties.'Octopus.Action.Script.ScriptBody'
 
                             #Start NotProudOfThisLogicButItWorks
-                            $properties = $step.Actions.properties | select -ExpandProperty keys | ?{$_ -notlike "Octopus.action*"}
+                            $properties = $step.Actions.properties | select -ExpandProperty keys | Where-Object -FilterScript{$_ -notlike "Octopus.action*"}
 
                             #Comparing properties of current step and deleting the
-                            #ones that are not in the latest version of the step template                            
+                            #ones that are not in the latest version of the step template
                             foreach($p in $properties){
                                 if($p -notin $template.parameters.name){
                                     $null = $Step.actions.properties.remove($p)
@@ -114,26 +104,23 @@ Function Update-StepTemplatesOnDeploymentProcesses
                                 }
                             }
                             #End NotProudOfThisLogicButItWorks
-                                            
+
                             #Updating the Template.Version property to the latest
-                            $step.Actions.properties.'Octopus.Action.Template.version' = $template.Version                                                      
+                            $step.Actions.properties.'Octopus.Action.Template.version' = $template.Version
                         }
                         If($repository.DeploymentProcesses.Modify($process))
                         {
-                            Write-host "`t--Project updated: $($d.projectname)" -ForegroundColor Green
+                            Write-Information -MessageData "`t--Project updated: $($d.projectname)" -ForegroundColor Green
                         }
-                    }                    
+                    }
 
                     catch{
-                        Write-Error "Error updating Process template for Octopus project: $($d.projectname)"
-                        write-error $_.Exception.message            
+                        $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+                        throw $Error[0]
                     }
-        
                 }
-           
             }
         }
-        
     }
     End
     {

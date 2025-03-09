@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="RandomModule.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="RandomModule.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -47,47 +46,54 @@ This file "RandomModule.tests.ps1" is part of "RandomModule".
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\RandomModule.psd1'
+    $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
     $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
+    Initialize-PSTest -Name 'RandomModule' -Path $ModulePath
 }
 
 AfterAll {
     Get-Module -Name 'RandomModule' | Remove-Module -Verbose
 }
 
-Describe -Name 'RandomModule' {
-    Context -Name 'Module Manifest' {
-        It 'should exist' {
+Describe -Name 'RandomModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $ModuleManifest = Test-Path -Path '.\RandomModule.psd1'
+            $ModuleManifest = Test-Path -LiteralPath '.\RandomModule.psd1' -PathType Leaf
 
             # Assert
             $ModuleManifest | Should -Be $true
         }
 
-        It 'should parse' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
             $inputSource = Get-Content -LiteralPath $ModulePath -Raw
 
             [ref] $tokens = @()
             [ref] $errors = @()
-            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
 
+            # Act
             $errors.Value | ForEach-Object -Process {
-                $message = ('{0} at {1}:  Parse error generating abstract syntax tree' -f $ModuleName, $ModulePath)
-                $writeErrorSplat = @{
-                        Exception    = [System.Management.Automation.ParseException]::new($message)
-                        Category     = 'ParseError'
-                        ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                        TargetObject = $_
-                        ErrorAction  = 'Continue'
-                    }
-
-                    Write-Error @writeErrorSplat -ErrorAction Continue
-                    $PSCmdlet.ThrowTerminatingError($writeErrorHash)
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
                 }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
         }
 
-        It 'should have a RootModule of RandomModule.psm1' {
+        It -Name 'should have a RootModule of RandomModule.psm1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $RootModule = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'RootModule'
 
@@ -95,7 +101,7 @@ Describe -Name 'RandomModule' {
             $RootModule | Should -Be 'RandomModule.psm1'
         }
 
-        It 'should have a ModuleVersion of 0.0.1' {
+        It -Name 'should have a ModuleVersion of 0.0.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleVersion = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'Version'
 
@@ -103,15 +109,15 @@ Describe -Name 'RandomModule' {
             $ModuleVersion | Should -Be '0.0.1'
         }
 
-        It 'should have a GUID of E62EF891-3230-41B9-ABCA-3776C1C42661' {
+        It -Name 'should have a GUID of c9b58d55-bc90-4b0a-943f-42b1ec7a9691' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be 'E62EF891-3230-41B9-ABCA-3776C1C42661'
+            $Guid | Should -Be 'c9b58d55-bc90-4b0a-943f-42b1ec7a9691'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'Author'
 
@@ -119,15 +125,15 @@ Describe -Name 'RandomModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of Ram Tuned Mega Code' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'CompanyName'
 
             # Assert
-            $CompanyName | Should -Be 'Ram Tuned Mega Code'
+            $CompanyName | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'Copyright'
 
@@ -135,7 +141,7 @@ Describe -Name 'RandomModule' {
             $Copyright | Should -Be 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
         }
 
-        It 'should have a Description of Cmdlets/functions for the generation of pseudo-random numbers.' {
+        It -Name 'should have a Description of Cmdlets/functions for the generation of pseudo-random numbers.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'Description'
 
@@ -143,7 +149,7 @@ Describe -Name 'RandomModule' {
             $Description | Should -Be 'Cmdlets/functions for the generation of pseudo-random numbers.'
         }
 
-        It 'should have a PowerShellVersion of 5.1' {
+        It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $PowerShellVersion = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'PowerShellVersion'
 
@@ -151,7 +157,7 @@ Describe -Name 'RandomModule' {
             $PowerShellVersion | Should -Be '5.1'
         }
 
-        It 'should have ExportedCmdlets count should equal ExportedFunctions count' {
+        It -Name 'should have ExportedCmdlets count should equal ExportedFunctions count' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
@@ -164,14 +170,14 @@ Describe -Name 'RandomModule' {
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
         }
 
-        It 'should have ExportedCmdlets equal to ExportedFunctions' {
+        It -Name 'should have ExportedCmdlets equal to ExportedFunctions' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -187,8 +193,8 @@ Describe -Name 'RandomModule' {
         }
     }
 
-    Context -Name 'Get-RandomByte' {
-        It 'should return a byte' {
+    Context -Name 'Get-RandomByte' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should return a byte' -Tag 'Unit', 'Test' {
             # Arrange
             $Byte = Get-RandomByte
 
@@ -196,7 +202,7 @@ Describe -Name 'RandomModule' {
             $Byte | Should -BeOfType 'byte'
         }
 
-        It 'should return a byte between 0 and [byte]::MaxValue' {
+        It -Name 'should return a byte between 0 and [byte]::MaxValue' -Tag 'Unit', 'Test' {
             # Arrange
             $Byte = Get-RandomByte
 
@@ -205,8 +211,8 @@ Describe -Name 'RandomModule' {
         }
     }
 
-    Context -Name 'Get-RandomInteger' {
-        It 'should return an integer' {
+    Context -Name 'Get-RandomInteger' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should return an integer' -Tag 'Unit', 'Test' {
             # Arrange
             $Int = Get-RandomInteger
 
@@ -214,7 +220,7 @@ Describe -Name 'RandomModule' {
             $Int | Should -BeOfType 'int'
         }
 
-        It 'should return an integer between 0 and [int]::MaxValue' {
+        It -Name 'should return an integer between 0 and [int]::MaxValue' -Tag 'Unit', 'Test' {
             # Arrange
             $Int = Get-RandomInteger
 
@@ -223,8 +229,8 @@ Describe -Name 'RandomModule' {
         }
     }
 
-    Context -Name 'Get-RandomLong' {
-        It 'should return a long' {
+    Context -Name 'Get-RandomLong' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should return a long' -Tag 'Unit', 'Test' {
             # Arrange
             $Long = Get-RandomLong
 
@@ -232,7 +238,7 @@ Describe -Name 'RandomModule' {
             $Long | Should -BeOfType 'long'
         }
 
-        It 'should return a long between 0 and [long]::MaxValue' {
+        It -Name 'should return a long between 0 and [long]::MaxValue' -Tag 'Unit', 'Test' {
             # Arrange
             $Long = Get-RandomLong
 
@@ -241,8 +247,8 @@ Describe -Name 'RandomModule' {
         }
     }
 
-    Context -Name 'Get-RandomFloat' {
-        It 'should return a float' {
+    Context -Name 'Get-RandomFloat' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should return a float' -Tag 'Unit', 'Test' {
             # Arrange
             $Float = Get-RandomFloat
 
@@ -250,7 +256,7 @@ Describe -Name 'RandomModule' {
             $Float | Should -BeOfType 'float'
         }
 
-        It 'should return a float between 0.0 and 1.0' {
+        It -Name 'should return a float between 0.0 and 1.0' -Tag 'Unit', 'Test' {
             # Arrange
             $Float = Get-RandomFloat
 
@@ -259,8 +265,8 @@ Describe -Name 'RandomModule' {
         }
     }
 
-    Context -Name 'Get-RandomDouble' {
-        It 'should return a double' {
+    Context -Name 'Get-RandomDouble' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should return a double' -Tag 'Unit', 'Test' {
             # Arrange
             $Double = Get-RandomDouble
 
@@ -268,7 +274,7 @@ Describe -Name 'RandomModule' {
             $Double | Should -BeOfType 'double'
         }
 
-        It 'should return a double between 0.0 and 1.0' {
+        It -Name 'should return a double between 0.0 and 1.0' -Tag 'Unit', 'Test' {
             # Arrange
             $Double = Get-RandomDouble
 
@@ -277,7 +283,7 @@ Describe -Name 'RandomModule' {
         }
     }
 
-    Context -Name 'Initialize-Random' {
+    Context -Name 'Initialize-Random' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
         BeforeEach {
             Import-Module -Name $ModulePath -Verbose
         }
@@ -286,27 +292,27 @@ Describe -Name 'RandomModule' {
             Get-Module -Name 'RandomModule' | Remove-Module -Verbose
         }
 
-        It 'should not throw no arguments' {
+        It -Name 'should not throw no arguments' -Tag 'Unit', 'Test' {
             # Arrange, Act, and Assert
             { Initialize-Random } | Should -Not -Throw
         }
 
-        It 'should not throw default seed' {
+        It -Name 'should not throw default seed' -Tag 'Unit', 'Test' {
             # Arrange, Act, and Assert
             { Initialize-Random -DefaultSeed } | Should -Not -Throw
         }
 
-        It 'should not throw truncated ticks seed' {
+        It -Name 'should not throw truncated ticks seed' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act, and Assert
             { Initialize-Random -Seed $seed } | Should -Not -Throw
         }
 
-        It 'byte array should be initialized' {
+        It -Name 'byte array should be initialized' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -315,9 +321,9 @@ Describe -Name 'RandomModule' {
             $Script:ByteArray | Where-Object -FilterScript { $_ -ge 0 -or $_ -le [byte]::MaxValue } | Measure-Object | Select-Object -ExpandProperty Count | Should -Be $Script:ByteArray.Length
         }
 
-        It 'byte array should be initialized and in range' {
+        It -Name 'byte array should be initialized and in range' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -326,9 +332,9 @@ Describe -Name 'RandomModule' {
             $Script:ByteArray | Where-Object -FilterScript { $_ -lt 0 -or $_ -ge [byte]::MaxValue } | Measure-Object | Select-Object -ExpandProperty Count | Should -Be 0
         }
 
-        It 'integer array should be initialized' {
+        It -Name 'integer array should be initialized' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -337,9 +343,9 @@ Describe -Name 'RandomModule' {
             $Script:IntegerArray | Where-Object -FilterScript { $_ -ge 0 -or $_ -lt [int]::MaxValue } | Measure-Object | Select-Object -ExpandProperty Count | Should -Be $Script:IntegerArray.Length
         }
 
-        It 'integer array should be initialized and in range' {
+        It -Name 'integer array should be initialized and in range' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -348,9 +354,9 @@ Describe -Name 'RandomModule' {
             $Script:IntegerArray | Where-Object -FilterScript { $_ -lt 0 -or $_ -ge [int]::MaxValue } | Measure-Object | Select-Object -ExpandProperty Count | Should -Be 0
         }
 
-        It 'long array should be initialized' {
+        It -Name 'long array should be initialized' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -359,9 +365,9 @@ Describe -Name 'RandomModule' {
             $Script:LongArray | Where-Object -FilterScript { $_ -ge 0 -or $_ -lt [long]::MaxValue } | Measure-Object | Select-Object -ExpandProperty Count | Should -Be $Script:LongArray.Length
         }
 
-        It 'long array should be initialized and in range' {
+        It -Name 'long array should be initialized and in range' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -370,9 +376,9 @@ Describe -Name 'RandomModule' {
             $Script:LongArray | Where-Object -FilterScript { $_ -lt 0 -or $_ -ge [long]::MaxValue } | Measure-Object | Select-Object -ExpandProperty Count | Should -Be 0
         }
 
-        It 'float array should be initialized' {
+        It -Name 'float array should be initialized' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -381,9 +387,9 @@ Describe -Name 'RandomModule' {
             $Script:FloatArray | Where-Object -FilterScript { $_ -ge [float]0.0 -or $_ -lt [float]1.0 } | Measure-Object | Select-Object -ExpandProperty Count | Should -Be $Script:FloatArray.Length
         }
 
-        It 'float array should be initialized and in range' {
+        It -Name 'float array should be initialized and in range' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -392,9 +398,9 @@ Describe -Name 'RandomModule' {
             $Script:FloatArray | Where-Object -FilterScript { $_ -lt [float]0.0 -or $_ -ge [float]1.0 } | Measure-Object | Select-Object -ExpandProperty Count | Should -Be 0
         }
 
-        It 'double array should be initialized' {
+        It -Name 'double array should be initialized' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -403,9 +409,9 @@ Describe -Name 'RandomModule' {
             $Script:DoubleArray | Where-Object -FilterScript { $_ -ge 0.0 -or $_ -lt 1.0 } | Measure-Object | Select-Object -ExpandProperty Count | Should -Be $Script:DoubleArray.Length
         }
 
-        It 'double array should be initialized and in range' {
+        It -Name 'double array should be initialized and in range' -Tag 'Unit', 'Test' {
             # Arrange
-            $seed = [int](((Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
+            $seed = [int](((Microsoft.PowerShell.Utility\Get-Date -AsUTC) | Select-Object -ExpandProperty Ticks) % [int]::MaxValue)
 
             # Act
             Initialize-Random -Seed $seed
@@ -429,8 +435,7 @@ function Get-ChiSquaredFromFrequency {
         $Expected
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if ($Observed.Length -ne $Expected.Length) {
         $Message   = 'Observed and Expected arrays must be the same length.'
@@ -470,8 +475,7 @@ function Get-ExpectedFromProbability {
         $N
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     [double[]]$Expected = @(0.0) * $Probability.Length
 
@@ -495,8 +499,7 @@ function Get-ChiSquareFromProbability {
         $Probability
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if ($Observed.Length -ne $Probability.Length) {
         $Message   = 'Observed and Probability arrays must be the same length.'
@@ -537,8 +540,7 @@ function Get-ChiSquarePValue {
         $DegreesOfFreedom
     )
 
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     [double]$chiSquare = Get-ChiSquareFromProbability -Observed $Observed -Probability $Probability
     [double]$pValue    = [Math]::Exp(-$chiSquare / 2)

@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="BitArray.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="BitArray.psm1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -623,7 +622,7 @@ class BitArray : System.Collections.BitArray {
         }
         catch {
             $result.Value = $null
-            $Error | Write-Error -ErrorAction Continue
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
             return $false
         }
     }

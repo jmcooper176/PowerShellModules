@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="MiscModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="MiscModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "MiscModule.psd1" is part of "MiscModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'MiscModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '1.2.9127.52003'
 CompatiblePSEditions = @('Desktop', 'Core')
 
 # ID used to uniquely identify this module
-GUID = '3B42B960-3588-400A-9079-0E3651A89980'
+GUID = '4165e5f9-3e21-439e-b48f-16474bb89751'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -138,9 +136,7 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'misc','utility','format','find','variable','filter'
 
@@ -164,9 +160,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -174,6 +168,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

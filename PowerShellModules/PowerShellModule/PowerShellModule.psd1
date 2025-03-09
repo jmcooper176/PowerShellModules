@@ -14,10 +14,10 @@ RootModule = 'PowerShellModule.psm1'
 ModuleVersion = '1.4.9159.38683'
 
 # Supported PSEditions
-CompatiblePSEditions = 'Core', 'Desktop'
+CompatiblePSEditions = 'Core'
 
 # ID used to uniquely identify this module
-GUID = 'F76E09AC-E87F-4181-A66B-F3D375BA13B9'
+GUID = '2f52ace0-13d3-4dc2-b8a4-8da00b174c01'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -32,7 +32,7 @@ Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reser
 Description = 'PowerShell Invocation Extensions'
 
 # Minimum version of the PowerShell engine required by this module
-PowerShellVersion = '5.1'
+PowerShellVersion = '6.2'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -72,7 +72,6 @@ FunctionsToExport = 'Add-Entry', 'Add-Parameter', 'Enter-Block', 'Get-BuildVersi
                'Get-MajorVersion', 'Get-MinorVersion', 'Get-Parameter', 'Get-Version',
                'Initialize-Class', 'Initialize-Cmdlet', 'Initialize-Function',
                'Initialize-Test', 'Initialize-Script', 'Measure-String',
-               'Set-Parameter', 'Set-TeeContent',
                'Test-Parameter', 'Test-Prerequisites', 'Test-Version',
                'Update-Variable'
 
@@ -81,7 +80,6 @@ CmdletsToExport = 'Add-Entry', 'Add-Parameter', 'Enter-Block', 'Get-BuildVersion
                'Get-MajorVersion', 'Get-MinorVersion', 'Get-Parameter', 'Get-Version',
                'Initialize-Class', 'Initialize-Cmdlet', 'Initialize-Function',
                'Initialize-Test', 'Initialize-Script', 'Measure-String',
-               'Set-Parameter', 'Set-TeeContent',
                'Test-Parameter', 'Test-Prerequisites', 'Test-Version',
                'Update-Variable'
 
@@ -89,7 +87,7 @@ CmdletsToExport = 'Add-Entry', 'Add-Parameter', 'Enter-Block', 'Get-BuildVersion
 # VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = @()
+AliasesToExport = '*'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -116,7 +114,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = ''
+        # ReleaseNotes = ''
 
         # Prerelease string of this module
         # Prerelease = ''

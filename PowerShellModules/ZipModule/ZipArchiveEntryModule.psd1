@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="ZipArchiveEntryModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ZipArchiveEntryModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -64,7 +63,7 @@ ModuleVersion = '1.0.8997'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '8AF8A18D-53CF-4682-B6B3-A2EE4A9A7EE2'
+GUID = '8f097bd5-5f24-402d-a5ae-36e4ec65bcb2'
 
 # Author of this module
 Author = 'John Merryweather Cooper'

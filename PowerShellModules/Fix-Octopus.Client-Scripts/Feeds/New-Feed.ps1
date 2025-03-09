@@ -17,32 +17,32 @@ $useExtendedApi = $False
 $feedUsername = ""
 $feedPassword = ""
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
-$repository = New-Object Octopus.Client.OctopusRepository $endpoint
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 try
 {
     # Get space id
     $space = $repository.Spaces.FindByName($spaceName)
-    Write-Host "Using Space named $($space.Name) with id $($space.Id)"
+    Write-Information -MessageData "Using Space named $($space.Name) with id $($space.Id)"
 
     # Create space specific repository
     $repositoryForSpace = [Octopus.Client.OctopusRepositoryExtensions]::ForSpace($repository, $space)
 
     # Set new feed resource
-    $feedResource = New-Object Octopus.Client.Model.NuGetFeedResource
+    $feedResource = New-Object -TypeName Octopus.Client.Model.NuGetFeedResource
     $feedResource.SpaceId = $space.Id
     $feedResource.Name = $feedName
     $feedResource.FeedUri = $feedURI
     $feedResource.DownloadAttempts = $downloadAttempts
     $feedResource.DownloadRetryBackoffSeconds = $downloadRetryBackoffSeconds
     $feedResource.EnhancedMode = $useExtendedApi
-    
-    if(-not ([string]::IsNullOrEmpty($feedUsername))) 
+
+    if(-not ([string]::IsNullOrEmpty($feedUsername)))
     {
         $feedResource.Username = $feedUsername
     }
-    if(-not ([string]::IsNullOrEmpty($feedPassword))) 
+    if(-not ([string]::IsNullOrEmpty($feedPassword)))
     {
         $feedResource.Password = $feedPassword
     }
@@ -52,5 +52,5 @@ try
 }
 catch
 {
-    Write-Host $_.Exception.Message
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

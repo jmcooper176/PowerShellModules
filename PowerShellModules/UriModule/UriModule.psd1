@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="UriModule.psd1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="UriModule.psd1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +53,6 @@ This file "UriModule.psd1" is part of "UriModule".
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'UriModule.psm1'
 
@@ -65,7 +63,7 @@ ModuleVersion = '1.2.9157.13441'
 CompatiblePSEditions = @('Desktop', 'Core')
 
 # ID used to uniquely identify this module
-GUID = 'A2DA2DD3-CAE4-4CCD-888D-CCD7ABC1E837'
+GUID = 'c252cd29-d9a6-45fb-be30-93006ab85dc0'
 
 # Author of this module
 Author = 'John Merryweather Cooper'
@@ -140,17 +138,15 @@ AliasesToExport = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
         # Tags = @()
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://opensource.org/license/BSD-3-clause'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/jmcooper176/PowerShellModules'
 
         # A URL to an icon representing this module.
         # IconUri = ''
@@ -166,9 +162,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -176,6 +170,4 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

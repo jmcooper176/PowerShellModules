@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="MessageModule.tests.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="MessageModule.tests.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,6 +50,7 @@ This file "MessageModule.tests.ps1" is part of "MessageModule".
 
 BeforeAll {
     $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath '.\MessageModule.psd1'
+    $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
     $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
     Initialize-PSTest -Name 'MessageModule' -Path $ModulePath
@@ -60,9 +60,9 @@ AfterAll {
     Get-Module -Name 'MessageModule' | Remove-Module -Verbose -Force
 }
 
-Describe -Name 'MessageModule' {
-    Context -Name 'Module Manifest' {
-        It 'should exist' {
+Describe -Name 'MessageModule' -Tag 'Module', 'Under', 'Test' {
+    Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleManifest = Test-ModuleManifest -Path $ModulePath
 
@@ -70,29 +70,34 @@ Describe -Name 'MessageModule' {
             $ModuleManifest | Should -Not -BeNullOrEmpty
         }
 
-        It 'should parse' {
+        It -Name 'should parse' -Tag 'Unit', 'Test' {
+            # Arrange
             $inputSource = Get-Content -LiteralPath $ModulePath -Raw
 
             [ref] $tokens = @()
             [ref] $errors = @()
-            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $ModuleFileName, $tokens, $errors)
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $success = $true
 
+            # Act
             $errors.Value | ForEach-Object -Process {
-                $message = ('{0} at {1}:  Parse error generating abstract syntax tree' -f $ModuleName, $ModulePath)
-                $writeErrorSplat = @{
-                        Exception    = [System.Management.Automation.ParseException]::new($message)
-                        Category     = 'ParseError'
-                        ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                        TargetObject = $_
-                        ErrorAction  = 'Continue'
-                    }
-
-                    Write-Error @writeErrorSplat -ErrorAction Continue
-                    $PSCmdlet.ThrowTerminatingError($writeErrorHash)
+                $success = $false
+                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $_
                 }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
         }
 
-        It 'should have a RootModule of MessageModule.psm1' {
+        It -Name 'should have a RootModule of MessageModule.psm1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $RootModule = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'RootModule'
 
@@ -100,7 +105,7 @@ Describe -Name 'MessageModule' {
             $RootModule | Should -Be 'MessageModule.psm1'
         }
 
-        It 'should have a ModuleVersion greater than  1.3.0' {
+        It -Name 'should have a ModuleVersion greater than  1.3.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Version'
 
@@ -108,15 +113,15 @@ Describe -Name 'MessageModule' {
             $ModuleVersion | Should -BeGreaterThan '1.3.0'
         }
 
-        It 'should have a GUID of 55A4EEA8-7261-469B-A81D-1AB036F74B91' {
+        It -Name 'should have a GUID of 70f1f86a-28b1-48a2-8f3e-34c5c8363091' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be '55A4EEA8-7261-469B-A81D-1AB036F74B91'
+            $Guid | Should -Be '70f1f86a-28b1-48a2-8f3e-34c5c8363091'
         }
 
-        It 'should have an Author of John Merryweather Cooper' {
+        It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Author = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Author'
 
@@ -124,7 +129,7 @@ Describe -Name 'MessageModule' {
             $Author | Should -Be 'John Merryweather Cooper'
         }
 
-        It 'should have a CompanyName of John Merryweather Cooper' {
+        It -Name 'should have a CompanyName of John Merryweather Cooper' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $CompanyName = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'CompanyName'
 
@@ -132,7 +137,7 @@ Describe -Name 'MessageModule' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' {
+        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -140,7 +145,7 @@ Describe -Name 'MessageModule' {
             $Copyright | Should -Be $COPYRIGHT_STRING
         }
 
-        It 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -148,7 +153,7 @@ Describe -Name 'MessageModule' {
             $Description | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a Description of Cmdlets/functions to format and write messages loosely following the Microsoft compiler message format.' {
+        It -Name 'should have a Description of Cmdlets/functions to format and write messages loosely following the Microsoft compiler message format.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
@@ -156,7 +161,7 @@ Describe -Name 'MessageModule' {
             $Description | Should -Be 'Cmdlets/functions to format and write messages loosely following the Microsoft compiler message format.'
         }
 
-        It 'should have a PowerShellVersion of 5.1' {
+        It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $PowerShellVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'PowerShellVersion'
 
@@ -164,7 +169,7 @@ Describe -Name 'MessageModule' {
             $PowerShellVersion | Should -Be '5.1'
         }
 
-        It 'should have ExportedCmdlets count should equal ExportedFunctions count' {
+        It -Name 'should have ExportedCmdlets count should equal ExportedFunctions count' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
@@ -177,14 +182,14 @@ Describe -Name 'MessageModule' {
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
         }
 
-        It 'should have ExportedCmdlets equal to ExportedFunctions' {
+        It -Name 'should have ExportedCmdlets equal to ExportedFunctions' -Tag 'Unit', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                    Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -200,8 +205,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Add-SeparatorIfNotNullOrEmpty' {
-        It 'should exist' {
+    Context -Name 'Add-SeparatorIfNotNullOrEmpty' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-SeparatorIfNotNullOrEmpty'
 
@@ -209,7 +214,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Add-SeparatorIfNotNullOrEmpty'
 
@@ -217,7 +222,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Add-SeparatorIfNotNullOrEmpty' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -225,7 +230,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Add-SeparatorIfNotNullOrEmpty' -Full | Select-Object -ExpandProperty Description
 
@@ -233,7 +238,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Add-SeparatorIfNotNullOrEmpty' | Select-Object -ExpandProperty ModuleName
 
@@ -242,8 +247,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Format-Debug' {
-        It 'should exist' {
+    Context -Name 'Format-Debug' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Debug'
 
@@ -251,7 +256,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Debug'
 
@@ -259,7 +264,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Format-Debug' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -267,7 +272,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Format-Debug' -Full | Select-Object -ExpandProperty Description
 
@@ -275,7 +280,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Format-Debug' | Select-Object -ExpandProperty ModuleName
 
@@ -283,7 +288,7 @@ Describe -Name 'MessageModule' {
             $ModuleName | Should -Be 'MessageModule'
         }
 
-        It 'should emit formatted message' {
+        It -Name 'should emit formatted message' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -294,7 +299,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message' {
+        It -Name 'should emit piped formatted message' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -306,8 +311,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Format-Error' {
-        It 'should exist' {
+    Context -Name 'Format-Error' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Error'
 
@@ -315,7 +320,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Error'
 
@@ -323,7 +328,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Format-Error' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -331,7 +336,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Format-Error' -Full | Select-Object -ExpandProperty Description
 
@@ -339,7 +344,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Format-Error' | Select-Object -ExpandProperty ModuleName
 
@@ -347,7 +352,7 @@ Describe -Name 'MessageModule' {
             $ModuleName | Should -Be 'MessageModule'
         }
 
-        It 'should emit formatted message' {
+        It -Name 'should emit formatted message' -Tag 'Unit', 'Test' {
             # Arrange
             $message = 'This is a message.'
             $errorId = Format-ErrorId -Caller $MyInvocation -Name 'Exception' -Position $MyInvocation.ScriptLineNumber
@@ -368,7 +373,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($message) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message' {
+        It -Name 'should emit piped formatted message' -Tag 'Unit', 'Test' {
             # Arrange
             $message = 'This is a message.'
             $errorId = Format-ErrorId -Caller $MyInvocation -Name 'Exception' -Position $MyInvocation.ScriptLineNumber
@@ -390,8 +395,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Format-Information' {
-        It 'should exist' {
+    Context -Name 'Format-Information' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Information'
 
@@ -399,7 +404,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Information'
 
@@ -407,7 +412,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Format-Information' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -415,7 +420,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Format-Information' -Full | Select-Object -ExpandProperty Description
 
@@ -423,7 +428,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Format-Information' | Select-Object -ExpandProperty ModuleName
 
@@ -431,7 +436,7 @@ Describe -Name 'MessageModule' {
             $ModuleName | Should -Be 'MessageModule'
         }
 
-        It 'should emit formatted message' {
+        It -Name 'should emit formatted message' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -442,7 +447,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message' {
+        It -Name 'should emit piped formatted message' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -454,8 +459,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Format-Message' {
-        It 'should exist' {
+    Context -Name 'Format-Message' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Message'
 
@@ -463,7 +468,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Message'
 
@@ -471,7 +476,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Format-Message' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -479,7 +484,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Format-Message' -Full | Select-Object -ExpandProperty Description
 
@@ -487,7 +492,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Format-Message' | Select-Object -ExpandProperty ModuleName
 
@@ -495,7 +500,7 @@ Describe -Name 'MessageModule' {
             $ModuleName | Should -Be 'MessageModule'
         }
 
-        It 'should emit formatted message' {
+        It -Name 'should emit formatted message' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -506,7 +511,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message' {
+        It -Name 'should emit piped formatted message' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -517,7 +522,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit metadata in message' {
+        It -Name 'should emit metadata in message' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
             $Metadata = 'Value1 Value2'
@@ -529,7 +534,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Metadata) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message with metadata' {
+        It -Name 'should emit piped formatted message with metadata' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
             $Metadata = 'Value1 Value2'
@@ -541,7 +546,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Metadata) | Should -BeTrue
         }
 
-        It 'should emit formatted message with valid origin' {
+        It -Name 'should emit formatted message with valid origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
             $Message = 'This is a message.'
@@ -553,7 +558,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message valid origin' {
+        It -Name 'should emit piped formatted message valid origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
             $Message = 'This is a message.'
@@ -565,7 +570,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit metadata in message valid origin' {
+        It -Name 'should emit metadata in message valid origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
             $Message = 'This is a message.'
@@ -578,7 +583,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Metadata) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message with metadata valid origin' {
+        It -Name 'should emit piped formatted message with metadata valid origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
             $Message = 'This is a message.'
@@ -591,7 +596,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Metadata) | Should -BeTrue
         }
 
-        It 'should emit formatted message with valid caller origin' {
+        It -Name 'should emit formatted message with valid caller origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
             $Message = 'This is a message.'
@@ -603,7 +608,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message valid caller origin' {
+        It -Name 'should emit piped formatted message valid caller origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
             $Message = 'This is a message.'
@@ -615,7 +620,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit metadata in message valid caller origin' {
+        It -Name 'should emit metadata in message valid caller origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
             $Message = 'This is a message.'
@@ -628,7 +633,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Metadata) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message with metadata valid caller origin' {
+        It -Name 'should emit piped formatted message with metadata valid caller origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
             $Message = 'This is a message.'
@@ -641,7 +646,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Metadata) | Should -BeTrue
         }
 
-        It 'should emit formatted message with valid file name origin' {
+        It -Name 'should emit formatted message with valid file name origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester.psm1'
             $Message = 'This is a message.'
@@ -653,7 +658,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message valid file name origin' {
+        It -Name 'should emit piped formatted message valid file name origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester.psm1'
             $Message = 'This is a message.'
@@ -665,7 +670,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit metadata in message valid file name origin' {
+        It -Name 'should emit metadata in message valid file name origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester.psm1'
             $Message = 'This is a message.'
@@ -678,7 +683,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Metadata) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message with metadata valid file name origin' {
+        It -Name 'should emit piped formatted message with metadata valid file name origin' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester.psm1'
             $Message = 'This is a message.'
@@ -691,7 +696,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Expected) -and $FormattedMessage.Contains($Metadata) | Should -BeTrue
         }
 
-        It 'should emit formatted message with timestamp' {
+        It -Name 'should emit formatted message with timestamp' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -702,7 +707,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message with timestamp' {
+        It -Name 'should emit piped formatted message with timestamp' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -713,7 +718,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit formatted message with local timestamp' {
+        It -Name 'should emit formatted message with local timestamp' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -724,7 +729,7 @@ Describe -Name 'MessageModule' {
             $FormattedMessage.Contains($Message) | Should -BeTrue
         }
 
-        It 'should emit piped formatted message with local timestamp' {
+        It -Name 'should emit piped formatted message with local timestamp' -Tag 'Unit', 'Test' {
             # Arrange
             $Message = 'This is a message.'
 
@@ -736,8 +741,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Format-Metadata' {
-        It 'should exist' {
+    Context -Name 'Format-Metadata' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Metadata'
 
@@ -745,7 +750,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Metadata'
 
@@ -753,7 +758,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Format-Metadata' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -761,7 +766,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Format-Metadata' -Full | Select-Object -ExpandProperty Description
 
@@ -769,7 +774,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Format-Metadata' | Select-Object -ExpandProperty ModuleName
 
@@ -777,7 +782,7 @@ Describe -Name 'MessageModule' {
             $ModuleName | Should -Be 'MessageModule'
         }
 
-        It 'should emit formatted metadata' {
+        It -Name 'should emit formatted metadata' -Tag 'Unit', 'Test' {
             # Arrange
             $Metadata = @(
                 'Value1',
@@ -792,8 +797,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Format-Origin' {
-        It 'should exist' {
+    Context -Name 'Format-Origin' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Origin'
 
@@ -801,7 +806,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Origin'
 
@@ -809,7 +814,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Format-Origin' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -817,7 +822,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Format-Origin' -Full | Select-Object -ExpandProperty Description
 
@@ -825,7 +830,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Format-Origin' | Select-Object -ExpandProperty ModuleName
 
@@ -833,7 +838,7 @@ Describe -Name 'MessageModule' {
             $ModuleName | Should -Be 'MessageModule'
         }
 
-        It 'should return the path origin of the message' {
+        It -Name 'should return the path origin of the message' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
 
@@ -844,7 +849,7 @@ Describe -Name 'MessageModule' {
             $Origin.Contains($Expected) | Should -BeTrue
         }
 
-        It 'should return the caller origin of the message' {
+        It -Name 'should return the caller origin of the message' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
 
@@ -855,7 +860,7 @@ Describe -Name 'MessageModule' {
             $Origin.StartsWith($Expected) | Should -BeTrue
         }
 
-        It 'should return the file name origin of the message' {
+        It -Name 'should return the file name origin of the message' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester.psm1'
 
@@ -866,7 +871,7 @@ Describe -Name 'MessageModule' {
             $Origin.Contains($Expected) | Should -BeTrue
         }
 
-        It 'should return the timestamp with path origin of the message' {
+        It -Name 'should return the timestamp with path origin of the message' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
 
@@ -877,7 +882,7 @@ Describe -Name 'MessageModule' {
             $Origin.Contains($Expected) | Should -BeTrue
         }
 
-        It 'should return the timestamp with caller origin of the message' {
+        It -Name 'should return the timestamp with caller origin of the message' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
 
@@ -888,7 +893,7 @@ Describe -Name 'MessageModule' {
             $Origin.Contains($Expected) | Should -BeTrue
         }
 
-        It 'should return the timestamp with file name origin of the message' {
+        It -Name 'should return the timestamp with file name origin of the message' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester.psm1'
 
@@ -899,7 +904,7 @@ Describe -Name 'MessageModule' {
             $Origin.Contains($Expected) | Should -BeTrue
         }
 
-        It 'should return the local timestamp with path origin of the message' {
+        It -Name 'should return the local timestamp with path origin of the message' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
 
@@ -910,7 +915,7 @@ Describe -Name 'MessageModule' {
             $Origin.Contains($Expected) | Should -BeTrue
         }
 
-        It 'should return the local timestamp with caller origin of the message' {
+        It -Name 'should return the local timestamp with caller origin of the message' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester'
 
@@ -921,7 +926,7 @@ Describe -Name 'MessageModule' {
             $Origin.Contains($Expected) | Should -BeTrue
         }
 
-        It 'should return the local timestamp with file name origin of the message' {
+        It -Name 'should return the local timestamp with file name origin of the message' -Tag 'Unit', 'Test' {
             # Arrange
             $Expected = 'Pester.psm1'
 
@@ -933,8 +938,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Format-Verbose' {
-        It 'should exist' {
+    Context -Name 'Format-Verbose' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Verbose'
 
@@ -942,7 +947,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Verbose'
 
@@ -950,7 +955,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Format-Verbose' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -958,7 +963,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Format-Verbose' -Full | Select-Object -ExpandProperty Description
 
@@ -966,7 +971,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Format-Verbose' | Select-Object -ExpandProperty ModuleName
 
@@ -975,8 +980,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Format-Warning' {
-        It 'should exist' {
+    Context -Name 'Format-Warning' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Warning'
 
@@ -984,7 +989,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Format-Warning'
 
@@ -992,7 +997,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Format-Warning' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -1000,7 +1005,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Format-Warning' -Full | Select-Object -ExpandProperty Description
 
@@ -1008,7 +1013,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Format-Warning' | Select-Object -ExpandProperty ModuleName
 
@@ -1017,8 +1022,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Test-Debug' {
-        It 'should exist' {
+    Context -Name 'Test-Debug' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Test-Debug'
 
@@ -1026,7 +1031,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Test-Debug'
 
@@ -1034,7 +1039,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Test-Debug' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -1043,7 +1048,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Test-Debug' -Full | Select-Object -ExpandProperty Description
 
@@ -1051,7 +1056,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Test-Debug' | Select-Object -ExpandProperty ModuleName
 
@@ -1059,7 +1064,7 @@ Describe -Name 'MessageModule' {
             $ModuleName | Should -Be 'MessageModule'
         }
 
-        It 'should be false without -Debug' {
+        It -Name 'should be false without -Debug' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Verbose = Test-Debug -InvocationInfo $MyInvocation
 
@@ -1068,8 +1073,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Test-Verbose' {
-        It 'should exist' {
+    Context -Name 'Test-Verbose' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Test-Verbose'
 
@@ -1077,7 +1082,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Test-Verbose'
 
@@ -1085,7 +1090,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Test-Verbose' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -1093,7 +1098,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Test-Verbose' -Full | Select-Object -ExpandProperty Description
 
@@ -1101,7 +1106,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Test-Verbose' | Select-Object -ExpandProperty ModuleName
 
@@ -1109,7 +1114,7 @@ Describe -Name 'MessageModule' {
             $ModuleName | Should -Be 'MessageModule'
         }
 
-        It 'should be false without -Verbose' {
+        It -Name 'should be false without -Verbose' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Verbose = Test-Verbose -InvocationInfo $MyInvocation
 
@@ -1118,8 +1123,8 @@ Describe -Name 'MessageModule' {
         }
     }
 
-    Context -Name 'Write-DebugIf' {
-        It 'should exist' {
+    Context -Name 'Write-DebugIf' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Write-DebugIf'
 
@@ -1127,7 +1132,7 @@ Describe -Name 'MessageModule' {
             $Command | Should -Not -BeNull
         }
 
-        It 'should be a cmdlet or function' {
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Command = Get-Command -Name 'Write-DebugIf'
 
@@ -1135,7 +1140,7 @@ Describe -Name 'MessageModule' {
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' {
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Synopsis = Get-Help -Name 'Write-DebugIf' -Full | Select-Object -ExpandProperty Synopsis
 
@@ -1143,7 +1148,7 @@ Describe -Name 'MessageModule' {
             $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
         }
 
-        It 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' {
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Get-Help -Name 'Write-DebugIf' -Full | Select-Object -ExpandProperty Description
 
@@ -1151,7 +1156,7 @@ Describe -Name 'MessageModule' {
             $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It 'should have a module name of MessageModule' {
+        It -Name 'should have a module name of MessageModule' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleName = Get-Command -Name 'Write-DebugIf' | Select-Object -ExpandProperty ModuleName
 
@@ -1159,7 +1164,7 @@ Describe -Name 'MessageModule' {
             $ModuleName | Should -Be 'MessageModule'
         }
 
-        It 'should write to the debug stream with Condition True' {
+        It -Name 'should write to the debug stream with Condition True' -Tag 'Unit', 'Test' {
             # Arrange
             $DebugPreference = 'Continue'
 
@@ -1170,7 +1175,7 @@ Describe -Name 'MessageModule' {
             $DebugText.EndsWith('Debug message') | Should -BeTrue
         }
 
-        It 'should write to the debug stream with ScriptBlock evaluating to True' {
+        It -Name 'should write to the debug stream with ScriptBlock evaluating to True' -Tag 'Unit', 'Test' {
             # Arrange
             $DebugPreference = 'Continue'
 

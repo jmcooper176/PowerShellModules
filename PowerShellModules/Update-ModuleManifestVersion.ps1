@@ -14,7 +14,7 @@
 
     .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
 
-    .PROJECTURI https://github.com/OCIO-DEVSECOPS/PSInstallCom
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules
 
     .ICONURI
 
@@ -26,7 +26,6 @@
 
     .RELEASENOTES
 
-
     .PRIVATEDATA
 
 #>
@@ -35,7 +34,6 @@
     .DESCRIPTION
     Update module manifest version.
 #>
-
 
 [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingModuleVersion')]
 param (
@@ -62,8 +60,7 @@ param (
 )
 
 BEGIN {
-    Set-StrictMode -Version 3.0
-    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    $ScriptName = Initialize-PSScript -MyInvocation $MyInvocation
 }
 
 PROCESS {

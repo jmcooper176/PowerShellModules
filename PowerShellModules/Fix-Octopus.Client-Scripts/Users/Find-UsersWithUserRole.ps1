@@ -5,8 +5,8 @@ $octopusAPIKey = "API-YOURAPIKEY"
 # Load the Octopus.Client assembly from where you have it located.
 Add-type -Path "C:\Octopus.Client\Octopus.Client.dll"
 
-$endpoint = New-Object Octopus.Client.OctopusServerEndpoint($octopusBaseURL, $octopusAPIKey)
-$repository = New-Object Octopus.Client.OctopusRepository($endpoint)
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusBaseURL, $octopusAPIKey
+$repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
 $roleName = "Project Deployer"
 $spaceName = ""
@@ -31,7 +31,7 @@ try
         if (![string]::IsNullOrEmpty($spaceName))
         {
             # Filter on space
-            $scopedUserRoles = $scopedUserRoles | Where-Object {$_.SpaceId -eq $space.Id}
+            $scopedUserRoles = $scopedUserRoles | Where-Object -FilterScript {$_.SpaceId -eq $space.Id}
         }
 
         # Loop through the scoped user roles
@@ -52,8 +52,8 @@ try
                 foreach ($member in $team.MemberUserIds)
                 {
                     # Get the user account
-                    $user = $repository.Users.GetAll() | Where-Object {$_.Id -eq $member}
-                    
+                    $user = $repository.Users.GetAll() | Where-Object -FilterScript {$_.Id -eq $member}
+
                     # Display
                     Write-Output "$($user.DisplayName)"
                 }
@@ -76,5 +76,5 @@ try
 }
 catch
 {
-    Write-Output "An error occurred: $($_.Exception.Message)"
+    $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
 }

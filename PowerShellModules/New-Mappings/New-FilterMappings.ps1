@@ -1,8 +1,7 @@
 ﻿<#
  =============================================================================
-<copyright file="New-FilterMappings.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="New-FilterMappings.ps1" company="John Merryweather Cooper">
+    Copyright © 2022-2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,14 +44,56 @@ This file "New-FilterMappings.ps1" is part of "New-Mappings".
 =============================================================================
 #>
 
-<#
-Returns an ordered hashtable with the following paths having empty mappings:
-- All files at the root of the repository
-- All folders at the root of the repository (except "src")
-- All files in the "src" folder
+<#PSScriptInfo
+
+    .VERSION 1.0.0
+
+    .GUID B5319C07-CB71-4A9E-9BEA-E72CDEBC863D
+
+    .AUTHOR John Merryweather Cooper
+
+    .COMPANYNAME John Merryweather Cooper
+
+    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+
+    .TAGS
+
+    .LICENSEURI https://www.opensource.org/licenses/BSD-3-Clause
+
+    .PROJECTURI https://github.com/jmcooper176/PowerShellModules
+
+    .ICONURI
+
+    .EXTERNALMODULEDEPENDENCIES PowerShellModule
+
+    .REQUIREDSCRIPTS
+
+    .EXTERNALSCRIPTDEPENDENCIES
+
+    .RELEASENOTES
+
+    .PRIVATEDATA
+
 #>
+
+<#
+    .SYNOPSIS
+    Generate new file mappings for cmdlets to documentation groups.
+
+    .DESCRIPTION
+    `New-Mappings.ps1` generates new file mappings for cmdlets to documentation groups.
+
+    .OUTPUTS
+    [hashtable]  Returns an ordered hashtable with the following paths having empty mappings:
+    - All files at the root of the repository
+    - All folders at the root of the repository (except "src")
+    - All files in the "src" folder
+#>
+
 function Initialize-Mappings
 {
+    [CmdletBinding()]
+    [OutputType([hashtable])]
     param
     (
         [Parameter(Mandatory = $false)]
@@ -89,6 +130,8 @@ Converts a hashtable into a compressed JSON and formats it for display.
 #>
 function Format-Json
 {
+    [CmdletBinding()]
+    [OutputType([string])]
     param
     (
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -104,6 +147,8 @@ Turns a file path into a normalized key (strips out everything before "src").
 #>
 function Create-Key
 {
+    [CmdletBinding()]
+    [OutputType([string])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -137,7 +182,12 @@ function Create-Key
 
 function Create-ProjectToFullPathMappings
 {
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param ()
+
     $Mappings = [ordered]@{}
+
     foreach ($ServiceFolder in $Script:ServiceFolders)
     {
         $CsprojFiles = Get-ChildItem -Path $ServiceFolder -Filter "*.csproj" -Recurse
@@ -172,7 +222,12 @@ Creates a mapping from a solution file to the projects it references. For exampl
 #>
 function Create-SolutionToProjectMappings
 {
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param ()
+
     $Mappings = [ordered]@{}
+
     foreach ($ServiceFolder in $Script:ServiceFolders)
     {
         $SolutionFiles = Get-ChildItem -Path $ServiceFolder.FullName -Filter "*.sln" -Recurse
@@ -190,6 +245,8 @@ Parses a solution file to find the projects it is composed of (excluding common 
 #>
 function Add-ProjectDependencies
 {
+    [CmdletBinding()]
+    [OutputType([hashtable])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -201,13 +258,13 @@ function Add-ProjectDependencies
 
     $CommonProjectsToIgnore = @("ScenarioTest.ResourceManager", "TestFx", "Tests" )
     $CsprojList = @()
-    $Content = Get-Content -Path $SolutionPath
+    $Content = Get-Content -LiteralPath $SolutionPath
     $SolutionFoloderPath = Split-Path -Parent $SolutionPath
     $Content | Select-String -Pattern "`"[a-zA-Z0-9`.`\\`/]*.csproj`"" | ForEach-Object -Process { $_.Matches[0].Value.Trim('"') } | Where-Object -FilterScript { $CommonProjectsToIgnore -notcontains $_ } | ForEach-Object -Process { $CsprojList += $_ }
 
     foreach ($Csproj in $CsprojList)
     {
-        If(-Not (Test-Path ($SolutionFoloderPath + "\\" + $Csproj))) {
+        If(-Not (Test-Path -LiteralPath ($SolutionFoloderPath + "\\" + $Csproj) -PathType Leaf)) {
             Write-Error "${SolutionPath}: $Csproj is not found!"
         }
     }
@@ -233,7 +290,12 @@ Creates a mapping from a project to its parent solution. For example:
 #>
 function Create-ProjectToSolutionMappings
 {
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param ()
+
     $Mappings = [ordered]@{}
+
     foreach ($ServiceFolder in $Script:ServiceFolders)
     {
         $Mappings = Add-SolutionReference -Mappings $Mappings -ServiceFolderPath $ServiceFolder.FullName
@@ -247,6 +309,8 @@ Map a project to the solution file it should be build with (e.g., Commands.Compu
 #>
 function Add-SolutionReference
 {
+    [CmdletBinding()]
+    [OutputType([hashtable])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -257,12 +321,12 @@ function Add-SolutionReference
     )
 
     & ($PSScriptRoot + "\PreloadToolDll.ps1")
-    $CsprojFiles = Get-ChildItem -Path $ServiceFolderPath -Filter "*.csproj" -Recurse | Where-Object { (-not [Tools.Common.Utilities.ModuleFilter]::IsAzureStackModule($_.FullName)) -and $_.FullName -notlike "*.Test*" }
+    $CsprojFiles = Get-ChildItem -Path $ServiceFolderPath -Filter "*.csproj" -Recurse | Where-Object -FilterScript { (-not [Tools.Common.Utilities.ModuleFilter]::IsAzureStackModule($_.FullName)) -and $_.FullName -notlike "*.Test*" }
     foreach ($CsprojFile in $CsprojFiles)
     {
         $Key = $CsprojFile.BaseName
         $Mappings[$Key] = @()
-        $Script:SolutionToProjectMappings.Keys | Where-Object { $Script:SolutionToProjectMappings[$_] -contains $Key } | ForEach-Object -Process { $Mappings[$Key] += $_ }
+        $Script:SolutionToProjectMappings.Keys | Where-Object -FilterScript { $Script:SolutionToProjectMappings[$_] -contains $Key } | ForEach-Object -Process { $Mappings[$Key] += $_ }
     }
 
     return $Mappings
@@ -273,16 +337,20 @@ Creates the ModuleMappings.json file used during the build to filter StaticAnaly
 #>
 function Create-ModuleMappings
 {
+    [CmdletBinding()]
+    param ()
+
     $PathsToIgnore = @("tools")
     $CustomMappings = @{}
     $Script:ModuleMappings = Initialize-Mappings -PathsToIgnore $PathsToIgnore -CustomMappings $CustomMappings
     foreach ($ServiceFolder in $Script:ServiceFolders)
     {
         $Key = "src/$($ServiceFolder.Name)/"
-        $ModuleManifestFiles = Get-ChildItem -Path $ServiceFolder.FullName -Filter "*.psd1" -Recurse | Where-Object { $_.FullName -notlike "*.Test*" -and `
-                                                                                                                      $_.FullName -notlike "*Release*" -and `
-                                                                                                                      $_.FullName -notlike "*Debug*" -and `
-                                                                                                                      $_.Name -like "Az.*" }
+        $ModuleManifestFiles = Get-ChildItem -Path $ServiceFolder.FullName -Filter "*.psd1" -Recurse |
+            Where-Object -FilterScript { $_.FullName -notlike "*.Test*" -and `
+                           $_.FullName -notlike "*Release*" -and `
+                           $_.FullName -notlike "*Debug*" -and `
+                           $_.Name -like "Az.*" }
         if ($null -ne $ModuleManifestFiles)
         {
             $Value = @()
@@ -297,6 +365,9 @@ Creates the CsprojMappings.json file used during the build to filter the build s
 #>
 function Create-CsprojMappings
 {
+    [CmdletBinding()]
+    param ()
+
     $PathsToIgnore = @("tools")
     $CustomMappings = @{}
     $Script:CsprojMappings = Initialize-Mappings -PathsToIgnore $PathsToIgnore -CustomMappings $CustomMappings
@@ -312,6 +383,8 @@ Maps a normalized path to the projects to be built based on the service folder p
 
 function Get-ModuleFromPath
 {
+    [CmdletBinding()]
+    [OutputType([string])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -320,8 +393,10 @@ function Get-ModuleFromPath
 
     return $FilePath.Replace('/', '\').Split('\src\')[-1].Split('\')[0]
 }
+
 function Add-CsprojMappings
 {
+    [CmdletBinding()]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -333,7 +408,7 @@ function Add-CsprojMappings
     $CsprojFiles = Get-ChildItem -Path $ServiceFolderPath -Filter "*.csproj" -Recurse
     if ($null -ne $CsprojFiles)
     {
-        $Values = New-Object System.Collections.Generic.HashSet[string]
+        $Values = New-Object -TypeName System.Collections.Generic.HashSet[string]
         foreach ($CsprojFile in $CsprojFiles)
         {
             $Project = Get-ModuleFromPath $CsprojFile.FullName
@@ -361,6 +436,9 @@ function Add-CsprojMappings
     }
 }
 
+<#
+    Script
+#>
 $Script:RootPath = (Get-Item -Path $PSScriptRoot).Parent.FullName
 $Script:SrcPath = Join-Path -Path $Script:RootPath -ChildPath "src"
 $Script:ServiceFolders = Get-ChildItem -Path $Script:SrcPath -Directory

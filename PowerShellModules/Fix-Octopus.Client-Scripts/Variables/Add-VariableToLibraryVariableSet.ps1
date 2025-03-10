@@ -12,8 +12,8 @@ $variableValue = "Variable value" # Value of the new variable
 $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
-$libraryVariableSet = $repository.LibraryVariableSets.Get($libraryVariableSetId);
-$variables = $repository.VariableSets.Get($libraryVariableSet.VariableSetId);
+$libraryVariableSet = $repository.LibraryVariableSets.Get($libraryVariableSetId)
+$variables = $repository.VariableSets.Get($libraryVariableSet.VariableSetId)
 
 $myNewVariable = New-Object -TypeName Octopus.Client.Model.VariableResource
 $myNewVariable.Name = $variableName

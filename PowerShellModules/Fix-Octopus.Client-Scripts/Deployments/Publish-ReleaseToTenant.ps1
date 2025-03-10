@@ -12,7 +12,7 @@ $tenantId = "Tenants-1" # Get this from /api/tenants
 $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
-$release = $repository.Releases.Get($releaseId);
+$release = $repository.Releases.Get($releaseId)
 $deployment = New-Object -TypeName Octopus.Client.Model.DeploymentResource
 $deployment.ReleaseId = $release.Id
 $deployment.ProjectId = $release.ProjectId

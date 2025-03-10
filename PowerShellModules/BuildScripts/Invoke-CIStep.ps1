@@ -264,10 +264,10 @@ if ($Build)
             }
             $Type, $Code = $ErrorOrWarningType.Split(" ")
             $BuildResultArray += @{
-                "Position" = $Position;
-                "Module" = $ModuleName;
-                "Type" = $Type;
-                "Code" = $Code;
+                "Position" = $Position
+                "Module" = $ModuleName
+                "Type" = $Type
+                "Code" = $Code
                 "Detail" = $Detail
             }
         }
@@ -279,13 +279,13 @@ if ($Build)
         $CIPlan = Get-Content -LiteralPath "$RepoArtifacts/PipelineResult/CIPlan.json" | ConvertFrom-Json
         foreach ($ModuleName In $CIPlan.build)
         {
-            $BuildResultOfModule = $BuildResultArray | Where-Object -FilterScript { $_.Module -Eq "Az.$ModuleName" }
+            $BuildResultOfModule = $BuildResultArray | Where-Object -Property Module -EQ "Az.$ModuleName"
             if ($BuildResultOfModule.Length -Eq 0)
             {
                 $ModuleBuildInfoList += @{
-                    Module = "Az.$ModuleName";
-                    Status = "Succeeded";
-                    Content = "";
+                    Module = "Az.$ModuleName"
+                    Status = "Succeeded"
+                    Content = ""
                 }
             }
             else
@@ -314,15 +314,15 @@ if ($Build)
                     $Status = "Failed"
                 }
                 $ModuleBuildInfoList += @{
-                    Module = "Az.$ModuleName";
-                    Status = $Status;
-                    Content = $Content;
+                    Module = "Az.$ModuleName"
+                    Status = $Status
+                    Content = $Content
                 }
             }
         }
         $BuildDetail = @{
-            Platform = $Platform;
-            Modules = $ModuleBuildInfoList;
+            Platform = $Platform
+            Modules = $ModuleBuildInfoList
         }
         $Template.Build.Details += $BuildDetail
 
@@ -345,14 +345,14 @@ if ($Build)
             foreach ($ModuleName In $CIPlan.$DependencyStep)
             {
                 $ModuleInfoList += @{
-                    Module = "Az.$ModuleName";
-                    Status = "Running";
-                    Content = "";
+                    Module = "Az.$ModuleName"
+                    Status = "Running"
+                    Content = ""
                 }
             }
             $Detail = @{
-                Platform = $Platform;
-                Modules = $ModuleInfoList;
+                Platform = $Platform
+                Modules = $ModuleInfoList
             }
             $Template.$DependencyStep.Details += $Detail
         }
@@ -419,10 +419,10 @@ if ($Test.IsPresent -and (($CIPlan.test.Length -Ne 0) -or (Test-PSParameter -Nam
         $Content = Get-Content -LiteralPath $TestResultFile
         $XmlDocument = New-Object -TypeName System.Xml.XmlDocument
         $XmlDocument.LoadXml($Content)
-        $FailedTestIdList = $XmlDocument.TestRun.Results.UnitTestResult | Where-Object -FilterScript { $_.outcome -eq "Failed" } | ForEach-Object -Process { $_.testId }
+        $FailedTestIdList = $XmlDocument.TestRun.Results.UnitTestResult | Where-Object -Property outcome -EQ "Failed" | ForEach-Object -Process { $_.testId }
         Foreach ($FailedTestId in $FailedTestIdList)
         {
-            $TestMethod = $XmlDocument.TestRun.TestDefinitions.UnitTest | Where-Object -FilterScript {$_.id -eq $FailedTestId} | ForEach-Object -Process {$_.TestMethod}
+            $TestMethod = $XmlDocument.TestRun.TestDefinitions.UnitTest | Where-Object -Property id -EQ $FailedTestId | ForEach-Object -Process {$_.TestMethod}
             $ModuleName = Get-ModuleFromPath $TestMethod.codeBase
             $FailedTestName = $TestMethod.name
             if (-not $FailedTestCases.ContainsKey($ModuleName))
@@ -466,9 +466,9 @@ if ($Test.IsPresent -and (($CIPlan.test.Length -Ne 0) -or (Test-PSParameter -Nam
 if ($StaticAnalysis)
 {
     $Parameters = @{
-        RepoArtifacts = $RepoArtifacts;
-        StaticAnalysisOutputDirectory = $StaticAnalysisOutputDirectory;
-        Configuration = $Configuration;
+        RepoArtifacts = $RepoArtifacts
+        StaticAnalysisOutputDirectory = $StaticAnalysisOutputDirectory
+        Configuration = $Configuration
     }
     if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)
     {
@@ -477,37 +477,37 @@ if ($StaticAnalysis)
     $FailedTasks = @()
     $ErrorLogPath = "$StaticAnalysisOutputDirectory/error.log"
     & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisBreakingChange @Parameters 2>$ErrorLogPath
-    if (($LASTEXITCODE -ne 0) -and ($LASTEXITCODE -ne $null))
+    if ($LASTEXITCODE -ne 0)
     {
         $FailedTasks += "BreakingChange"
     }
     & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisDependency @Parameters 2>>$ErrorLogPath
-    if (($LASTEXITCODE -ne 0) -and ($LASTEXITCODE -ne $null))
+    if ($LASTEXITCODE -ne 0)
     {
         $FailedTasks += "Dependency"
     }
     & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisSignature @Parameters 2>>$ErrorLogPath
-    if (($LASTEXITCODE -ne 0) -and ($LASTEXITCODE -ne $null))
+    if ($LASTEXITCODE -ne 0)
     {
         $FailedTasks += "Signature"
     }
     & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisHelp @Parameters 2>>$ErrorLogPath
-    if (($LASTEXITCODE -ne 0) -and ($LASTEXITCODE -ne $null))
+    if ($LASTEXITCODE -ne 0)
     {
         $FailedTasks += "Help"
     }
     & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisUX @Parameters 2>>$ErrorLogPath
-    if (($LASTEXITCODE -ne 0) -and ($LASTEXITCODE -ne $null))
+    if ($LASTEXITCODE -ne 0)
     {
         $FailedTasks += "UXMetadata"
     }
     & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisCmdletDiff @Parameters 2>>$ErrorLogPath
-    if (($LASTEXITCODE -ne 0) -and ($LASTEXITCODE -ne $null))
+    if ($LASTEXITCODE -ne 0)
     {
         $FailedTasks += "CmdletDiff"
     }
     & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisGeneratedSdk @Parameters 2>>$ErrorLogPath
-    if (($LASTEXITCODE -ne 0) -and ($LASTEXITCODE -ne $null))
+    if ($LASTEXITCODE -ne 0)
     {
         $FailedTasks += "GenertedSdk"
     }
@@ -517,6 +517,7 @@ if ($StaticAnalysis)
         $ErrorLog = Get-Content -LiteralPath $ErrorLogPath | Join-String -Separator "`n"
         Write-Error $ErrorLog
     }
+
     Return 0
 }
 
@@ -528,18 +529,15 @@ if ($StaticAnalysisBreakingChange)
     }
     else
     {
-        $BreakingChangeCheckModuleList = Join-String -Separator ';' -InputObject $CIPlan.'breaking-change'
+        $BreakingChangeCheckModuleList = Join-String -Separator '' -InputObject $CIPlan.'breaking-change'
     }
     if ("" -Ne $BreakingChangeCheckModuleList)
     {
         Write-Information -MessageData "Running static analysis for breaking change..." -InformationAction Continue
-        dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers breaking-change -u -m $BreakingChangeCheckModuleList
-        if ($LASTEXITCODE -ne 0)
-        {
-            Return $LASTEXITCODE
-        }
+        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers breaking-change -u -m $BreakingChangeCheckModuleList
+
+        $LASTEXITCode | Write-Output
     }
-    Return 0
 }
 if ($StaticAnalysisDependency)
 {
@@ -555,13 +553,9 @@ if ($StaticAnalysisDependency)
     {
         Write-Information -MessageData "Running static analysis for dependency..." -InformationAction Continue
         dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers dependency -u -m $DependencyCheckModuleList
-        if ($LASTEXITCODE -ne 0)
-        {
-            Return $LASTEXITCODE
-        }
+        $LASTEXITCODE | Write-Output
         & ($PSScriptRoot + "/CheckAssemblies.ps1") -BuildConfig $Configuration
     }
-    Return 0
 }
 
 if ($StaticAnalysisSignature)
@@ -577,13 +571,9 @@ if ($StaticAnalysisSignature)
     if ("" -Ne $SignatureCheckModuleList)
     {
         Write-Information -MessageData "Running static analysis for signature..." -InformationAction Continue
-        dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers signature -u -m $SignatureCheckModuleList
-        if ($LASTEXITCODE -ne 0)
-        {
-            Return $LASTEXITCODE
-        }
+        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers signature -u -m $SignatureCheckModuleList
+        $LASTEXITCODE | Write-Output
     }
-    Return 0
 }
 
 if ($StaticAnalysisHelp)
@@ -599,13 +589,9 @@ if ($StaticAnalysisHelp)
     if ("" -Ne $HelpCheckModuleList)
     {
         Write-Information -MessageData "Running static analysis for help..." -InformationAction Continue
-        dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers help -u -m $HelpCheckModuleList
-        if ($LASTEXITCODE -ne 0)
-        {
-            Return $LASTEXITCODE
-        }
+        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers help -u -m $HelpCheckModuleList
+        $LASTEXITCODE | Write-Output
     }
-    Return 0
 }
 
 if ($StaticAnalysisUX)

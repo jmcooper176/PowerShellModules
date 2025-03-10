@@ -94,7 +94,7 @@ param(
 # Get all psd1 files
 $psd1Files = Get-Item $PSScriptRoot\..\artifacts\$BuildConfig\Az.*\Az.*.psd1
 
-$profilePsd1 = $psd1Files | Where-Object -FilterScript {$_.Name -like "*Az.Accounts.psd1"}
+$profilePsd1 = $psd1Files | Where-Object -Property Name -like "*Az.Accounts.psd1"
 Import-LocalizedData -BindingVariable "psd1File" -BaseDirectory $profilePsd1.DirectoryName -FileName $profilePsd1.Name
 
 foreach ($nestedModule in $psd1File.RequiredAssemblies)
@@ -112,7 +112,7 @@ $psd1Files | ForEach -Process {
     {
         if('.dll' -ne [System.IO.Path]::GetExtension($nestedModule))
         {
-            continue;
+            continue
         }
 
         $dllPath = Join-Path -Path $_.DirectoryName -ChildPath $nestedModule
@@ -133,7 +133,7 @@ $psd1Files | ForEach -Process {
                 }
             }
 
-            foreach ($property in $exportedType.GetProperties() | Where-Object -FilterScript {$_.CustomAttributes.AttributeType.Name -contains "ParameterAttribute"})
+            foreach ($property in $exportedType.GetProperties() | Where-Object -Property CustomAttributes.AttributeType.Name -contains "ParameterAttribute")
             {
                 if ($property.PropertyType.FullName -like "*System.Nullable*``[``[*")
                 {

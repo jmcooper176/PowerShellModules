@@ -21,13 +21,13 @@ try
     $space = $repository.Spaces.FindByName($spaceName)
     $repositoryForSpace = $client.ForSpace($space)
     $project = $repositoryForSpace.Projects.FindByName($projectName)
-    $environments = $repositoryForSpace.Environments.GetAll() | Where-Object -FilterScript {$environmentNames -contains $_.Name} | Select-Object -Property Id
+    $environments = $repositoryForSpace.Environments.GetAll() | Where-Object -Property Name -in $environmentNames | Select-Object -Property Id
 
     # Get process
     $deploymentProcess = $repositoryForSpace.DeploymentProcesses.Get($project.DeploymentProcessId)
 
     # Get step
-    $step = $deploymentProcess.Steps | Where-Object -FilterScript {$_.Name -eq $stepName}
+    $step = $deploymentProcess.Steps | Where-Object -Property Name -EQ $stepName
 
     # Update the action
     foreach ($action in $step.Actions)

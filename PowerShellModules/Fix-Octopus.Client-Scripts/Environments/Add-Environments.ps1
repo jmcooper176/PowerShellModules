@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop";
+$ErrorActionPreference = "Stop"
 
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/

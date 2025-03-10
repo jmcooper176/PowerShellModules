@@ -1243,7 +1243,7 @@ function Test-Prerequisites {
 
     PROCESS {
         $Name | ForEach-Object -Process {
-            if (Get-Module -ListAvailable | Where-Object -FilterScript { $_.Name -eq $_ }) {
+            if (Get-Module -ListAvailable | Where-Object -Property Name -EQ $_) {
                 $true | Write-Output
             }
             else {

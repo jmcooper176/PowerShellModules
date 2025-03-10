@@ -103,7 +103,7 @@ function AddAzureLogins
                 }
 
                 # Check to see if there's already an Azure identity
-                $azureAdIdentity = $existingOctopusUser.Identities | Where-Object -FilterScript {$_.IdentityProviderName -eq "Azure AD"}
+                $azureAdIdentity = $existingOctopusUser.Identities | Where-Object -Property IdentityProviderName -EQ "Azure AD"
                 if($null -ne $azureAdIdentity)
                 {
                     Write-Debug -Message "Found existing AzureAD login for user $($user.OctopusUsername)"

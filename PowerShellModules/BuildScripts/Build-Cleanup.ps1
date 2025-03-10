@@ -149,25 +149,25 @@ foreach ($RMPath in $resourceManagerPaths) {
             # if the nested module is script module, we need to keep the dll behind the script module
             if ($cmdAssembly.EndsWith(".psm1")) {
                 if (!$cmdAssembly.Contains("/") -and !$cmdAssembly.Contains("\")) {
-                    $acceptedDlls += "Microsoft.Azure.PowerShell.Cmdlets." + $cmdAssembly.Split(".")[-2] + ".dll"
+                    $acceptedDlls += "Microsoft.Azure.PowerShell.Cmdlets." + ($cmdAssembly -split '.')[-2] + ".dll"
                 }
                 continue
             }
             if ($cmdAssembly.Contains("/")) {
-                $acceptedDlls += $cmdAssembly.Split("/")[-1]
+                $acceptedDlls += ($cmdAssembly -split '/')[-1]
             }
             else {
-                $acceptedDlls += $cmdAssembly.Split("\")[-1]
+                $acceptedDlls += ($cmdAssembly -split '\')[-1]
             }
         }
 
         # RequiredAssmeblies may have a folder path, just getting the dll name alone
         foreach ($assembly in $ModuleMetadata.RequiredAssemblies) {
             if ($assembly.Contains("/")) {
-                $acceptedDlls += $assembly.Split("/")[-1]
+                $acceptedDlls += ($assembly -split '/')[-1]
             }
             else {
-                $acceptedDlls += $assembly.Split("\")[-1]
+                $acceptedDlls += ($assembly -split '\')[-1]
             }
         }
 

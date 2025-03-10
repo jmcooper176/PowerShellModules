@@ -17,7 +17,7 @@ $environment = $repository.Environments.FindByName($fromEnvironmentName)
 $toEnvironment = $repository.Environments.FindByName($toEnvironmentName)
 
 $dashboard = $repository.Dashboards.GetDynamicDashboard($project.Id, $environment.Id)
-$currentDeploymentInTest = $dashboard.Items | Where-Object -FilterScript {$_.IsCurrent} | Select-Object -First 1
+$currentDeploymentInTest = $dashboard.Items | Where-Object -Property IsCurrent -EQ $true | Select-Object -First 1
 
 $promotedDeployment = New-Object -TypeName Octopus.Client.Model.DeploymentResource
 $promotedDeployment.EnvironmentId = $toEnvironment.Id

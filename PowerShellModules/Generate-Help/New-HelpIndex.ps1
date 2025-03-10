@@ -141,8 +141,7 @@ $HelpFolders = @()
 
 $resourceManagerPath = "$PSScriptRoot/../artifacts/$BuildConfig/"
 
-$RMpsd1s += Get-ChildItem -Path $resourceManagerPath -Depth 1 | Where-Object -FilterScript {
-    $_.Name -like "*.psd1" -and $_.FullName -notlike "*dll-Help*"
+$RMpsd1s += Get-ChildItem -Path $resourceManagerPath -Depth 1 | Where-Object -Property Name -like "*.psd1" | Where-Object -Property FullName -notlike "*dll-Help*"
 }
 
 & ($PSScriptRoot + "\PreloadToolDll.ps1")
@@ -175,7 +174,7 @@ $RMpsd1s | ForEach-Object -Process {
 
     $cmdletsToExport | ForEach-Object -Process {
         $cmdletHelpFile = $HelpFileMapping["$_.md"]
-        if ($cmdletHelpFile -eq $null -and $Target -eq "Latest")
+        if ($null -eq $cmdletHelpFile -and $Target -eq "Latest")
         {
             throw "No help file found for cmdlet $_"
         }
@@ -188,12 +187,16 @@ $RMpsd1s | ForEach-Object -Process {
 
         $helpSourceUrl = "$SourceBaseUri\src\$(($cmdletHelpFile -split "\\src\\*")[1])".Replace("\", "/")
         $helpEditUrl = "$EditBaseUri\src\$(($cmdletHelpFile -split "\\src\\*")[1])".Replace("\", "/")
-        $outputCmdlets.Add("$_", @{"service" = $cmdletLabel; "sourceUrl" = $helpSourceUrl; "editUrl" = $helpEditUrl})
+        $outputCmdlets.Add("$_", @{
+            service = $cmdletLabel
+            sourceUrl = $helpSourceUrl
+            editUrl = $helpEditUrl
+        })
     }
 
     $moduleHelpFile = $HelpFileMapping["$($_.BaseName).md"]
 
-    if ($moduleHelpFile -eq $null -and $Target -eq "Latest")
+    if ($null -eq $moduleHelpFile -and $Target -eq "Latest")
     {
         throw "No module help file found for module $($_.BaseName)"
     }
@@ -201,10 +204,16 @@ $RMpsd1s | ForEach-Object -Process {
     $moduleSourceUrl = "$SourceBaseUri\src\$(($moduleHelpFile -split "\\src\\*")[1])".Replace("\", "/")
     $moduleEditUrl = "$EditBaseUri\src\$(($moduleHelpFile -split "\\src\\*")[1])".Replace("\", "/")
 
-    if ($moduleHelpFile -ne $null)
+    if ($null -ne $moduleHelpFile)
     {
-        $outputModules.Add("$($_.BaseName)", @{"module" = @{"sourceUrl" = $moduleSourceUrl; "editUrl" = $moduleEditUrl}; "cmdlets" = $outputCmdlets})
-    }
+        $outputModules.Add("$($_.BaseName)", @{
+            module = @{
+                sourceUrl = $moduleSourceUrl
+                editUrl = $moduleEditUrl
+            }
+
+            cmdlets = $outputCmdlets})
+        }
 }
 
 $output.Add("modules", $outputModules)

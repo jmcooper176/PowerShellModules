@@ -20,13 +20,10 @@ try
     $repositoryForSpace = $client.ForSpace($space)
 
     # Get events
-    $events = $repositoryForSpace.Events.FindAll() | Where-Object -FilterScript {($_.Occurred -ge [datetime]$eventDate) -and ($_.Occurred -le ([datetime]$eventDate).AddDays(1).AddSeconds(-1))}
+    $events = $repositoryForSpace.Events.FindAll() | Where-Object -Property Occurred -ge [datetime]$eventDate | Where-Object -Property Occurred -le ([datetime]$eventDate).AddDays(1).AddSeconds(-1))}
 
     # Display events
-    foreach ($event in $events)
-    {
-        $event
-    }
+    $Events | ForEach-Object -Process { $_ | Write-Output }
 }
 catch
 {

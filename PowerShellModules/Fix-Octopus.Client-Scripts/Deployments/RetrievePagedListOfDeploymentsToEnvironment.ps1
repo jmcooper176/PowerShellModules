@@ -26,8 +26,8 @@ $deployments = New-Object -TypeName System.Collections.Generic.List[System.Objec
 
 $repositoryForSpace.Deployments.Paginate($projects, $environments, {param($page)
     Write-Information -MessageData "Found $($page.Items.Count) deployments.";
-    $deployments.AddRange($page.Items);
-    return $True;
+    $deployments.AddRange($page.Items)
+    return $True
 })
 
 Write-Information -MessageData "Retrieved $($deployments.Count) deployments to environment $($environmentName)"

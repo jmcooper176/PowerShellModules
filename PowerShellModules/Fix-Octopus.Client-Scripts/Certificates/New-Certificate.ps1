@@ -26,7 +26,7 @@ try
 
     # Create certificate
     $certificateResource = New-Object -TypeName "Octopus.Client.Model.CertificateResource" -ArgumentList $certificateName, $pfxBase64, $pfxPassword
-    $certificateResource = $repositoryForSpace.Certificates.Create($certificateResource);
+    $certificateResource = $repositoryForSpace.Certificates.Create($certificateResource)
 }
 catch
 {

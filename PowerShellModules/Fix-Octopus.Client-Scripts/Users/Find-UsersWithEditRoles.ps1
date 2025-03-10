@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop";
+$ErrorActionPreference = "Stop"
 
 # Load assembly
 Add-Type -Path 'path:\to\Octopus.Client.dll'

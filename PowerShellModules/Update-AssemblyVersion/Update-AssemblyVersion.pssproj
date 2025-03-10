@@ -2,12 +2,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{ddf32450-e489-43c6-8d9e-c0c536a856bf}</ProjectGuid>
+    <ProjectGuid>{b83b76cd-c653-44ba-84e3-c1a78ef3eb70}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>MyApplication</RootNamespace>
     <AssemblyName>MyApplication</AssemblyName>
-    <Name>Write-VersionToAssemblyInfo</Name>
-    <ProjectHome />
+    <Name>Update-AssemblyVersion</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,13 +26,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="README.md" />
-    <Content Include="RELEASENOTES.txt" />
+    <Compile Include="build.ps1" />
+    <Compile Include="Update-AssemblyVersion.ps1" />
+    <Compile Include="Update-AssemblyVersion.tests.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Write-VersionToAssembllyInfo.ps1" />
-    <Compile Include="Write-VersionToAssemblyInfo.tests.ps1" />
-    <Compile Include="build.ps1" />
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" />
 </Project>

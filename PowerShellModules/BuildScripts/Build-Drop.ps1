@@ -127,7 +127,7 @@ function Get-ProductCode {
         return $Value
     }
     catch {
-        Write-Warning -Message $_.Exception.Message ; break
+        $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
     }
 }
 
@@ -153,7 +153,7 @@ Set-Location -LiteralPath $CodePlexFork
 
 # Create a branch that's in the format of YYYY-MM-DDTHH-MM
 $date = Microsoft.PowerShell.Utility\Get-Date -Format u
-$branch = $date.Substring(0, $date.Length - 4).Replace(":", "-").Replace(" ", "T");
+$branch = $date.Substring(0, $date.Length - 4).Replace(":", "-").Replace(" ", "T")
 git checkout -b $branch
 
 # ==================================================================================================
@@ -210,7 +210,7 @@ for ($idx = 0; $idx -lt $content.Length; $idx++) {
 }
 
 # Replace the contents of the current file with the updated content
-$result = $newContent -join "`r`n"
+$result = $newContent -join [Environment]::NewLine
 $tempFile = Get-Item "DH_AzurePS.xml"
 
 [System.IO.File]::WriteAllText($tempFile.FullName, $result)
@@ -255,7 +255,7 @@ for ($idx = 0; $idx -lt $content.Length; $idx++) {
 }
 
 # Replace the contents of the current file with the updated content
-$result = $content -join "`r`n"
+$result = $content -join [Environment]::NewLine
 $tempFile = Get-Item "WebProductList_AzurePS.xml"
 
 [System.IO.File]::WriteAllText($tempFile.FullName, $result)

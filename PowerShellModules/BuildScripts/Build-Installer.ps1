@@ -99,7 +99,7 @@ if ($null -ne $allWixVersions) {
     foreach ($wixVersion in $allWixVersions) {
         $wixInstallRoot = $wixVersion.GetValue("InstallRoot", $null)
         if ($null -ne $wixInstallRoot) {
-            Write-Verbose -Message "WIX tools was installed at $wixInstallRoot"
+            Write-Verbose -Message "WIX tools were installed at $wixInstallRoot"
             break
         }
     }
@@ -113,7 +113,7 @@ if ($null -eq $wixInstallRoot) {
 
     if ($keyPressed.Character -eq "y" ) {
         Start-Process -FilePath 'cmd.exe' -ArgumentList "/C start http://wix.codeplex.com/downloads/get/762937" -Wait
-        Read-Host "Press any key to continue after the installtion is finished"
+        Read-Host "Press any key to continue after the installation is finished"
     }
 }
 

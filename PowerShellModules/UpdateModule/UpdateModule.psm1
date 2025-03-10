@@ -273,7 +273,7 @@ function Get-Cmdlet {
     foreach ($module in $nestedModules) {
         if('.dll' -ne [System.IO.Path]::GetExtension($module))
         {
-            continue;
+            continue
         }
 
         $dllPath = Join-Path -Path $ModulePath -ChildPath $module

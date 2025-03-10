@@ -90,80 +90,80 @@ param(
     [string] $OutputFile = "$PSScriptRoot\groupMapping.json",
     [string] $WarningFile = "$PSScriptRoot\groupMappingWarnings.json",
     [string] $RulesFile = "$PSScriptRoot\CreateMappings_rules.json"
-);
+)
 
 # Load rules file from JSON.
-$rules = Get-Content -LiteralPath $RulesFile -Raw | ConvertFrom-Json;
+$rules = Get-Content -LiteralPath $RulesFile -Raw | ConvertFrom-Json
 
 # Initialize variables.
-$results = @{};
-$warnings = @();
+$results = @{}
+$warnings = @()
 
 & ($PSScriptRoot + "\PreloadToolDll.ps1")
 $RootPath = Resolve-Path $RootPath
 $RootPathRegex = [regex]::escape($RootPath) + "\\(\w*)(\\)(.*)"
 # Find all cmdlet names by help file names in the repository.
-$cmdlets = Get-ChildItem $RootPath -Recurse | Where-Object -FilterScript { $_.FullName -cmatch ".*\\help\\.*-.*.md" -and (-not [Tools.Common.Utilities.ModuleFilter]::IsAzureStackModule($_.FullName)) };
+$cmdlets = Get-ChildItem $RootPath -Recurse | Where-Object -FilterScript { $_.FullName -cmatch ".*\\help\\.*-.*.md" -and (-not [Tools.Common.Utilities.ModuleFilter]::IsAzureStackModule($_.FullName)) }
 
 $cmdlets | ForEach-Object -Process {
-    $cmdletPath = Split-Path $_.FullName -Parent;
-    $module = $null;
+    $cmdletPath = Split-Path $_.FullName -Parent
+    $module = $null
     if($cmdletPath -cmatch $RootPathRegex) {
         $module = $Matches.1
     }
-    $cmdlet = $_.BaseName;
+    $cmdlet = $_.BaseName
 
-    $matchedRule = $null;
+    $matchedRule = $null
     # First, match to module path.
-    $matchedRule = @($rules | Where-Object -FilterScript { $_.Regex -ne $null -and $cmdletPath -cmatch ".*$($_.Regex).*" })[0];
+    $matchedRule = @($rules | Where-Object -FilterScript { $null -ne $_.Regex -and $cmdletPath -cmatch ".*$($_.Regex).*" })[0]
 
     # Try to match this cmdlet with at least one rule.
-    $possibleBetterMatch = @($rules | Where-Object -FilterScript { $_.Regex -ne $null -and $cmdlet -cmatch ".*$($_.Regex).*" })[0];
+    $possibleBetterMatch = @($rules | Where-Object -Property -NE $null | Where-Object -Property Regex -NE $null | Where-Object -FilterScript { $cmdlet -cmatch ".*$($_.Regex).*" }) | Select-Object -First 1
 
     # Look for the best match.
     if(
         # Did not find a match on the folder, but found a match on the cmdlet.
-        (($matchedRule -eq $null) -and ($possibleBetterMatch -ne $null)) -or
+        (($null -eq $matchedRule) -and ($null -ne $possibleBetterMatch)) -or
         # Found a match on the module path, but found a better match for the cmdlet (`group` field agrees).
-        (($matchedRule.Group -ne $null) -and ($matchedRule.Group -eq $possibleBetterMatch.Group)))
+        (($null -ne $matchedRule.Group) -and ($matchedRule.Group -eq $possibleBetterMatch.Group)))
     {
-        $matchedRule = $possibleBetterMatch;
+        $matchedRule = $possibleBetterMatch
     }
 
-    $matchedModuleRule = $null; # clear before using
-    [System.Array]$matchedModuleRules = @($rules | Where-Object -FilterScript { $_.Module -ne $null -and $module -eq $_.Module });
+    $matchedModuleRule = $null # clear before using
+    [System.Array]$matchedModuleRules = @($rules | Where-Object -Property Module -NE $null | Where-Object -Property Module -EQ $module)
     if($matchedModuleRules.Length -eq 1) {
         # If only one rule maps to module, module name is prior than other rules.
-        $matchedModuleRule = $matchedModuleRules[0];
+        $matchedModuleRule = $matchedModuleRules[0]
     } elseif ($matchedModuleRules.Length -gt 1) {
         # If multiple rules map to module, the first regex is prior.
-        $matchedModuleRule = @($matchedModuleRules | Where-Object -FilterScript { $_.Regex -ne $null -and $cmdlet -cmatch ".*$($_.Regex).*" })[0];
+        $matchedModuleRule = @($matchedModuleRules | Where-Object -Property Regex -NE $null | Where-Object -FilterScript { $cmdlet -cmatch ".*$($_.Regex).*" })[0]
         if($null -eq $matchedModuleRule) {
-            $matchedModuleRule = $matchedModuleRules[0];
+            $matchedModuleRule = $matchedModuleRules[0]
         }
     }
 
     if($null -ne $matchedModuleRule) {
-        $results[$cmdlet] = $matchedModuleRule.Alias;
+        $results[$cmdlet] = $matchedModuleRule.Alias
     } elseif ($null -ne $matchedRule) {
-        $results[$cmdlet] = $matchedRule.Alias;
+        $results[$cmdlet] = $matchedRule.Alias
     } else {
         # Take note of unmatched cmdlets and write to outputs.
-        $warnings += $cmdlet;
-        $results[$cmdlet] = "Other";
+        $warnings += $cmdlet
+        $results[$cmdlet] = "Other"
     }
-};
+}
 
 # Write to files.
-$warnings | ConvertTo-Json | Out-File $WarningFile -Encoding utf8;
-$results | ConvertTo-Json | Out-File $OutputFile -Encoding utf8;
+$warnings | ConvertTo-Json | Out-File $WarningFile -Encoding utf8
+$results | ConvertTo-Json | Out-File $OutputFile -Encoding utf8
 
 # Print conclusion.
 Write-Information -MessageData ""
-Write-Information -MessageData "$($results.Count) cmdlets successfully mapped: $($OutputFile)." -ForegroundColor Green;
+Write-Information -MessageData "$($results.Count) cmdlets successfully mapped: $($OutputFile)." -ForegroundColor Green
 Write-Information -MessageData ""
 
 if($warnings.Count -gt 0) {
-    Write-Information -MessageData "$($warnings.Count) cmdlets could not be mapped and were placed in 'Other': $($WarningFile)." -ForegroundColor Yellow;
-    throw "Some cmdlets could not be properly mapped to a documentation grouping: $($warnings -join ", ").  Please add a mapping rule to $(Resolve-Path -Path $RulesFile).";
+    Write-Information -MessageData "$($warnings.Count) cmdlets could not be mapped and were placed in 'Other': $($WarningFile)." -ForegroundColor Yellow
+    throw "Some cmdlets could not be properly mapped to a documentation grouping: $($warnings -join ", ").  Please add a mapping rule to $(Resolve-Path -Path $RulesFile)."
 }

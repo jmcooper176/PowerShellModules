@@ -36,7 +36,7 @@ function Get-AddedAlreadyStatus($actionTemplateId, $processSteps){
     foreach ($step in $processSteps) {
         foreach ($action in $step.Actions) {
             if ($action.Properties["Octopus.Action.Template.Id"].Value -eq $actionTemplateId){
-                return $true;
+                return $true
             }
         }
     }
@@ -123,7 +123,7 @@ foreach ($name in $projectNames) {
 
     # if first step is a manual intervention then set index to insert at to be 1
     if($process.Steps[0].Actions[0].ActionType -eq "Octopus.Manual") {
-        $insertPreStepIndex = 1;
+        $insertPreStepIndex = 1
     }
 
     $environmentId = $repositoryForSpace.Environments.FindByName($environmentName).Id

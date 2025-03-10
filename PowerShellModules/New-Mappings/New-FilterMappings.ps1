@@ -105,10 +105,10 @@ function Initialize-Mappings
 
     $Mappings = [ordered]@{}
     Get-ChildItem -Path $Script:RootPath -File | ForEach-Object -Process { $Mappings[$_.Name] = @() }
-    Get-ChildItem -Path $Script:RootPath -Directory | Where-Object -FilterScript { $_.Name -ne "src" } | ForEach-Object -Process { $Mappings[$_.Name] = @() }
+    Get-ChildItem -Path $Script:RootPath -Directory | Where-Object -Property Name -NE "src" | ForEach-Object -Process { $Mappings[$_.Name] = @() }
     Get-ChildItem -Path $Script:SrcPath -File | ForEach-Object -Process { $Mappings["src/$_.Name"] = @() }
 
-    if ($CustomMappings -ne $null)
+    if ($null -ne $CustomMappings)
     {
         $CustomMappings.GetEnumerator() | ForEach-Object -Process { $Mappings[$_.Name] = $_.Value }
     }
@@ -346,11 +346,11 @@ function Create-ModuleMappings
     foreach ($ServiceFolder in $Script:ServiceFolders)
     {
         $Key = "src/$($ServiceFolder.Name)/"
-        $ModuleManifestFiles = Get-ChildItem -Path $ServiceFolder.FullName -Filter "*.psd1" -Recurse |
-            Where-Object -FilterScript { $_.FullName -notlike "*.Test*" -and `
-                           $_.FullName -notlike "*Release*" -and `
-                           $_.FullName -notlike "*Debug*" -and `
-                           $_.Name -like "Az.*" }
+        $ModuleManifestFiles = Get-ChildItem -LiteralPath $ServiceFolder.FullName -Filter "*.psd1" -Recurse |
+            Where-Object -Property FullName -notlike "*.Test*" |
+                           Where-Object -Property FullName -notlike "*Release*" |
+                           Where-Object -Property FullName -notlike "*Debug*" |
+                           Where-Object -Property Name -like "Az.*"
         if ($null -ne $ModuleManifestFiles)
         {
             $Value = @()

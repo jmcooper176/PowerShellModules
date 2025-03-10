@@ -210,10 +210,10 @@ function Test-PackagesWentMissingAfterPreviousRunStarted {
     )
     Write-Information -MessageData 'Querying Octopus for any packages that may be missing from applicable feeds.'
     $packagesMissingNow = @{
-        IncludedFeedIds = $null;
+        IncludedFeedIds = $null
         PackagesMissing = Get-PackagesMissingFromFeeds -Packages $Packages -Feeds $Feeds
     }
-    $packagesMissingNow.IncludedFeedIds = $script:IncludedFeedIds;
+    $packagesMissingNow.IncludedFeedIds = $script:IncludedFeedIds
     Write-Verbose -Message "$($packagesMissingNow.PackagesMissing.Count) packages are missing; $($packagesMissingNow.IncludedFeedIds.Count) applicable feeds were checked."
     $missingPackagesFile = [System.IO.Path]::Combine($PathToStoreDataAcrossRuns, "missing-packages-$($OctopusUri -replace '[^a-z0-9]', '-').xml")
     if (Test-Path -LiteralPath $missingPackagesFile -PathType Leaf) {
@@ -262,9 +262,9 @@ function Get-PackagesMissingFromFeeds {
     $packagesOnAffectedFeeds = $Packages | Where-Object -FilterScript { Test-FeedId $_.FeedId }
     $packagesMissingFromFeeds = New-Object -TypeName 'System.Collections.Generic.List[Octopus.Client.Model.PackageResource]'
     $headers = @{
-        'X-Octopus-ApiKey' = $OctopusApiKey;
-        'Cache-Control' = 'no-cache';
-        'Pragma' = 'no-cache'
+        X-Octopus-ApiKey = $OctopusApiKey
+        Cache-Control = 'no-cache'
+        Pragma = 'no-cache'
      }
     $packagesProgress = 0
     $progPref = $ProgressPreference
@@ -406,7 +406,7 @@ function Get-PackageIdAndVersion {
                 Write-Verbose -Message "Ignoring package $($packageProperties.Id) $($packageProperties.NormalizedVersion) because it was published at $($published.ToLocalTime()), after the limit of $PublishedNoLaterThan."
             }
         }
-        $uri = ([xml]($response.Content)).feed.link | Where-Object -FilterScript { $_.rel -eq 'next' } |ForEach-Object -Process{ $_.href }
+        $uri = ([xml]($response.Content)).feed.link | Where-Object -Property rel -EQ 'next' | ForEach-Object -Process { $_.href }
     } while ($uri)
     $packages
 }

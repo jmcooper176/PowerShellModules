@@ -30,7 +30,7 @@ try {
     Write-Information -MessageData "Using Project named $($project.Name) with id $($project.Id)"
 
     # Get release by version
-    $release = $repositoryForSpace.Projects.GetReleaseByVersion($project, $releaseVersion);
+    $release = $repositoryForSpace.Projects.GetReleaseByVersion($project, $releaseVersion)
     Write-Information -MessageData "Using release version $($release.Version) with id $($release.Id)"
 
     # Create deployment

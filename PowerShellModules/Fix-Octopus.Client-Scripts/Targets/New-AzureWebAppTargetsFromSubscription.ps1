@@ -41,9 +41,9 @@ foreach ($webApp in $webApps)
                             ResourceGroupName = $webApp.ResourceGroup
                             WebAppName = $webApp.SiteName }
                         EnvironmentIds = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $environmentId
-                    };
+                    }
 
     Write-Information -MessageData "creating target in Octopus for " $webApp.SiteName
 
-    $repository.Machines.Create($target, $null);
+    $repository.Machines.Create($target, $null)
 }

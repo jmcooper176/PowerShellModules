@@ -43,13 +43,13 @@ $space = $repository.Spaces.FindByName($spaceName)
 $repositoryForSpace = $client.ForSpace($space)
 
 # Get project
-$project = $repositoryForSpace.Projects.FindByName($projectName);
+$project = $repositoryForSpace.Projects.FindByName($projectName)
 
 # Get runbook
-$runbook = $repositoryForSpace.Runbooks.FindByName($runbookName);
+$runbook = $repositoryForSpace.Runbooks.FindByName($runbookName)
 
 foreach($environmentName in $runbookEnvironmentNames) {
-    $environment = $repositoryForSpace.Environments.FindByName($environmentName);
+    $environment = $repositoryForSpace.Environments.FindByName($environmentName)
     $runbookEnvironmentIds += $environment.Id
 }
 
@@ -71,5 +71,5 @@ $runbookScheduledTrigger.IsDisabled = $False
 $runbookScheduledTrigger.Filter = $runbookScheduledTriggerFilter
 $runbookScheduledTrigger.Action = $runbookScheduledTriggerAction
 
-$createdRunbookTrigger = $repositoryForSpace.ProjectTriggers.Create($runbookScheduledTrigger);
+$createdRunbookTrigger = $repositoryForSpace.ProjectTriggers.Create($runbookScheduledTrigger)
 Write-Information -MessageData "Created runbook trigger: $($createdRunbookTrigger.Id) ($runbookTriggerName)"

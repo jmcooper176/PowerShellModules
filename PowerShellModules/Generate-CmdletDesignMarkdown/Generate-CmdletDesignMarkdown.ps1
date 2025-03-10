@@ -163,10 +163,10 @@ try {
         $verb = if ($_.Name.Split('-')[0] -eq 'New') { '0New' } else { $_.Name.Split('-')[0] }
 
         # Join priority with Noun.
-        $originNoun = $_.Name.Split('-')[1].Split('.')[0];
+        $originNoun = $_.Name.Split('-')[1].Split('.')[0]
         $Noun = if ($null -eq $NounPriorityHash) { $originNoun } else { (if ($null -eq $NounPriorityHash[$originNoun]) { $originNoun } else { $NounPriorityHash[$originNoun].ToString() + $originNoun }) }
 
-        $_.Cmdlet = $_.Name.Split('.')[0];
+        $_.Cmdlet = $_.Name.Split('.')[0]
         $_.Verb = $verb
         $_.Noun = $Noun
     } | Sort-Object -Property 'Noun', 'Verb' | ForEach-Object -Process {

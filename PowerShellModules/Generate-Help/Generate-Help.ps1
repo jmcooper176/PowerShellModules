@@ -105,7 +105,7 @@ param(
 )
 
 $ResourceManagerFolders = Get-ChildItem -Directory -Path "$PSScriptRoot\..\src" |
-    Where-Object -FilterScript { $_.Name -ne 'lib' -and $_.Name -ne 'Package' -and $_.Name -ne 'packages' } |
+    Where-Object -Property Name -NE 'lib' | Where-Object -Property Name -NE 'Package' | Where-Object -Property Name -NE 'packages' } |
         Where-Object -FilterScript { (Get-ChildItem -Directory -Path $_ -Filter *.psd1).Count -ne 0 }
 
 & ($PSScriptRoot + "\PreloadToolDll.ps1")
@@ -121,7 +121,7 @@ if (-not (Test-PSParameter -Name 'FilteredModules' -Parameters $PSBoundParameter
 
     foreach ($HelpFolder in $UnfilteredHelpFolders)
     {
-        if (($FilteredModulesList | Where-Object -FilterScript { $HelpFolder -like "*\$($_)\*" }) -ne $null)
+        if (($FilteredModulesList | Where-Object -FilterScript { $null -ne $HelpFolder -like "*\$($_)\*" }))
         {
             $FilteredHelpFolders += $HelpFolder
         }
@@ -143,9 +143,9 @@ if ($ValidateMarkdownHelp.IsPresent)
 
     foreach ($ServiceFolder in $ResourceManagerFolders)
     {
-        $HelpFolder = (Get-ChildItem -Path $ServiceFolder.FullName -Filter "help" -Recurse -Directory)
+        $HelpFolder = (Get-ChildItem -LiteralPath $ServiceFolder.FullName -Filter "help" -Recurse -Directory)
 
-        if ($HelpFolder -eq $null)
+        if ($null -eq $HelpFolder)
         {
             $Exceptions += $ServiceFolder.Name
         }
@@ -173,13 +173,13 @@ if ($ValidateMarkdownHelp.IsPresent)
         New-Item -Path "$PSScriptRoot\..\artifacts" -Name "StaticAnalysisResults" -ItemType Directory
     }
 
-    Copy-Item -Path "$PSScriptRoot\HelpGeneration\Exceptions\ValidateHelpIssues.csv" -Destination $SuppressedExceptionsPath
+    Copy-Item -LiteralPath "$PSScriptRoot\HelpGeneration\Exceptions\ValidateHelpIssues.csv" -Destination $SuppressedExceptionsPath
     New-Item -Path $NewExceptionsPath -Name ValidateHelpIssues.csv -ItemType File -Force | Out-Null
     Add-Content "$NewExceptionsPath\ValidateHelpIssues.csv" "Target,Description"
     $FilteredHelpFolders | foreach { Test-AzMarkdownHelp $_.FullName $SuppressedExceptionsPath $NewExceptionsPath }
     $Exceptions = Import-Csv "$NewExceptionsPath\ValidateHelpIssues.csv"
 
-    if (($Exceptions | Measure-Object).Count -gt 0)
+    if ($Exceptions.Length -gt 0)
     {
         $Exceptions | Format-List
 

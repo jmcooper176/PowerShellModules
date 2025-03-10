@@ -26,10 +26,10 @@ try
     $userRole = $repositoryForSpace.UserRoles.FindByName($userRoleName)
 
     # Get scopeduserrole
-    $scopedUserRole = $repositoryForSpace.Teams.GetScopedUserRoles($team) | Where-Object -FilterScript {$_.UserRoleId -eq $userRole.Id}
+    $scopedUserRole = $repositoryForSpace.Teams.GetScopedUserRoles($team) | Where-Object -Property UserRoleId -eq $userRole.Id
 
     # Get environments
-    $environments = $repositoryForSpace.Environments.GetAll() | Where-Object -FilterScript {$environmentNames -contains $_.Name}
+    $environments = $repositoryForSpace.Environments.GetAll() | Where-Object -Property Name -in $environmentNames
     foreach ($environment in $environments)
     {
         # Add Id

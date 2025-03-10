@@ -29,7 +29,7 @@ foreach ($project in $allProjects) {
                         }
                         $fileName = "$($action.Name -replace ' ', '').ps1"
 
-                        $fileContent = ($action.Properties['Octopus.Action.Script.ScriptBody'].value -split '\n') | ForEach-Object -Process { $_.TrimEnd() }
+                        $fileContent = ($action.Properties['Octopus.Action.Script.ScriptBody'].value -split [Environment]::NewLine) | ForEach-Object -Process { $_.TrimEnd() }
                         Write-Information -MessageData "Dumping inline script for $($project.Name) :: $($step.Name) :: $($action.Name) to $directoryName/$fileName"
                         Set-Content -Path "$directoryName/$fileName" -Value $fileContent.TrimEnd()
                     }

@@ -45,7 +45,7 @@ Function Update-StepTemplatesOnDeploymentProcesses
         else{
             Add-Type -Path $OctopusClientDLLPath -ErrorAction SilentlyContinue
         }
-        $headers = @{"X-Octopus-ApiKey"="$($apikey)";}
+        $headers = @{"X-Octopus-ApiKey"="$($apikey)"}
 
         #Create endpoint connection
         $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList "$($OctopusURI)","$($apikey)"
@@ -63,11 +63,11 @@ Function Update-StepTemplatesOnDeploymentProcesses
             $usage = Invoke-WebRequest -Uri "$($OctopusURI)/api/actiontemplates/$($template.ID)/usage" -Method Get -Headers $headers | select -ExpandProperty content | ConvertFrom-Json
 
             #Getting all the DeploymentProcesses that need to be updated
-            $deploymentprocesstoupdate = $usage | Where-Object -FilterScript {$_.version -ne $template.Version}
+            $deploymentprocesstoupdate = $usage | Where-Object -Property version -NE $template.Version
 
             Write-Information -MessageData "Template: $($template.name)" -ForegroundColor Magenta
 
-            If($deploymentprocesstoupdate -eq $null){
+            If($null -eq $deploymentprocesstoupdate){
                 Write-Information -MessageData "`t--All deployment processes up to date" -ForegroundColor Green
             }
 
@@ -77,7 +77,7 @@ Function Update-StepTemplatesOnDeploymentProcesses
                     $process = $repository.DeploymentProcesses.Get($d.DeploymentProcessId)
 
                     #Finding the step that uses the step template
-                    $steps = $process.Steps | Where-Object -FilterScript{$_.actions.properties.values.value -eq $template.Id}
+                    $steps = $process.Steps | Where-Object -Property actions.properties.values.value -EQ $template.Id
 
                     try{
                         foreach($step in $steps){

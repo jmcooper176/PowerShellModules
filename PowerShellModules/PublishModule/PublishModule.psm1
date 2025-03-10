@@ -464,8 +464,8 @@ function Get-AllModule {
     Write-Information -MessageData " " -InformationAction Continue
 
     return @{
-        ClientModules = $clientModules;
-        AdminModules  = $adminModules;
+        ClientModules = $clientModules
+        AdminModules  = $adminModules
         RollUpModules = $rollUpModules
     }
 
@@ -534,7 +534,7 @@ function Remove-ModuleDependency {
         $ReplacedNestedModules = ""
         foreach ($nestedModule in $ModuleMetadata.NestedModules) {
             if ('.dll' -ne [System.IO.Path]::GetExtension($nestedModule)) {
-                $ReplacedNestedModules += "'$nestedModule', ";
+                $ReplacedNestedModules += "'$nestedModule', "
             }
         }
         if ("" -ne $ReplacedNestedModules) {

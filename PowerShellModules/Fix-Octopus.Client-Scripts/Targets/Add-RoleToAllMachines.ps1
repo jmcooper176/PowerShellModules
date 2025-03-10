@@ -10,7 +10,7 @@ $role = "A new role" # The role to add to each machine
 $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
 
-$machines = $repository.Machines.FindAll();
+$machines = $repository.Machines.FindAll()
 
 foreach ($machine in $machines) {
     $machine.Roles.Add($role)

@@ -125,6 +125,8 @@ Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "RepositoryModule", "Reposit
 EndProject
 Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "UpdateModule", "UpdateModule\UpdateModule.pssproj", "{0CC51650-A29D-4CA2-A176-2844B06CC15B}"
 EndProject
+Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "Update-AssemblyVersion", "Update-AssemblyVersion\Update-AssemblyVersion.pssproj", "{B83B76CD-C653-44BA-84E3-C1A78EF3EB70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -319,6 +321,10 @@ Global
 		{0CC51650-A29D-4CA2-A176-2844B06CC15B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CC51650-A29D-4CA2-A176-2844B06CC15B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CC51650-A29D-4CA2-A176-2844B06CC15B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B83B76CD-C653-44BA-84E3-C1A78EF3EB70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B83B76CD-C653-44BA-84E3-C1A78EF3EB70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B83B76CD-C653-44BA-84E3-C1A78EF3EB70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B83B76CD-C653-44BA-84E3-C1A78EF3EB70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

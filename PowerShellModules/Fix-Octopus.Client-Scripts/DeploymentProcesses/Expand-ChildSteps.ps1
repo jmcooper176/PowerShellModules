@@ -38,6 +38,6 @@ foreach ($action in $step.Actions) {
     $process.Steps.Add($newStep)
 }
 
-$process.Steps.Remove($step);
+$process.Steps.Remove($step)
 
-$repository.DeploymentProcesses.Modify($process);
+$repository.DeploymentProcesses.Modify($process)

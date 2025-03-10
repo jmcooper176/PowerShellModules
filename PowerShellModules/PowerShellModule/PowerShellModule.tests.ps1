@@ -318,7 +318,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -378,7 +378,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -438,7 +438,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -498,7 +498,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -558,7 +558,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -618,7 +618,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -678,7 +678,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -738,7 +738,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -798,7 +798,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -858,7 +858,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -918,7 +918,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -978,7 +978,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -1038,7 +1038,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -1098,7 +1098,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -1158,7 +1158,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -1218,7 +1218,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()
@@ -1278,7 +1278,7 @@ Describe -Name 'PowerShellModule' -Tag 'Module', 'Under', 'Test' {
                 $expected = $COPYRIGHT_STRING
 
                 # Act
-                $Notes = ($Help.alertSet.alert.text -split '\n')
+                $Notes = ($Help.alertSet.alert.text -split [Environment]::NewLine)
 
                 # Assert
                 $actual = $Notes[0].Trim()

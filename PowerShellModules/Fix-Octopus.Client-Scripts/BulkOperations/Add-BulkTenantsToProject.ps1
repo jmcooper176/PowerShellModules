@@ -55,7 +55,7 @@ foreach ($tenant in $tenants)
     else
     {
         # Get existing project connections
-        $projectEnvironments = $tenant.ProjectEnvironments | Where-Object -FilterScript {$_.Keys -eq $project.Id}
+        $projectEnvironments = $tenant.ProjectEnvironments | Where-Object -Property Keys -EQ $project.Id
 
         # Compare environment list
         $missingEnvironments = @()

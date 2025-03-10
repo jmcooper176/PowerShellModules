@@ -19,7 +19,7 @@ function UpdateVarInProject {
         $repository = New-Object -TypeName Octopus.Client.OctopusRepository -ArgumentList $endpoint
         $project = $repository.Projects.FindByName($ProjectName)
         $variableset = $repository.VariableSets.Get($project.links.variables)
-        $variable = $variableset.Variables | Where-Object -FilterScript{$_.name -eq $VariableToModify}
+        $variable = $variableset.Variables | Where-Object -Property name -EQ $VariableToModify
         if ($variable) {
             $variable.Value = $VariableValue
             $Variable.IsSensitive = $false

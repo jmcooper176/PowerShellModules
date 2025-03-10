@@ -21,7 +21,7 @@ $space = New-Object -TypeName Octopus.Client.Model.SpaceResource -Property @{
     SpaceManagersTeamMembers = New-Object -TypeName Octopus.Client.Model.ReferenceCollection -ArgumentList $managerTeamMembers
     IsDefault = $false
     TaskQueueStopped = $false
-};
+}
 
 try {
     $space = $repository.Spaces.Create($space)

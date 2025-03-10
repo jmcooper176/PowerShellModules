@@ -21,7 +21,7 @@ try
 
     # Get current certificate
     $certificateName = "MyCertificate"
-    $currentCertificate = $repositoryForSpace.Certificates.FindAll() | Where-Object -FilterScript {($_.Name -eq $certificateName) -and ($null -eq $_.Archived)} # Octopus supports multiple certificates of the same name.  The FindByName() method returns the first one it finds, so it is not useful in this scenario
+    $currentCertificate = $repositoryForSpace.Certificates.FindAll() | Where-Object -Property Name -EQ $certificateName | Where-Object -Property Archived -EQ $null # Octopus supports multiple certificates of the same name.  The FindByName() method returns the first one it finds, so it is not useful in this scenario
 
     # Check to see if multiple certificates were returned
     if ($currentCertificate -is [array])
@@ -36,7 +36,7 @@ try
     $pfxPassword = "PFX-file-password"
 
     # Replace certificate
-    $replacementCertificate = $repositoryForSpace.Certificates.Replace($currentCertificate, $pfxBase64, $pfxPassword);
+    $replacementCertificate = $repositoryForSpace.Certificates.Replace($currentCertificate, $pfxBase64, $pfxPassword)
 }
 catch
 {

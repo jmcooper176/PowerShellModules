@@ -21,15 +21,15 @@ $project = $repository.Projects.FindByName($projectName)
 $variableset = $repository.VariableSets.Get($project.links.variables)
 
 #Get variable to update
-$variables = $variableset.Variables | Where-Object -FilterScript{$_.Scope -ne $null}
+$variables = $variableset.Variables | Where-Object -Property Scope -NE $null
 
 foreach($variable in $variables){
     $keys = @() + $variable.Scope.Keys
     foreach($propertyName in $keys){
-        $propertyValue = $variable.Scope[$propertyName];
+        $propertyValue = $variable.Scope[$propertyName]
         if ($propertyValue.Count -eq 0) {
             Write-Information -MessageData "Removing empty '$propertyName' scope collection from '$($variable.Name)' variable"
-            $variable.Scope.Remove($propertyName);
+            $variable.Scope.Remove($propertyName)
         }
     }
 }

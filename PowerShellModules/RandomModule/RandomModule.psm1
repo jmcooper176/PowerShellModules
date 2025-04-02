@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="RandomModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="RandomModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "RandomModule.psm1" is part of "RandomModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Script-scoped variables
-#>
+##########################################>
 $ByteArray = @([byte]0) * ([Environment]::SystemPageSize / ([byte]0).GetByteCount())
 
 $FloatArray = @([float]0.0) * ([Environment]::SystemPageSize / ([float]0.0).GetExponentByteCount() + ([float]0.0).GetSignificandByteCount())
@@ -59,23 +60,22 @@ $LongArray = @([long]0) * ([Environment]::SystemPageSize / ([long]0).GetByteCoun
 
 $IsInitialized = $false
 
-<#
+<###########################################
     Get-RandomByte
-#>
+##########################################>
 function Get-RandomByte {
     [CmdletBinding()]
     [OutputType([byte])]
     param (
-        [ValidateRange(0, 255)]
         [byte]
         $Minimum = 0,
 
-        [ValidateRange(0, 255)]
         [byte]
         $Maximum = 255
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if ($Minimum -ge $Maximum) {
         $message = 'The minimum value must be less than the maximum value.'
@@ -84,7 +84,7 @@ function Get-RandomByte {
         $writeErrorSplat = @{
             Exception    = $exception
             ErrorId      = "$($CmdletName)-MinimumGreaterThanMaximum-01"
-            Category     = 'InvalidArgument'
+            ErrorCategory     = 'InvalidArgument'
             TargetObject = $Minimum
             ErrorAction  = 'Continue'
         }
@@ -151,7 +151,7 @@ function Get-RandomByte {
         Generates a random long integer between 128 and 192.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -182,15 +182,16 @@ function Get-RandomByte {
     #>
 }
 
-<#
+<###########################################
     Get-RandomDouble
-#>
+##########################################>
 function Get-RandomDouble {
     [CmdletBinding()]
     [OutputType([double])]
     param ()
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if (-not $Script:IsInitialized) {
         Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
@@ -230,7 +231,7 @@ function Get-RandomDouble {
         Generates a random double-precision floating-point number between 0.0 and 1.0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -261,15 +262,16 @@ function Get-RandomDouble {
     #>
 }
 
-<#
+<###########################################
     Get-RandomFloat
-#>
+##########################################>
 function Get-RandomFloat {
     [CmdletBinding()]
     [OutputType([float])]
     param ()
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if (-not $Script:IsInitialized) {
         Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
@@ -309,7 +311,7 @@ function Get-RandomFloat {
         Generates a random floating-point number between 0.0 and 1.0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -340,23 +342,22 @@ function Get-RandomFloat {
     #>
 }
 
-<#
+<###########################################
     Get-RandomInteger
-#>
+##########################################>
 function Get-RandomInteger {
     [CmdletBinding()]
     [OutputType([int])]
     param (
-        [ValidateRange(-2147483648, 2147483647)]
         [int]
         $Minimum = 0,
 
-        [ValidateRange(-2147483648, 2147483647)]
         [int]
         $Maximum = 2147483647
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if (-not $Script:IsInitialized) {
         Write-Warning -Message "$($CmdletName) : Random number generator has not been initialized. Initializing now."
@@ -370,7 +371,7 @@ function Get-RandomInteger {
         $writeErrorSplat = @{
             Exception    = $exception
             ErrorId      = "$($CmdletName)-MinimumGreaterThanMaximum-01"
-            Category     = 'InvalidArgument'
+            ErrorCategory     = 'InvalidArgument'
             TargetObject = $Minimum
             ErrorAction  = 'Continue'
         }
@@ -437,7 +438,7 @@ function Get-RandomInteger {
         Generates a random integer between 100 and 200.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -468,23 +469,22 @@ function Get-RandomInteger {
     #>
 }
 
-<#
+<###########################################
     Get-RandomLong
-#>
+##########################################>
 function Get-RandomLong {
     [CmdletBinding()]
     [OutputType([long])]
     param (
-        [ValidateRange(-9223372036854775808, 9223372036854775807)]
         [long]
         $Minimum = 0,
 
-        [ValidateRange(-9223372036854775808, 9223372036854775807)]
         [long]
         $Maximum = 9223372036854775807
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if ($Minimum -ge $Maximum) {
         $message = 'The minimum value must be less than the maximum value.'
@@ -493,7 +493,7 @@ function Get-RandomLong {
         $writeErrorSplat = @{
             Exception    = $exception
             ErrorId      = "$($CmdletName)-MinimumGreaterThanMaximum-01"
-            Category     = 'InvalidArgument'
+            ErrorCategory     = 'InvalidArgument'
             TargetObject = $Minimum
             ErrorAction  = 'Continue'
         }
@@ -564,7 +564,7 @@ function Get-RandomLong {
         Generates a random long integer between 100 and 200.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2024-2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -595,13 +595,12 @@ function Get-RandomLong {
     #>
 }
 
-<#
+<###########################################
     Initialize-Random
-#>
+##########################################>
 function Initialize-Random {
     [CmdletBinding()]
     param (
-        [ValidateRange(-2147483648, 2147483647)]
         [int]
         $Seed,
 
@@ -609,7 +608,8 @@ function Initialize-Random {
         $DefaultSeed
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if (-not (Test-PSParameter -Name 'Seed' -Parameters $PSBoundParameters) -and -not $DefaultSeed.IsPresent) {
         Write-Verbose -Message "$($CmdletName) : No seed specified. Using current UTC time in ticks as seed."
@@ -685,7 +685,7 @@ function Initialize-Random {
         Initializes the random number generator with a seed of 0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

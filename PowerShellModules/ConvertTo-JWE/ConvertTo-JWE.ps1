@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ConvertTo-JWE.ps1" company="John Merryweather Cooper">
-    Copyright (c) 2022-2025, John Merryweather Cooper.
+<copyright file="ConvertTo-JWE.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -48,13 +49,13 @@ This file "ConvertTo-JWE.ps1" is part of "ConvertTo-JWE".
 
     .VERSION 1.0.0
 
-    .GUID FCC89B76-BE32-48E3-A393-0ABD5781C0A6
+    .GUID F98E90F7-D6B4-40C9-8E9F-7344E9203A06
 
     .AUTHOR John Merryweather Cooper
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
     .TAGS
 
@@ -104,13 +105,13 @@ param (
     $Server
 )
 
-<#
+<##########################################
     Functions
-#>
+##########################################>
 
-<#
+<##########################################
     New-CLaimIdentity
-#>
+##########################################>
 function New-ClaimIdentity {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([System.Security.Claims.ClaimsIdentity])]
@@ -135,9 +136,9 @@ function New-ClaimIdentity {
     $claims | Write-Output
 }
 
-<#
+<##########################################
     New-JwtSecurityToken
-#>
+##########################################>
 function New-JwtSecurityToken {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([System.IdentityModel.Tokens.JwtSecurityToken])]
@@ -157,9 +158,9 @@ function New-JwtSecurityToken {
     $jwt = $jwtHandler.CreateToken($Descriptor) | Write-Output
 }
 
-<#
+<##########################################
     New-SecurityTokenDescriptor
-#>
+##########################################>
 function New-SecurityTokenDescriptor {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([hashtable])]
@@ -200,9 +201,9 @@ function New-SecurityTokenDescriptor {
     } | Write-Output
 }
 
-<#
+<##########################################
     Write-JsonToken
-#>
+##########################################>
 function Write-JsonToken {
     [CmdletBinding()]
     [OutputType([string])]
@@ -221,9 +222,9 @@ function Write-JsonToken {
     $JwtHandler.WriteToken($Jwt) | Write-Output
 }
 
-<#
+<##########################################
     Script
-#>
+##########################################>
 
 $ScriptName = Initialize-PSScript -MyInvocation $MyInvocation
 

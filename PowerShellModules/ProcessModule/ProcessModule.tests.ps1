@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ProcessModule.tests.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ProcessModule.tests.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -36,21 +37,15 @@
    POSSIBILITY OF SUCH DAMAGE.
 </copyright>
 <author>John Merryweather Cooper</author>
-<date>Created:  2024-9-12</date>
+<date>Created:  2025-3-13</date>
 <summary>
-This file "ProcessModule.tests.ps1" is part of "ProcessModule".
+This file "ProcessModule.tests.ps1" is part of "PurgeNugetFeeds".
 </summary>
 <remarks>description</remarks>
 =============================================================================
 #>
 
-#
-# This is a PowerShell Unit Test file.
-# You need a unit test framework such as Pester to run PowerShell Unit tests.
-# You can download Pester from https://go.microsoft.com/fwlink/?LinkID=534084
-#
-
-#requires -Module Pester
+#requires -Module ErrorRecordModule
 #requires -Module PowerShellModule
 
 BeforeAll {
@@ -58,16 +53,16 @@ BeforeAll {
     $RootModule = ($ModulePath -replace '.psd1', '.psm1') | Get-ItemProperty -Name Name
     $ModuleName = $ModulePath | Get-ItemProperty -Name BaseName
     Import-Module -Name $ModulePath -Verbose
-    Initialize-PSTest -Name 'ProcessModule' -Path $ModulePath
+    Initialize-PSTest -Name $ModuleName -Path $ModulePath
 }
 
 AfterAll {
-    Get-Module -Name 'ProcessModule' | Remove-Module -Verbose -Force
+    Get-Module -Name $ModuleName | Remove-Module -Verbose -Force
 }
 
-Describe -Name 'ProcessModule' -Tag 'Module', 'Under', 'Test' {
+Describe -Name $ModuleName -Tag 'Module', 'Under', 'Test' {
     Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
-        It -Name 'should exist' -Tag 'Unit', 'Test' {
+        It -Name 'exists' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleManifest = Test-ModuleManifest -Path $ModulePath
 
@@ -75,13 +70,13 @@ Describe -Name 'ProcessModule' -Tag 'Module', 'Under', 'Test' {
             $ModuleManifest | Should -Not -BeNullOrEmpty
         }
 
-        It -Name 'should parse' -Tag 'Unit', 'Test' {
+        It -Name 'parses' -Tag 'Unit', 'Test' {
             # Arrange
             $inputSource = Get-Content -LiteralPath $ModulePath -Raw
 
             [ref] $tokens = @()
             [ref] $errors = @()
-            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
             $success = $true
 
             # Act
@@ -102,28 +97,28 @@ Describe -Name 'ProcessModule' -Tag 'Module', 'Under', 'Test' {
             $success | Should -BeTrue
         }
 
-        It -Name 'should have a RootModule of ProcessModule.psm1' -Tag 'Unit', 'Test' {
+        It -Name "should have a RootModule of $RootModule" -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $RootModule = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'RootModule'
+            $actual = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'RootModule'
 
             # Assert
-            $RootModule | Should -Be 'ProcessModule.psm1'
+            $actual | Should -Be $RootModule
         }
 
-        It -Name 'should have a ModuleVersion greater than  1.3.0' -Tag 'Unit', 'Test' {
+        It -Name 'should have a ModuleVersion greater than or equal to  1.0.0.0' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $ModuleVersion = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Version'
 
             # Assert
-            $ModuleVersion | Should -BeGreaterThan '1.3.0'
+            $ModuleVersion | Should -BeGreaterOrEqual '1.0.0.0'
         }
 
-        It -Name 'should have a GUID of 6e424d77-583b-40f8-968d-686ebea12ee1' -Tag 'Unit', 'Test' {
+        It -Name 'should have a GUID of d4412982-d91f-42d7-a91e-e4885f9d5178' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Guid = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'GUID'
 
             # Assert
-            $Guid | Should -Be '6e424d77-583b-40f8-968d-686ebea12ee1'
+            $Guid | Should -Be 'd4412982-d91f-42d7-a91e-e4885f9d5178'
         }
 
         It -Name 'should have an Author of John Merryweather Cooper' -Tag 'Unit', 'Test' {
@@ -142,12 +137,12 @@ Describe -Name 'ProcessModule' -Tag 'Module', 'Under', 'Test' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
             # Assert
-            $Copyright | Should -Be $COPYRIGHT_STRING
+            $Copyright | Should -Be 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.'
         }
 
         It -Name 'should have a Description length greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
@@ -158,12 +153,12 @@ Describe -Name 'ProcessModule' -Tag 'Module', 'Under', 'Test' {
             $Description | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It -Name 'should have a Description of Enhanced interface to Process Environment Variables.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Description of Cmdlets/Functions that invoke tools, start commands, and start shell execution.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Description = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Description'
 
             # Assert
-            $Description | Should -Be 'Enhanced interface to Process Environment Variables.'
+            $Description | Should -Be 'Cmdlets/Functions that invoke tools, start commands, and start shell execution.'
         }
 
         It -Name 'should have a PowerShellVersion of 5.1' -Tag 'Unit', 'Test' {
@@ -178,10 +173,10 @@ Describe -Name 'ProcessModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
 
             # Act And Assert
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
@@ -191,10 +186,10 @@ Describe -Name 'ProcessModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -210,45 +205,384 @@ Describe -Name 'ProcessModule' -Tag 'Module', 'Under', 'Test' {
         }
     }
 
-    Context -Name 'Add-EnvironmentValue' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
-        It -Name 'should exist' -Tag 'Unit', 'Test' {
+    Context -Name 'Invoke-Tool' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        BeforeEach {
+            $CmdletName = 'Invoke-Tool'
+        }
+
+        It -Name 'exists' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Command = Get-Command -Name 'Add-EnvironmentValue'
+            $Command = Get-Command -Name $CmdletName
 
             # Assert
             $Command | Should -Not -BeNull
         }
 
+        It -Name 'parses' -Tag 'Unit', 'Test' {
+            # Arrange
+            $functionPath = (Join-Path -Path Function: -ChildPath $CmdletName)
+            $inputSource = Get-Content -LiteralPath $functionPath -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $HelpContent = $AST.GetHelpContent()
+            $Component = $HelpContent.Component
+            $Description = $HelpContent.Description
+            $Examples = $HelpContent.Examples
+            $Functionality = $HelpContent.Functionality
+            $Inputs = $HelpContent.Inputs
+            $Links = $HelpContent.Links
+            $Notes = $HelpContent.Notes
+            $Outputs = $HelpContent.Outputs
+            $Parameters = $HelpContent.Parameters
+            $Role = $HelpContent.Role
+            $Synopsis = $HelpContent.Synopsis
+            $Block = $HelpContent.GetCommentBlock()
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $errors
+                    TargetName   = 'Errors'
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
         It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $Command = Get-Command -Name 'Add-EnvironmentValue'
+            $Command = Get-Command -Name $CmdletName
 
             # Assert
             $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
         }
 
-        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
-            # Arrange and Act
-            $Synopsis = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Synopsis
+        It -Name 'should have comment-based help' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Block | Should -Not -BeNullOrEmpty
+        }
 
-            # Assert
-            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
+        It -Name 'should have a description that is not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Description | Should -Not -BeNullOrEmpty
         }
 
         It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
-            # Arrange and Act
-            $Description = Get-Help -Name 'Add-EnvironmentValue' -Full | Select-Object -ExpandProperty Description
-
-            # Assert
-            $Description | Out-String | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
+            # Arrange, Act, and Assert
+            $Description.Length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
         }
 
-        It -Name 'should have a module name of ProcessModule' -Tag 'Unit', 'Test' {
+        It -Name 'should have examples that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Examples | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have inputs that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Inputs | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have notes that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Notes | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'notes should contain Copyright' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Notes | Should -Contain 'Copyright'
+        }
+
+        It -Name 'should have outputs that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Outputs | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have parameters that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Parameters | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a synopsis that is not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Synopsis | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
+        }
+
+        It -Name "should have a module name of $ModuleName" -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $ModuleName = Get-Command -Name 'Add-EnvironmentValue' | Select-Object -ExpandProperty ModuleName
+            $actual = Get-Command -Name $CmdletName | Select-Object -ExpandProperty ModuleName
 
             # Assert
-            $ModuleName | Should -Be 'ProcessModule'
+            $actual | Should -Be $ModuleName
+        }
+    }
+
+    Context -Name 'Start-Command' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        BeforeEach {
+            $CmdletName = 'Start-Command'
+        }
+
+        It -Name 'exists' -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $Command = Get-Command -Name $CmdletName
+
+            # Assert
+            $Command | Should -Not -BeNull
+        }
+
+        It -Name 'parses' -Tag 'Unit', 'Test' {
+            # Arrange
+            $functionPath = (Join-Path -Path Function: -ChildPath $CmdletName)
+            $inputSource = Get-Content -LiteralPath $functionPath -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $HelpContent = $AST.GetHelpContent()
+            $Component = $HelpContent.Component
+            $Description = $HelpContent.Description
+            $Examples = $HelpContent.Examples
+            $Functionality = $HelpContent.Functionality
+            $Inputs = $HelpContent.Inputs
+            $Links = $HelpContent.Links
+            $Notes = $HelpContent.Notes
+            $Outputs = $HelpContent.Outputs
+            $Parameters = $HelpContent.Parameters
+            $Role = $HelpContent.Role
+            $Synopsis = $HelpContent.Synopsis
+            $Block = $HelpContent.GetCommentBlock()
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $errors
+                    TargetName   = 'Errors'
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $Command = Get-Command -Name $CmdletName
+
+            # Assert
+            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
+        }
+
+        It -Name 'should have comment-based help' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Block | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a description that is not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Description | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Description.Length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
+        }
+
+        It -Name 'should have examples that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Examples | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have inputs that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Inputs | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have notes that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Notes | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'notes should contain Copyright' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Notes | Should -Contain 'Copyright'
+        }
+
+        It -Name 'should have outputs that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Outputs | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have parameters that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Parameters | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a synopsis that is not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Synopsis | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
+        }
+
+        It -Name "should have a module name of $ModuleName" -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $actual = Get-Command -Name $CmdletName | Select-Object -ExpandProperty ModuleName
+
+            # Assert
+            $actual | Should -Be $ModuleName
+        }
+    }
+
+    Context -Name 'Start-ShellExecution' -Tag 'Cmdlet', 'Function', 'Under', 'Test' {
+        BeforeEach {
+            $CmdletName = 'Start-ShellExecution'
+        }
+
+        It -Name 'exists' -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $Command = Get-Command -Name $CmdletName
+
+            # Assert
+            $Command | Should -Not -BeNull
+        }
+
+        It -Name 'parses' -Tag 'Unit', 'Test' {
+            # Arrange
+            $functionPath = (Join-Path -Path Function: -ChildPath $CmdletName)
+            $inputSource = Get-Content -LiteralPath $functionPath -Raw
+
+            [ref] $tokens = @()
+            [ref] $errors = @()
+            $AST = [System.Management.Automation.Language.Parser]::ParseInput($inputSource, $RootModule, $tokens, $errors)
+            $HelpContent = $AST.GetHelpContent()
+            $Component = $HelpContent.Component
+            $Description = $HelpContent.Description
+            $Examples = $HelpContent.Examples
+            $Functionality = $HelpContent.Functionality
+            $Inputs = $HelpContent.Inputs
+            $Links = $HelpContent.Links
+            $Notes = $HelpContent.Notes
+            $Outputs = $HelpContent.Outputs
+            $Parameters = $HelpContent.Parameters
+            $Role = $HelpContent.Role
+            $Synopsis = $HelpContent.Synopsis
+            $Block = $HelpContent.GetCommentBlock()
+            $success = $true
+
+            # Act
+            $errors.Value | ForEach-Object -Process {
+                $success = $false
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $newErrorRecordSplat = @{
+                    Exception    = [System.Management.Automation.ParseException]::new($message)
+                    Category     = 'ParseError'
+                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
+                    TargetObject = $errors
+                    TargetName   = 'Errors'
+                }
+
+                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+            }
+
+            # Assert
+            $success | Should -BeTrue
+        }
+
+        It -Name 'should be a cmdlet or function' -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $Command = Get-Command -Name $CmdletName
+
+            # Assert
+            $Command.CommandType | Should -BeIn 'Cmdlet', 'Function'
+        }
+
+        It -Name 'should have comment-based help' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Block | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a description that is not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Description | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a description greater than MINIMUM_DESCRIPTION_LENGTH' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Description.Length | Should -BeGreaterThan $MINIMUM_DESCRIPTION_LENGTH
+        }
+
+        It -Name 'should have examples that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Examples | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have inputs that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Inputs | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have notes that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Notes | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'notes should contain Copyright' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Notes | Should -Contain 'Copyright'
+        }
+
+        It -Name 'should have outputs that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Outputs | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have parameters that are not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Parameters | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a synopsis that is not null or empty' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Synopsis | Should -Not -BeNullOrEmpty
+        }
+
+        It -Name 'should have a synopsis greater than MINIMUM_SYNOPSIS_LENGTH' -Tag 'Unit', 'Test' {
+            # Arrange, Act, and Assert
+            $Synopsis.Length | Should -BeGreaterThan $MINIMUM_SYNOPSIS_LENGTH
+        }
+
+        It -Name "should have a module name of $ModuleName" -Tag 'Unit', 'Test' {
+            # Arrange and Act
+            $actual = Get-Command -Name $CmdletName | Select-Object -ExpandProperty ModuleName
+
+            # Assert
+            $actual | Should -Be $ModuleName
         }
     }
 }

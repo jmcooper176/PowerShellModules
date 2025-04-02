@@ -1,13 +1,18 @@
-# PowerShell Modules
-Collection of Useful PowerShell Modules
+# PSInstallCom
 
-![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/codeql.yml/badge.svg)
+PowerShell wrappers around Windows Installer COM
 
-![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/msbuild-CI-Build.yml/badge.svg)
+![GitHub Workflow Status](https://github.com/OPM-jmcooper176/PowerShellModules/actions/workflows/codeql.yml/badge.svg)
 
-![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/powershell.yml/badge.svg)
+![GitHub Workflow Status](https://github.com/OPM-jmcooper176/PowerShellModules/actions/workflows/msbuild-CI-Build.yml/badge.svg)
 
-![GitHub Workflow Status](https://github.com/jmcooper176/PowerShellModules/actions/workflows/yaml-CI-Build.yml/badge.svg)
+![GitHub Workflow Status](https://github.com/OPM-jmcooper176/PowerShellModules/actions/workflows/powershell.yml/badge.svg)
+
+![GitHub Workflow Status](https://github.com/OPM-jmcooper176/PowerShellModules/actions/workflows/yaml-CI-Build.yml/badge.svg)
+
+![GitHub Workflow Status](https://github.com/OPM-jmcooper176/PowerShellModules/actions/workflows/update-security-md.yml/badge.svg)
+
+![ProGet SBOM Status](https://proget.opm.gov/project/status/badge.svg?projectName=PSInstallCom)
 
 ## Author
 
@@ -15,7 +20,7 @@ John Merryweather Cooper <jmcooper8654@gmail.com>
 
 ## Owner
 
-John Merryweather Cooper
+John Merryweather Cooper.
 
 ## Contents
 

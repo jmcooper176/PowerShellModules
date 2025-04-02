@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Generate-ExternalContributors.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Generate-ExternalContributors.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "Generate-ExternalContributors.ps1" is part of "Generate-ExternalContr
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -116,9 +117,9 @@ $SinceDateStr = $SinceDate.ToString('yyyy-MM-ddTHH:mm:ssZ')
 $Branch = git branch --show-current # The Git 2.22 and above support.
 $rootPath = "$PSScriptRoot\.."
 $changeLogFile = Get-Item -Path "..\ChangeLog.md"
-$changeLogContent = Get-Content -LiteralPath $changeLogFile.FullName | Out-String
+$changeLogContent = Get-Content -Path $changeLogFile.FullName | Out-String
 
-Write-Debug -Message 'Create ExternalContributors.md'
+Write-Debug 'Create ExternalContributors.md'
 # Create md file to store contributors information.
 $contributorsMDFile = Join-Path $PSScriptRoot 'ExternalContributors.md'
 
@@ -148,22 +149,23 @@ for ($pageNumber = 1; $pageNumber -le $commintsLastPageNumber; $pageNumber++) {
     $PRs += Invoke-RestMethod -Uri $commitsPageUrl -Authentication Bearer -Token $token -ResponseHeadersVariable 'ResponseHeaders'
 }
 
-Write-Debug -Message "The PR count: $($PRs.Count)"
+Write-Debug "The PR count: $($PRs.Count)"
 
 # Remove already existed commits
 $validPRs = @()
 
-foreach ($PR in $PRs) {
-    $index = $PR.commit.message.IndexOf("`n`n")
+$PRs | ForEach-Object -Process {
+    $index = $_.commit.message.IndexOf("`n`n")
+
     if ($index -lt 0) {
-        $commitMessage = $PR.commit.message
+        $commitMessage = $_.commit.message
     }
     else {
-        $commitMessage = $PR.commit.message.Substring(0, $index)
+        $commitMessage = $_.commit.message.Substring(0, $index)
     }
 
     if (!($changeLogContent.Contains($commitMessage))) {
-        $validPRs += $PR
+        $validPRs += $_
     }
 }
 
@@ -174,21 +176,21 @@ $sortPRs = $validPRs | Sort-Object -Property @{Expression = { $_.author.login };
 $skipContributors = @('aladdindoc', 'azure-powershell-bot')
 
 # Get team members of the azure-powershell-team.
-$teamMembers = (Invoke-WebRequest -Uri "https://api.github.com/orgs/Azure/teams/azure-powershell-team/members" -Authentication Bearer -Token $token).Content | ConvertFrom-Json
-
-foreach ($members in $teamMembers) {
-    $skipContributors += $members.login
-}
+(Invoke-WebRequest -Uri "https://api.github.com/orgs/Azure/teams/azure-powershell-team/members" -Authentication Bearer -Token $token).Content |
+    ConvertFrom-Json |
+    ForEach-Object -Process {
+        $skipContributors += $_.login
+    }
 
 # Output external contributors information.
 Write-Debug -Message 'Output external contributors information.'
 '### Thanks to our community contributors' | Out-File -FilePath $contributorsMDFile -Force
 Write-Information -MessageData '### Thanks to our community contributors' -InformationAction Continue
 
-for ($PR = 0; $PR -lt $sortPRs.Length; $PR++) {
-    $account = $sortPRs[$PR].author.login
-    $name = $sortPRs[$PR].commit.author.name
-    $index = $sortPRs[$PR].commit.message.IndexOf("`n`n")
+for ($i = 0; $i -lt $sortPRs.Length; $i++) {
+    $account = $sortPRs[$i].author.login
+    $name = $sortPRs[$i].commit.author.name
+    $index = $sortPRs[$i].commit.message.IndexOf("`n`n")
 
     if ($skipContributors.Contains($account)) {
         continue
@@ -203,52 +205,40 @@ for ($PR = 0; $PR -lt $sortPRs.Length; $PR++) {
     Invoke-RestMethod -Uri "https://api.github.com/orgs/Azure/members/$($sortPRs[$PR].author.login)" -Authentication Bearer -Token $token -ResponseHeadersVariable 'ResponseHeaders' -StatusCodeVariable 'StatusCode' -SkipHttpErrorCheck > $null
     if ($StatusCode -eq '204') {
         # Add internal contributors to skipContributors to reduce the number of https requests sent.
-        $skipContributors += $sortPRs[$PR].author.login
+        $skipContributors += $sortPRs[$i].author.login
         continue
     }
 
     if ($index -lt 0) {
-        $commitMessage = $sortPRs[$PR].commit.message
+        $commitMessage = $sortPRs[$i].commit.message
     }
     else {
-        $commitMessage = $sortPRs[$PR].commit.message.Substring(0, $index)
+        $commitMessage = $sortPRs[$i].commit.message.Substring(0, $index)
     }
 
     # Contributors have many commits.
-    if ( ($account -eq $sortPRs[$PR - 1].author.login) -or ($account -eq $sortPRs[$PR + 1].author.login)) {
+    if ( ($account -eq $sortPRs[$i - 1].author.login) -or ($account -eq $sortPRs[$i + 1].author.login)) {
         # Firt commit.
-        if (!($sortPRs[$PR].author.login -eq $sortPRs[$PR - 1].author.login)) {
+        if (!($sortPRs[$i].author.login -eq $sortPRs[$i - 1].author.login)) {
             if (($account -eq $name)) {
-                "* @$account" | Out-File -FilePath $contributorsMDFile -Append -Force
-                "  * $commitMessage" | Out-File -FilePath $contributorsMDFile -Append -Force
-
-                Write-Information -MessageData "* @$account" -InformationAction Continue
-                Write-Information -MessageData "  * $commitMessage" -InformationAction Continue
+                "* @$account" | Tee-Object -FilePath $contributorsMDFile -Append | Out-String | Write-Information -InformationAction Continue
+                "  * $commitMessage" | Tee-Object -FilePath $contributorsMDFile -Append | Out-String | Write-Information -InformationAction Continue
             }
             else {
-                "* $($name) (@$account)" | Out-File -FilePath $contributorsMDFile -Append -Force
-                "  * $commitMessage" | Out-File -FilePath $contributorsMDFile -Append -Force
-
-                Write-Information -MessageData "* $($name) (@$account)" -InformationAction Continue
-                Write-Information -MessageData "  * $commitMessage" -InformationAction Continue
+                "* $($name) (@$account)" | Tee-Object -FilePath $contributorsMDFile -Append | Out-String | Write-Information -InformationAction Continue
+                "  * $commitMessage" | Tee-Object -FilePath $contributorsMDFile -Append | Out-String | Write-Information -InformationAction Continue
             }
         }
         else {
-            "  * $commitMessage" | Out-File -FilePath $contributorsMDFile -Append -Force
-
-            Write-Information -MessageData "  * $commitMessage" -InformationAction Continue
+            "  * $commitMessage" | Tee-Object -FilePath $contributorsMDFile -Append | Out-String | Write-Information -InformationAction Continue
         }
     }
     else {
         if (($account -eq $name)) {
-            "* @$account, $commitMessage" | Out-File -FilePath $contributorsMDFile -Append -Force
-
-            Write-Information -MessageData "* @$account, $commitMessage" -InformationAction Continue
+            "* @$account, $commitMessage" | Tee-Object -FilePath $contributorsMDFile -Append | Out-String | Write-Information -InformationAction Continue
         }
         else {
-            "* $name (@$account), $commitMessage" | Out-File -FilePath $contributorsMDFile -Append -Force
-
-            Write-Information -MessageData "* $name (@$account), $commitMessage" -InformationAction Continue
+            "* $name (@$account), $commitMessage" | Tee-Object -FilePath $contributorsMDFile -Append | Out-String | Write-Information -InformationAction Continue
         }
     }
 }

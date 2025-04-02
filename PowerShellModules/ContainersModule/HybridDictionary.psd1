@@ -1,7 +1,7 @@
 ﻿<#
  =============================================================================
 <copyright file="HybridDictionary.psd1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ This file "HybridDictionary.psd1" is part of "ContainersModule".
     CompanyName       = 'John Merryweather Cooper'
 
     # Copyright statement for this module
-    Copyright         = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+    Copyright         = 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.'
 
     # Description of the functionality provided by this module
     Description       = 'PowerShell encapsulation of System.Collections.HybridDictionary--a dictionary that starts off a [ListDictionary] and then morphs into a [StringDictionary] as it grows larger'

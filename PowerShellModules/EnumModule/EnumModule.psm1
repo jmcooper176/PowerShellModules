@@ -1,4 +1,4 @@
-﻿<#
+﻿<###########################################
     Compare-Enum
 #>
 function Compare-Enum {
@@ -19,9 +19,9 @@ function Compare-Enum {
     $Instace.CompareTo($Target) | Write-Output
 }
 
-<#
+<###########################################
     ConvertFrom-Int
-#>
+##########################################>
 function ConvertFrom-Int {
     [CmdletBinding()]
     [OutputType([System.Object])]
@@ -39,9 +39,9 @@ function ConvertFrom-Int {
     [Enum]::ToObject($EnumType, $Value) | Write-Output
 }
 
-<#
+<###########################################
     ConvertFrom-String
-#>
+##########################################>
 function ConvertFrom-String {
     [CmdletBinding()]
     [OutputType([System.Object])]
@@ -62,9 +62,9 @@ function ConvertFrom-String {
     [Enum]::Parse($EnumType, $Value, (-not $CaseSensitive.IsPresent)) | Write-Output
 }
 
-<#
+<###########################################
     ConvertTo-String
-#>
+##########################################>
 function ConvertTo-String {
     [CmdletBinding()]
     [OutputType([string])]
@@ -84,9 +84,9 @@ function ConvertTo-String {
     $Instance.ToString($Format) | Write-Output
 }
 
-<#
+<###########################################
     Format-Enum
-#>
+##########################################>
 function Format-Enum {
     [CmdletBinding()]
     [OutputType([string])]
@@ -108,9 +108,9 @@ function Format-Enum {
     [Enum]::Format($EnumType, $Value, $Format) | Write-Output
 }
 
-<#
+<###########################################
     Get-AllEnumName
-#>
+##########################################>
 function Get-AllEnumName {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -124,9 +124,9 @@ function Get-AllEnumName {
     [Enum]::GetNames($EnumType) | Write-Output
 }
 
-<#
+<###########################################
     Get-AllEnumValue
-#>
+##########################################>
 function Get-AllEnumValue {
     [CmdletBinding()]
     [OutputTYpe([Array])]
@@ -140,9 +140,9 @@ function Get-AllEnumValue {
     [Enum]::GetValues($EnumType) | Write-Output
 }
 
-<#
+<###########################################
     Get-AllEnumValueAsUnderlyingType
-#>
+##########################################>
 function Get-AllEnumValueAsUnderlyingType {
     [CmdletBinding()]
     [OutputType([Array])]
@@ -156,9 +156,9 @@ function Get-AllEnumValueAsUnderlyingType {
     [Enum]::GetValuesAsUnderlyingType($EnumType) | Write-Output
 }
 
-<#
+<###########################################
     Get-EnumName
-#>
+##########################################>
 function Get-EnumName {
     [CmdletBinding()]
     [OutputType([string])]
@@ -176,9 +176,9 @@ function Get-EnumName {
     [Enum]::GetName($EnumType, $Value) | Write-Output
 }
 
-<#
+<###########################################
     Get-EnumUnderlyingType
-#>
+##########################################>
 function Get-EnumUnderlyingType {
     [CmdletBinding()]
     [OutputType([System.Type])]
@@ -192,9 +192,9 @@ function Get-EnumUnderlyingType {
     [Enum]::GetUnderlyingType($EnumType) | Write-Output
 }
 
-<#
+<###########################################
     Test-Enum
-#>
+##########################################>
 function Test-Enum {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -213,9 +213,9 @@ function Test-Enum {
     $Instance.Equals($Obj) | Write-Output
 }
 
-<#
+<###########################################
     Test-EnumHasFlag
-#>
+##########################################>
 function Test-EnumHasFlag {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -233,9 +233,9 @@ function Test-EnumHasFlag {
     $Instance.HasFlag($Flag) | Write-Output
 }
 
-<#
+<###########################################
     Test-EnumIsDefined
-#>
+##########################################>
 function Test-EnumIsDefined {
     [CmdletBinding()]
     [OutputType([bool])]

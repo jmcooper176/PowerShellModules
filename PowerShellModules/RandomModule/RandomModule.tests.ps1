@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="RandomModule.tests.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="RandomModule.tests.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -60,7 +61,7 @@ Describe -Name 'RandomModule' -Tag 'Module', 'Under', 'Test' {
     Context -Name 'Module Manifest' -Tag 'Manifest', 'Under', 'Test' {
         It -Name 'should exist' -Tag 'Unit', 'Test' {
             # Arrange and Act
-            $ModuleManifest = Test-Path -LiteralPath '.\RandomModule.psd1' -PathType Leaf
+            $ModuleManifest = Test-Path -Path '.\RandomModule.psd1'
 
             # Assert
             $ModuleManifest | Should -Be $true
@@ -78,15 +79,16 @@ Describe -Name 'RandomModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -133,12 +135,12 @@ Describe -Name 'RandomModule' -Tag 'Module', 'Under', 'Test' {
             $CompanyName | Should -Be 'John Merryweather Cooper'
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path '.\RandomModule.psd1' | Select-Object -ExpandProperty 'Copyright'
 
             # Assert
-            $Copyright | Should -Be 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+            $Copyright | Should -Be 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.'
         }
 
         It -Name 'should have a Description of Cmdlets/functions for the generation of pseudo-random numbers.' -Tag 'Unit', 'Test' {
@@ -161,10 +163,10 @@ Describe -Name 'RandomModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
 
             # Act And Assert
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
@@ -174,10 +176,10 @@ Describe -Name 'RandomModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -435,18 +437,19 @@ function Get-ChiSquaredFromFrequency {
         $Expected
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if ($Observed.Length -ne $Expected.Length) {
-        $Message   = 'Observed and Expected arrays must be the same length.'
+        $Message = 'Observed and Expected arrays must be the same length.'
         $Exception = [System.ArgumentOutOfRangeException]::new('Observed', $Observed.Length, $Message)
 
         $writeErrorSplat = @{
-            Exception    = $Exception
-            ErrorId      = "$($CmdletName)-InvalidArgument-01"
-            Category     = 'InvalidArgument'
-            TargetObject = $Observed
-            ErrorAction = 'Continue'
+            Exception     = $Exception
+            ErrorId       = "$($CmdletName)-InvalidArgument-01"
+            ErrorCategory = 'InvalidArgument'
+            TargetObject  = $Observed
+            ErrorAction   = 'Continue'
         }
 
         Write-Error @writeErrorSplat
@@ -475,7 +478,8 @@ function Get-ExpectedFromProbability {
         $N
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     [double[]]$Expected = @(0.0) * $Probability.Length
 
@@ -499,18 +503,19 @@ function Get-ChiSquareFromProbability {
         $Probability
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     if ($Observed.Length -ne $Probability.Length) {
-        $Message   = 'Observed and Probability arrays must be the same length.'
+        $Message = 'Observed and Probability arrays must be the same length.'
         $Exception = [System.ArgumentOutOfRangeException]::new('Observed', $Observed.Length, $Message)
 
         $writeErrorSplat = @{
-            Exception    = $Exception
-            ErrorId      = "$($CmdletName)-InvalidArgument-01"
-            Category     = 'InvalidArgument'
-            TargetObject = $Observed
-            ErrorAction = 'Continue'
+            Exception     = $Exception
+            ErrorId       = "$($CmdletName)-InvalidArgument-01"
+            ErrorCategory = 'InvalidArgument'
+            TargetObject  = $Observed
+            ErrorAction   = 'Continue'
         }
 
         Write-Error @writeErrorSplat
@@ -540,10 +545,11 @@ function Get-ChiSquarePValue {
         $DegreesOfFreedom
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     [double]$chiSquare = Get-ChiSquareFromProbability -Observed $Observed -Probability $Probability
-    [double]$pValue    = [Math]::Exp(-$chiSquare / 2)
+    [double]$pValue = [Math]::Exp(-$chiSquare / 2)
 
     $pValue | Write-Output
 }

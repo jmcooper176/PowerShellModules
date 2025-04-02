@@ -26,7 +26,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'PowerShell Module of Cmdlets/Functions that generates and modifies versions for files.'

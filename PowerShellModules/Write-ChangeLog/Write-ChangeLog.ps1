@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Write-ChangeLog.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Write-ChangeLog.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "Write-ChangeLog.ps1" is part of "Write-ChangeLog".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
     .TAGS write git change log markdown
 
@@ -133,7 +134,7 @@ This file "Write-ChangeLog.ps1" is part of "Write-ChangeLog".
     * * *
 
     .NOTES
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
     .LINK
     about_CommonParameters
@@ -172,7 +173,8 @@ This file "Write-ChangeLog.ps1" is part of "Write-ChangeLog".
 [CmdletBinding(SupportsShouldProcess)]
 param (
     [Parameter(Mandatory)]
-    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+        ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
     [string]
     $FilePath,
 
@@ -181,19 +183,20 @@ param (
     $Channel = 'DEV'
 )
 
-<#
+<##########################################
     Functions
-#>
+##########################################>
 
-<#
+<##########################################
     Write-ChangeLog
-#>
+##########################################>
 function Write-ChangeLog {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingFilePath')]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingFilePath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -274,7 +277,7 @@ function Write-ChangeLog {
         The two lines are written or appended to $FilePath and echoed to standard output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -296,15 +299,16 @@ function Write-ChangeLog {
     #>
 }
 
-<#
+<##########################################
     Write-ChangeLogHeader
-#>
+##########################################>
 function Write-ChangeLogHeader {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingFilePath')]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingFilePath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -387,7 +391,7 @@ function Write-ChangeLogHeader {
         Appends the level one header to $FilePath.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -397,9 +401,9 @@ function Write-ChangeLogHeader {
     #>
 }
 
-<#
+<##########################################
     Script
-#>
+##########################################>
 $ScriptFIle = Initialize-PSScript -MyInvocation $MyInvocation
 
 if ($MyInvocation.InvocationName -ne '.') {

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="pre-build.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="pre-build.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "pre-build.ps1" is part of "BuildScripts".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -88,15 +89,17 @@ This file "pre-build.ps1" is part of "BuildScripts".
     Pre-build processing.
 #>
 
-[CmdletBinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
 param (
     [Parameter(Mandatory)]
-    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+        ErrorMessage = "Project '{0}' is not a valid project name")]
     [string]
     $Project,
 
     [Parameter(Mandatory)]
-    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+        ErrorMessage = "Solution '{0}' is not a valid solution name")]
     [string]
     $Solution,
 
@@ -112,12 +115,15 @@ param (
     $UpdateModules,
 
     [switch]
-    $UpdateVersionInfo
+    $UpdateVersionInfo,
+
+    [switch]
+    $Force
 )
 
-<#
+<##########################################
     Functions
-#>
+##########################################>
 function Get-CommandPath {
     [CmdletBinding()]
     [OutputType([string])]
@@ -164,7 +170,8 @@ function Get-ManifestPath {
     [OutputType([string])]
     param (
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "ProjectDir '{0}' is not a valid path container")]
         [string]
         $ProjectDir,
 
@@ -186,7 +193,8 @@ function Get-ProjectDir {
     [OutputType([string])]
     param (
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "Project '{0}' is not a valid project name")]
         [string]
         $Project
     )
@@ -224,7 +232,8 @@ function Get-SolutionDir {
     [OutputType([string])]
     param (
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "Solution '{0}' is not a valid solution name")]
         [string]
         $Solution
     )
@@ -471,18 +480,21 @@ function Set-VsInstallDir {
     }
 }
 
-<#
+<##########################################
     Script
-#>
+##########################################>
 
 $ScriptName = Initialize-PSScript -MyInvocation $MyInvocation
+
+if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+    $ConfirmPreference = 'None'
+}
 
 $DebugPreference = 'SilentlyContinue'
 $InformationPreference = 'Continue'
 $VerbosePreference = 'SilentlyContinue'
 $WarningPreference = 'Continue'
 $ErrorActionPreference = 'Continue'
-$ConfirmPreference = 'None'
 
 Write-Information -MessageData ("{0}:  Computing project variables" -f $ScriptName) -Tags @($ScriptName, 'Visual Studio', '2022') -InformationAction Continue
 
@@ -568,10 +580,10 @@ if ($UpdateModules.IsPresent) {
                 Path          = $_.FullName
                 Author        = 'John Merryweather Cooper'
                 Company       = 'John Merryweather Cooper'
-                Copyright     = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+                Copyright     = 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.'
                 LicenseUri    = 'https://opensource.org/license/BSD-3-clause'
                 ModuleVersion = ('{0}.{1}.{2}.{3}' -f $oldVersion.Major, $oldVersion.Minor, $fileVersion.Build, $fileVersion.Revision)
-                ProjectUri    = 'https://github.com/jmcooper176/PowerShellModules'
+                ProjectUri    = 'https://github.com/OPM-jmcooper176/PowerShellModules'
                 ReleaseNotes  = ('{0:s} - Development Release' -f (Get-UtcDate))
                 Verbose       = Test-Verbose -InvocationInfo $MyInvocation
             }

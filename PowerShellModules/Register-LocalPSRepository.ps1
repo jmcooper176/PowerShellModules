@@ -1,14 +1,14 @@
-<#PSScriptInfo
+﻿<#PSScriptInfo
 
     .VERSION 1.0.0
 
-    .GUID 985A4AB6-8B78-4C16-B2D9-2129FBEAC7FE
+    .GUID 293BDCFE-F391-421C-AA23-9EFA27763CE3
 
     .AUTHOR John Merryweather Cooper
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -37,23 +37,33 @@
     Register a local PowerShell repository.
 #>
 
-[CmdletBinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
 param (
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string]
     $Name,
 
     [Parameter(Mandatory)]
-    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+        ErrorMessage = "Location '{0}' is not a valid path container")]
     [string]
     $Location,
 
     [ValidateSet('Trusted', 'Untrusted')]
     [string]
-    $InstallationPolicy = 'Trusted'
+    $InstallationPolicy = 'Trusted',
+
+    [switch]
+    $Force
 )
 
-$ScriptName = Initialize-PSScript -MyInvocation $MyInvocation
+Set-StrictMode -Version 3.0
+Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+    $ConfirmPreference = 'None'
+}
 
 # Register a file share on my local machine
 $registerPSRepositorySplat = @{

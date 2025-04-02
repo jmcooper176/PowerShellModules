@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="StringBuilder.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="StringBuilder.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -65,7 +66,9 @@ This file "StringBuilder.psm1" is part of "StringBuilderModule".
     Hello, World!
 
     .NOTES
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rigths Reserved.
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
+    License:  https://www.opensource.org/licenses/BSD-3-Clause
+    ProjectUri:  https://github.com/jmcooper176/PowerShellModules/StringBuilderModule/
 
     .LINK
     about_Classes
@@ -74,26 +77,26 @@ This file "StringBuilder.psm1" is part of "StringBuilderModule".
     about_Classes_Properties
 #>
 class StringBuilder {
-    <#
+    <##########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName = ([type]'System.Text.StringBuilder').Name
     [int]$MaxCapacity = [int]::MaxValue
 
-    <#
+    [ValidateSet('SilentlyContinue', 'Stop', 'Continue', 'Inquire', 'Ignore', 'Suspend', 'Break')]
+    [string]$LogToConsole = 'Continue'
+
+    <##########################################
         Hidden Properties
-    #>
+    ##########################################>
     [ValidateRange(0, 2147483647)]
     hidden [int]$DefaultCapacity = 16
 
     hidden [System.Text.StringBuilder]$Instance
 
-    [ValidateSet('SilentlyContinue', 'Stop', 'Continue', 'Inquire', 'Ignore', 'Suspend', 'Break')]
-    hidden [string]$LogToConsole = 'Continue'
-
-    <#
+    <##########################################
         Public Script or Note Properties
-    #>
+    ##########################################>
     [hashtable[]]$PropertyDefinitions = @(
         @{
             MemberType  = 'ScriptProperty'
@@ -138,9 +141,9 @@ class StringBuilder {
         }
     )
 
-    <#
+    <##########################################
         Constructors
-    #>
+    ##########################################>
     StringBuilder() {
         Write-Information -MessageData 'StringBuilder : Default Constructor' -InformationAction $this.LogToConsole
 
@@ -237,9 +240,9 @@ class StringBuilder {
         $this.Initialize($properties)
     }
 
-    <#
+    <##########################################
         Hidden Methods
-    #>
+    ##########################################>
 
     <#
         .SYNPSIS
@@ -259,7 +262,7 @@ class StringBuilder {
         PS> $this.Initialize($properties)
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -290,14 +293,16 @@ class StringBuilder {
             Remove-TypeData -TypeName $this.ClassName
         }
 
-        foreach ($Definition in $this.PropertyDefinitions) {
+        $this.PropertyDefinitions | ForEach-Object -Process {
+            $Definition = $_
+
             Update-TypeData -TypeName $this.ClassName @Definition -Force
         }
     }
 
-    <#
+    <##########################################
         Public Methods
-    #>
+    ##########################################>
 
     <#
         .SYNPSIS
@@ -321,7 +326,7 @@ class StringBuilder {
         Source StringBuilder:  This is a test.  It is only a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -368,7 +373,7 @@ class StringBuilder {
         Unsigned Short:  1024
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -415,7 +420,7 @@ class StringBuilder {
         Unsigned Short:  214748396
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -462,7 +467,7 @@ class StringBuilder {
         Unsigned Short:  214748396
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -510,7 +515,7 @@ class StringBuilder {
         Character Array:  abcde
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -557,7 +562,7 @@ class StringBuilder {
         String:  This is a test.  It is only a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -610,7 +615,7 @@ class StringBuilder {
         String:  This is a test.  It is only a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -664,7 +669,7 @@ class StringBuilder {
         String:  It is only a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -711,7 +716,7 @@ class StringBuilder {
         4-byte Floating Point:  1.234
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -758,7 +763,7 @@ class StringBuilder {
         Boolean:  True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -805,7 +810,7 @@ class StringBuilder {
         Byte:  254
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -852,7 +857,7 @@ class StringBuilder {
         Character:  z
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -899,7 +904,7 @@ class StringBuilder {
         Character Array:  a char array
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -946,7 +951,7 @@ class StringBuilder {
         Decimal:  1.23
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -993,7 +998,7 @@ class StringBuilder {
         Double:  1.23456E-07
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1040,7 +1045,7 @@ class StringBuilder {
         Unsigned Long:  234765981
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1087,7 +1092,7 @@ class StringBuilder {
         Signed Byte:  126
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1134,7 +1139,7 @@ class StringBuilder {
         Short:  32766
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1181,7 +1186,7 @@ class StringBuilder {
         Integer:  66535
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1228,7 +1233,7 @@ class StringBuilder {
         Long:  99887766
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1275,7 +1280,7 @@ class StringBuilder {
         Object:  32766
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1331,7 +1336,7 @@ class StringBuilder {
         Formatted String:  Name : 1 - True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1384,7 +1389,7 @@ class StringBuilder {
         Formatted String:  Name : 1
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1434,7 +1439,7 @@ class StringBuilder {
         Formatted String:  Name : 1 - True | 0.99
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1484,7 +1489,7 @@ class StringBuilder {
         Formatted String:  Name
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1534,7 +1539,7 @@ class StringBuilder {
         Join:  This is a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1584,7 +1589,7 @@ class StringBuilder {
         Join:  This 1 1.00 12346800
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1628,7 +1633,7 @@ class StringBuilder {
         Line Terminator:
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1675,7 +1680,7 @@ class StringBuilder {
         Line Terminator:  Hello, World!
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1717,7 +1722,7 @@ class StringBuilder {
         PS> Write-Information -MessageData $this.ToString() -InformationAction Continue
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1769,7 +1774,7 @@ class StringBuilder {
         True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1821,7 +1826,7 @@ class StringBuilder {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1861,7 +1866,7 @@ class StringBuilder {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1901,7 +1906,7 @@ class StringBuilder {
         True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -1954,7 +1959,7 @@ class StringBuilder {
         Copy To:  is a
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2001,7 +2006,7 @@ class StringBuilder {
         i
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
     [char]ElementAt([int]$index) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
@@ -2011,8 +2016,9 @@ class StringBuilder {
         }
 
         if ([System.Text.StringBuilder]::IndexIsOutOfRange($this.Instance, $index)) {
+            $message = 'StringBuilder index is out of range'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, 'index is out of range')
+                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'LimitsExceeded'
                 TargetObject  = $index
@@ -2078,7 +2084,7 @@ class StringBuilder {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2131,7 +2137,7 @@ class StringBuilder {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2170,7 +2176,7 @@ class StringBuilder {
         Ensure Capacity:  100
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2182,10 +2188,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNull($this.Instance)) {
+            $message = 'Instance cannot be null'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Messaeg       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -2218,7 +2226,7 @@ class StringBuilder {
         True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2262,7 +2270,7 @@ class StringBuilder {
         True
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2326,7 +2334,7 @@ class StringBuilder {
         -1
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2382,7 +2390,7 @@ class StringBuilder {
         22
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2435,7 +2443,7 @@ class StringBuilder {
         21
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2488,7 +2496,7 @@ class StringBuilder {
         14
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2536,7 +2544,7 @@ class StringBuilder {
         21
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2600,7 +2608,7 @@ class StringBuilder {
         21
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2644,7 +2652,7 @@ class StringBuilder {
         Inser32t:  This  is a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2656,10 +2664,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = 'Instance cannot be null or empty'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -2668,10 +2678,12 @@ class StringBuilder {
         }
 
         if ([System.Text.StringBuilder]::IndexIsOutOfRange($this.Instance, $index)) {
+            $message = 'StringBuilder index is out of range'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, 'index is out of range')
+                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'LimitsExceeded'
+                Message       = $message
                 TargetObject  = $index
                 TargetName    = 'index'
             }
@@ -2713,7 +2725,7 @@ class StringBuilder {
         Inserfoxt:  This  is a test.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Classes
@@ -2725,10 +2737,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = 'Instance cannot be null or empty'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -2737,10 +2751,12 @@ class StringBuilder {
         }
 
         if ([System.Text.StringBuilder]::IndexIsOutOfRange($this.Instance, $index)) {
+            $message = 'StringBuilder index is out of range'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, 'index is out of range')
+                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'LimitsExceeded'
+                Message       = $message
                 TargetObject  = $index
                 TargetName    = 'index'
             }
@@ -2755,10 +2771,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = 'Instance cannot be null or empty'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -2767,10 +2785,12 @@ class StringBuilder {
         }
 
         if ([System.Text.StringBuilder]::LengthIsOutOfRange($count)) {
+            $message = 'StringBuilder count is out of range'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentOutOfRangeException]::new('count', $count, 'count is out of range')
+                Exception     = [System.ArgumentOutOfRangeException]::new('count', $count, $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'LimitsExceeded'
+                Message       = $message
                 TargetObject  = $count
                 TargetName    = 'count'
             }
@@ -2779,10 +2799,12 @@ class StringBuilder {
         }
 
         if ([System.Text.StringBuilder]::IndexIsOutOfRange($this.Instance, $index)) {
+            $message = 'StringBuilder index is out of range'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, 'index is out of range')
+                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'LimitsExceeded'
+                Message       = $message
                 TargetObject  = $index
                 TargetName    = 'index'
             }
@@ -2797,10 +2819,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = 'Instance cannot be null or empty'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -2809,10 +2833,12 @@ class StringBuilder {
         }
 
         if ([System.Text.StringBuilder]::IndexIsOutOfRange($this.Instance, $index)) {
+            $message = 'StringBuilder index is out of range'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, 'index is out of range')
+                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'LimitsExceeded'
+                Message       = $message
                 TargetObject  = $index
                 TargetName    = 'index'
             }
@@ -2827,10 +2853,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = 'Instance cannot be null or empty'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -2839,10 +2867,12 @@ class StringBuilder {
         }
 
         if ([System.Text.StringBuilder]::IndexIsOutOfRange($this.Instance, $index)) {
+            $message = 'StringBuilder index is out of range'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, 'index is out of range')
+                Exception     = [System.ArgumentOutOfRangeException]::new('index', $index, $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'LimitsExceeded'
+                Message       = $message
                 TargetObject  = $index
                 TargetName    = 'index'
             }
@@ -2857,8 +2887,9 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = 'Instance cannot be null or empty'
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
                 TargetObject  = $this.Instance
@@ -2887,10 +2918,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -2917,10 +2950,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -2947,10 +2982,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -2977,10 +3014,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3007,8 +3046,9 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
                 TargetObject  = $this.Instance
@@ -3037,10 +3077,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3067,10 +3109,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3097,10 +3141,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3127,10 +3173,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3157,10 +3205,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3187,10 +3237,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3217,10 +3269,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNullOrEmpty($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null or empty')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3364,10 +3418,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNull($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3387,10 +3443,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNull($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3434,10 +3492,12 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNull($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null')
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
+                Message       = $message
                 TargetObject  = $this.Instance
                 TargetName    = 'Instance'
             }
@@ -3457,8 +3517,9 @@ class StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([StringBuilder]::IsNull($this.Instance)) {
+            $message = "Value cannot be null. (Parameter 'Instance')"
             $newErrorRecordSplat = @{
-                Exception     = [System.ArgumentNullException]::new('Instance', 'Instance cannot be null')
+                Exception     = [System.ArgumentNullException]::new('Instance', )
                 ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'InvalidData'
                 TargetObject  = $this.Instance
@@ -4367,9 +4428,9 @@ class StringBuilder {
         }
     }
 
-    <#
+    <##########################################
         Static Public Methods
-    #>
+    ##########################################>
 
     static [int]ComputeImpliedCount([System.Text.StringBuilder]$value, [int]$startIndex) {
         return $value.Length - 1 - $startIndex
@@ -4459,9 +4520,9 @@ class StringBuilder {
     }
 }
 
-<#
+<##########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-StringBuilder {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingDefault')]
     [OutputType([StringBuilder])]
@@ -4521,7 +4582,7 @@ function New-StringBuilder {
 }
 
 # Define the types to export with type accelerators.
-$ExportableTypes =@(
+$ExportableTypes = @(
     [StringBuilder]
 )
 
@@ -4557,7 +4618,9 @@ $ExportableTypes | ForEach-Object -Process {
         New-ErrorRecord @newErrorRecordSplat | Write-Fatal
     }
     else {
-        foreach ($Type in $ExportableTypes) {
+        $ExportableTypes | ForEach-Object -Process {
+            $Type = $_
+
             Write-Information -MessageData "$($ScriptName) : Adding TypeAccelerator '$($Type.FullName)'" -InformationAction $this.LogToConsole
             $TypeAcceleratorsClass::Add($Type.FullName, $Type)
         }

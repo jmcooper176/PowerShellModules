@@ -8,7 +8,7 @@
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
     .TAGS
 
@@ -44,13 +44,13 @@ param (
     $Quiet
 )
 
-<#
+<###########################################
     Functions
-#>
+##########################################>
 
-<#
+<###########################################
     Submit-Build
-#>
+##########################################>
 function Submit-Build {
     [CmdletBinding()]
     [OutputType([int])]
@@ -87,9 +87,9 @@ function Submit-Build {
     $process.ExitCode | Write-Output
 }
 
-<#
+<###########################################
     Script
-#>
+##########################################>
 $target = 'clean'
 
 if ($Minimal.IsPresent -and $Quiet.IsPresent) {

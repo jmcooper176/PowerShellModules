@@ -1,14 +1,14 @@
-<#PSScriptInfo
+﻿<#PSScriptInfo
 
     .VERSION 1.0.0
 
-    .GUID 6B1A3743-1E84-4141-B2D0-8590885F8110
+    .GUID 861F8FAA-1D31-4E37-9F1A-E550F6197F77
 
     .AUTHOR John Merryweather Cooper
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright � 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -35,30 +35,40 @@
     Save external PowerShell module or script to local repository.
 #>
 
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
 param (
-    [Parameter(Mandatory, ValueFromPipeline)]
+    [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
     [ValidateNotNullOrEmpty()]
     [string[]]
     $Name,
 
     [Parameter(Mandatory)]
-    [ValidateScript({ Test-Path -Path $_ -PathType Container })]
+    [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Container },
+        ErrorMessage = "Path '{0}' is not a valid path container")]
     [string]
     $Path,
 
     [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-    [ValidateNotNullOrEmpty()]
+    [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+        ErrorMessage = "Source '{0}' is not a valid, absolute PowerShell NuGet repository")]
     [string[]]
     $Source = @('https://proget.opm.gov/nuget/unapproved-powershell/', 'https://proget.opm.gov/nuget/approved-powershell/'),
 
     [ValidateSet('msi', 'msu', 'Programs', 'NuGet', 'PowerShellGet', 'ps1', 'chocolatey')]
     [string[]]
-    $ProviderName = 'nuget'
+    $ProviderName = 'NuGet',
+
+    [switch]
+    $Force
 )
 
 BEGIN {
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+        $ConfirmPreference = 'None'
+    }
 }
 
 PROCESS {

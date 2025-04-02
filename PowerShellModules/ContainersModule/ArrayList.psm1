@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ArrayList.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ArrayList.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,19 +52,22 @@ This file "ArrayList.psm1" is part of "ContainersModule".
 #
 
 class ArrayList : System.Collections.ArrayList {
-    <#
+    <###########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName
 
-    <#
+    [ValidateSet('SilentlyContinue', 'Stop', 'Continue', 'Inquire', 'Ignore', 'Suspend', 'Break')]
+    [string]$LogToConsole = 'Continue'
+
+    <###########################################
         Hidden Properties
-    #>
+    ##########################################>
     hidden [System.Collections.ArrayList]$Instance
 
-    <#
+    <###########################################
         Constructors
-    #>
+    ##########################################>
     ArrayList() {
         $this.Instance = [System.Collections.ArrayList]::new()
         $properties = @{
@@ -75,34 +79,10 @@ class ArrayList : System.Collections.ArrayList {
 
     ArrayList([System.Collections.ICollection] $collection) {
         if ($null -eq $collection) {
-            $newObjectSplat = @{
-                TypeName = System.Management.Automation.ErrorRecord
-                ArgumentList = @(
-                    [System.ArgumentNullException]::new('collection', "$($this.ClassName) : Parameter 'Collection' cannot be null"),
-                    'InvalidArgument',
-                    "Constructor-ArgumentNullException-01",
-                    $collection
-                )
-            }
-
-            $er = New-Object @newObjectSplat
-            Write-Error -ErrorRecord $er -ErrorAction Continue
-            throw $er
+            throw [System.ArgumentNullException]::new('collection', "$($this.ClassName) : Parameter 'Collection' cannot be null")
         }
         elseif ($collection -is [Array] -and ([Array]$collection).Rank -gt 1) {
-            $newObjectSplat = @{
-                TypeName = System.Management.Automation.ErrorRecord
-                ArgumentList = @(
-                    [System.RankException]::new("$($this.ClassName) : Collection as array must be a single-rank array"),
-                    'LimitsExceeded',
-                    "Constructor-RankException-01",
-                    $collection
-                )
-            }
-
-            $er = New-Object @newObjectSplat
-            Write-Error -ErrorRecord $er -ErrorAction Continue
-            throw $er
+            throw [System.RankException]::new("$($this.ClassName) : Collection as array must be a single-rank array")
         }
 
         $this.Instance = [System.Collections.ArrayList]::new($collection)
@@ -132,14 +112,16 @@ class ArrayList : System.Collections.ArrayList {
     hidden [void]Initialize([hashtable]$properties) {
         $this.ClassName = Initialize-PSClass -Name [ArrayList].Name
 
-        foreach ($Definition in [List]::PropertyDefinitions) {
+        [ArrayList]::PropertyDefinitions | ForEach-Object -Process {
+            $Definition = $_
+
             Update-TypeData -TypeName [ArrayList].Name @Definition
         }
     }
 
-    <#
+    <###########################################
         Public Script Properties
-    #>
+    ##########################################>
     static [hashtable[]]$PropertyDefinitions = @(
         @{
             MemberType  = 'ScriptProperty'
@@ -150,39 +132,14 @@ class ArrayList : System.Collections.ArrayList {
 
                 if ($proposedValue -is [int]) {
                     if ([int]$proposedValue -lt 0 -or [int]$proposedValue -gt [int]::MaxValue) {
-                        $newObjectSplat = @{
-                            TypeName = System.Management.Automation.ErrorRecord
-                            ArgumentList = @(
-                                [System.ArgumentOutOfRangeException]::new('args[0]', $args[0], "Capacity must be between 0 and $([int]::MaxValue)"),
-                                'LimitsExceeded',
-                                "PSCapacity-ArgumentOutOfRangeException-01",
-                                $args[0]
-                            )
-                        }
-
-                        $er = New-Object @newObjectSplat
-                        Write-Error -ErrorRecord $er -ErrorAction Continue
-                        throw $er
+                        throw [System.ArgumentOutOfRangeException]::new('args[0]', $args[0], 'Capacity must be between 0 and [int]::MaxValue')
                     }
                     else {
                         $this.Instance.Capacity = [int]$proposedValue
                     }
                 }
                 else {
-                    $newObjectSplat = @{
-                        TypeName = System.Management.Automation.ErrorRecord
-                        ArgumentList = @(
-                            [System.ArgumentException]::new('Capacity must be an integer', 'args[0]'),
-                            'InvalidArgument',
-                            "PSCapacity-ArgumentOutOfRangeException-01",
-                            $args[0]
-                        )
-                    }
-
-                    $er = New-Object @newObjectSplat
-                    Write-Error -ErrorRecord $er -ErrorAction Continue
-                    throw $er
-                    throw
+                    throw [System.ArgumentException]::new('Capacity must be an integer', 'args[0]')
                 }
             }
         }
@@ -236,9 +193,9 @@ class ArrayList : System.Collections.ArrayList {
         }
     )
 
-    <#
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [int]Add([object]$value) {
         return $this.Instance.Add($value)
     }
@@ -301,12 +258,11 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.CopyTo($array)
         }
         catch [System.ArgumentException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.ArgumentException]::new(
+                "The number of elements in the source 'ArrayList' is greater than the number of elements that the destination array can contain", 'startIndex')
         }
         catch [System.InvalidCastException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.InvalidCastException]::new("The type of source 'ArrayList' cannot be cast automatically to the specified type '$($array.GetType().FullName)'")
         }
     }
 
@@ -337,12 +293,11 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.CopyTo($index, $array, $arrayIndex, $count)
         }
         catch [System.ArgumentException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.ArgumentException]::new(
+                'The number of elements from index to the end of the source ArrayList is greater than the available space from arrayIndex to the end of the destination array', 'index')
         }
         catch [System.InvalidCastException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.InvalidCastException]::new("The type of source 'ArrayList' cannot be cast automatically to the specified type '$($array.GetType().FullName)'")
         }
     }
 
@@ -364,12 +319,11 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.CopyTo($array, $startIndex)
         }
         catch [System.ArgumentException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.ArgumentException]::new(
+                'The number of elements in the source ArrayList is greater than the available space from arrayIndex to the end of the destination array', 'startIndex')
         }
         catch [System.InvalidCastException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.InvalidCastException]::new("The type of source 'ArrayList' cannot be cast automatically to the specified type '$($array.GetType().FullName)'")
         }
     }
 
@@ -392,8 +346,7 @@ class ArrayList : System.Collections.ArrayList {
             return $this.Instance.GetRange($index, $count)
         }
         catch [System.ArgumentException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.ArgumentException]::new('index and count do not denote a valid range in the list', 'index')
         }
     }
 
@@ -450,8 +403,7 @@ class ArrayList : System.Collections.ArrayList {
             return $this.Instance.LastIndexOf($value, $startIndex, $count)
         }
         catch [System.ArgumentException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.ArgumentException]::new('startIndex and count do not denote a valid range in the list', 'startIndex')
         }
     }
 
@@ -482,8 +434,7 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.RemoveRange($index, $count)
         }
         catch [System.ArgumentException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.ArgumentException]::new('index and count do not denote a valid range in the list', 'index')
         }
     }
 
@@ -516,8 +467,7 @@ class ArrayList : System.Collections.ArrayList {
             $this.Instance.Reverse($index, $count)
         }
         catch [System.ArgumentException] {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
-            throw $Error[0]
+            throw [System.ArgumentException]::new('index and count do not denote a valid range in the list', 'index')
         }
     }
 
@@ -567,17 +517,16 @@ class ArrayList : System.Collections.ArrayList {
         $this.Instance.TrimToSize()
     }
 
-    <#
+    <###########################################
         Static Methods
-    #>
+    ##########################################>
     static [void]ConstrainedCopy(
         [ArrayList]$source,
         [int]$sourceIndex,
         [ArrayList]$destination,
         [int]$destinationIndex,
         [int]$length
-    )
-    {
+    ) {
         $methodName = Initialize-PSMethod -Invocation $MyInvocation
 
         $backupSource = [System.Collections.ArrayList]::new($source)
@@ -585,8 +534,8 @@ class ArrayList : System.Collections.ArrayList {
 
         try {
             [ArrayList].Copy($source, $sourceIndex, $destination, $destinationIndex, $length)
-        } catch {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+        }
+        catch {
             $backupSource.CopyTo($source, 0)
             $backupDestination.CopyTo($destination, 0)
         }
@@ -615,9 +564,9 @@ class ArrayList : System.Collections.ArrayList {
     }
 }
 
-<#
+<###########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-ArrayList {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([ArrayList])]
@@ -630,10 +579,58 @@ function New-ArrayList {
     }
 }
 
-# Initialize this type with TypeAccelerator
-$registerTypeAcceleratorSlat = @{
-    ExportableType = ([System.Type[]]@([ArrayList]))
-    InvocationInfo = $MyInvocation
+# Define the types to export with type accelerators.
+$ExportableTypes = @(
+    [ArrayList]
+)
+
+$ScriptName = Initialize-PSScript -Invocation $MyInvocation
+
+# Get the TypeAcceleratorsClass
+$TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+
+# Enumerate the existing TypeAccelerators as Key/Value pairs where the Key is the TypeAcclerator FullName and the Value is the
+# TypeAccelerator Type
+$ExistingTypeAccelerators = $TypeAcceleratorsClass::Get
+
+# Block and Throw if already registered
+$ExportableTypes | ForEach-Object -Process {
+    $Type = $_
+    Write-Information -MessageData "$($ScriptName) : Testing whether TypeAccelerator '$($Type.FullName)' is already registered" -InformationAction $this.LogToConsole
+
+    if ($Type.FullName -in $ExistingTypeAccelerators.Keys) {
+        $Message = @(
+            $ScriptName,
+            "Unable to register type accelerator '$($Type.FullName)'"
+            'Accelerator already exists.'
+        ) -join ' : '
+
+        $newErrorRecordSplat = @{
+            Exception     = [System.InvalidOperationException]::new($Message)
+            ErrorId       = Format-ErrorId -Caller $ScriptName -Name 'InvalidOperationException' -Position $MyInvocation.ScriptLineNumber
+            ErrorCategory = 'ResourceUnavailable'
+            Message       = $Message
+            TargetObject  = $Type.FullName
+            TargetName    = 'TypeAccelerator'
+        }
+
+        New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+    }
+    else {
+        $ExportableTypes | ForEach-Object -Process {
+            $Type = $_
+
+            Write-Information -MessageData "$($ScriptName) : Adding TypeAccelerator '$($Type.FullName)'" -InformationAction $this.LogToConsole
+            $TypeAcceleratorsClass::Add($Type.FullName, $Type)
+        }
+    }
 }
 
-Register-TypeAccelerator @registerTypeAcceleratorSlat
+# Remove type accelerators when the module is removed.
+$MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
+    $ExportableTypes | ForEach-Object -Process {
+        $Type = $_
+        Write-Information -MessageData "$($ScriptName) : Removing TypeAccelerator '$($Type.FullName)'" -InformationAction $this.LogToConsole
+        $TypeAcceleratorsClass::Remove($Type.FullName)
+    }
+}.GetNewClosure()

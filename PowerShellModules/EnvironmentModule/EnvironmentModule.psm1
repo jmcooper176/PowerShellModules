@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="EnvironmentModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="EnvironmentModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,9 +52,9 @@ This file "EnvironmentModule.psm1" is part of "EnvironmentModule".
 # EnvironmentModule.psm1
 #
 
-<#
+<###########################################
     Add-EnvironmentValue
-#>
+##########################################>
 function Add-EnvironmentValue {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -148,7 +149,7 @@ function Add-EnvironmentValue {
         `C:\Program Files\MyApp` is appended to the Path environment variable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -185,9 +186,9 @@ function Add-EnvironmentValue {
     #>
 }
 
-<#
+<###########################################
     Copy-EnvironmentVariable
-#>
+##########################################>
 function Copy-EnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingArray')]
     [OutputType([void])]
@@ -237,7 +238,7 @@ function Copy-EnvironmentVariable {
 
     PROCESS {
         if ($PSCmdlet.ParameterSetName -eq 'UsingHashtable') {
-            $Table.GetEnumerator() | ForEach-Object -Process {
+            $Table.GetEnumerator() | ForEach-Object {
                 $sourcePath = Join-Path -Path Env: -ChildPath $_.Key
                 $destinationPath = Join-Path -Path Env: -ChildPath $_.Value
 
@@ -311,7 +312,7 @@ function Copy-EnvironmentVariable {
         Copied environment variable `Path` to `NewPath`.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -333,9 +334,9 @@ function Copy-EnvironmentVariable {
     #>
 }
 
-<#
+<###########################################
     Get-EnvironmentVariable
-#>
+##########################################>
 function Get-EnvironmentVariable {
     [CmdletBinding()]
     [OutputType([string])]
@@ -406,7 +407,7 @@ function Get-EnvironmentVariable {
         Returns the value of the process environment variable 'Path'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -437,9 +438,9 @@ function Get-EnvironmentVariable {
     #>
 }
 
-<#
+<###########################################
     Get-EnvironmentHashtable
-#>
+##########################################>
 function Get-EnvironmentHashtable {
     [CmdletBinding()]
     [OutputType([hashtable])]
@@ -472,7 +473,7 @@ function Get-EnvironmentHashtable {
         PS> Get-EnvironmentHashtable
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> Get-EnvironmentHashtable
@@ -497,9 +498,9 @@ function Get-EnvironmentHashtable {
     #>
 }
 
-<#
+<###########################################
     Join-EnvironmentVariable
-#>
+##########################################>
 function Join-EnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -605,7 +606,7 @@ function Join-EnvironmentVariable {
         Appends `C:\Program Files\MyApp` to the Path environment variable and sorts the values for uniqueness descending.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -642,9 +643,9 @@ function Join-EnvironmentVariable {
     #>
 }
 
-<#
+<###########################################
     Move-EnvironmentVariable
-#>
+##########################################>
 function Move-EnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingArray')]
     [OutputType([void])]
@@ -684,7 +685,7 @@ function Move-EnvironmentVariable {
 
     PROCESS {
         if ($PSCmdlet.ParameterSetName -eq 'UsingHashtable') {
-            $Table.GetEnumerator() | ForEach-Object -Process {
+            $Table.GetEnumerator() | ForEach-Object {
                 $sourcePath = Join-Path -Path Env: -ChildPath $_.Key
                 $destinationPath = Join-Path -Path Env: -ChildPath $_.Value
 
@@ -762,7 +763,7 @@ function Move-EnvironmentVariable {
         Moved environment variable `Path` to `NewPath`.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -784,9 +785,9 @@ function Move-EnvironmentVariable {
     #>
 }
 
-<#
+<###########################################
     New-EnvironmentVariable
-#>
+##########################################>
 function New-EnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -837,7 +838,7 @@ function New-EnvironmentVariable {
         None.  `New-EnvironmentVariable` does not return any output to the PowerShell pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-EnvironmentVariable -Name 'NewPath' -Value 'C:\Program Files\MyApp'
@@ -862,9 +863,9 @@ function New-EnvironmentVariable {
     #>
 }
 
-<#
+<###########################################
     Optimize-Path
-#>
+##########################################>
 function Optimize-Path {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType(string)]
@@ -917,9 +918,9 @@ function Optimize-Path {
     }
 }
 
-<#
+<###########################################
     Out-ArrayList
-#>
+##########################################>
 function Out-ArrayList {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingElements')]
     [OutputType([System.Collections.ArrayList])]
@@ -1015,7 +1016,7 @@ function Out-ArrayList {
         Element2
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1037,9 +1038,9 @@ function Out-ArrayList {
     #>
 }
 
-<#
+<###########################################
     Out-Hashtable
-#>
+##########################################>
 function Out-Hashtable {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingDictinoary')]
     [OutputType([hashtable])]
@@ -1066,12 +1067,13 @@ function Out-Hashtable {
         $Dictionary,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingCapacity')]
-        [ValidateRange(0, 2147483647)]
+        [ValidateRange('NonNegative')]
         [int]
         $Capacity,
 
         [Parameter(ParameterSetName = 'UsingCapacity')]
-        [ValidateScript({ ($_ -gt 0.0) -and ($_ -lt 1.0) })]
+        [ValidateScript({ ($_ -gt 0.0) -and ($_ -lt 1.0) },
+            ErrorMessage = "LoadFactor '{0}' is either less then or equal to 0.0 or greater than or equal to 1.0")]
         [float]
         $LoadFactor
     )
@@ -1254,7 +1256,7 @@ function Out-Hashtable {
         Creates a hashtable with two key-value pairs.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1288,9 +1290,9 @@ function Out-Hashtable {
     #>
 }
 
-<#
+<###########################################
     Remove-EnvironmentVariable
-#>
+##########################################>
 function Remove-EnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -1346,7 +1348,7 @@ function Remove-EnvironmentVariable {
         Removes the 'NewPath' process environment variable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1365,14 +1367,15 @@ function Remove-EnvironmentVariable {
     #>
 }
 
-<#
+<###########################################
     Rename-EnvironmentVariable
-#>
+##########################################>
 function Rename-EnvironmentVariable {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param (
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-EnvironmentVariable -Name $_ })]
+        [ValidateScript({ Test-EnvironmentVariable -Name $_ },
+            ErrorMessage = "Name '{0}' Process Environment Variable does not exist")]
         [string]
         $Name,
 
@@ -1387,6 +1390,10 @@ function Rename-EnvironmentVariable {
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -1409,7 +1416,7 @@ function Rename-EnvironmentVariable {
         .INPUTS
         .OUTPUTS
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .EXAMPLE
         .LINK
         about_CommonParameters
@@ -1418,9 +1425,9 @@ function Rename-EnvironmentVariable {
     #>
 }
 
-<#
+<###########################################
     Set-EnvironmentVariable
-#>
+##########################################>
 function Set-EnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -1464,7 +1471,7 @@ function Set-EnvironmentVariable {
         .INPUTS
         .OUTPUTS
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .EXAMPLE
         .LINK
         about_CommonParameters
@@ -1473,9 +1480,9 @@ function Set-EnvironmentVariable {
     #>
 }
 
-<#
+<###########################################
     Split-EnvironmentVariable
-#>
+##########################################>
 function Split-EnvironmentVariable {
     [CmdletBinding(DefaultParameterSetName = 'UsingDelimiter')]
     [OutputType([string[]])]
@@ -1554,9 +1561,9 @@ function Split-EnvironmentVariable {
     }
 }
 
-<#
+<###########################################
     Test-EnvironmentVariable
-#>
+##########################################>
 function Test-EnvironmentVariable {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -1712,7 +1719,7 @@ function Test-EnvironmentVariable {
         Environment variable 'NewPath' is valid but does not exist.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Queue.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Queue.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -46,23 +47,23 @@ This file "Queue.psm1" is part of "ContainersModule".
 
 #requires -version 7.4
 
-<#
+<###########################################
     class Queue
-#>
+##########################################>
 class Queue : System.Collections.Queue {
-    <#
+    <###########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName
 
-    <#
+    <###########################################
         Hidden Properties
-    #>
+    ##########################################>
     hidden [System.Collections.Queue]$Instance
 
-    <#
+    <###########################################
         Constructors
-    #>
+    ##########################################>
     Queue() {
         $this.Instance = [System.Collections.Queue]::new()
     }
@@ -79,16 +80,16 @@ class Queue : System.Collections.Queue {
         $this.Instance = [System.Collections.Queue]::new($capacity, $growFactor)
     }
 
-    <#
+    <###########################################
         Hidden Methods
-    #>
+    ##########################################>
     hidden [void]Initialize([hashtable]$Properties) {
         $this.ClassName = ([type]'System.Collections.Queue').Name
     }
 
-    <#
+    <###########################################
         Public Script Properties
-    #>
+    ##########################################>
     static [hashtable[]]$PropertyDefinitions = @(
         @{
             MemberType = 'ScriptProperty'
@@ -109,9 +110,9 @@ class Queue : System.Collections.Queue {
         }
     )
 
-    <#
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [void]Clear() {
         $methodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
@@ -269,9 +270,9 @@ class Queue : System.Collections.Queue {
         }
     }
 
-    <#
+    <###########################################
         Static Public Methods
-    #>
+    ##########################################>
     static [Queue]Synchronized([Queue]$queue) {
         $methodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
@@ -285,9 +286,9 @@ class Queue : System.Collections.Queue {
     }
 }
 
-<#
+<###########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-Queue {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([Queue])]

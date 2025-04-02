@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="TypeAcceleratoModuler.tests.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="TypeAcceleratoModuler.tests.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -55,113 +56,113 @@ BeforeAll {
     Initialize-PSTest -Name 'TypeAcceleratorModule' -Path $ModulePath
 
     $TestData = @(
-        @{Accelerator = [Alias];                          FullName = 'System.Management.Automation.AliasAttribute'},
-        @{Accelerator = [AllowEmptyCollection];           FullName = 'System.Management.Automation.AllowEmptyCollectionAttribute'},
-        @{Accelerator = [AllowEmptyString];               FullName = 'System.Management.Automation.AllowEmptyStringAttribute'},
-        @{Accelerator = [AllowNull];                      FullName = 'System.Management.Automation.AllowNullAttribute'},
-        @{Accelerator = [ArgumentCompleter];              FullName = 'System.Management.Automation.ArgumentCompleterAttribute'},
-    #   @{Accelerator = [ArgumentCompletions];            FullName = 'System.Management.Automation.ArgumentCompletionsAttribute'},
-        @{Accelerator = [array];                          FullName = 'System.Array'},
-        @{Accelerator = [bool];                           FullName = 'System.Boolean'},
-        @{Accelerator = [byte];                           FullName = 'System.Byte'},
-        @{Accelerator = [char];                           FullName = 'System.Char'},
-        @{Accelerator = [CmdletBinding];                  FullName = 'System.Management.Automation.CmdletBindingAttribute';},
-        @{Accelerator = [datetime];                       FullName = 'System.DateTime';},
-        @{Accelerator = [decimal];                        FullName = 'System.Decimal';},
-        @{Accelerator = [double];                         FullName = 'System.Double';},
-        @{Accelerator = [DscResource];                    FullName = 'System.Management.Automation.DscResourceAttribute'},
-    #   @{Accelerator = [ExperimentAction];               FullName = 'System.Management.Automation.ExperimentAction'},
-    #   @{Accelerator = [Experimental];                   FullName = 'System.Management.Automation.ExperimentalAttribute'},
-    #   @{Accelerator = [ExperimentalFeature];            FullName = 'System.Management.Automation.ExperimentalFeature'},
-        @{Accelerator = [float];                          FullName = 'System.Single'},
-        @{Accelerator = [single];                         FullName = 'System.Single'},
-        @{Accelerator = [guid];                           FullName = 'System.Guid'},
-        @{Accelerator = [hashtable];                      FullName = 'System.Collections.Hashtable'},
-        @{Accelerator = [int];                            FullName = 'System.Int32'},
-        @{Accelerator = [int32];                          FullName = 'System.Int32'},
-    #   @{Accelerator = [short];                          FullName = 'System.Int16'},
-        @{Accelerator = [int16];                          FullName = 'System.Int16'},
-        @{Accelerator = [long];                           FullName = 'System.Int64'},
-        @{Accelerator = [int64];                          FullName = 'System.Int64'},
-        @{Accelerator = [ciminstance];                    FullName = 'Microsoft.Management.Infrastructure.CimInstance'},
-        @{Accelerator = [cimclass];                       FullName = 'Microsoft.Management.Infrastructure.CimClass'},
-        @{Accelerator = [cimtype];                        FullName = 'Microsoft.Management.Infrastructure.CimType'},
-        @{Accelerator = [cimconverter];                   FullName = 'Microsoft.Management.Infrastructure.CimConverter'},
-        @{Accelerator = [IPEndpoint];                     FullName = 'System.Net.IPEndPoint'},
-    #   @{Accelerator = [NoRunspaceAffinity];             FullName = 'System.Management.Automation.Language.NoRunspaceAffinityAttribute'},
-        @{Accelerator = [NullString];                     FullName = 'System.Management.Automation.Language.NullString'},
-        @{Accelerator = [OutputType];                     FullName = 'System.Management.Automation.OutputTypeAttribute'},
-        @{Accelerator = [ObjectSecurity];                 FullName = 'System.Security.AccessControl.ObjectSecurity'},
-    #   @{Accelerator = [ordered];                        FullName = 'System.Collections.Specialized.OrderedDictionary'},
-        @{Accelerator = [Parameter];                      FullName = 'System.Management.Automation.ParameterAttribute'},
-        @{Accelerator = [PhysicalAddress];                FullName = 'System.Net.NetworkInformation.PhysicalAddress'},
-        @{Accelerator = [pscredential];                   FullName = 'System.Management.Automation.PSCredential'},
-        @{Accelerator = [PSDefaultValue];                 FullName = 'System.Management.Automation.PSDefaultValueAttribute'},
-        @{Accelerator = [pslistmodifier];                 FullName = 'System.Management.Automation.PSListModifier'},
-        @{Accelerator = [psobject];                       FullName = 'System.Management.Automation.PSObject'},
-        @{Accelerator = [pscustomobject];                 FullName = 'System.Management.Automation.PSObject'},
-        @{Accelerator = [psprimitivedictionary];          FullName = 'System.Management.Automation.PSPrimitiveDictionary'},
-        @{Accelerator = [ref];                            FullName = 'System.Management.Automation.PSReference'},
-        @{Accelerator = [PSTypeNameAttribute];            FullName = 'System.Management.Automation.PSTypeNameAttribute'},
-        @{Accelerator = [regex];                          FullName = 'System.Text.RegularExpressions.Regex'},
-        @{Accelerator = [DscProperty];                    FullName = 'System.Management.Automation.DscPropertyAttribute'},
-        @{Accelerator = [sbyte];                          FullName = 'System.SByte'},
-        @{Accelerator = [string];                         FullName = 'System.String'},
-        @{Accelerator = [SupportsWildcards];              FullName = 'System.Management.Automation.SupportsWildcardsAttribute'},
-        @{Accelerator = [switch];                         FullName = 'System.Management.Automation.SwitchParameter'},
-        @{Accelerator = [cultureinfo];                    FullName = 'System.Globalization.CultureInfo'},
-        @{Accelerator = [bigint];                         FullName = 'System.Numerics.BigInteger'},
-        @{Accelerator = [securestring];                   FullName = 'System.Security.SecureString'},
-        @{Accelerator = [timespan];                       FullName = 'System.TimeSpan'},
-    #   @{Accelerator = [ushort];                         FullName = 'System.UInt16'},
-        @{Accelerator = [uint16];                         FullName = 'System.UInt16'},
-    #   @{Accelerator = [uint];                           FullName = 'System.UInt32'},
-        @{Accelerator = [uint32];                         FullName = 'System.UInt32'},
-    #   @{Accelerator = [ulong];                          FullName = 'System.UInt64'},
-        @{Accelerator = [uint64];                         FullName = 'System.UInt64'},
-        @{Accelerator = [uri];                            FullName = 'System.Uri'},
-        @{Accelerator = [ValidateCount];                  FullName = 'System.Management.Automation.ValidateCountAttribute'},
-        @{Accelerator = [ValidateDrive];                  FullName = 'System.Management.Automation.ValidateDriveAttribute'},
-        @{Accelerator = [ValidateLength];                 FullName = 'System.Management.Automation.ValidateLengthAttribute'},
-        @{Accelerator = [ValidateNotNull];                FullName = 'System.Management.Automation.ValidateNotNullAttribute'},
-        @{Accelerator = [ValidateNotNullOrEmpty];         FullName = 'System.Management.Automation.ValidateNotNullOrEmptyAttribute'},
-    #   @{Accelerator = [ValidateNotNullOrWhiteSpace];    FullName = 'System.Management.Automation.ValidateNotNullOrWhiteSpaceAttribute'},
-        @{Accelerator = [ValidatePattern];                FullName = 'System.Management.Automation.ValidatePatternAttribute'},
-        @{Accelerator = [ValidateRange];                  FullName = 'System.Management.Automation.ValidateRangeAttribute'},
-        @{Accelerator = [ValidateScript];                 FullName = 'System.Management.Automation.ValidateScriptAttribute'},
-        @{Accelerator = [ValidateSet];                    FullName = 'System.Management.Automation.ValidateSetAttribute'},
-        @{Accelerator = [ValidateTrustedData];            FullName = 'System.Management.Automation.ValidateTrustedDataAttribute'},
-        @{Accelerator = [ValidateUserDrive];              FullName = 'System.Management.Automation.ValidateUserDriveAttribute'},
-        @{Accelerator = [version];                        FullName = 'System.Version'},
-        @{Accelerator = [void];                           FullName = 'System.Void'},
-        @{Accelerator = [ipaddress];                      FullName = 'System.Net.IPAddress'},
-        @{Accelerator = [DscLocalConfigurationManager];   FullName = 'System.Management.Automation.DscLocalConfigurationManagerAttribute';},
-        @{Accelerator = [WildcardPattern];                FullName = 'System.Management.Automation.WildcardPattern'},
-        @{Accelerator = [X509Certificate];                FullName = 'System.Security.Cryptography.X509Certificates.X509Certificate'},
-        @{Accelerator = [X500DistinguishedName];          FullName = 'System.Security.Cryptography.X509Certificates.X500DistinguishedName'},
-        @{Accelerator = [xml];                            FullName = 'System.Xml.XmlDocument'},
-        @{Accelerator = [CimSession];                     FullName = 'Microsoft..Infrastructure.CimSession'},
-        @{Accelerator = [mailaddress];                    FullName = 'System.Net.Mail.MailAddress'},
-    #   @{Accelerator = [semver];                         FullName = 'System.Management.Automation.SemanticVersion'},
-        @{Accelerator = [adsi];                           FullName = 'System.DirectoryServices.DirectoryEntry'},
-        @{Accelerator = [adsisearcher];                   FullName = 'System.DirectoryServices.DirectorySearcher'},
-        @{Accelerator = [wmiclass];                       FullName = 'System..Class'},
-        @{Accelerator = [wmi];                            FullName = 'System..Object'},
-        @{Accelerator = [wmisearcher];                    FullName = 'System..ObjectSearcher'},
-        @{Accelerator = [scriptblock];                    FullName = 'System.Management.Automation.ScriptBlock'},
-    #   @{Accelerator = [pspropertyexpression];           FullName = 'Microsoft.PowerShell.Commands.PSPropertyExpression'},
-        @{Accelerator = [psvariable];                     FullName = 'System.Management.Automation.PSVariable'},
-        @{Accelerator = [type];                           FullName = 'System.Type'},
-        @{Accelerator = [psmoduleinfo];                   FullName = 'System.Management.Automation.PSModuleInfo'},
-        @{Accelerator = [powershell];                     FullName = 'System.Management.Automation.PowerShell'},
-        @{Accelerator = [runspacefactory];                FullName = 'System.Management.Automation.Runspaces.RunspaceFactory'},
-        @{Accelerator = [runspace];                       FullName = 'System.Management.Automation.Runspaces.Runspace'},
-        @{Accelerator = [initialsessionstate];            FullName = 'System.Management.Automation.Runspaces.InitialSessionState'},
-        @{Accelerator = [psscriptmethod];                 FullName = 'System.Management.Automation.PSScriptMethod'},
-        @{Accelerator = [psscriptproperty];               FullName = 'System.Management.Automation.PSScriptProperty'},
-        @{Accelerator = [psnoteproperty];                 FullName = 'System.Management.Automation.PSNoteProperty'},
-        @{Accelerator = [psaliasproperty];                FullName = 'System.Management.Automation.PSAliasProperty'},
-        @{Accelerator = [psvariableproperty];             FullName = 'System.Management.Automation.PSVariableProperty'}
+        @{Accelerator = [Alias]; FullName = 'System.Management.Automation.AliasAttribute'; },
+        @{Accelerator = [AllowEmptyCollection]; FullName = 'System.Management.Automation.AllowEmptyCollectionAttribute'; },
+        @{Accelerator = [AllowEmptyString]; FullName = 'System.Management.Automation.AllowEmptyStringAttribute'; },
+        @{Accelerator = [AllowNull]; FullName = 'System.Management.Automation.AllowNullAttribute'; },
+        @{Accelerator = [ArgumentCompleter]; FullName = 'System.Management.Automation.ArgumentCompleterAttribute'; },
+        #   @{Accelerator = [ArgumentCompletions];            FullName = 'System.Management.Automation.ArgumentCompletionsAttribute';},
+        @{Accelerator = [array]; FullName = 'System.Array'; },
+        @{Accelerator = [bool]; FullName = 'System.Boolean'; },
+        @{Accelerator = [byte]; FullName = 'System.Byte'; },
+        @{Accelerator = [char]; FullName = 'System.Char'; },
+        @{Accelerator = [CmdletBinding]; FullName = 'System.Management.Automation.CmdletBindingAttribute'; },
+        @{Accelerator = [datetime]; FullName = 'System.DateTime'; },
+        @{Accelerator = [decimal]; FullName = 'System.Decimal'; },
+        @{Accelerator = [double]; FullName = 'System.Double'; },
+        @{Accelerator = [DscResource]; FullName = 'System.Management.Automation.DscResourceAttribute'; },
+        #   @{Accelerator = [ExperimentAction];               FullName = 'System.Management.Automation.ExperimentAction';},
+        #   @{Accelerator = [Experimental];                   FullName = 'System.Management.Automation.ExperimentalAttribute';},
+        #   @{Accelerator = [ExperimentalFeature];            FullName = 'System.Management.Automation.ExperimentalFeature';},
+        @{Accelerator = [float]; FullName = 'System.Single'; },
+        @{Accelerator = [single]; FullName = 'System.Single'; },
+        @{Accelerator = [guid]; FullName = 'System.Guid'; },
+        @{Accelerator = [hashtable]; FullName = 'System.Collections.Hashtable'; },
+        @{Accelerator = [int]; FullName = 'System.Int32'; },
+        @{Accelerator = [int32]; FullName = 'System.Int32'; },
+        #   @{Accelerator = [short];                          FullName = 'System.Int16';},
+        @{Accelerator = [int16]; FullName = 'System.Int16'; },
+        @{Accelerator = [long]; FullName = 'System.Int64'; },
+        @{Accelerator = [int64]; FullName = 'System.Int64'; },
+        @{Accelerator = [ciminstance]; FullName = 'Microsoft.Management.Infrastructure.CimInstance'; },
+        @{Accelerator = [cimclass]; FullName = 'Microsoft.Management.Infrastructure.CimClass'; },
+        @{Accelerator = [cimtype]; FullName = 'Microsoft.Management.Infrastructure.CimType'; },
+        @{Accelerator = [cimconverter]; FullName = 'Microsoft.Management.Infrastructure.CimConverter'; },
+        @{Accelerator = [IPEndpoint]; FullName = 'System.Net.IPEndPoint'; },
+        #   @{Accelerator = [NoRunspaceAffinity];             FullName = 'System.Management.Automation.Language.NoRunspaceAffinityAttribute';},
+        @{Accelerator = [NullString]; FullName = 'System.Management.Automation.Language.NullString'; },
+        @{Accelerator = [OutputType]; FullName = 'System.Management.Automation.OutputTypeAttribute'; },
+        @{Accelerator = [ObjectSecurity]; FullName = 'System.Security.AccessControl.ObjectSecurity'; },
+        #   @{Accelerator = [ordered];                        FullName = 'System.Collections.Specialized.OrderedDictionary';},
+        @{Accelerator = [Parameter]; FullName = 'System.Management.Automation.ParameterAttribute'; },
+        @{Accelerator = [PhysicalAddress]; FullName = 'System.Net.NetworkInformation.PhysicalAddress'; },
+        @{Accelerator = [pscredential]; FullName = 'System.Management.Automation.PSCredential'; },
+        @{Accelerator = [PSDefaultValue]; FullName = 'System.Management.Automation.PSDefaultValueAttribute'; },
+        @{Accelerator = [pslistmodifier]; FullName = 'System.Management.Automation.PSListModifier'; },
+        @{Accelerator = [psobject]; FullName = 'System.Management.Automation.PSObject'; },
+        @{Accelerator = [pscustomobject]; FullName = 'System.Management.Automation.PSObject'; },
+        @{Accelerator = [psprimitivedictionary]; FullName = 'System.Management.Automation.PSPrimitiveDictionary'; },
+        @{Accelerator = [ref]; FullName = 'System.Management.Automation.PSReference'; },
+        @{Accelerator = [PSTypeNameAttribute]; FullName = 'System.Management.Automation.PSTypeNameAttribute'; },
+        @{Accelerator = [regex]; FullName = 'System.Text.RegularExpressions.Regex'; },
+        @{Accelerator = [DscProperty]; FullName = 'System.Management.Automation.DscPropertyAttribute'; },
+        @{Accelerator = [sbyte]; FullName = 'System.SByte'; },
+        @{Accelerator = [string]; FullName = 'System.String'; },
+        @{Accelerator = [SupportsWildcards]; FullName = 'System.Management.Automation.SupportsWildcardsAttribute'; },
+        @{Accelerator = [switch]; FullName = 'System.Management.Automation.SwitchParameter'; },
+        @{Accelerator = [cultureinfo]; FullName = 'System.Globalization.CultureInfo'; },
+        @{Accelerator = [bigint]; FullName = 'System.Numerics.BigInteger'; },
+        @{Accelerator = [securestring]; FullName = 'System.Security.SecureString'; },
+        @{Accelerator = [timespan]; FullName = 'System.TimeSpan'; },
+        #   @{Accelerator = [ushort];                         FullName = 'System.UInt16';},
+        @{Accelerator = [uint16]; FullName = 'System.UInt16'; },
+        #   @{Accelerator = [uint];                           FullName = 'System.UInt32';},
+        @{Accelerator = [uint32]; FullName = 'System.UInt32'; },
+        #   @{Accelerator = [ulong];                          FullName = 'System.UInt64';},
+        @{Accelerator = [uint64]; FullName = 'System.UInt64'; },
+        @{Accelerator = [uri]; FullName = 'System.Uri'; },
+        @{Accelerator = [ValidateCount]; FullName = 'System.Management.Automation.ValidateCountAttribute'; },
+        @{Accelerator = [ValidateDrive]; FullName = 'System.Management.Automation.ValidateDriveAttribute'; },
+        @{Accelerator = [ValidateLength]; FullName = 'System.Management.Automation.ValidateLengthAttribute'; },
+        @{Accelerator = [ValidateNotNull]; FullName = 'System.Management.Automation.ValidateNotNullAttribute'; },
+        @{Accelerator = [ValidateNotNullOrEmpty]; FullName = 'System.Management.Automation.ValidateNotNullOrEmptyAttribute'; },
+        #   @{Accelerator = [ValidateNotNullOrWhiteSpace];    FullName = 'System.Management.Automation.ValidateNotNullOrWhiteSpaceAttribute';},
+        @{Accelerator = [ValidatePattern]; FullName = 'System.Management.Automation.ValidatePatternAttribute'; },
+        @{Accelerator = [ValidateRange]; FullName = 'System.Management.Automation.ValidateRangeAttribute'; },
+        @{Accelerator = [ValidateScript]; FullName = 'System.Management.Automation.ValidateScriptAttribute'; },
+        @{Accelerator = [ValidateSet]; FullName = 'System.Management.Automation.ValidateSetAttribute'; },
+        @{Accelerator = [ValidateTrustedData]; FullName = 'System.Management.Automation.ValidateTrustedDataAttribute'; },
+        @{Accelerator = [ValidateUserDrive]; FullName = 'System.Management.Automation.ValidateUserDriveAttribute'; },
+        @{Accelerator = [version]; FullName = 'System.Version'; },
+        @{Accelerator = [void]; FullName = 'System.Void'; },
+        @{Accelerator = [ipaddress]; FullName = 'System.Net.IPAddress'; },
+        @{Accelerator = [DscLocalConfigurationManager]; FullName = 'System.Management.Automation.DscLocalConfigurationManagerAttribute'; },
+        @{Accelerator = [WildcardPattern]; FullName = 'System.Management.Automation.WildcardPattern'; },
+        @{Accelerator = [X509Certificate]; FullName = 'System.Security.Cryptography.X509Certificates.X509Certificate'; },
+        @{Accelerator = [X500DistinguishedName]; FullName = 'System.Security.Cryptography.X509Certificates.X500DistinguishedName'; },
+        @{Accelerator = [xml]; FullName = 'System.Xml.XmlDocument'; },
+        @{Accelerator = [CimSession]; FullName = 'Microsoft.Management.Infrastructure.CimSession'; },
+        @{Accelerator = [mailaddress]; FullName = 'System.Net.Mail.MailAddress'; },
+        #   @{Accelerator = [semver];                         FullName = 'System.Management.Automation.SemanticVersion';},
+        @{Accelerator = [adsi]; FullName = 'System.DirectoryServices.DirectoryEntry'; },
+        @{Accelerator = [adsisearcher]; FullName = 'System.DirectoryServices.DirectorySearcher'; },
+        @{Accelerator = [wmiclass]; FullName = 'System.Management.ManagementClass'; },
+        @{Accelerator = [wmi]; FullName = 'System.Management.ManagementObject'; },
+        @{Accelerator = [wmisearcher]; FullName = 'System.Management.ManagementObjectSearcher'; },
+        @{Accelerator = [scriptblock]; FullName = 'System.Management.Automation.ScriptBlock'; },
+        #   @{Accelerator = [pspropertyexpression];           FullName = 'Microsoft.PowerShell.Commands.PSPropertyExpression';},
+        @{Accelerator = [psvariable]; FullName = 'System.Management.Automation.PSVariable'; },
+        @{Accelerator = [type]; FullName = 'System.Type'; },
+        @{Accelerator = [psmoduleinfo]; FullName = 'System.Management.Automation.PSModuleInfo'; },
+        @{Accelerator = [powershell]; FullName = 'System.Management.Automation.PowerShell'; },
+        @{Accelerator = [runspacefactory]; FullName = 'System.Management.Automation.Runspaces.RunspaceFactory'; },
+        @{Accelerator = [runspace]; FullName = 'System.Management.Automation.Runspaces.Runspace'; },
+        @{Accelerator = [initialsessionstate]; FullName = 'System.Management.Automation.Runspaces.InitialSessionState'; },
+        @{Accelerator = [psscriptmethod]; FullName = 'System.Management.Automation.PSScriptMethod'; },
+        @{Accelerator = [psscriptproperty]; FullName = 'System.Management.Automation.PSScriptProperty'; },
+        @{Accelerator = [psnoteproperty]; FullName = 'System.Management.Automation.PSNoteProperty'; },
+        @{Accelerator = [psaliasproperty]; FullName = 'System.Management.Automation.PSAliasProperty'; },
+        @{Accelerator = [psvariableproperty]; FullName = 'System.Management.Automation.PSVariableProperty'; }
     )
 
     <#
@@ -209,15 +210,16 @@ Describe -Name 'TypeAcceleratorModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -264,7 +266,7 @@ Describe -Name 'TypeAcceleratorModule' -Tag 'Module', 'Under', 'Test' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -300,10 +302,10 @@ Describe -Name 'TypeAcceleratorModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
 
             # Act And Assert
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
@@ -313,10 +315,10 @@ Describe -Name 'TypeAcceleratorModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {

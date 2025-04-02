@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="BitArray.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="BitArray.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -48,23 +49,23 @@ This file "BitArray.psm1" is part of "ContainersModule".
 #requires -Module ErrorRecordModule
 #requires -Module PowerShellModule
 
-<#
+<###########################################
     class BitArray
-#>
+##########################################>
 class BitArray : System.Collections.BitArray {
-    <#
+    <###########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName
 
-    <#
+    <###########################################
         Hidden Properties
-    #>
+    ##########################################>
     hidden [System.Collections.BitArray]$Instance
 
-    <#
+    <###########################################
         Constructors
-    #>
+    ##########################################>
     BitArray([bool[]] $values) {
         $this.Instance = [System.Collections.BitArray]::new($values)
     }
@@ -124,9 +125,9 @@ class BitArray : System.Collections.BitArray {
         }
     }
 
-    <#
+    <###########################################
         Hidden Methods
-    #>
+    ##########################################>
     hidden [void] Initialize([hastable]$Properties) {
         $methodName = Initialize-PSMethod -MyInvocation $MyInvocation
         $this.ClassName = Initialize-PSClass -Name ([type]'System.Collections.BitArray').Name
@@ -134,9 +135,9 @@ class BitArray : System.Collections.BitArray {
         $this.ClassName = Initialize-PSClass -Name ([type]'System.Collections.BitArray').Name
     }
 
-    <#
+    <###########################################
         Public Script Properties
-    #>
+    ##########################################>
     static [hashtable[]] $PropertyDefinitions = @(
         @{
             MemberType = 'ScriptProperty'
@@ -184,9 +185,9 @@ class BitArray : System.Collections.BitArray {
         }
     )
 
-    <#
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [BitArray] BinaryAnd([BitArray] $value) {
         $methodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
@@ -235,23 +236,27 @@ class BitArray : System.Collections.BitArray {
         $methodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([BitArray]::IsNullOrEmpty($this.Instance)) {
+            $message = "$($methodName) : 'Instance' cannot be null or empty"
             $newErrorRecordSplat = @{
-                Exception       = [System.ArgumentNullException]::new('Instance', "$($methodName) : this cannot be null or empty")
-                Category        = 'InvalidData'
-                ErrorId         = Format-ErrorId -Caller $methodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
-                TargetObject    = $this.Instance
-                TargetName      = 'Instance'
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
+                ErrorCategory = 'InvalidData'
+                ErrorId       = Format-ErrorId -Caller $methodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
+                Message       = $message
+                TargetObject  = $this.Instance
+                TargetName    = 'Instance'
             }
 
             New-ErrorRecord @newErrorRecordSplat | Write-Fatal
         }
         elseif ([BitArray]::IndexIsOutOfRange($index, $this.Instance)) {
+            $message = "$($methodName) : 'Index' into 'Instance' must be between 0 and $($this.Instance.Count - 1)"
             $newErrorRecordSplat = @{
-                Exception       = [System.ArgumentNullException]::new('Instance', "$($methodName) : index must be between 0 and $($this.Instance.Count - 1)")
-                Category        = 'LimitsExceeded'
-                ErrorId         = Format-ErrorId -Caller $methodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
-                TargetObject    = $index
-                TargetName      = 'index'
+                Exception     = [System.ArgumentNullException]::new('Instance', $message)
+                ErrorCategory = 'LimitsExceeded'
+                ErrorId       = Format-ErrorId -Caller $methodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
+                Message       = $message
+                TargetObject  = $index
+                TargetName    = 'index'
             }
 
             New-ErrorRecord @newErrorRecordSplat | Write-Fatal
@@ -569,9 +574,9 @@ class BitArray : System.Collections.BitArray {
         return $this.Instance.Xor($value)
     }
 
-    <#
+    <###########################################
         Static Public Methods
-    #>
+    ##########################################>
     static [bool] IndexIsOutOfRange([int] $index, [System.Collextions.BitArray] $instance) {
         return ($index -lt 0) -or ($index -ge $instance.Count)
     }
@@ -584,12 +589,14 @@ class BitArray : System.Collections.BitArray {
         $methodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ([string]::IsNullOrWhiteSpace($value)) {
+            $message = "$($methodName) : 'value' cannot be null or empty"
             $newErrorRecordSplat = @{
-                Exception       = [System.ArgumentNullException]::new('value', "$($methodName) : value cannot be null or empty")
-                Category        = 'InvalidArgument'
-                ErrorId         = Format-ErrorId -Caller $methodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
-                TargetObject    = $value
-                TargetName      = 'value'
+                Exception     = [System.ArgumentNullException]::new('value', $message)
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $methodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
+                Message       = $message
+                TargetObject  = $value
+                TargetName    = 'value'
             }
 
             New-ErrorRecord @newErrorRecordSplat | Write-Fatal
@@ -622,15 +629,15 @@ class BitArray : System.Collections.BitArray {
         }
         catch {
             $result.Value = $null
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            $Error | Write-NonTerminating
             return $false
         }
     }
 }
 
-<#
+<###########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-BitArray {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([BitArray])]

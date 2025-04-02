@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Stack.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Stack.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,19 +52,19 @@ This file "Stack.psm1" is part of "ContainersModule".
 #
 
 class Stack : System.Collections.Stack {
-    <#
+    <###########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName
 
-    <#
+    <###########################################
         Hidden Properties
-    #>
+    ##########################################>
     hidden [System.Collections.Stack]$Instance
 
-    <#
+    <###########################################
         Constructors
-    #>
+    ##########################################>
     Stack() {
         $this.Instance = [System.Collections.Stack]::new()
     }
@@ -72,16 +73,16 @@ class Stack : System.Collections.Stack {
         $this.Instance = [System.Collections.Stack]::new($capacity)
     }
 
-    <#
+    <###########################################
         Hidden Methods
-    #>
+    ##########################################>
     hidden [void] Initialize([hashtable]$Properties) {
         $this.ClassName = ([type]'System.Collections.Stack').Name
     }
 
-    <#
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [void]Clear() {
         $this.Instance.Clear()
     }
@@ -103,9 +104,9 @@ class Stack : System.Collections.Stack {
     }
 }
 
-<#
+<###########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-Stack {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([Stack])]

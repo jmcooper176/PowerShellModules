@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ConvertModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ConvertModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "ConvertModule.psm1" is part of "ConvertModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     ConvertFrom-Type
-#>
+##########################################>
 function ConvertFrom-Type {
     [CmdletBinding()]
     [OutputType([string])]
@@ -60,7 +61,8 @@ function ConvertFrom-Type {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -108,7 +110,7 @@ function ConvertFrom-Type {
         Converted the type to a string type name.  Returned the string type name.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
@@ -127,9 +129,9 @@ function ConvertFrom-Type {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Type
-#>
+##########################################>
 function ConvertTo-Type {
     [CmdletBinding()]
     [OutputType([type])]
@@ -141,7 +143,8 @@ function ConvertTo-Type {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -175,7 +178,7 @@ function ConvertTo-Type {
         Converted the type name to a type object.  Returned the type object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
@@ -194,9 +197,9 @@ function ConvertTo-Type {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Boolean
-#>
+##########################################>
 function ConvertTo-Boolean {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([bool])]
@@ -266,7 +269,8 @@ function ConvertTo-Boolean {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -448,7 +452,7 @@ function ConvertTo-Boolean {
         Converted the string to a boolean value.  Returned the boolean value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -473,9 +477,9 @@ function ConvertTo-Boolean {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Byte
-#>
+##########################################>
 function ConvertTo-Byte {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([byte])]
@@ -555,7 +559,8 @@ function ConvertTo-Byte {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -744,7 +749,7 @@ function ConvertTo-Byte {
         Converted the string to an unsigned byte value.  Returned the unsigned byte value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -769,9 +774,9 @@ function ConvertTo-Byte {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Char
-#>
+##########################################>
 function ConvertTo-Char {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([char])]
@@ -837,7 +842,8 @@ function ConvertTo-Char {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -998,7 +1004,7 @@ function ConvertTo-Char {
         Converted the string to a char value.  Returned the char value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1023,9 +1029,9 @@ function ConvertTo-Char {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-DateTime
-#>
+##########################################>
 function ConvertTo-DateTime {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([datetime])]
@@ -1132,7 +1138,7 @@ function ConvertTo-DateTime {
         Converted the string to a DateTime value.  Returned the DateTime value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1157,9 +1163,9 @@ function ConvertTo-DateTime {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Decimal
-#>
+##########################################>
 function ConvertTo-Decimal {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([decimal])]
@@ -1239,7 +1245,8 @@ function ConvertTo-Decimal {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -1423,7 +1430,7 @@ function ConvertTo-Decimal {
         Converted the string to a decimal value.  Returned the decimal value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1448,9 +1455,9 @@ function ConvertTo-Decimal {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Double
-#>
+##########################################>
 function ConvertTo-Double {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([double])]
@@ -1530,7 +1537,8 @@ function ConvertTo-Double {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -1714,7 +1722,7 @@ function ConvertTo-Double {
         Converted the string to a double value.  Returned the double value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1739,9 +1747,9 @@ function ConvertTo-Double {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Float
-#>
+##########################################>
 function ConvertTo-Float {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([float])]
@@ -1821,7 +1829,8 @@ function ConvertTo-Float {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -2004,7 +2013,7 @@ function ConvertTo-Float {
         Converted the string to a float value.  Returned the float value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2029,9 +2038,9 @@ function ConvertTo-Float {
     #>
 }
 
-<#
+<###########################################
     ConverTo-Integer
-#>
+##########################################>
 function ConvertTo-Integer {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([int])]
@@ -2116,7 +2125,8 @@ function ConvertTo-Integer {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -2305,7 +2315,7 @@ function ConvertTo-Integer {
         Converted the string to an integer value.  Returned the integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2330,9 +2340,9 @@ function ConvertTo-Integer {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Long
-#>
+##########################################>
 function ConvertTo-Long {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([long])]
@@ -2417,7 +2427,8 @@ function ConvertTo-Long {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -2606,7 +2617,7 @@ function ConvertTo-Long {
         Converted the string to an long integer value.  Returned the long integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2631,9 +2642,9 @@ function ConvertTo-Long {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Short
-#>
+##########################################>
 function ConvertTo-Short {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([short])]
@@ -2718,7 +2729,8 @@ function ConvertTo-Short {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -2907,7 +2919,7 @@ function ConvertTo-Short {
         Converted the string to a short integer value.  Returned the short integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2932,9 +2944,9 @@ function ConvertTo-Short {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-SignedByte
-#>
+##########################################>
 function ConvertTo-SignedByte {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([sbyte])]
@@ -3019,7 +3031,8 @@ function ConvertTo-SignedByte {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -3208,7 +3221,7 @@ function ConvertTo-SignedByte {
         Converted the string to an signed byte value.  Returned the signed byte value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3233,9 +3246,9 @@ function ConvertTo-SignedByte {
     #>
 }
 
-<#
+<###########################################
         ConvertTo-String
-#>
+##########################################>
 function ConvertTo-String {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([string])]
@@ -3313,7 +3326,8 @@ function ConvertTo-String {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -3507,7 +3521,7 @@ function ConvertTo-String {
         Converted the character to a string value.  Returned the string value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3532,9 +3546,9 @@ function ConvertTo-String {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-UnsignedInteger
-#>
+##########################################>
 function ConvertTo-UnsignedInteger {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([uint])]
@@ -3619,7 +3633,8 @@ function ConvertTo-UnsignedInteger {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -3808,7 +3823,7 @@ function ConvertTo-UnsignedInteger {
         Converted the string to an unsigned integer value.  Returned the unsigned integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3833,9 +3848,9 @@ function ConvertTo-UnsignedInteger {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-UnsignedLong
-#>
+##########################################>
 function ConvertTo-UnsignedLong {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([ulong])]
@@ -3920,7 +3935,8 @@ function ConvertTo-UnsignedLong {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -4109,7 +4125,7 @@ function ConvertTo-UnsignedLong {
         Converted the string to an unsigned long value.  Returned the unsigned long value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4134,9 +4150,9 @@ function ConvertTo-UnsignedLong {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-UnsignedShort
-#>
+##########################################>
 function ConvertTo-UnsignedShort {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([ushort])]
@@ -4221,7 +4237,8 @@ function ConvertTo-UnsignedShort {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -4395,7 +4412,7 @@ function ConvertTo-UnsignedShort {
         Converted the string to an unsigned short integer value.  Returned the unsigned short integer value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

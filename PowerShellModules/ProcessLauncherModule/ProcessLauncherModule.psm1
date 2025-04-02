@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ProcessLauncherModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ProcessLauncherModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -47,13 +48,13 @@ This file "ProcessLauncherModule.psm1" is part of "ProcessLauncherModule".
 #requires -version 7.4
 #requires -Module TypeAcceleratorModule
 
-<#
+<###########################################
     ProcessLauncher Class
-#>
+##########################################>
 class ProcessLauncher : System.IDisposable {
     <#
         Constructors
-    #>
+    ##########################################>
     ProcessLauncher([string]$FilePath) {
         $this.ClassName = Initialize-PSClass -Name [ProcessLauncher].Name
 
@@ -174,9 +175,9 @@ class ProcessLauncher : System.IDisposable {
         }
     }
 
-    <#
+    <###########################################
         Common Initializer
-    #>
+    ##########################################>
     [void] Initialize([string]$FileName, [hashtable]$Properties) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
@@ -200,10 +201,10 @@ class ProcessLauncher : System.IDisposable {
         else {
             $message = "$($MethodName) : The file '$($FileName)' does not exist or cannot be resolved."
             $newErrorRecordSplat = @{
-                Exception    = [System.IO.FileNotFoundException]::new($message, $FileName)
-                Message      = $message
-                Category     = 'ObjectNotFound'
-                TargetObject = $FileName
+                Exception     = [System.IO.FileNotFoundException]::new($message, $FileName)
+                Message       = $message
+                ErrorCategory = 'ObjectNotFound'
+                TargetObject  = $FileName
             }
 
             $er = New-ErrorRecord @newErrorRecordSplat
@@ -239,10 +240,10 @@ class ProcessLauncher : System.IDisposable {
                     if (-not [OperatingSystem]::IsWindows()) {
                         $message = "$($MethodName) : The 'Domain' property is only supported on the Windows operating systems."
                         $newErrorRecordSplat = @{
-                            Exception    = [System.NotSupportedException]::new($message)
-                            Message      = $message
-                            Category     = 'NotSupported'
-                            TargetObject = $this.startInfo.Domain
+                            Exception     = [System.NotSupportedException]::new($message)
+                            Message       = $message
+                            ErrorCategory = 'NotSupported'
+                            TargetObject  = $this.startInfo.Domain
                         }
 
                         $er = New-ErrorRecord $newErrorRecordSplat
@@ -256,10 +257,10 @@ class ProcessLauncher : System.IDisposable {
                         if (-not $this.startInfo.UserName.Contains('@')) {
                             $message = "$($MethodName) : The 'Domain' property is required when the 'UserName' property is not in UPN format."
                             $newErrorRecordSplat = @{
-                                Exception    = [System.ArgumentException]::new($message, 'Domain')
-                                Message      = $message
-                                Category     = 'InvalidArgument'
-                                TargetObject = $this.startInfo.Domain
+                                Exception     = [System.ArgumentException]::new($message, 'Domain')
+                                Message       = $message
+                                ErrorCategory = 'InvalidArgument'
+                                TargetObject  = $this.startInfo.Domain
                             }
 
                             $er = New-ErrorRecord @newErrorRecordSplat
@@ -334,10 +335,10 @@ class ProcessLauncher : System.IDisposable {
                     else {
                         $message = "$($MethodName) : The input file '$($_.Value)' does not exist or cannot be resolved."
                         $newErrorRecordSplat = @{
-                            Exception    = [System.IO.FileNotFoundException]::new($message, $_.Value)
-                            Message      = $message
-                            Category     = 'ObjectNotFound'
-                            TargetObject = $_.Value
+                            Exception     = [System.IO.FileNotFoundException]::new($message, $_.Value)
+                            Message       = $message
+                            ErrorCategory = 'ObjectNotFound'
+                            TargetObject  = $_.Value
                         }
 
                         $er = New-ErrorRecord @newErrorRecordSplat
@@ -444,10 +445,10 @@ class ProcessLauncher : System.IDisposable {
                 default {
                     $message = "$($MethodName) : The property '$($_.Key)' is not supported."
                     $newErrorRecordSplat = @{
-                        Exception    = [System.Management.Automation.PSArgumentException]::new($message, $_.Key)
-                        Message      = $message
-                        Category     = 'InvalidArgument'
-                        TargetObject = $_.Key
+                        Exception     = [System.Management.Automation.PSArgumentException]::new($message, $_.Key)
+                        Message       = $message
+                        ErrorCategory = 'InvalidArgument'
+                        TargetObject  = $_.Key
                     }
 
                     $er = New-ErrorRecord @newErrorRecordSplat
@@ -466,9 +467,9 @@ class ProcessLauncher : System.IDisposable {
         }
     }
 
-    <#
+    <###########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName = [ProcessLauncher].Name
     [bool]$EnableRaisingEvents
     [System.Text.StringBuilder]$Error
@@ -476,9 +477,9 @@ class ProcessLauncher : System.IDisposable {
     [System.Text.StringBuilder]$Output
     [TimeSpan]$Timeout
 
-    <#
+    <###########################################
         Public Script Property Definitions
-    #>
+    ##########################################>
     static [hashtable[]] $PropertyDefinitions = @(
         @{
             MemberType = 'ScriptProperty'
@@ -499,16 +500,16 @@ class ProcessLauncher : System.IDisposable {
         }
     )
 
-    <#
+    <###########################################
         Private Properties
-    #>
+    ##########################################>
     hidden [bool]$disposed = $false
     hidden [System.Diagnostics.Process]$processLauncher
     hidden [System.Diagnostics.ProcessStartInfo]$startInfo
 
-    <#
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [void]Add([string]$Argument) {
         Initialize-PSMethod -MyInvocation $MyInvocation
 
@@ -665,7 +666,7 @@ class ProcessLauncher : System.IDisposable {
         if ($this.Error.Length -gt 0) {
             foreach ($line in ($this.Error.ToString() -split [Environment]::NewLine)) {
                 if ($line.Contains('error', [StringComparison]::InvariantCultureIgnoreCase)) {
-                    Write-Error -Message $line -Category FromStdErr -TargetObject $line
+                    Write-Error -Message $line -ErrorCategory FromStdErr -TargetObject $line
                 }
                 elseif ($line.Contains('warn', [StringComparison]::InvariantCultureIgnoreCase)) {
                     Write-Warning -Message $line
@@ -693,9 +694,9 @@ class ProcessLauncher : System.IDisposable {
         }
     }
 
-    <#
+    <###########################################
         Public Static Methods
-    #>
+    ##########################################>
     static [void]Update([hashtable]$Properties, [string]$Key, [object]$Value) {
         Initialize-PSMethod -MyInvocation $MyInvocation
 
@@ -707,9 +708,9 @@ class ProcessLauncher : System.IDisposable {
         }
     }
 
-    <#
+    <###########################################
             Private Event Handlers
-    #>
+    ##########################################>
     hidden [void]TheProcess_Exited([object]$sender, [System.EventArgs]$e) {
         while (-not $sender.StandardOutput.EndOfStream) {
             $this.Output.AppendLine($sender.StandardOutput.ReadLine())
@@ -735,9 +736,9 @@ class ProcessLauncher : System.IDisposable {
     }
 } # class ProcessLauncher end
 
-<#
+<###########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-ProcessLauncher {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([ProcessLauncher])]

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="LogModule.tests.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="LogModule.tests.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -81,15 +82,16 @@ Describe -Name 'LogModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -136,7 +138,7 @@ Describe -Name 'LogModule' -Tag 'Module', 'Under', 'Test' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -172,10 +174,10 @@ Describe -Name 'LogModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
 
             # Act And Assert
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
@@ -185,10 +187,10 @@ Describe -Name 'LogModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {

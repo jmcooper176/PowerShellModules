@@ -1,7 +1,8 @@
-﻿<#
+﻿<###########################################
  =============================================================================
-<copyright file="ErrorRecordModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ErrorRecordModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -46,7 +47,7 @@ This file "ErrorRecordModule.psm1" is part of "ErrorRecordModule".
 
 <#
     Confirm-ArgumentInRange
-#>
+##########################################>
 function Confirm-ArgumentInRange {
     [CmdletBinding(DefaultParameterSetName = 'UsingInt')]
     [OutputType([bool])]
@@ -87,6 +88,7 @@ function Confirm-ArgumentInRange {
         ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
         ErrorCategory = 'LimitsExceeded'
         Exception     = $exception
+        Message       = $Message
         TargetObject  = $Condition
         TargetName    = $Parameter
     }
@@ -96,7 +98,7 @@ function Confirm-ArgumentInRange {
         $true | Write-Output
     }
     else {
-        New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+        New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
         $false | Write-Output
     }
 
@@ -136,7 +138,7 @@ function Confirm-ArgumentInRange {
         Index of 5 is in range [0, 9).
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -164,9 +166,9 @@ function Confirm-ArgumentInRange {
     #>
 }
 
-<#
+<###########################################
     Confirm-ArgumentNotEmpty
-#>
+##########################################>
 function Confirm-ArgumentNotEmpty {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -201,11 +203,12 @@ function Confirm-ArgumentNotEmpty {
             Exception     = $exception
             ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
             ErrorCategory = 'InvalidArgument'
+            Message       = $Message
             TargetObject  = $Value
             TargetName    = $Parameter
         }
 
-        New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+        New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
         $false | Write-Output
     }
     else {
@@ -214,9 +217,9 @@ function Confirm-ArgumentNotEmpty {
     }
 }
 
-<#
+<###########################################
     Confirm-ArgumentNotNull
-#>
+##########################################>
 function Confirm-ArgumentNotNull {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -250,20 +253,23 @@ function Confirm-ArgumentNotNull {
             Exception     = $exception
             ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
             ErrorCategory = 'InvalidArgument'
+            Message       = $Message
             TargetObject  = $Value
             TargetName    = $Parameter
         }
 
-        New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+        New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
+        $false | Write-Output
     }
     else {
         Write-Verbose -Message "$($CmdletName) : Parameter '$($Parameter)' is not null"
+        $true | Write-Output
     }
 }
 
-<#
+<###########################################
     Confirm-ArgumentNotNullOrEmpty
-#>
+##########################################>
 function Confirm-ArgumentNotNullOrEmpty {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -298,11 +304,12 @@ function Confirm-ArgumentNotNullOrEmpty {
             Exception     = $exception
             ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
             ErrorCategory = 'InvalidArgument'
+            Message       = $Message
             TargetObject  = $Value
             TargetName    = $Parameter
         }
 
-        New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+        New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
         $false | Write-Output
     }
     else {
@@ -311,9 +318,9 @@ function Confirm-ArgumentNotNullOrEmpty {
     }
 }
 
-<#
+<###########################################
     Confirm-ArgumentNotNullOrWhiteSpace
-#>
+##########################################>
 function Confirm-ArgumentNotNullOrWhiteSpace {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -348,11 +355,12 @@ function Confirm-ArgumentNotNullOrWhiteSpace {
             Exception     = $exception
             ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
             ErrorCategory = 'InvalidArgument'
+            Message       = $Message
             TargetObject  = $Value
             TargetName    = $Parameter
         }
 
-        New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+        New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
         $false | Write-Output
     }
     else {
@@ -361,9 +369,9 @@ function Confirm-ArgumentNotNullOrWhiteSpace {
     }
 }
 
-<#
+<###########################################
     Confirm-ArgumentValid
-#>
+##########################################>
 function Confirm-ArgumentValid {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -404,18 +412,19 @@ function Confirm-ArgumentValid {
             Exception     = $exception
             ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
             ErrorCategory = 'InvalidArgument'
+            Message       = $Message
             TargetObject  = $Value
             TargetName    = $Parameter
         }
 
-        New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+        New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
         $false | Write-Output
     }
 }
 
-<#
+<###########################################
     Confirm-CommandFound
-#>
+##########################################>
 function Confirm-CommandFound {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -429,7 +438,7 @@ function Confirm-CommandFound {
         [switch]
         $All,
 
-        [ValidateSet('Alias', 'All', 'Application', 'Cmdlet', 'ExternalScript', 'Filter', 'Function','Script')]
+        [ValidateSet('Alias', 'All', 'Application', 'Cmdlet', 'ExternalScript', 'Filter', 'Function', 'Script')]
         [System.Management.Automation.CommandTypes]
         $CommandType = 'All'
     )
@@ -453,11 +462,12 @@ function Confirm-CommandFound {
                         Exception     = $exception
                         ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'CommandNotFoundException' -Position $MyInvocation.ScriptLineNumber
                         ErrorCategory = 'ObjectNotFound'
+                        Message       = $message
                         TargetObject  = $_
                         TargetName    = 'Name'
                     }
 
-                    New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                    New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
                     $false | Write-Output
                 }
             }
@@ -474,11 +484,12 @@ function Confirm-CommandFound {
                         Exception     = $exception
                         ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'CommandNotFoundException' -Position $MyInvocation.ScriptLineNumber
                         ErrorCategory = 'ObjectNotFound'
+                        Message       = $message
                         TargetObject  = $_
                         TargetName    = 'Name and CommandType'
                     }
 
-                    New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                    New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
                     $false | Write-Output
                 }
             }
@@ -486,9 +497,9 @@ function Confirm-CommandFound {
     }
 }
 
-<#
+<###########################################
     Confirm-DirectoryFound
-#>
+##########################################>
 function Confirm-DirectoryFound {
     [CmdletBinding(DefaultParameterSet = 'UsingPath')]
     [OutputType([bool])]
@@ -524,25 +535,26 @@ function Confirm-DirectoryFound {
                         Exception     = $exception
                         ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'FileNotFoundException' -Position $MyInvocation.ScriptLineNumber
                         ErrorCategory = 'ObjectNotFound'
+                        Message       = $message
                         TargetObject  = $_
                         TargetName    = 'LiteralPath'
                     }
 
-                    New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                    New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
                     $false | Write-Output
                 }
             }
         }
         else {
-            $LiteralPath = $Path | Resolve-Path
+            $LiteralPath = $Path | Resolve-Path | Select-Object -ExpandProperty Path
             Confirm-DirectoryFound -LiteralPath $LiteralPath | Write-Output
         }
     }
 }
 
-<#
+<###########################################
     Confirm-FileFound
-#>
+##########################################>
 function Confirm-FileFound {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -568,18 +580,19 @@ function Confirm-FileFound {
             Exception     = $exception
             ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'FileNotFoundException' -Position $MyInvocation.ScriptLineNumber
             ErrorCategory = 'ObjectNotFound'
+            Message       = $message
             TargetObject  = $Path
             TargetName    = 'Path'
         }
 
-        New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+        New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
         $false | Write-Output
     }
 }
 
-<#
+<###########################################
     Format-CategoryActivity
-#>
+##########################################>
 function Format-CategoryActivity {
     [CmdletBinding()]
     [OutputType([string])]
@@ -595,9 +608,9 @@ function Format-CategoryActivity {
     ("Source '$($Exception.Source)' threw Exception '$($Exception.GetType().Name)'") | Write-Output
 }
 
-<#
+<###########################################
     Format-CategoryReason
-#>
+##########################################>
 function Format-CategoryReason {
     [CmdletBinding()]
     [OutputType([string])]
@@ -613,9 +626,9 @@ function Format-CategoryReason {
     ("Exception '$($Exception.GetType().Name)' thrown") | Write-Output
 }
 
-<#
+<###########################################
     Format-CategoryTargetName
-#>
+##########################################>
 function Format-CategoryTargetName {
     [CmdletBinding()]
     [OutputType([string])]
@@ -631,9 +644,9 @@ function Format-CategoryTargetName {
     ("TargetSite Name '$($Exception.TargetSite.Name)'") | Write-Output
 }
 
-<#
+<###########################################
     Format-ErrorId
-#>
+##########################################>
 function Format-ErrorId {
     [CmdletBinding()]
     [OutputType([string])]
@@ -659,9 +672,9 @@ function Format-ErrorId {
     ('{0}-{1}-{2:d2}' -f $Caller, $Name, $Position) | Write-Output
 }
 
-<#
+<###########################################
     Format-Exception
-#>
+##########################################>
 function Format-Exception {
     [CmdletBinding(DefaultParameterSetName = 'UsingErrorRecord')]
     [OutputType([string])]
@@ -726,7 +739,7 @@ function Format-Exception {
         The string representation of the Exception object is output to the pipeline.
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -748,9 +761,9 @@ function Format-Exception {
     #>
 }
 
-<#
+<###########################################
     Format-LastExitCode
-#>
+##########################################>
 function Format-LastExitCode {
     [CmdletBinding()]
     [OutputType([string])]
@@ -776,24 +789,28 @@ function Format-LastExitCode {
 
     if ($LASTEXITCODE -in $Success) {
         ("Last Exit Code '$($exitCode)' indicates success") | Write-Output
-    } elseif ($LASTEXITCODE -in $Failure) {
+    }
+    elseif ($LASTEXITCODE -in $Failure) {
         $message = "Last Exit Code '$($exitCode)' indicates failure"
 
         $newErrorRecordSplat = @{
-            Exception = [System.InvalidOperationException]::new($message)
-            ErrorId = Format-ErrorId -Caller $CmdletName -Name $Name -Position $MyInvocation.ScriptLineNumber
+            Exception     = [System.InvalidOperationException]::new($message)
+            ErrorId       = Format-ErrorId -Caller $CmdletName -Name $Name -Position $MyInvocation.ScriptLineNumber
             ErrorCategory = 'InvalidResult'
-            TargetObject = $Name
+            Message       = $message
+            TargetObject  = $Name
         }
 
-        New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+        New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
         $message | Write-Output
-    } elseif ($LASTEXITCODE -le $SystemError) {
+    }
+    elseif ($LASTEXITCODE -le $SystemError) {
         $exception = [System.Runtime.InteropServices.Marshal]::GetExceptionForHR($LASTEXITCODE)
 
         if ($null -ne $exception) {
             $exceptionName = $exception.GetType().Name
-        } else {
+        }
+        else {
             $exception = [System.InvalidOperationException]::new()
             $exceptionName = 'Unknown'
         }
@@ -801,15 +818,15 @@ function Format-LastExitCode {
         $message = "Last Exit Code '$($exitCode)' indicates either a Win32 or System Error"
 
         $newErrorRecordSplat = @{
-            Exception = $exception
-            ErrorId = Format-ErrorId -Caller $CmdletName -Name $exceptionName -Position $MyInvocation.ScriptLineNumber
+            Exception     = $exception
+            ErrorId       = Format-ErrorId -Caller $CmdletName -Name $exceptionName -Position $MyInvocation.ScriptLineNumber
             ErrorCategory = 'InvalidOperation'
-            Message = $message
-            TargetObject = $Name
-            TargetName = 'Name'
+            Message       = $message
+            TargetObject  = $Name
+            TargetName    = 'Name'
         }
 
-        New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+        New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
         $message | Write-Output
     }
 
@@ -845,7 +862,7 @@ function Format-LastExitCode {
         . . . "Last Exit Code '0x00000000|0' indicates success"
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINKS
         about_CommonParameters
@@ -873,9 +890,9 @@ function Format-LastExitCode {
     #>
 }
 
-<#
+<###########################################
     Format-RecommendedAction
-#>
+##########################################>
 function Format-RecommendedAction {
     [CmdletBinding()]
     [OutputType([string])]
@@ -891,9 +908,9 @@ function Format-RecommendedAction {
     ("Fix cause of exception '$($Exception.GetType().Name)'") | Write-Output
 }
 
-<#
+<###########################################
     Get-Exception
-#>
+##########################################>
 function Get-Exception {
     [CmdletBinding()]
     [OutputType([System.Exception])]
@@ -908,9 +925,9 @@ function Get-Exception {
     $ErrorRecord.Exception | Write-Output
 }
 
-<#
+<###########################################
     Get-FullyQualifiedErrorId
-#>
+##########################################>
 function Get-FullyQualifiedErrorId {
     [CmdletBinding()]
     [OutputType([string])]
@@ -925,9 +942,9 @@ function Get-FullyQualifiedErrorId {
     $ErrorRecord.FullyQualifiedErrorId | Write-Output
 }
 
-<#
+<###########################################
     Get-ErrorCategory
-#>
+##########################################>
 function Get-ErrorCategory {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.ErrorCategory])]
@@ -939,12 +956,35 @@ function Get-ErrorCategory {
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-    $ErrorRecord.CategoryInfo.Category | Write-Output
+    $ErrorRecord.CategoryInfo.ErrorCategory | Write-Output
 }
 
-<#
+<###########################################
+    Get-NameOf
+##########################################>
+function Get-NameOf {
+    [CmdletBinding()]
+    [OutputType(string)]
+    param (
+        [Parameter(Mandatory, ValuefromPipeline, ValueFromPipelineByPropertyName)]
+        [AllowNull()]
+        [object[]]
+        $Value
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        Write-Verbose -Message "$($CmdletName) : Getting First Variable Name with Value '$($Value)'"
+        Get-Variable -ValueOnly | Where-Object -FilterScript { $_ -eq $Value } | Select-Object -First 1 | Select-Object -ExpandProperty Name | Write-Output
+    }
+}
+
+<###########################################
     Get-TargetObject
-#>
+##########################################>
 function Get-TargetObject {
     [CmdletBinding()]
     [OutputType([System.Object])]
@@ -959,9 +999,9 @@ function Get-TargetObject {
     $ErrorRecord.TargetObject | Write-Output
 }
 
-<#
+<###########################################
     New-ErrorDetail
-#>
+##########################################>
 function New-ErrorDetail {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([System.Management.Automation.ErrorDetails])]
@@ -996,9 +1036,9 @@ function New-ErrorDetail {
     }
 }
 
-<#
+<###########################################
     New-ErrorRecord
-#>
+##########################################>
 function New-ErrorRecord {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingException')]
     [OutputType([System.Management.Automation.ErrorRecord])]
@@ -1014,7 +1054,7 @@ function New-ErrorRecord {
             'SecurityError', 'ProtocolError', 'ConnectionError',
             'AuthenticationError', 'LimitsExceeded', 'QuotaExceeded',
             'NotEnabled')]
-        [Alias('Category')]
+        [Alias('ErrorCategory')]
         [System.Management.Automation.ErrorCategory]
         $ErrorCategory,
 
@@ -1139,7 +1179,7 @@ function New-ErrorRecord {
 
         Allowed values are:
 
-          Error Category        Description
+          Error ErrorCategory        Description
           --------------        -----------
         * NotSpecified:         This should never be used.
         * OpenError:            An error occurred while opening a file.
@@ -1221,7 +1261,7 @@ function New-ErrorRecord {
         A new [errorrecord] object is created and stored in the variable `$ErrorRecord`.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1255,9 +1295,9 @@ function New-ErrorRecord {
     #>
 }
 
-<#
+<###########################################
     Test-ObjectNotFound
-#>
+##########################################>
 function Test-ObjectNotFound {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -1287,10 +1327,12 @@ function Test-ObjectNotFound {
     if (($PSCmdlet.ParameterSetName -eq 'UsingFilterScript') -and ($TargetObject | Where-Object -FilterScript $FilterScript)) {
         Write-Verbose -Message "$($CmdletName) : TargetObject found according to FilterScript"
         $false | Write-Output
-    } elseif ($PSCmdlet.ParameterSetName -eq 'UsingProperty' -and ($TargetObject | Where-Object -Property $Property -NE $Value)) {
+    }
+    elseif ($PSCmdlet.ParameterSetName -eq 'UsingProperty' -and ($TargetObject | Where-Object -Property $Property -NE $Value)) {
         Write-Verbose -Message "$($CmdletName) : TargetObject found because at least one instance has 'Property' != 'Value'"
         $false | Write-Output
-    } else {
+    }
+    else {
         Write-Warning -Message "$($CmdletName) : TargetObject not found"
         $true | Write-Output
     }
@@ -1333,7 +1375,7 @@ function Test-ObjectNotFound {
         . . . Target object not found
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINKS
         about_CommonParameters
@@ -1358,27 +1400,38 @@ function Test-ObjectNotFound {
     #>
 }
 
-<#
+<###########################################
     Write-Fatal
-#>
+##########################################>
 function Write-Fatal {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [System.Management.Automation.ErrorRecord]
         $ErrorRecord,
 
         [switch]
-        $Throw
+        $Throw,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+
+        if ($Throw.IsPresent -and -not $PSBoundParameters.ContainsKey('ErrorAction')) {
+            $ErrorActionPreference = 'Stop'
+        }
     }
 
     PROCESS {
         $ErrorRecord | ForEach-Object -Process {
-            $_ | Write-Error -ErrorAction Continue
+            $_ | Write-NonTerminating
 
             $target = ("Throwing Terminating Error for '{0}'" -f $_.Exception.GetType().Name)
 
@@ -1421,7 +1474,7 @@ function Write-Fatal {
         $ErrorRecord is written to the error stream and a soft terminating error is thrown.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1431,6 +1484,72 @@ function Write-Fatal {
 
         .LINK
         about_Throw
+
+        .LINK
+        ForEach-Object
+
+        .LINK
+        Initialize-PSCmdlet
+
+        .LINK
+        Write-Error
+    #>
+}
+
+<###########################################
+    Write-NonTerminating
+##########################################>
+function Write-NonTerminating {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [System.Management.Automation.ErrorRecord]
+        $ErrorRecord
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    }
+
+    PROCESS {
+        $ErrorRecord | ForEach-Object -Process {
+            Write-Verbose -Message ("$($CmdletName) : Non-Terminating Exception '{0}' with message '{1}'" -f $_.Exception.GetType().Name, $_.Exception.Message)
+            $_ | Write-Error -ErrorAction Continue
+        }
+    }
+
+    <#
+        .SYNOPSIS
+        Write [errorrecord] to the 'Error' stream.
+
+        .DESCRIPTION
+        `Write-NonTerminating` writes an [errorrecord] to the 'Error' stream.
+
+        .PARAMETER ErrorRecord
+        Specifies the [errorrecord] to write.
+
+        .INPUTS
+        [errorrecord]  `Write-Fatal` receives error records from the pipeline.
+
+        .OUTPUTS
+        None.  `Write-Fatal` does not output objects to the pipeline.
+
+        .EXAMPLE
+        PS> New-ErrorRecord -ErrorCategory 'InvalidOperation' -ErrorId 'MyError' -Exception ([System.InvalidOperationException]::new('An invalid operation was attempted')) | Write-NonTerminating
+        PS> $Error[0].Exception.GetType().Name -eq 'InvalidOperationException'
+
+        True
+
+        $ErrorRecord is written to the error stream.
+
+        .NOTES
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
+
+        .LINK
+        about_CommonParameters
+
+        .LINK
+        about_Functions_Advanced
 
         .LINK
         ForEach-Object

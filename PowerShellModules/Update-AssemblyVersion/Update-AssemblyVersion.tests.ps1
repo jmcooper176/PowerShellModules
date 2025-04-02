@@ -1,7 +1,7 @@
 ﻿<#
  =============================================================================
 <copyright file="ApplyVersionToAssemblies.tests.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -105,7 +105,7 @@ Describe -Name 'ApplyVersionToAssemblies.ps1' -Tag 'Script', 'Under', 'Test' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ScriptFileInfo -Path $ScriptPath | Select-Object -ExpandProperty 'Copyright'
 

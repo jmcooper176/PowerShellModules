@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Push-Package.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Push-Package.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "Push-Package.ps1" is part of "Push-Package".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -81,42 +82,44 @@ This file "Push-Package.ps1" is part of "Push-Package".
     Push NuGet package to a NuGet feed.
 #>
 
-[CmdletBinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
 param (
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string]
     $ApiKey,
 
-    [Parameter(Mandatory)]
-    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
-    [string]
+    [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+        ErrorMessage = "Package '{0}' is not a valid path leaf")]
+    [string[]]
     $Package,
 
     [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
+    [ValidateScript({ [uri]::IsWellformedUriString($_, 'Absolute') },
+        ErrorMessage = "Source '{0}' is not a valid, absolute PowerShell NuGet source")]
     [string]
-    $Source
+    $Source,
+
+    [switch]
+    $Force
 )
 
-Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
-Set-StrictMode -Version 3
+BEGIN {
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name ScriptName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
-$fileInfo = Get-Item -LiteralPath $Package
-$packageDir = $fileInfo.DirectoryName
-$packageName = $fileInfo.Name
+    if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+        $ConfirmPreference = 'None'
+    }
+}
 
-$nugetSplat = @(
-    'push',
-    "$($packageName)",
-    "$($ApiKey)",
-    '-Source', "$($Source)",
-    '-NonInteractive',
-    '-SkipDuplicate'
-)
-
-if ($PSCmdlet.ShouldProcess($packageName, $ScriptName)) {
-    Push-Location -LiteralPath $packageDir
-    nuget @nugetSplat
-    Pop-Location
+PROCESS {
+    $Package | Get-Item | ForEach-Object -Process {
+        if ($PSCmdlet.ShouldProcess($_.Name, $ScriptName)) {
+            Push-Location -LiteralPath $_.DirectoryName
+            & nuget push $_.Name $ApiKey -Source $Source -NonInteractive -SkipDuplicate
+            Pop-Location
+        }
+    }
 }

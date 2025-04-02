@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="EnvironmentModule.tests.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="EnvironmentModule.tests.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -88,15 +89,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -143,7 +145,7 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -179,10 +181,10 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
 
             # Act And Assert
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
@@ -192,10 +194,10 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -232,15 +234,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Add-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Add-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -301,15 +304,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Copy-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Copy-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -370,15 +374,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Get-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Get-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -439,15 +444,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Get-EnvironmentHashtable')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Get-EnvironmentHashtable')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -508,15 +514,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Join-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Join-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -577,15 +584,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'New-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'New-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -647,15 +655,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Remove-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Remove-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -716,15 +725,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Out-ArrayList')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Out-ArrayList')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -785,15 +795,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Out-Hashtable')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Out-Hashtable')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -854,15 +865,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Rename-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Rename-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -923,15 +935,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Set-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Set-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -992,15 +1005,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Split-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Split-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -1061,15 +1075,16 @@ Describe -Name 'EnvironmentModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Test-EnvironmentValue')
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModuleName, 'Test-EnvironmentValue')
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert

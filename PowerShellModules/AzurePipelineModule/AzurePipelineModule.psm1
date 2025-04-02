@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="AzurePipelineModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="AzurePipelineModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,14 +45,15 @@ This file "AzurePipelineModule.psm1" is part of "AzurePipelineModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Format-AddAttachment
-#>
+##########################################>
 function Format-AddAttachment {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -63,11 +65,18 @@ function Format-AddAttachment {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $AttachmentName
+        $AttachmentName,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -108,7 +117,7 @@ function Format-AddAttachment {
         ##vso[task.addattachment type=test;name=TestRun]
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -118,9 +127,9 @@ function Format-AddAttachment {
     #>
 }
 
-<#
+<###########################################
     Format-AddBuildTag
-#>
+##########################################>
 function Format-AddBuildTag {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -162,7 +171,7 @@ function Format-AddBuildTag {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -172,9 +181,9 @@ function Format-AddBuildTag {
     #>
 }
 
-<#
+<###########################################
     Format-ArtifactAssociate
-#>
+##########################################>
 function Format-ArtifactAssociate {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -245,7 +254,7 @@ function Format-ArtifactAssociate {
         the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -255,9 +264,9 @@ function Format-ArtifactAssociate {
     #>
 }
 
-<#
+<###########################################
     Format-SetEndpoint
-#>
+##########################################>
 function Format-SetEndpoint {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -332,7 +341,7 @@ function Format-SetEndpoint {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -342,9 +351,9 @@ function Format-SetEndpoint {
     #>
 }
 
-<#
+<###########################################
     Format-Complete
-#>
+##########################################>
 function Format-Complete {
     [CmdletBinding()]
     param (
@@ -387,7 +396,7 @@ function Format-Complete {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -397,9 +406,9 @@ function Format-Complete {
     #>
 }
 
-<#
+<###########################################
     Format-LogEntry
-#>
+##########################################>
 function Format-LogEntry {
     [CmdletBinding()]
     param (
@@ -442,7 +451,7 @@ function Format-LogEntry {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -452,9 +461,9 @@ function Format-LogEntry {
     #>
 }
 
-<#
+<###########################################
     Format-LogIssue
-#>
+##########################################>
 function Format-LogIssue {
     [CmdletBinding()]
     param (
@@ -468,7 +477,8 @@ function Format-LogIssue {
         [string]
         $Message,
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "BuildFile '{0}' is not a valid path container")]
         [string]
         $SourcePath,
 
@@ -546,7 +556,7 @@ function Format-LogIssue {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -556,14 +566,15 @@ function Format-LogIssue {
     #>
 }
 
-<#
+<###########################################
     Format-ArtifactUpload
-#>
+##########################################>
 function Format-ArtifactUpload {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -574,11 +585,18 @@ function Format-ArtifactUpload {
 
         [ValidateNotNullOrEmpty()]
         [string]
-        $ContainerFolder
+        $ContainerFolder,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -625,7 +643,7 @@ function Format-ArtifactUpload {
         PS> Format-ArtifactUpload -AttachmentName 'Installer' -FilePath 'C:\TEMP\Installer.msi' -ContainerFolder 'Installer'
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -635,20 +653,28 @@ function Format-ArtifactUpload {
     #>
 }
 
-<#
+<###########################################
     Format-UploadLog
-#>
+##########################################>
 function Format-UploadLog {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
-        $FilePath
+        $FilePath,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -679,7 +705,7 @@ function Format-UploadLog {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -689,9 +715,9 @@ function Format-UploadLog {
     #>
 }
 
-<#
+<###########################################
     Format-SetProgress
-#>
+##########################################>
 function Format-SetProgress {
     [CmdletBinding()]
     param (
@@ -738,7 +764,7 @@ function Format-SetProgress {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -748,9 +774,9 @@ function Format-SetProgress {
     #>
 }
 
-<#
+<###########################################
     Format-SetVariable
-#>
+##########################################>
 function Format-SetVariable {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -845,7 +871,7 @@ function Format-SetVariable {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -855,20 +881,28 @@ function Format-SetVariable {
     #>
 }
 
-<#
+<###########################################
     Format-UploadSummary
-#>
+##########################################>
 function Format-UploadSummary {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
-        $FilePath
+        $FilePath,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -903,7 +937,7 @@ function Format-UploadSummary {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -913,20 +947,28 @@ function Format-UploadSummary {
     #>
 }
 
-<#
+<###########################################
     Format-UploadFile
-#>
+##########################################>
 function Format-UploadFile {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param (
         [Parameter(Mandatory = $true, ValueFromPipeline)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
-        $FilePath
+        $FilePath,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -960,7 +1002,7 @@ function Format-UploadFile {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -970,20 +1012,28 @@ function Format-UploadFile {
     #>
 }
 
-<#
+<###########################################
     Format-PrependPath
-#>
+##########################################>
 function Format-PrependPath {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param (
         [Parameter(Mandatory = $true, ValueFromPipeline)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "BuildFile '{0}' is not a valid path container")]
         [string]
-        $Path
+        $Path,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -1019,7 +1069,7 @@ function Format-PrependPath {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -1029,9 +1079,9 @@ function Format-PrependPath {
     #>
 }
 
-<#
+<###########################################
     Format-UpdateBuildNumber
-#>
+##########################################>
 function Format-UpdateBuildNumber {
     [CmdletBinding(SupportsShouldProcess = $true)]
     param (
@@ -1094,7 +1144,7 @@ function Format-UpdateBuildNumber {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail
@@ -1104,9 +1154,9 @@ function Format-UpdateBuildNumber {
     #>
 }
 
-<#
+<###########################################
     Format-UpdateReleaseName
-#>
+##########################################>
 function Format-UpdateReleaseName {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -1147,7 +1197,7 @@ function Format-UpdateReleaseName {
         pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Show-Detail

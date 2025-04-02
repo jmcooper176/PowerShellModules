@@ -1,7 +1,7 @@
 ﻿<#
  =============================================================================
 <copyright file="Repo-Tasks.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -58,13 +58,13 @@ Function Init() {
     #Initialize Code
 }
 
-<#
+<###########################################
 We allow users to include any helper powershell scripts they would like to include in the current session
 Currently we support two ways to include helper powershell scripts
 1) psuserspreferences environment variable
 2) $env:USERPROFILE\psFiles directory
 We will include all *.ps1 files from any of the above mentioned locations
-#>
+##########################################>
 if (Test-Path -LiteralPath $env:psuserpreferences -PathType Container) {
     $userPsFileDir = $env:psuserpreferences
 }

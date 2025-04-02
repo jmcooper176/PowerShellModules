@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Build-Drop.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Build-Drop.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "Build-Drop.ps1" is part of "BuildScripts".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -127,7 +128,7 @@ function Get-ProductCode {
         return $Value
     }
     catch {
-        $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+        Write-Warning -Message $_.Exception.Message ; break
     }
 }
 
@@ -153,7 +154,7 @@ Set-Location -LiteralPath $CodePlexFork
 
 # Create a branch that's in the format of YYYY-MM-DDTHH-MM
 $date = Microsoft.PowerShell.Utility\Get-Date -Format u
-$branch = $date.Substring(0, $date.Length - 4).Replace(":", "-").Replace(" ", "T")
+$branch = $date.Substring(0, $date.Length - 4).Replace(":", "-").Replace(" ", "T");
 git checkout -b $branch
 
 # ==================================================================================================
@@ -163,11 +164,11 @@ git checkout -b $branch
 Set-Location -LiteralPath "Src\azuresdk\AzurePS"
 
 # Get the text for DH_AzurePS.xml
-$content = Get-Content -LiteralPath "DH_AzurePS.xml"
+$content = Get-Content "DH_AzurePS.xml"
 
 # $newContent will be the text for the updated DH_AzurePS.xml
 $newContentLength = $content.Length + 3
-$newContent = New-Object -TypeName string[] -ArgumentList $newContentLength
+$newContent = New-Object -TypeName string[] $newContentLength
 
 $VSFeedSeen = $False
 $PSGetSeen = $False
@@ -220,7 +221,7 @@ $tempFile = Get-Item "DH_AzurePS.xml"
 # ==================================================================================================
 
 # Get the text for WebProductList_AzurePS.xml
-$content = Get-Content -LiteralPath "WebProductList_AzurePS.xml"
+$content = Get-Content "WebProductList_AzurePS.xml"
 
 $PSGetSeen = $false
 
@@ -268,11 +269,11 @@ $tempFile = Get-Item "WebProductList_AzurePS.xml"
 $entryName = "$($ReleaseDate.Replace("-", "_"))_PowerShell"
 
 # If the folder already exists, we need to rename it to what RC version it is
-if (Test-Path -LiteralPath "$PathToShared\$entryName" -PathType Container) {
+if (Test-Path "$PathToShared\$entryName") {
     $id = 1
 
     # Keep incrementing the RC verison until we find the version we are on
-    while (Test-Path -LiteralPath "$PathToShared\$($entryName)_RC$id" -PathType Container) {
+    while (Test-Path "$PathToShared\$($entryName)_RC$id") {
         $id++
     }
 

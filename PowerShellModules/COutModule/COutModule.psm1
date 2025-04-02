@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="COutModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="COutModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "COutModule.psm1" is part of "COutModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Write-StdOut
-#>
+##########################################>
 function Write-StdOut {
     [CmdletBinding()]
     param (
@@ -96,9 +97,9 @@ function Write-StdOut {
     }
 }
 
-<#
+<###########################################
     Write-StdErr
-#>
+##########################################>
 function Write-StdErr {
     [CmdletBinding()]
     param (

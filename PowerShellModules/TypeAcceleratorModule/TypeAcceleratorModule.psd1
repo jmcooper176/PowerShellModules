@@ -26,7 +26,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Library of cmdlets/functions to register/un-register type accelerators.'

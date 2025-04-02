@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ZipModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ZipModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "ZipModule.psm1" is part of "ZipModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Expand-Entry
-#>
+##########################################>
 function Expand-Entry {
     [CmdletBinding()]
     param (
@@ -55,7 +56,8 @@ function Expand-Entry {
         $Entry,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "Folder '{0}' is not a valid path container")]
         [string]
         $Folder
     )
@@ -63,7 +65,7 @@ function Expand-Entry {
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-        Add-Type -Assembly System.IO.Compression.FileSystem
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
     }
 
     PROCESS {
@@ -77,22 +79,23 @@ function Expand-Entry {
     }
 }
 
-<#
+<###########################################
     Get-Entry
-#>
+##########################################>
 function Get-Entry {
     [CmdletBinding()]
     [OutputType([System.IO.Compress.ZipArchiveEntry[]])]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path)
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-        Add-Type -Assembly System.IO.Compression.FileSystem
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
     }
 
     PROCESS {

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="OrderedDictionary.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="OrderedDictionary.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,26 +52,26 @@ This file "OrderedDictionary.psm1" is part of "ContainersModule".
 #
 
 class OrderedDictionary : System.Collections.Specialized.OrderedDictionary {
-    <#
+    <###########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName
 
-    <#
+    <###########################################
         Hidden Properties
-    #>
+    ##########################################>
     hidden [System.Collections.Specialized.OrderedDictionary]$Instance
 
-    <#
+    <###########################################
         Constructors
-    #>
+    ##########################################>
     OrderedDictionary() {
         $this.Instance = [System.Collections.Specialized.OrderedDictionary]::new()
     }
 
-    <#
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [void]Add([object]$key, [object]$value) {
         $this.Instance.Add($key, $value)
     }
@@ -96,9 +97,9 @@ class OrderedDictionary : System.Collections.Specialized.OrderedDictionary {
     }
 }
 
-<#
+<###########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-OrderedDictionary {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([OrderedDictionary])]

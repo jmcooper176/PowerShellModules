@@ -1,0 +1,120 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{68cd6a9b-092e-4346-a5da-42de642191fe}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MyApplication</RootNamespace>
+    <AssemblyName>MyApplication</AssemblyName>
+    <Name>OctopusSnippets</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Accounts\" />
+    <Folder Include="BulkOperations\" />
+    <Folder Include="Certificates\" />
+    <Folder Include="Channels\" />
+    <Folder Include="Deployments\" />
+    <Folder Include="Environments\" />
+    <Folder Include="Events\" />
+    <Folder Include="Feeds\" />
+    <Folder Include="Lifecycles\" />
+    <Folder Include="ProjectGroups\" />
+    <Folder Include="Projects\" />
+    <Folder Include="Releases\" />
+    <Folder Include="REST\Accounts\" />
+    <Folder Include="REST\Administration\" />
+    <Folder Include="REST\Artifacts\" />
+    <Folder Include="REST\BuildInformation\" />
+    <Folder Include="REST\BulkOperations\" />
+    <Folder Include="REST\Certificates\" />
+    <Folder Include="REST\Channels\" />
+    <Folder Include="REST\DeploymentProcesses\" />
+    <Folder Include="REST\Deployments\" />
+    <Folder Include="REST\Environments\" />
+    <Folder Include="REST\Events\" />
+    <Folder Include="REST\Feeds\" />
+    <Folder Include="REST\License\" />
+    <Folder Include="REST\Lifecycles\" />
+    <Folder Include="REST\ManualInterventions\" />
+    <Folder Include="REST\Miscellaneous\" />
+    <Folder Include="REST\OctopusServerNodes\" />
+    <Folder Include="REST\ProjectGroups\" />
+    <Folder Include="REST\Projects\" />
+    <Folder Include="REST\Releases\" />
+    <Folder Include="REST\Reports\" />
+    <Folder Include="REST\Runbooks\" />
+    <Folder Include="REST\ScriptModules\" />
+    <Folder Include="REST\Spaces\" />
+    <Folder Include="REST\StepTemplates\" />
+    <Folder Include="REST\Tagsets\" />
+    <Folder Include="REST\Targets\" />
+    <Folder Include="REST\Tasks\" />
+    <Folder Include="REST\Teams\" />
+    <Folder Include="REST\Tenants\" />
+    <Folder Include="REST\Triggers\" />
+    <Folder Include="REST\UserRoles\" />
+    <Folder Include="REST\Users\" />
+    <Folder Include="REST\Variables\" />
+    <Folder Include="REST\Workers\" />
+    <Folder Include="Runbooks\" />
+    <Folder Include="ScriptModules\" />
+    <Folder Include="Spaces\" />
+    <Folder Include="StepTemplates\" />
+    <Folder Include="Tagsets\" />
+    <Folder Include="Targets\" />
+    <Folder Include="Tasks\" />
+    <Folder Include="Teams\" />
+    <Folder Include="Tenants\" />
+    <Folder Include="Users\" />
+    <Folder Include="Variables\" />
+    <Folder Include="REST\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AzureCSWaitForInstanceSwap.ps1" />
+    <Compile Include="ValidateRolesInMachine.ps1" />
+    <Compile Include="Accounts\**\*.ps1" />
+    <Compile Include="BulkOperations\**\*.ps1" />
+    <Compile Include="Certificates\**\*.ps1" />
+    <Compile Include="Channels\**\*.ps1" />
+    <Compile Include="DeploymentProcess\**\*.ps1" />
+    <Compile Include="Deployments\**\*.ps1" />
+    <Compile Include="Environments\**\*.ps1" />
+    <Compile Include="Events\**\*.ps1" />
+    <Compile Include="Feeds\**\*.ps1" />
+    <Compile Include="Lifecycles\**\*.ps1" />
+    <Compile Include="Machines\**\*.ps1" />
+    <Compile Include="ProjectGroups\**\*.ps1" />
+    <Compile Include="Projects\**\*.ps1" />
+    <Compile Include="Releases\**\*.ps1" />
+    <Compile Include="Runbooks\**\*.ps1" />
+    <Compile Include="ScriptModules\**\*.ps1" />
+    <Compile Include="Spaces\**\*.ps1" />
+    <Compile Include="StepTemplates\**\*.ps1" />
+    <Compile Include="Tagsets\**\*.ps1" />
+    <Compile Include="Targets\**\*.ps1" />
+    <Compile Include="Tasks\**\*.ps1" />
+    <Compile Include="Teams\**\*.ps1" />
+    <Compile Include="Tenants\**\*.ps1" />
+    <Compile Include="Users\**\*.ps1" />
+    <Compile Include="Variables\**\*.ps1" />
+    <Compile Include="REST\**\*.ps1" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" />
+</Project>

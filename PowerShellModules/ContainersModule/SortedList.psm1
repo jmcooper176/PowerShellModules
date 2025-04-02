@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="SortedList.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="SortedList.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,33 +52,33 @@ This file "SortedList.psm1" is part of "ContainersModule".
 #
 
 class SortedList : System.Collections.SortedList {
-    <#
+    <###########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName
 
-    <#
+    <###########################################
         Hidden Properties
-    #>
+    ##########################################>
     hidden [System.Collections.SortedList]$Instance
 
-    <#
+    <###########################################
         Constructors
-    #>
+    ##########################################>
     SortedList() {
         $this.Instance = [System.Collections.SortedList]::new()
     }
 
-    <#
+    <###########################################
         Hidden Methods
-    #>
+    ##########################################>
     hidden [void] Initialize([hashtable]$Properties) {
         $this.ClassName = ([type]'System.Collections.SortedList').Name
     }
 
-    <#
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [void]Add([object]$key, [object]$value) {
         $this.Instance.Add($key, $value)
     }
@@ -103,9 +104,9 @@ class SortedList : System.Collections.SortedList {
     }
 }
 
-<#
+<###########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-SortedList {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([SortedList])]

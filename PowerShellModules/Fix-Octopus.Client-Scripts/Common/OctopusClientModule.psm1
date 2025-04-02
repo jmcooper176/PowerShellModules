@@ -2,9 +2,9 @@
 # OctopusClientModule.psm1
 #
 
-<#
+<###########################################
     Get-AccountByName
-#>
+##########################################>
 function Get-AccountByName {
     [CmdletBinding()]
     param (
@@ -29,9 +29,9 @@ function Get-AccountByName {
     }
 }
 
-<#
+<###########################################
     Get-Action
-#>
+##########################################>
 function Get-Action {
     [CmdletBinding()]
     param (
@@ -50,9 +50,9 @@ function Get-Action {
     }
 }
 
-<#
+<###########################################
     Get-ActionProperty
-#>
+##########################################>
 function Get-ActionProperty {
     [CmdletBinding()]
     param (
@@ -76,9 +76,9 @@ function Get-ActionProperty {
     }
 }
 
-<#
+<###########################################
     Get-DeploymentProcess
-#>
+##########################################>
 function Get-DeploymentProcess {
     [CmdletBinding()]
     param (
@@ -101,9 +101,9 @@ function Get-DeploymentProcess {
     }
 }
 
-<#
+<###########################################
     Get-Project
-#>
+##########################################>
 function Get-Project {
     [CmdletBinding()]
     [OutputType([Octopus.Client.])]
@@ -139,9 +139,9 @@ function Get-Project {
     }
 }
 
-<#
+<###########################################
     Get-Step
-#>
+##########################################>
 function Get-Step {
     [CmdletBinding()]
     param (
@@ -160,9 +160,9 @@ function Get-Step {
     }
 }
 
-<#
+<###########################################
     Initialize-AzureServicePrincipal
-#>
+##########################################>
 function Initialize-AzureServicePrincipal {
     [CmdletBinding()]
     param (
@@ -231,9 +231,9 @@ function Initialize-AzureServicePrincipal {
     }
 }
 
-<#
+<###########################################
     New-AzureServicePrincipal
-#>
+##########################################>
 function New-AzureServicePrincipal {
     [CmdletBinding()]
     [OutputType([Octopus.Client.Model.Accounts.AzureServicePrincipalAccountResource])]
@@ -246,9 +246,9 @@ function New-AzureServicePrincipal {
     New-Object -TypeName Octopus.Client.Model.Accounts.AzureServicePrincipalAccountResource | Write-Output
 }
 
-<#
+<###########################################
     New-Client
-#>
+##########################################>
 function New-Client {
     [CmdletBinding()]
     [OutputType([Octopus.Client.OctopusClient])]
@@ -265,9 +265,9 @@ function New-Client {
     New-Object -TypeName Octopus.Client.OctopusClient -ArgumentList $Endpoint
 }
 
-<#
+<###########################################
     New-Endpoint
-#>
+##########################################>
 function New-Endpoint {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([Octopus.Client.OctopusServer.Endpoint])]
@@ -290,9 +290,9 @@ function New-Endpoint {
     New-Object -TypeName Octopus.Client.OctopusServerEndpoint -ArgumentList $OctopusUri, $ApiKey | Write-Output
 }
 
-<#
+<###########################################
     New-Repository
-#>
+##########################################>
 function New-Repository {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingEndpoint')]
     [OutputType(Octopus.Client.OctopusRepository)]
@@ -321,9 +321,9 @@ function New-Repository {
     }
 }
 
-<#
+<###########################################
     New-Space
-#>
+##########################################>
 function New-Space {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([])]

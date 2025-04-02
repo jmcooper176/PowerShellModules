@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Generate-Help.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Generate-Help.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "Generate-Help.ps1" is part of "Generate-Help".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -105,8 +106,8 @@ param(
 )
 
 $ResourceManagerFolders = Get-ChildItem -Directory -Path "$PSScriptRoot\..\src" |
-    Where-Object -Property Name -NE 'lib' | Where-Object -Property Name -NE 'Package' | Where-Object -Property Name -NE 'packages' } |
-        Where-Object -FilterScript { (Get-ChildItem -Directory -Path $_ -Filter *.psd1).Count -ne 0 }
+    Where-Object -FilterScript { $_.Name -ne 'lib' -and $_.Name -ne 'Package' -and $_.Name -ne 'packages' } |
+    Where-Object -FilterScript { (Get-ChildItem -Directory -Path $_ -Filter *.psd1).Count -ne 0 }
 
 & ($PSScriptRoot + "\PreloadToolDll.ps1")
 $UnfilteredHelpFolders = Get-ChildItem -Include 'help' -Path "$PSScriptRoot\..\artifacts" -Recurse -Directory |
@@ -114,52 +115,46 @@ $UnfilteredHelpFolders = Get-ChildItem -Include 'help' -Path "$PSScriptRoot\..\a
 
 $FilteredHelpFolders = $UnfilteredHelpFolders
 
-if (-not (Test-PSParameter -Name 'FilteredModules' -Parameters $PSBoundParameters))
-{
+if (-not (Test-PSParameter -Name 'FilteredModules' -Parameters $PSBoundParameters)) {
     $FilteredModulesList = $FilteredModules -split ';'
     $FilteredHelpFolders = @()
 
-    foreach ($HelpFolder in $UnfilteredHelpFolders)
-    {
-        if (($FilteredModulesList | Where-Object -FilterScript { $null -ne $HelpFolder -like "*\$($_)\*" }))
-        {
-            $FilteredHelpFolders += $HelpFolder
+    $UnfilteredHelpFolders | ForEach-Object -Process {
+        if ($null -ne ($FilteredModulesList | Where-Object -FilterScript { $_ -like "*\$($_)\*" })) {
+            $FilteredHelpFolders += $_
         }
     }
 }
 
 # ---------------------------------------------------------------------------------------------
 
-if ($ValidateMarkdownHelp.IsPresent)
-{
+if ($ValidateMarkdownHelp.IsPresent) {
     $SuppressedExceptionsPath = "$PSScriptRoot\StaticAnalysis\Exceptions"
 
-    if (-not (Test-Path -LiteralPath $SuppressedExceptionsPath -PathType Container))
-    {
+    if (!(Test-Path -Path $SuppressedExceptionsPath)) {
         New-Item -Path "$PSScriptRoot\..\artifacts" -Name "Exceptions" -ItemType Directory
     }
 
     $Exceptions = @()
 
-    foreach ($ServiceFolder in $ResourceManagerFolders)
-    {
-        $HelpFolder = (Get-ChildItem -LiteralPath $ServiceFolder.FullName -Filter "help" -Recurse -Directory)
+    $ResourceManagerFolders | ForEach-Object -Process {
+        $HelpFolder = (Get-ChildItem -Path $_.FullName -Filter "help" -Recurse -Directory)
 
-        if ($null -eq $HelpFolder)
-        {
-            $Exceptions += $ServiceFolder.Name
+        if ($null -eq $HelpFolder) {
+            $Exceptions += $_.Name
         }
     }
 
-    if ($Exceptions.Count -gt 0)
-    {
+    if ($Exceptions.Count -gt 0) {
         $Services = $Exceptions -Join ", "
 
+        $message = "No help folder found in the following services:  $Services"
         $newErrorRecordSplat = @{
-            Message = "No help folder found in the following services:  $Services"
-            TargetName = 'ValidateHelpIssues'
-            TargetType = 'Container'
-            ErrorId = Format-ErrorId -Caller $MyInvocation.MyCommand.Name -Name 'DirectoryNotFound' -Position $MyInvocation.ScriptLineNumber
+            Exception     = [System.IO.DirectoryNotFoundException]::new($message)
+            Message       = $message
+            TargetName    = 'ValidateHelpIssues'
+            TargetType    = 'Container'
+            ErrorId       = Format-ErrorId -Caller $MyInvocation.MyCommand.Name -Name 'DirectoryNotFoundException' -Position $MyInvocation.ScriptLineNumber
             ErrorCategory = 'ObjectNotFound'
         }
 
@@ -168,34 +163,33 @@ if ($ValidateMarkdownHelp.IsPresent)
 
     $NewExceptionsPath = "$PSScriptRoot\..\artifacts\StaticAnalysisResults"
 
-    if (!(Test-Path -LiteralPath $NewExceptionsPath -PathType Container))
-    {
+    if (!(Test-Path -Path $NewExceptionsPath)) {
         New-Item -Path "$PSScriptRoot\..\artifacts" -Name "StaticAnalysisResults" -ItemType Directory
     }
 
-    Copy-Item -LiteralPath "$PSScriptRoot\HelpGeneration\Exceptions\ValidateHelpIssues.csv" -Destination $SuppressedExceptionsPath
+    Copy-Item -Path "$PSScriptRoot\HelpGeneration\Exceptions\ValidateHelpIssues.csv" -Destination $SuppressedExceptionsPath
     New-Item -Path $NewExceptionsPath -Name ValidateHelpIssues.csv -ItemType File -Force | Out-Null
     Add-Content "$NewExceptionsPath\ValidateHelpIssues.csv" "Target,Description"
-    $FilteredHelpFolders | foreach { Test-AzMarkdownHelp $_.FullName $SuppressedExceptionsPath $NewExceptionsPath }
+    $FilteredHelpFolders | ForEach-Object -Process { Test-AzMarkdownHelp $_.FullName $SuppressedExceptionsPath $NewExceptionsPath }
     $Exceptions = Import-Csv "$NewExceptionsPath\ValidateHelpIssues.csv"
 
-    if ($Exceptions.Length -gt 0)
-    {
+    if (($Exceptions | Measure-Object).Count -gt 0) {
         $Exceptions | Format-List
 
+        $message = 'A markdown file containing the help for a cmdlet is incomplete.'
         $newErrorRecordSplat = @{
-            Message = 'A markdown file containing the help for a cmdlet is incomplete.'
-            TargetName = 'ValidateHelpIssues'
-            TargetType = 'File'
-            ErrorId = Format-ErrorId -Caller $MyInvocation.MyCommand.Name -Name "WriteError" -Position $MyInvocation.ScriptLineNumber
-            ErrorCategory = 'WriteError'
+            Exception         = [System.IO.IOException]::new($message)
+            Message           = $message
+            TargetName        = 'ValidateHelpIssues'
+            TargetType        = 'File'
+            ErrorId           = Format-ErrorId -Caller $MyInvocation.MyCommand.Name -Name 'IOException' -Position $MyInvocation.ScriptLineNumber
+            ErrorCategory     = 'WriteError'
             RecommendedAction = 'Please check the exceptions provided for more details.'
         }
 
         New-ErrorRecord @newErrorRecordSplat | Write-Fatal
     }
-    else
-    {
+    else {
         New-Item -Path $NewExceptionsPath -Name NoHelpIssues -ItemType File -Force | Out-Null
         Remove-Item -Path "$SuppressedExceptionsPath\ValidateHelpIssues.csv" -Force
         Remove-Item -Path "$NewExceptionsPath\ValidateHelpIssues.csv" -Force
@@ -204,27 +198,21 @@ if ($ValidateMarkdownHelp.IsPresent)
 
 # We need to define new version of module instead of hardcode here
 $GeneratedModuleListPath = [System.IO.Path]::Combine($PSScriptRoot, "GeneratedModuleList.txt")
-$GeneratedModules = Get-Content -LiteralPath $GeneratedModuleListPath
+$GeneratedModules = Get-Content $GeneratedModuleListPath
 
-if ($GenerateMamlHelp.IsPresent)
-{
-    foreach ($HelpFolder in $FilteredHelpFolders)
-    {
-        $ModuleName = ""
+if ($GenerateMamlHelp.IsPresent) {
+    $FilteredHelpFolders | ForEach-Object -Process {
+        $ModuleName = [string]::Empty
 
-        if($HelpFolder -match "(?s)artifacts\\$BuildConfig\\(?<module>.+)\\help")
-        {
+        if ($_ -match '(?s)artifacts\\$BuildConfig\\(?<module>.+)\\help') {
+            $ModuleName = $Matches["module"]
+        }
+        elseif ($_ -match "(?s)artifacts/$BuildConfig/(?<module>.+)/help") {
             $ModuleName = $Matches["module"]
         }
 
-        if($HelpFolder -match "(?s)artifacts/$BuildConfig/(?<module>.+)/help")
-        {
-            $ModuleName = $Matches["module"]
-        }
-
-        if($GeneratedModules -notcontains $ModuleName)
-        {
-            New-AzMamlHelp $HelpFolder.FullName
+        if ($GeneratedModules -notcontains $ModuleName) {
+            New-AzMamlHelp $_.FullName
         }
     }
 }

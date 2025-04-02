@@ -2,7 +2,7 @@
 extensions: .c .cs .cpp .cxx .fs .h .js .php .rc .ts
 // ---------------------------------------------------------------------------
 // <copyright file="%FileName%" company="John Merryweather Cooper">
-//     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper. 
+//     Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
 //    All Rights Reserved.
 //
 //     Redistribution and use in source and binary forms, with or without
@@ -45,10 +45,10 @@ extensions: .c .cs .cpp .cxx .fs .h .js .php .rc .ts
 // ---------------------------------------------------------------------------
 
 extensions: .aspx .ascx
-<%-- 
+<%--
 ==============================================================================
 <copyright file="%FileName%" company="John Merryweather Cooper">
-     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
+     Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
     All Rights Reserved.
 
      Redistribution and use in source and binary forms, with or without
@@ -94,7 +94,7 @@ This file "%FileName%" is part of "%Project%".
 extensions: .vb
 '=============================================================================
 ' <copyright file="%FileName%" company="John Merryweather Cooper">
-'     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
+'     Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
 '     All Rights Reserved.
 '
 '     Redistribution and use in source and binary forms, with or without
@@ -140,7 +140,7 @@ extensions: .ps1 .psm1 .psd1
 <#
  =============================================================================
 <copyright file="%FileName%" company="John Merryweather Cooper">
-    Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
+    Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -186,7 +186,7 @@ This file "%FileName%" is part of "%Project%".
 extensions: .yml, .yaml
 # =============================================================================
 # <copyright file="%FileName%" company="John Merryweather Cooper">
-#     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
+#     Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
 #     All Rights Reserved.
 #
 #     Redistribution and use in source and binary forms, with or without
@@ -232,7 +232,7 @@ extensions:  .config .ps1xml .xhtml .xml .xsd .xsl .xslt .wxi .wxs .wxl
 <!--
 ==============================================================================
 <copyright file="%FileName%" company="John Merryweather Cooper">
-     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
+     Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
      All Rights Reserved.
 
      Redistribution and use in source and binary forms, with or without
@@ -278,7 +278,7 @@ This fIle "%FileName%" is part of "%Project%".
 extensions: .cshtml .vbhtml
 @* ---------------------------------------------------------------------------
 <copyright file="%FileName%" company="John Merryweather Cooper">
-     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
+     Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
      All Rights Reserved.
 
      Redistribution and use in source and binary forms, with or without
@@ -323,7 +323,7 @@ This file "%FileName%" is part of "%Project%".
 extensions: .css
 /* ---------------------------------------------------------------------------
 <copyright file="%FileName%" company="John Merryweather Cooper">
-     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
+     Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
      All Rights Reserved.
 
      Redistribution and use in source and binary forms, with or without
@@ -369,7 +369,7 @@ extensions: .py
 '''
 ---------------------------------------------------------------------------
 <copyright file="%FileName%" company="John Merryweather Cooper">
-    Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
+    Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -415,7 +415,7 @@ This fIle "%FileName%" is part of "%Project%".
 extensions: .ada. adb. ads .sql
 -- ---------------------------------------------------------------------------
 -- <copyright file="%FileName%" company="John Merryweather Cooper">
---     Copyright (c) 2022-%CurrentYear%, John Merryweather Cooper.
+--     Copyright © 2022, 2023, 2024, %CurrentYear%, John Merryweather Cooper.
 --     All Rights Reserved.
 --
 --     Redistribution and use in source and binary forms, with or without

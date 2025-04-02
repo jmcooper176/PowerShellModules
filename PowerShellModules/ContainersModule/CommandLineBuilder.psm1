@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="CommandLineBuilder.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="CommandLineBuilder.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,89 +45,162 @@ This file "CommandLineBuilder.psm1" is part of "ContainersModule".
 =============================================================================
 #>
 
-#require -version 7.4
+#require -version 5.1
 #require -Module ErrorRecordModule
 #require -Module PowerShellModule
+#require -Module TypeAcceleratorModule
 
 #
 # CommandLineBuilder.psm1 -- class
 #
 
-class CommandLineBuilder : System.Text.StringBuilder {
-    <#
+class CommandLineBuilder : System.IDisposable {
+    <###########################################
         Properties
-    #>
+    ##########################################>
     [string]$ClassName
-
-    [System.Text.StringBuilder]$CommandLine
 
     [bool]$QuoteDoubleHyphens
 
-    [bool]$QuoteHyphen
-
     [bool]$UseNewLineSeparator
 
-    <#
+    <###########################################
+        Hidden Properties
+    ##########################################>
+    hidden [Microsoft.Build.Utilities.CommandLineBuilder]$Builder
+
+    hidden [bool]$Disposed
+
+    <###########################################
         Constructors
-    #>
+    ##########################################>
     CommandLineBuilder() {
-        $this.CommandLine = [System.Text.StringBuilder]::new()
+        $this.Builder = [Microsoft.Build.Utilities.CommandLineBuilder]::new()
 
-        $this.QuoteDoubleHyphens = $false
-        $this.QuoteHypen = $true
-        $this.UseNewLineSeparator = $false
+        $initializeHash = @{
+            QuotedDoubleHypens  = $false
+            UseNewLineSeparator = $false
+        }
+
+        $this.Initialize($initializeHash)
     }
 
-    CommandLineBuilder($UseNewLineSeparator) {
-        $this.CommandLine = [System.Text.StringBuilder]::new()
+    CommandLineBuilder($QuoteDoubleHyphens, $UseNewLineSeparator) {
+        $this.Builder = [Microsoft.Build.Utilities.CommandLineBuilder]::new($QuoteDoubleHyphens, $UseNewLineSeparator)
 
-        $this.QuoteDoubleHyphens = $false
-        $this.QuoteHypen = $true
-        $this.UseNewLineSeparator = $UseNewLineSeparator
+        $initializeHash = @{
+            QuotedDoubleHypens  = $QuoteDoubleHyphens
+            UseNewLineSeparator = $UseNewLineSeparator
+        }
+
+        $this.Initialize($initializeHash)
     }
 
-    CommandLineBuilder($UseNewLineSeparator, $QuoteDoubleHyphens) {
-        $this.CommandLine = [System.Text.StringBuilder]::new()
+    CommandLineBuilder($QuoteDoubleHyphens) {
+        $this.Builder = [Microsoft.Build.Utilities.CommandLineBuilder]::new($QuoteDoubleHyphens)
 
-        $this.UseNewLineSeparator = $UseNewLineSeparator
-        $this.QuoteDoubleHypens = $QuoteDoubleHyphens
+        $initializeHash = @{
+            QuotedDoubleHypens  = $QuoteDoubleHyphens
+            UseNewLineSeparator = $false
+        }
+
+        $this.Initialize($initializeHash)
     }
 
-    CommandLineBuilder($UseNewLineSeparator, $QuoteDoubleHyphens, $QuoteHyphen) {
-        $this.CommandLine = [System.Text.StringBuilder]::new()
+    CommandLineBuilder([hashtable]$Properties) {
+        if ($Properties.ContainsKey('QuoteDoubleHyphens') -and $Properties.ContainsKey('UseNewLineSeparator')) {
+            $this.Builder = [Microsoft.Build.Utilities.CommandLineBuilder]::new($Properties['QuoteDoubleHyphens'], $Properties['UseNewLineSeparator'])
 
-        $this.UseNewLineSeparator = $UseNewLineSeparator
-        $this.QuoteDoubleHypens = $QuoteDoubleHyphens
-        $this.QuoteHypen = $QuoteHyphen
+            $this.Initialize($Properties)
+        }
+        else {
+            $message = "$($this.ClassName) : 'Properties' passed to this constructor must contain 'QuoteDoubleHyphens' and 'UseNewLineSeparator'"
+            $newErrorRecordSplat = @{
+                Exception     = [System.ArgumentException]::new($message, 'Properties')
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $this.ClassName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                Message       = $message
+                TargetObject  = $Properties
+            }
+
+            New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+        }
     }
 
-    <#
+    <###########################################
         Hidden Methods
-    #>
+    ##########################################>
     hidden [void] Initialize([hashtable] $Properties) {
         $this.ClassName = Initialize-PSClass -Name 'CommandLineBuilder'
+
+        if ($null -eq $Properties) {
+            $message = "$($this.ClassName) : 'Properties' is null"
+            $newErrorRecordSplat = @{
+                Exception     = [System.ArgumentNullException]::new('Properties', $message)
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $this.ClassName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
+                Message       = $message
+                TargetObject  = $Properties
+            }
+
+            New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+        }
+
+        if ($Properties.Count -ne 2) {
+            $message = "$($this.ClassName) : 'Properties' must have 'Count' equal to 2"
+            $newErrorRecordSplat = @{
+                Exception     = [System.ArgumentException]::new($message, 'Properties')
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $this.ClassName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                Message       = $message
+                TargetObject  = $Properties
+            }
+
+            New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+        }
+
+        if ($Properties.ContainsKey('QuoteDoubleHyphens')) {
+            $this.QuoteDoubleHyphens = $Properties['QuoteDoubleHyphens']
+        }
+
+        if ($Properties.ContainsKey('UseNewLineSeparator')) {
+            $this.UseNewLineSeparator = $Properties['UseNewLineSeparator']
+        }
     }
 
-    <#
+    hidden [void] Dispose([bool]$disposing) {
+        if ($this.Disposed) {
+            return
+        }
+
+        if ($disposing) {
+            $this.Buffer.CommandLine.Clear()
+            $this.Buffer = $null
+        }
+
+        $this.Disposed = $true
+    }
+
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [void] AppendArgument([string]$argument) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
-        if ([string]::IsNullOrWhiteSpace($argument)) {
+        if (-not [string]::IsNullOrWhiteSpace($argument)) {
             $this.AppendSpaceIfNotEmpty()
-
             $this.AppendTextWithQuoting($argument)
         }
         else {
             $message = "$($MethodName) : InvalidArgument : Parameter 'argument' is null, empty, or all whitespace"
 
             $newErrorRecordSplat = @{
-                Category     = 'InvalidArgument'
-                ErrorId      = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
-                Exception    = [System.ArgumentNullException]::new('argument', $message)
-                TargetObject = $argument
-                TargetName   = 'argument'
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
+                Exception     = [System.ArgumentNullException]::new('argument', $message)
+                Message       = $message
+                TargetObject  = $argument
+                TargetName    = 'argument'
             }
 
             New-ErrorRecord @newErrorRecordSplat | Write-Fatal
@@ -146,7 +220,6 @@ class CommandLineBuilder : System.Text.StringBuilder {
 
         if ($condition) {
             $this.AppendArgument($argument)
-
             $this.AppendTextWithQuoting($value)
         }
     }
@@ -155,12 +228,9 @@ class CommandLineBuilder : System.Text.StringBuilder {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
         if ($condition) {
-            $this.AppendSpaceIfNotEmpty()
-
             if ($null -ne $arguments -and $arguments.Length -gt 0) {
                 [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('item', $argument)
                 $this.AppendArgument($argument)
-
                 $this.AppendTextWithQuoting($format -f $arguments)
             }
             else {
@@ -190,7 +260,6 @@ class CommandLineBuilder : System.Text.StringBuilder {
 
         if ($null -ne $item) {
             $this.AppendSpaceIfNotEmpty()
-
             $this.AppendTextWithQuoting($item.FullName)
         }
     }
@@ -203,9 +272,9 @@ class CommandLineBuilder : System.Text.StringBuilder {
 
             $accumulator = [System.Collections.ArrayList]::new()
 
-            foreach ($item in $items) {
-                [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('item', $item.FullName)
-                $accumulator.Add([CommandLineBuilder]::WithQuotingText($item.FullName))
+            $items | ForEach-Object -Process {
+                [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('item', $_.FullName)
+                $accumulator.Add([CommandLineBuilder]::WithQuotingText($_.FullName))
             }
 
             $this.AppendTextUnquoted($accumulator -join $separator)
@@ -261,9 +330,9 @@ class CommandLineBuilder : System.Text.StringBuilder {
 
             $accumulator = [System.Collections.ArrayList]::new()
 
-            foreach ($item in $items) {
-                [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('item', $item.FullName)
-                $accumulator.Add([CommandLineBuilder]::WithQuotingText($item.FullName))
+            $items | ForEach-Object -Process {
+                [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('item', $_.FullName)
+                $accumulator.Add([CommandLineBuilder]::WithQuotingText($_.FullName)) | Out-Null
             }
 
             $this.AppendTextUnquoted($accumulator -join $separator)
@@ -284,8 +353,8 @@ class CommandLineBuilder : System.Text.StringBuilder {
         if (($null -ne $filepaths) -and ($filepaths.Length -gt 0)) {
             $accumulator = [System.Collections.ArrayList]::new()
 
-            foreach ($filepath in $filepaths) {
-                $accumulator.Add([System.IO.FileInfo]::new($filepath))
+            $filePaths | ForEach-Object -Process {
+                $accumulator.Add([System.IO.FileInfo]::new($_)) | Out-Null
             }
 
             $this.AppendFileNamesIfNotNull($accumulator, $separator)
@@ -295,9 +364,9 @@ class CommandLineBuilder : System.Text.StringBuilder {
     [void] AppendFileNameWithQuoting([string]$filename) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
-        if ([string]::IsNullOrWhiteSpace($filename)) {
+        if (-not [string]::IsNullOrWhiteSpace($filename)) {
             if ($filename.StartsWith('-')) {
-                $this.CommandLine.Append('.').Append([System.IO.Path]::DirectorySeparatorChar)
+                $this.Builder.CommandLine.Append('.').Append([System.IO.Path]::DirectorySeparatorChar)
             }
 
             [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('filename', $filename)
@@ -308,12 +377,12 @@ class CommandLineBuilder : System.Text.StringBuilder {
     [void] AppendSpaceIfNotEmpty() {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
-        if (-not ([CommandLineBuilder]::IsNullOrEmpty($this.CommandLine) -or $this.CommandLine.LastCharacterIsWhiteSpace())) {
+        if (-not ([CommandLineBuilder]::IsNullOrEmpty($this.Builder.CommandLine) -or [CommandLineBuilder]::LastCharacterIsWhiteSpace($this.Builder.CommandLine))) {
             if ($this.UseNewLineSeparator) {
-                $this.CommandLine.AppendLine()
+                $this.Builder.CommandLine.AppendLine()
             }
             else {
-                $this.CommandLine.Append(' ')
+                $this.Builder.CommandLine.Append(' ')
             }
         }
     }
@@ -331,11 +400,12 @@ class CommandLineBuilder : System.Text.StringBuilder {
             $message = "$($MethodName) : InvalidArgument : Parameter 'switch' is null, empty, or all whitespace"
 
             $newErrorRecordSplat = @{
-                Category     = 'InvalidArgument'
-                ErrorId      = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
-                Exception    = [System.ArgumentNullException]::new('switch', $message)
-                TargetObject = $switch
-                TargetName   = 'switch'
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentNullException' -Position $MyInvocation.ScriptLineNumber
+                Exception     = [System.ArgumentNullException]::new('switch', $message)
+                Message       = $message
+                TargetObject  = $switch
+                TargetName    = 'switch'
             }
 
             New-ErrorRecord @newErrorRecordSplat | Write-Fatal
@@ -355,7 +425,6 @@ class CommandLineBuilder : System.Text.StringBuilder {
 
         if ($condition) {
             $this.AppendSwitch($switch)
-
             $this.AppendTextWithQuoting($value)
         }
     }
@@ -365,7 +434,6 @@ class CommandLineBuilder : System.Text.StringBuilder {
 
         if ($condition) {
             $this.AppendSwitch($switch)
-
             $this.AppendTextWithQuoting($format -f $arguments)
         }
     }
@@ -375,7 +443,6 @@ class CommandLineBuilder : System.Text.StringBuilder {
 
         if (-not [string]::IsNullOrWhiteSpace($value)) {
             $this.AppendSwitch($switch)
-
             $this.AppendTextWithQuoting($value)
         }
     }
@@ -399,9 +466,9 @@ class CommandLineBuilder : System.Text.StringBuilder {
 
             $this.AppendSwitch($switch)
 
-            foreach ($value in $values) {
-                [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('value', $value)
-                $accumulator.Add([CommandLineBuilder]::UnquoteText($value))
+            $values | ForEach-Object -Process {
+                [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('value', $_)
+                $accumulator.Add([CommandLineBuilder]::UnquoteText($_))
             }
 
             $this.AppendTextUnquoted($accumulator -join $separator)
@@ -424,82 +491,76 @@ class CommandLineBuilder : System.Text.StringBuilder {
     [void] AppendTextQuoted([string]$text) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
-        $this.CommandLine.Append([CommandLineBuilder]::QuoteText($text))
+        $this.Builder.CommandLine.Append([CommandLineBuilder]::QuoteText($text))
     }
 
     [void] AppendTextUnquoted([string]$text) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
-        $this.CommandLine.Append([CommandLineBuilder]::UnquoteText($text))
+        $this.Builder.CommandLine.Append([CommandLineBuilder]::UnquoteText($text))
+    }
+
+    [void] Dispose() {
+        $this.Dispose($true)
     }
 
     [char] GetLastCharacter() {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
-        if ($this.CommandLine.Length -gt 0) {
-            return $this.CommandLine[$this.CommandLine.Length - 1]
+        if ($this.Builder.Length -gt 0) {
+            return $this.Builder.CommandLine[$this.Builder.Length - 1]
         }
         else {
             return [char]::MinValue
         }
     }
 
-    [bool] LastCharacterIsWhiteSpace() {
-        $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
-
-        if (-not [CommandLineBuilder]::IsNotNullOrEmpty($this.CommandLine)) {
-            return [char]::IsWhiteSpace($this.CommandLine[$this.CommandLine.Length - 1])
-        }
-        else {
-            return $false
-        }
-    }
-
     [bool] TextRequiresQuoting([string]$text) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
-        if ($text -match '\s') {
-            return $true
-        }
-        elseif ($text.Contains('(') -or $text.Contains(')')) {
-            return $true
-        }
-        elseif ($text.Contains('[') -or $text.Contains(']')) {
-            return $true
-        }
-        elseif ($text.Contains('{') -or $text.Contains('}')) {
-            return $true
-        }
-        elseif ($this.QuoteDoubleHypens -and $text.Contains('--')) {
-            return $true
-        }
-        elseif ($this.QuoteHypen -and $text.Contains('-')) {
-            return $true
-        }
-        elseif ($text.Contains('=') -or $text.Contains('+')) {
-            return $true
-        }
-        elseif ($text.Contains('`') -or $text.Contains('~')) {
-            return $true
-        }
-        else {
-            switch ($text) {
-                { $_.StartsWith('-') } { return $true }
-                { $_.StartsWith('/') } { return $true }
-                { $_.Contains('&') } { return $true }
-                { $_.Contains('^') } { return $true }
-                { $_.Contains(';') } { return $true }
-                { $_.Contains('!') } { return $true }
-                { $_.Contains("'") } { return $true }
-
-                { $_.Contains('"') } {
-                    [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('text', $text)
-                    return $true
-                }
-
-                { $_.Contains(',') } { return $true }
-                default { return $false }
+        if ([System.Text.Encoding.UTF8]::GetByteCount($text) -gt $text.Length) {
+            $message = "$($MethodName) : Multi-byte character string detected"
+            $newErrorRecordSplat = @{
+                Exception     = [System.ArgumentOutOfRangeException]::new('text', $text, $message)
+                ErrorCategory = 'InvalidArgument'
+                ErrorId       = Format-ErrorId -Caller $MethodName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
+                Message       = $message
+                TargetObject  = $text
             }
+
+            New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+        }
+
+        switch ($text) {
+            { $_ -match '\s' } { return $true }
+            { $_.Contains([System.IO.Path]::AltDirectorySeparatorChar) } { return $true }
+            { $_.Contains([System.IO.Path]::VolumeSeparatorChar) } { return $true }
+            { $_.Contains('?') } { return $true }
+            { $this.QuoteDoubleHypens -and $_.Contains('--') } { return $true }
+            { $_.Contains('-') -and -not $_.Contains('--') } { return $true }
+            { $_.Contains('(') -or $_.Contains(')') } { return $true }
+            { $_.Contains('[') -or $_.Contains(']') } { return $true }
+            { $_.Contains('{') -or $_.Contains('}') } { return $true }
+            { $_.Contains('<') -or $_.Contains('>') } { return $true }
+            { $_.Contains('=') -or $_.Contains('+') } { return $true }
+            { $_.Contains('*') } { return $true }
+            { $_.Contains('`') -or $_.Contains('~') } { return $true }
+            { $_.Contains('&') } { return $true }
+            { $_.Contains('^') } { return $true }
+            { $_.Contains([System.IO.Path]::PathSeparator) } { return $true }
+            { $_.Contains('!') } { return $true }
+            { $_.Contains('^') } { return $true }
+            { $_.Contains(',') } { return $true }
+            { $_.Contains('@') } { return $true }
+            { $_.Contains('#') } { return $true }
+            { $_.Contains('$') } { return $true }
+
+            { $_.Contains('"') -or $_.Contains("'") } {
+                [CommandLineBuilder]::ValidateNoEmbeddedDoubleQuote('text', $text)
+                return $true
+            }
+
+            default { return $false }
         }
 
         return $false
@@ -508,12 +569,12 @@ class CommandLineBuilder : System.Text.StringBuilder {
     [string] ToString() {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
-        return $this.CommandLine.ToString()
+        return $this.Builder.CommandLine.ToString()
     }
 
-    <#
+    <###########################################
         Static Public Methods
-    #>
+    ##########################################>
     static [bool] IsNullOrEmpty([System.Text.StringBuilder]$buffer) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
 
@@ -522,7 +583,19 @@ class CommandLineBuilder : System.Text.StringBuilder {
 
     static [bool] IndexIsOutOfRange([int]$index, [System.Text.StringBuilder]$buffer) {
         $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
+
         return ($index -lt 0) -or ($index -ge $buffer.Length)
+    }
+
+    static [bool] LastCharacterIsWhiteSpace([System.Text.StringBuilder]$buffer) {
+        $MethodName = Initialize-PSMethod -MyInvocation $MyInvocation
+
+        if (-not [CommandLineBuilder]::IsNotNullOrEmpty($buffer)) {
+            return [char]::IsWhiteSpace($buffer[$buffer.Length - 1])
+        }
+        else {
+            return $false
+        }
     }
 
     static [int]MeasureCharacterInText([char]$target, [string]$text) {
@@ -584,10 +657,11 @@ class CommandLineBuilder : System.Text.StringBuilder {
             $message = "$($MethodName) : SecurityException : Parameter '$($parameter)' has embedded double quote at starting at position $($doubleQuoteAt) and ending at position '$($lastDoubleQuoteAt)'"
 
             $newErrorRecordSplat = @{
-                Category     = 'SecurityError'
-                ErrorId      = Format-ErrorId -Caller $MethodName -Name 'SecurityException' -Position $MyInvocation.ScriptLineNumber
-                Exception    = [System.Security.SecurityException]::new($message)
-                TargetObject = $text
+                ErrorCategory = 'SecurityError'
+                ErrorId       = Format-ErrorId -Caller $MethodName -Name 'SecurityException' -Position $MyInvocation.ScriptLineNumber
+                Exception     = [System.Security.SecurityException]::new($message)
+                Message       = $message
+                TargetObject  = $text
             }
 
             New-ErrorRecord @newErrorRecordSplat | Write-Fatal
@@ -608,9 +682,9 @@ class CommandLineBuilder : System.Text.StringBuilder {
     }
 }
 
-<#
+<###########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-CommandLineBuilder {
     [CmdletBinding(SupportsShouldProcess)]
     [Outputype([CommandLineBuilder])]
@@ -619,40 +693,30 @@ function New-CommandLineBuilder {
         $UseNewLineSeparator,
 
         [switch]
-        $QuoteDoubleHyphens,
-
-        [switch]
-        $NoQuoteHyphen
+        $QuoteDoubleHyphens
     )
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-    if (-not $UseNewLineSeparator.IsPresent -and -not $QuoteDoubleHyphens.IsPresent -and -not $NoQuoteHyphen.IsPresent) {
-        $target = "[CommandLintBuilder] : Default Constructor"
+    if ($UseNewLineSeparator.IsPresent -and $QuoteDoubleHyphens.IsPresent) {
+        $target = "'QuoteDoubleHyphens' is '$($QuoteDoubleHyphens)' and 'UseNewLineSeparator' is '$($UseNewLineSeparator.IsPresent)' for two-argument constructor"
 
         if ($PSCmdlet.ShouldProcehs($target, $CmdletName)) {
-            [CommandLineBuilder]::new() | Write-Output
+            [CommandLineBuilder]::new($UseNewLineSeparator.IsPresent, $QuoteDoubleHyphens.IsPresent) | Write-Output
         }
     }
-    elseif ($UseNewLineSeparator.IsPresent -and -not $NoQuoteHyphen.IsPresent) {
-        $target = "[CommandLineBuilder] : 'UseNewLineSeparator' is '$($UseNewLineSeparator.IsPresent)' for one-argument constructor"
-
-        if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
-            [CommandLineBuilder]::new($UseNewLineSeparator.IsPresent) | Write-Output
-        }
-    }
-    elseif ($UseNewLineSeparator.IsPresent -and $QuoteDoubleHyphens.IsPresent -and -not $NoQuoteHyphen.IsPresent) {
-        $target = "[CommandLineBuilder] : 'UseNewLineSeparator' is '$($UseNewLineSeparator.IsPresent)' for two-argument constructor"
+    elseif ($QuoteDoubleHyphens.IsPresent) {
+        $target = "'QuoteDoubleHyphens' is '$($QuoteDoubleHyphens)' for one-argument constructor"
 
         if ($PSCmdlet.ShouldProcehs($target, $CmdletName)) {
             [CommandLineBuilder]::new($UseNewLineSeparator.IsPresent, $QuoteDoubleHyphens.IsPresent) | Write-Output
         }
     }
     else {
-        $target = "[CommandLineBuilder] : 'UseNewLineSeparator' is '$($UseNewLineSeparator.IsPresent)'; 'QuoteDoubleHypens' is $($QuoteDoubleHypens.IsPresent)'; 'NoQuoteHyphen' is '$($NoQuoteHyphen.IsPresent)' for three-argument constructor"
+        $target = "Default Constructor"
 
-        if ($PSCmdlet.ShouldProcess($target, $CmdletName)) {
-            [CommandLineBuilder]::new($UseNewLineSeparator.IsPresent, $QuoteDoubleHyphens.IsPresent, -not $NoQuoteHyphen.IsPresent) | Write-Output
+        if ($PSCmdlet.ShouldProcehs($target, $CmdletName)) {
+            [CommandLineBuilder]::new() | Write-Output
         }
     }
 
@@ -690,7 +754,7 @@ function New-CommandLineBuilder {
         Create a new [CommandLineBuilder] instance and gets the value of the `Length` property.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper Managment.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
@@ -721,10 +785,56 @@ function New-CommandLineBuilder {
     #>
 }
 
-# Initialize this type with TypeAccelerator
-$registerTypeAcceleratorSlat = @{
-    ExportableType = ([System.Type[]]@([CommandLineBuilder]))
-    InvocationInfo = $MyInvocation
+# Define the types to export with type accelerators.
+$ExportableTypes = @(
+    [CommandLineBuilder]
+)
+
+$ScriptName = Initialize-PSScript -Invocation $MyInvocation
+
+# Get the TypeAcceleratorsClass
+$TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+
+# Enumerate the existing TypeAccelerators as Key/Value pairs where the Key is the TypeAcclerator FullName and the Value is the
+# TypeAccelerator Type
+$ExistingTypeAccelerators = $TypeAcceleratorsClass::Get
+
+# Block and Throw if already registered
+$ExportableTypes | ForEach-Object -Process {
+    $Type = $_
+    Write-Information -MessageData "$($ScriptName) : Testing whether TypeAccelerator '$($Type.FullName)' is already registered" -InformationAction $this.LogToConsole
+
+    if ($Type.FullName -in $ExistingTypeAccelerators.Keys) {
+        $Message = @(
+            $ScriptName,
+            "Unable to register type accelerator '$($Type.FullName)'"
+            'Accelerator already exists.'
+        ) -join ' : '
+
+        $newErrorRecordSplat = @{
+            Exception     = [System.InvalidOperationException]::new($Message)
+            ErrorId       = Format-ErrorId -Caller $ScriptName -Name 'InvalidOperationException' -Position $MyInvocation.ScriptLineNumber
+            ErrorCategory = 'ResourceUnavailable'
+            Message       = $Message
+            TargetObject  = $Type.FullName
+            TargetName    = 'TypeAccelerator'
+        }
+
+        New-ErrorRecord @newErrorRecordSplat | Write-Fatal
+    }
+    else {
+        $ExportableTypes | ForEach-Object -Process {
+            Write-Information -MessageData "$($ScriptName) : Adding TypeAccelerator '$($_.FullName)'" -InformationAction $this.LogToConsole
+            $TypeAcceleratorsClass::Add($_.FullName, $_)
+        }
+    }
 }
 
-Register-TypeAccelerator @registerTypeAcceleratorSlat
+# Remove type accelerators when the module is removed.
+$MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
+    $ExportableTypes | ForEach-Object -Process {
+        $Type = $_
+        Write-Information -MessageData "$($ScriptName) : Removing TypeAccelerator '$($Type.FullName)'" -InformationAction $this.LogToConsole
+        $TypeAcceleratorsClass::Remove($Type.FullName)
+    }
+}.GetNewClosure()

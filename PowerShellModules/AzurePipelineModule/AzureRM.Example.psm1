@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="AzureRM.Example.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="AzureRM.Example.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -62,24 +63,13 @@ function Test-DotNet {
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-    try
-    {
-        if ((Get-PSDrive 'HKLM' -ErrorAction Ignore) -and (Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\' -ErrorAction Stop | Get-ItemProperty -Name Release -ErrorAction Stop | Where-Object -FilterScript { $_ -lt 461808 }))
-        {
-            $message = ".NET Framework versions lower than 4.7.2 are not supported in Az. Please upgrade to .NET Framework 4.7.2 or higher."
-
-            Write-Error `
-                -Message $message `
-                -Category 'NotSupported' `
-                -ErrorId "LessThanNet472-NotSupported-01" `
-                -TargetObject 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\'
-
-            throw [System.NotSupportedException]::new($message)
+    try {
+        if ((Get-PSDrive 'HKLM' -ErrorAction Ignore) -and (Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\' -ErrorAction Stop | Get-ItemProperty -Name Release -ErrorAction Stop | Where-Object -FilterScript { $_ -lt 461808 })) {
+            throw ".NET Framework versions lower than 4.7.2 are not supported in Az. Please upgrade to .NET Framework 4.7.2 or higher."
         }
     }
-    catch [System.Management.Automation.DriveNotFoundException]
-    {
-        Write-Warning -Message ".NET Framework version check failed."
+    catch [System.Management.Automation.DriveNotFoundException] {
+        Write-Verbose ".NET Framework version check failed."
     }
 }
 
@@ -87,37 +77,33 @@ function Import-Assembly {
     [CmdletBinding()]
     param (
         [ParameterDirectory(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "AssemblyDirectory '{0}' is not a valid path container")]
         [string]
         $AssemblyDirectory
     )
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-    if($PSEdition -eq 'Desktop')
-    {
-        try
-        {
+    if ($PSEdition -eq 'Desktop') {
+        try {
             Get-ChildItem -ErrorAction Stop -LiteralPath $AssemblyDirectory -Filter "*.dll" | ForEach-Object -Process {
-                try
-                {
+                try {
                     Add-Type -Path $_.FullName -ErrorAction Ignore | Out-Null
                 }
                 catch {
-                    $Error | ForEach-Object -Process { Write-Warning -Message $_.Exception.Message }
+                    Write-Verbose -Message $_
                 }
             }
         }
         catch {
-            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord @_ -ErrorAction Continue }
         }
     }
 }
 
-if (%ISAZMODULE% -and ($PSEdition -eq 'Desktop'))
-{
-    if ($PSVersionTable.PSVersion -lt [Version]'5.1')
-    {
+if (%ISAZMODULE% -and ($PSEdition -eq 'Desktop')) {
+    if ($PSVersionTable.PSVersion -lt [Version]'5.1') {
         throw "PowerShell versions lower than 5.1 are not supported in Az. Please upgrade to PowerShell 5.1 or higher."
     }
 
@@ -126,8 +112,7 @@ if (%ISAZMODULE% -and ($PSEdition -eq 'Desktop'))
 
 %AZURECOREPREREQUISITE%
 
-if (Test-Path -LiteralPath "$PSScriptRoot\StartupScripts" -PathType Container)
-{
+if (Test-Path -LiteralPath "$PSScriptRoot\StartupScripts" -PathType Container) {
     Get-ChildItem -LiteralPath "$PSScriptRoot\StartupScripts" -ErrorAction Stop | ForEach-Object -Process {
         . $_.FullName
     }
@@ -140,8 +125,7 @@ if (Test-Path -LiteralPath "$PSScriptRoot\StartupScripts" -PathType Container)
 $preloadPath = (Join-Path -Path $PSScriptRoot -ChildPath "ModuleAlcAssemblies")
 Import-Assembly -AssemblyDirectory $preloadPath
 
-if (Get-Module %AZORAZURERM%.profile -ErrorAction Ignore)
-{
+if (Get-Module %AZORAZURERM%.profile -ErrorAction Ignore) {
     Write-Warning -Message ("%AZORAZURERM%.Profile already loaded. Az and AzureRM modules cannot be imported in the same session or used in the same script or runbook. If you are running PowerShell in an environment you control you can use the 'Uninstall-AzureRm' cmdlet to remove all AzureRm modules from your machine. " +
         "If you are running in Azure Automation, take care that none of your runbooks import both Az and AzureRM modules. More information can be found here: https://aka.ms/azps-migration-guide.")
     throw ("%AZORAZURERM%.Profile already loaded. Az and AzureRM modules cannot be imported in the same session or used in the same script or runbook. If you are running PowerShell in an environment you control you can use the 'Uninstall-AzureRm' cmdlet to remove all AzureRm modules from your machine. " +
@@ -150,8 +134,7 @@ if (Get-Module %AZORAZURERM%.profile -ErrorAction Ignore)
 
 %IMPORTED-DEPENDENCIES%
 
-if (Test-Path -LiteralPath "$PSScriptRoot\PostImportScripts" -PathType Container)
-{
+if (Test-Path -LiteralPath "$PSScriptRoot\PostImportScripts" -PathType Container) {
     Get-ChildItem -LiteralPath "$PSScriptRoot\PostImportScripts" -ErrorAction Stop | ForEach-Object -Process {
         . $_.FullName
     }
@@ -159,30 +142,26 @@ if (Test-Path -LiteralPath "$PSScriptRoot\PostImportScripts" -PathType Container
 
 $FilteredCommands = %DEFAULTRGCOMMANDS%
 
-if ($null -eq $Env:ACC_CLOUD)
-{
+if ($null -eq $Env:ACC_CLOUD) {
     $FilteredCommands | ForEach-Object -Process {
         $existingDefault = $false
-        foreach ($key in $global:PSDefaultParameterValues.Keys)
-        {
-            if ($_ -like "$key")
-            {
+
+        $global:PSDefaultParameterValues.Keys | ForEach-Object -Process {
+            if ($_ -like "$key") {
                 $existingDefault = $true
             }
         }
 
-        if (!$existingDefault)
-        {
+        if (!$existingDefault) {
             $global:PSDefaultParameterValues.Add($_,
                 {
-                    if ($null -eq (Get-Command -Name Get-AzContext -ErrorAction Ignore))
-                    {
+                    if ((Get-Command -All | Where-Object -Property Name -EQ Get-AzContext)) {
                         $context = Get-AzureRmContext
                     }
-                    else
-                    {
+                    else {
                         $context = Get-AzContext
                     }
+
                     if (($null -ne $context) -and $context.ExtendedProperties.ContainsKey("Default Resource Group")) {
                         $context.ExtendedProperties["Default Resource Group"]
                     }

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="HybridDictionary.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="HybridDictionary.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,27 +52,27 @@ This file "HybridDictionary.psm1" is part of "ContainersModule".
 #
 
 class HybridDictionary : System.Collections.Specialized.HybridDictionary {
-    <#
+    <##########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName
 
-    <#
+    <##########################################
         Hidden Properties
-    #>
+    ##########################################>
     hidden [System.Collections.Specialized.HybridDictionary]$Instance
 
-    <#
+    <##########################################
         Constructors
-    #>
+    ##########################################>
     HybridDictionary() {
         $this.ClassName = Initialize-PSClass -ClassName ([type]'System.Collections.Specialized.HybridDictionary').Name
         $this.Instance = [System.Collections.Specialized.HybridDictionary]::new()
     }
 
-    <#
+    <##########################################
         Public Methods
-    #>
+    ##########################################>
     [void]Add([object]$key, [object]$value) {
         $this.Instance.Add($key, $value)
     }
@@ -97,9 +98,9 @@ class HybridDictionary : System.Collections.Specialized.HybridDictionary {
     }
 }
 
-<#
+<##########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-HybridDictionary {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([HybridDictionary])]

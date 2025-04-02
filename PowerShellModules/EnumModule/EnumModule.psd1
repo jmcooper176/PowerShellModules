@@ -7,7 +7,6 @@
 #
 
 @{
-
 # Script module or binary module file associated with this manifest.
 RootModule = 'EnumModule.psm1'
 
@@ -24,7 +23,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright © 2025, John Merryweather Cooper Manage.  All Rights Reserved.'
+Copyright = 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper Manage.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Collection of Cmdlets/Functions to manipulate [Enum].'
@@ -101,6 +100,4 @@ AliasesToExport = @()
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
-

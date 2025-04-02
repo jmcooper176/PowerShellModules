@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Invoke-CIStep.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Invoke-CIStep.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "Invoke-CIStep.ps1" is part of "BuildScripts".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -87,19 +88,53 @@ This file "Invoke-CIStep.ps1" is part of "BuildScripts".
 
 [CmdletBinding()]
 param(
-    [Switch]
-    $Build,
-
+    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
     [String]
-    $BuildAction='build',
+    $AutorestDirectory,
 
+    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+    [String]
+    $TestOutputDirectory = 'artifacts/TestResults',
+
+    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+    [String]
+    $StaticAnalysisOutputDirectory = 'artifacts/StaticAnalysisResults',
+
+    [ValidateSet('build', 'clean', 'compile', 'publish', 'rebuild', 'restore')]
+    [String]
+    $BuildAction = 'build',
+
+    [ValidateSet('Debug', 'Release')]
+    [String]
+    $Configuration = 'Debug',
+
+    [ValidateSet('net40', 'net45', 'net451', 'net452', 'net46', 'net461', 'net462', 'net47', 'net471', 'net427', 'net48', 'net481', 'net6.0', 'net8.0', 'net9.0')]
+    [String]
+    $TestFramework = 'net6.0',
+
+    [ValidateSet('quiet', 'minimal', 'normal', 'detailed', 'diagnostic')]
+    [string]
+    $Verbosity = 'quiet',
+
+    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+    [String]
+    $RepoArtifacts = 'artifacts',
+
+    [ValidateNotNullOrEmpty()]
     [String]
     $PullRequestNumber,
 
+    [ValidateNotNullOrEmpty()]
     [String]
+    $TargetModule,
+
+    [Switch]
+    $Build,
+
+    [switch]
     $GenerateDocumentationFile,
 
-    [String]
+    [swith]
     $EnableTestCoverage,
 
     [Switch]
@@ -107,9 +142,6 @@ param(
 
     [Switch]
     $TestAutorest,
-
-    [String]
-    $AutorestDirectory,
 
     [Switch]
     $StaticAnalysis,
@@ -133,25 +165,7 @@ param(
     $StaticAnalysisCmdletDiff,
 
     [Switch]
-    $StaticAnalysisGeneratedSdk,
-
-    [String]
-    $RepoArtifacts='artifacts',
-
-    [String]
-    $Configuration='Debug',
-
-    [String]
-    $TestFramework='net6.0',
-
-    [String]
-    $TestOutputDirectory='artifacts/TestResults',
-
-    [String]
-    $StaticAnalysisOutputDirectory='artifacts/StaticAnalysisResults',
-
-    [String]
-    $TargetModule
+    $StaticAnalysisGeneratedSdk
 )
 
 $CIPlanPath = "$RepoArtifacts/PipelineResult/CIPlan.json"
@@ -159,504 +173,894 @@ $PipelineResultPath = "$RepoArtifacts/PipelineResult/PipelineResult.json"
 
 $testResults = @{
     Succeeded = 1
-    Warning = 10
-    Failed = 100
+    Warning   = 10
+    Failed    = 100
 }
 
-Function Get-PlatformInfo
-{
-    if ($IsWindows)
-    {
-        $OS = "Windows"
+function Get-PlatformInfo {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param ()
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    if ([Environment]::OSVersion.Platform -eq 'Win32NT') {
+        $OS = 'Windows'
     }
-    elseif ($IsLinux)
-    {
-        $OS = "Linux"
+    elseif ([Environment]::OSVersion.Platform -eq 'Unix') {
+        $OS = 'Linux'
     }
-    elseif ($IsMacOS)
-    {
-        $OS = "MacOS"
+    elseif ([Environment]::OSVersion.Platform -eq 'MacOSX') {
+        $OS = 'MacOS'
     }
-    else
-    {
-        $OS = "Others"
+    else {
+        $OS = 'Others'
     }
-    return "$($Env:PowerShellPlatform) - $OS"
+
+    "$($Env:PowerShellPlatform) - $OS" | Write-Output
 }
 
-Function Get-ModuleFromPath
-{
+function Get-ModuleFromPath {
+    [CmdletBinding()]
+    [OutputType([string])]
     param(
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [String]
         $Path
     )
-    Return "Az." + $Path.Split([IO.Path]::DirectorySeparatorChar + "src")[1].Split([IO.Path]::DirectorySeparatorChar)[1]
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        'Az.' + $Path.Split([IO.Path]::DirectorySeparatorChar + "src")[1].Split([IO.Path]::DirectorySeparatorChar)[1] | Write-Output
+    }
 }
 
-Function Set-ModuleTestStatusInPipelineResult
-{
+function Set-ModuleTestStatusInPipelineResult {
+    [CmdletBinding()]
+    [OutputType([void])]
     param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
         [String]
         $ModuleName,
+
+        [ValidateSet('Succeeded', 'Failed')]
         [String]
         $Status,
+
         [String]
-        $Content=""
+        $Content = ''
     )
-    Write-Warning -Message "Set-ModuleTestStatusInPipelineResult $ModuleName - $Status"
-    if (Test-Path -LiteralPath $PipelineResultPath -PathType Leaf)
-    {
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    Write-Warning -Message "$CmdletName $ModuleName - $Status"
+
+    if (Test-Path -LiteralPath $PipelineResultPath -PathType Leaf) {
         $PipelineResult = Get-Content -LiteralPath $PipelineResultPath | ConvertFrom-Json
-        $Platform = Get-PlatformInfo
-        $PipelineResult.test.Details[0].Platform = $Platform
-        Foreach ($ModuleInfo in $PipelineResult.test.Details[0].Modules)
-        {
-            if ($ModuleInfo.Module -Eq $ModuleName)
-            {
-                if ([string]::IsNullOrWhiteSpace($ModuleInfo.Status) -or $testResults[$ModuleInfo.Status] -lt $testResults[$Status]) {
-                    $ModuleInfo.Status = $Status
-                    $ModuleInfo.Content = $Content
+        $PipelineResult.test.Details[0].Platform = (Get-PlatformInfo)
+
+        $PipeLineResult.test.Details[0].Modules | ForEach-Object -Process {
+            if ($_.Module -Eq $ModuleName) {
+                if ([string]::IsNullOrWhiteSpace($_.Status) -or $testResults[$_.Status] -lt $testResults[$Status]) {
+                    $_.Status = $Status
+                    $_.Content = $Content
                 }
             }
         }
-        ConvertTo-Json -Depth 10 -InputObject $PipelineResult | Out-File -FilePath $PipelineResultPath
+
+        $PipelineResult | ConvertTo-Json -Depth 10 | Tee-Object -FilePath $PipelineResultPath | Out-String | Write-Verbose
     }
 }
 
-$ErrorActionPreference = 'Stop'
+if ($Build.IsPresent) {
+    $LogFile = (Join-Path -Path $RepoArtifacts -ChildPath 'Build.Log' -Resolve)
+    $solutionPath = (Join-Path -Path $RepoArtifacts -ChildPath 'Azure.PowerShell.sln' -Resolve)
+    $buildCmdResult = "dotnet msbuild -target:$($BuildAction)"
+    $buildCmdResult += (' "{0}"' -f $solutionPath)
 
-if ($Build)
-{
-    $LogFile = "$RepoArtifacts/Build.Log"
-    $buildCmdResult = "dotnet $BuildAction $RepoArtifacts/Azure.PowerShell.sln -c $Configuration -fl '/flp1:logFile=$LogFile;verbosity=quiet'"
+    $buildCmdResult += "-property:Configuration:$($Configuration)"
+    $buildCmdResult += " -property:GenerateDocumentationFile=$(-not $GenerateDocumentationFile.IsPresent)"
 
-    if ($GenerateDocumentationFile -eq "false")
-    {
-        $buildCmdResult += " -p:GenerateDocumentationFile=false"
+    if ($EnableTestCoverage.IsPresent) {
+        $buildCmdResult += " -property:TestCoverage=TESTCOVERAGE"
     }
 
-    if ($EnableTestCoverage -eq "true")
-    {
-        $buildCmdResult += " -p:TestCoverage=TESTCOVERAGE"
-    }
+    $buildCmdResult += "-maxCpuCount -restore -nologo"
+    $buildCmdResult += "-filelogger '-fileLoggerParameters1:logFile=$($LogFile);verbosity=$($Verbosity)' -terminalLogger:auto"
 
     & $buildCmdResult
 
-    if (Test-Path -LiteralPath "$RepoArtifacts/PipelineResult" -PathType Container)
-    {
-        $LogContent = Get-Content -LiteralPath $LogFile
+    if (Test-Path -LiteralPath "$RepoArtifacts/PipelineResult" -PathType Container) {
         $BuildResultArray = @()
-        foreach ($Line In $LogContent)
-        {
-            $Position, $ErrorOrWarningType, $Detail = $Line.Split(": ")
-            $Detail = Join-String -Separator ": " -InputObject $Detail
-            if ($Position.Contains("src"))
-            {
-                $ModuleName = "Az." + $Position.Split("src" + [IO.Path]::DirectorySeparatorChar)[1].Split([IO.Path]::DirectorySeparatorChar)[0]
+
+        Get-Content -LiteralPath $LogFile | ForEach-Object {
+            $Position, $ErrorOrWarningType, $Detail = $_.Split(': ')
+            $Detail = $Detail | Join-String -Separator ': '
+
+            if ($Position.Contains('src')) {
+                $ModuleName = 'Az.' + $Position.Split('src' + [IO.Path]::DirectorySeparatorChar)[1].Split([IO.Path]::DirectorySeparatorChar)[0]
             }
-            elseif ($Position.Contains([IO.Path]::DirectorySeparatorChar))
-            {
-                $ModuleName = "Az." + $Position.Split([IO.Path]::DirectorySeparatorChar)[0]
+            elseif ($Position.Contains([IO.Path]::DirectorySeparatorChar)) {
+                $ModuleName = 'Az.' + $Position.Split([IO.Path]::DirectorySeparatorChar)[0]
             }
-            else
-            {
-                $ModuleName = "dotnet"
+            else {
+                $ModuleName = 'dotnet'
             }
-            $Type, $Code = $ErrorOrWarningType.Split(" ")
+
+            $Type, $Code = $ErrorOrWarningType.Split(' ')
+
             $BuildResultArray += @{
-                "Position" = $Position
-                "Module" = $ModuleName
-                "Type" = $Type
-                "Code" = $Code
-                "Detail" = $Detail
+                Position = $Position
+                Module   = $ModuleName
+                Type     = $Type
+                Code     = $Code
+                Detail   = $Detail
+            }
+
+            $Position, $ErrorOrWarningType, $Detail = $_.Split(': ')
+            $Detail = $Detail | Join-String -Separator ': '
+
+            $Type, $Code = $ErrorOrWarningType.Split(' ')
+
+            $BuildResultArray += @{
+                Position = $Position
+                Module   = $ModuleName
+                Type     = $Type
+                Code     = $Code
+                Detail   = $Detail
             }
         }
 
         #Region produce result.json for GitHub bot to comsume
         $Platform = Get-PlatformInfo
         $Template = Get-Content -LiteralPath "$PSScriptRoot/PipelineResultTemplate.json" | ConvertFrom-Json
+
         $ModuleBuildInfoList = @()
+
         $CIPlan = Get-Content -LiteralPath "$RepoArtifacts/PipelineResult/CIPlan.json" | ConvertFrom-Json
-        foreach ($ModuleName In $CIPlan.build)
-        {
+
+        $CIPlan | Select-Object -ExpandProperty build | ForEach-Object -Process {
+            $ModuleName = $_
+
             $BuildResultOfModule = $BuildResultArray | Where-Object -Property Module -EQ "Az.$ModuleName"
-            if ($BuildResultOfModule.Length -Eq 0)
-            {
+
+            if ($BuildResultOfModule.Length -eq 0) {
                 $ModuleBuildInfoList += @{
-                    Module = "Az.$ModuleName"
-                    Status = "Succeeded"
-                    Content = ""
+                    Module  = "Az.$ModuleName"
+                    Status  = 'Succeeded'
+                    Content = [string]::Empty
                 }
             }
-            else
-            {
+            else {
                 $Content = "|Type|Code|Position|Detail|`n|---|---|---|---|`n"
                 $ErrorCount = 0
-                foreach ($BuildResult In $BuildResultOfModule)
-                {
-                    if ($BuildResult.Type -Eq "Error")
-                    {
+
+                $BuildResultOfModule | ForEach-Object -Process {
+                    if ($_.Type -eq 'Error') {
                         $ErrorTypeEmoji = "❌"
-                        $ErrorCount += 1
+                        $ErrorCount++
                     }
-                    elseif ($BuildResult.Type -Eq "Warning")
-                    {
+                    elseif ($_.Type -eq 'Warning') {
                         $ErrorTypeEmoji = "⚠️"
                     }
+
                     $Content += "|$ErrorTypeEmoji|$($BuildResult.Code)|$($BuildResult.Position)|$($BuildResult.Detail)|`n"
                 }
-                if ($ErrorCount -Eq 0)
-                {
-                    $Status = "Warning"
+
+                if ($ErrorCount -eq 0) {
+                    $Status = 'Warning'
                 }
-                else
-                {
-                    $Status = "Failed"
+                else {
+                    $Status = 'Failed'
                 }
+
                 $ModuleBuildInfoList += @{
-                    Module = "Az.$ModuleName"
-                    Status = $Status
+                    Module  = "Az.$ModuleName"
+                    Status  = $Status
                     Content = $Content
                 }
             }
         }
+
         $BuildDetail = @{
             Platform = $Platform
-            Modules = $ModuleBuildInfoList
+            Modules  = $ModuleBuildInfoList
         }
+
         $Template.Build.Details += $BuildDetail
 
-        $DependencyStepList = $Template | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name | Where-Object -FilterScript { $_ -Ne "build" }
+        $DependencyStepList = $Template | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name | Where-Object -FilterScript { $_ -ne 'build' }
 
         # In generated based branch, the Accounts is cloned from latest main branch but the environment will be cleaned after build job.
         # Also the analysis check and test is not necessary for Az.Accounts in these branches.
-        if ($Env:IsGenerateBased -eq "true")
-        {
-            foreach ($phase In ($CIPlan | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name | Where-Object -FilterScript { $_ -Ne "build" }))
-            {
-                $CIPlan.$phase = $CIPlan.$phase | Where-Object -FilterScript { $_ -Ne "Accounts" }
+        if (($Env:IsGenerateBased -eq 'true') -or ($Env:IsGenerateBase -eq '1')) {
+            $CIPlan | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name | Where-Object -FilterScript { $_ -ne 'build' } | ForEach-Object -Process {
+                $CIPlan.$_ = $CIPlan.$_ | Where-Object -FilterScript { $_ -ne 'Accounts' }
             }
-            ConvertTo-Json -Depth 10 -InputObject $CIPlan | Out-File -FilePath $CIPlanPath
+
+            $CIPlan | ConvertTo-Json -Depth 10 | Tee-Object -FilePath $CIPlanPath | Out-String | Write-Verbose
         }
 
-        foreach ($DependencyStep In $DependencyStepList)
-        {
+        $DependencyStepList | ForEach-Object -Process {
             $ModuleInfoList = @()
-            foreach ($ModuleName In $CIPlan.$DependencyStep)
-            {
+
+            $CIPlan.$_ | ForEach-Object -Process {
                 $ModuleInfoList += @{
-                    Module = "Az.$ModuleName"
-                    Status = "Running"
-                    Content = ""
+                    Module  = "Az.$ModuleName"
+                    Status  = 'Running'
+                    Content = [string]::Empty
                 }
             }
+
             $Detail = @{
                 Platform = $Platform
-                Modules = $ModuleInfoList
+                Modules  = $ModuleInfoList
             }
+
             $Template.$DependencyStep.Details += $Detail
         }
+
         if (Test-PSParameter -Name 'PullRequestNumber' -Parameters $PSBoundParameters) {
             $Template | Add-Member -NotePropertyName pull_request_number -NotePropertyValue $PullRequestNumber
         }
 
-        ConvertTo-Json -Depth 10 -InputObject $Template | Out-File -FilePath "$RepoArtifacts/PipelineResult/PipelineResult.json"
-        #EndRegion
+        $Template | ConvertTo-Json -Depth 10 | Tee-Object -FilePath "$RepoArtifacts/PipelineResult/PipelineResult.json" | Out-String | Write-Verbose
     }
-    Return
 }
 
-if (Test-Path -LiteralPath $CIPlanPath -PathType Leaf)
-{
+if (Test-Path -LiteralPath $CIPlanPath -PathType Leaf) {
     $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
 }
-elseIf (-not (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters))
-{
-    $TargetModule = Get-ChildItem "$RepoArtifacts/$Configuration" | ForEach-Object -Process { $_.Name.Replace("Az.", "") } | Join-String -Separator ';'
+elseif (-not (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)) {
+    $TargetModule = Get-ChildItem "$RepoArtifacts/$Configuration" | ForEach-Object -Process { $_.Name.Replace("Az.", [string]::Empty) } | Join-String -Separator ';'
     $PSBoundParameters["TargetModule"] = $TargetModule
 }
 
 # Run the test-module.ps1 in current folder and set the test status in pipeline result
-if ($TestAutorest)
-{
-    if (-not (Test-Path -LiteralPath "$AutorestDirectory/test-module.ps1" -PathType Leaf))
-    {
+if ($TestAutorest.IsPresent) {
+    if (-not (Test-Path -LiteralPath "$AutorestDirectory/test-module.ps1" -PathType Leaf)) {
         Write-Warning -Message "There is no test-module.ps1 found in the folder: $AutorestDirectory"
-        Return
+        return
     }
+
     $ModuleName = Split-Path -Path $AutorestDirectory | Split-Path -Leaf
     $ModuleFolderName = $ModuleName.Split(".")[1]
-    if (Test-Path -LiteralPath $CIPlanPath -PathType Leaf)
-    {
-        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
-        if (-not ($CIPlan.test.Contains($ModuleFolderName)))
-        {
+
+    if (Test-Path -LiteralPath $CIPlanPath -PathType Leaf) {
+        $CIPlan = Get-Content $CIPlanPath | ConvertFrom-Json
+
+        if (-not ($CIPlan.test.Contains($ModuleFolderName))) {
             Write-Debug -Message "Skip test for $ModuleName because it is not in the test plan."
-            Return
+            return
         }
-        . $AutorestDirectory/test-module.ps1
-        if ($LastExitCode -ne 0)
-        {
-            $Status = "Failed"
+
+        & $AutorestDirectory/test-module.ps1
+
+        if ($LASTEXITCODE -eq 0) {
+            $Status = 'Succeeded'
         }
-        else
-        {
-            $Status = "Succeeded"
+        else {
+            $Status = 'Failed'
         }
+
         Set-ModuleTestStatusInPipelineResult -ModuleName $ModuleName -Status $Status
     }
-    Return
 }
 
-if ($Test.IsPresent -and (($CIPlan.test.Length -Ne 0) -or (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)))
-{
-    dotnet test $RepoArtifacts/Azure.PowerShell.sln --filter "AcceptanceType=CheckIn&RunType!=DesktopOnly" --configuration $Configuration --framework $TestFramework --logger trx --results-directory $TestOutputDirectory
+if ($Test.IsPresent -and (($CIPlan.test.Length -Ne 0) -or (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters))) {
+    & dotnet test $RepoArtifacts/Azure.PowerShell.sln --filter "AcceptanceType=CheckIn&RunType!=DesktopOnly" --configuration $Configuration --framework $TestFramework --logger trx --results-directory $TestOutputDirectory
 
-    $TestResultFiles = Get-ChildItem -LiteralPath "$RepoArtifacts/TestResults/" -Filter *.trx
     $FailedTestCases = @{}
-    foreach ($TestResultFile in $TestResultFiles)
-    {
-        $Content = Get-Content -LiteralPath $TestResultFile
+
+    Get-ChildItem "$RepoArtifacts/TestResults/" -Filter '*.trx' | ForEach-Object -Process {
+        $Content = Get-Content -Path $TestResultFile
         $XmlDocument = New-Object -TypeName System.Xml.XmlDocument
         $XmlDocument.LoadXml($Content)
-        $FailedTestIdList = $XmlDocument.TestRun.Results.UnitTestResult | Where-Object -Property outcome -EQ "Failed" | ForEach-Object -Process { $_.testId }
-        Foreach ($FailedTestId in $FailedTestIdList)
-        {
-            $TestMethod = $XmlDocument.TestRun.TestDefinitions.UnitTest | Where-Object -Property id -EQ $FailedTestId | ForEach-Object -Process {$_.TestMethod}
-            $ModuleName = Get-ModuleFromPath $TestMethod.codeBase
-            $FailedTestName = $TestMethod.name
-            if (-not $FailedTestCases.ContainsKey($ModuleName))
-            {
-                $FailedTestCases.Add($ModuleName, @($FailedTestName))
+
+        $XmlDocument.TestRun.Results.UnitTestResult | Where-Object -FilterScript { $_.outcome -eq 'Failed' } | ForEach-Object -Process {
+            $TestMethod = $XmlDocument.TestRun.TestDefinitions.UnitTest | Where-Object -FilterScript { $_.id -eq $FailedTestId } | ForEach-Object -Process {
+                $ModuleName = Get-ModuleFromPath $_.TestMethod.codeBase
+
+                if (-not $FailedTestCases.ContainsKey($ModuleName)) {
+                    $FailedTestCases.Add($ModuleName, @($_.TestMethod.name))
+                }
+                else {
+                    $FailedTestCases[$ModuleName] += $_.TestMethod.name
+                }
             }
-            else
-            {
-                $FailedTestCases[$ModuleName] += $FailedTestName
+
+            $Content = Get-Content -LiteralPath $TestResultFile
+            $XmlDocument = New-Object -TypeName System.Xml.XmlDocument
+            $XmlDocument.LoadXml($Content)
+
+            $XmlDocument.TestRun.Results.UnitTestResult | Where-Object -FilterScript { $_.outcome -eq 'Failed' } | ForEach-Object -Process {
+                $FailedTestIdList | ForEach-Object -Process {
+                }
             }
         }
     }
-    if (Test-Path -LiteralPath $PipelineResultPath -PathType Leaf)
-    {
+
+    if (Test-Path -LiteralPath $PipelineResultPath -PathType Leaf) {
         $PipelineResult = Get-Content -LiteralPath $PipelineResultPath | ConvertFrom-Json
-        Foreach ($ModuleInfo in $PipelineResult.test.Details[0].Modules)
-        {
-            if ($FailedTestCases.ContainsKey($ModuleInfo.Module))
-            {
-                $Status = "Failed"
+
+        $PipelineResult.test.Details[0].Modules | ForEach-Object -Process {
+            if ($FailedTestCases.ContainsKey($_.Module)) {
+                $Status = 'Failed'
                 #TODO We will add the content of failed test cases in the feature.
             }
-            else
-            {
-                $Status = "Succeeded"
+            else {
+                $Status = 'Succeeded'
             }
-            Set-ModuleTestStatusInPipelineResult -ModuleName $ModuleInfo.Module -Status $Status
+
+            Set-ModuleTestStatusInPipelineResult -ModuleName $_.Module -Status $Status
         }
     }
 
-    if ($FailedTestCases.Length -ne 0)
-    {
-        Return -1
-    }
-    else
-    {
-        Return
+    if ($FailedTestCases.Length -ne 0) {
+        return -1
     }
 }
 
-if ($StaticAnalysis)
-{
-    $Parameters = @{
-        RepoArtifacts = $RepoArtifacts
-        StaticAnalysisOutputDirectory = $StaticAnalysisOutputDirectory
-        Configuration = $Configuration
+if ($StaticAnalysis.IsPresent) {
+    if ($PSBoundParameters.ContainsKey('TestModule')) {
+        Start-StaticAnlysis -TestModule $TestModule -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
     }
-    if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)
-    {
-        $Parameters["TargetModule"] = $TargetModule
+    else {
+        Start-StaticAnlysis -CIPlanPath $CIPlanPath -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
     }
-    $FailedTasks = @()
-    $ErrorLogPath = "$StaticAnalysisOutputDirectory/error.log"
-    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisBreakingChange @Parameters 2>$ErrorLogPath
-    if ($LASTEXITCODE -ne 0)
-    {
-        $FailedTasks += "BreakingChange"
-    }
-    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisDependency @Parameters 2>>$ErrorLogPath
-    if ($LASTEXITCODE -ne 0)
-    {
-        $FailedTasks += "Dependency"
-    }
-    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisSignature @Parameters 2>>$ErrorLogPath
-    if ($LASTEXITCODE -ne 0)
-    {
-        $FailedTasks += "Signature"
-    }
-    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisHelp @Parameters 2>>$ErrorLogPath
-    if ($LASTEXITCODE -ne 0)
-    {
-        $FailedTasks += "Help"
-    }
-    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisUX @Parameters 2>>$ErrorLogPath
-    if ($LASTEXITCODE -ne 0)
-    {
-        $FailedTasks += "UXMetadata"
-    }
-    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisCmdletDiff @Parameters 2>>$ErrorLogPath
-    if ($LASTEXITCODE -ne 0)
-    {
-        $FailedTasks += "CmdletDiff"
-    }
-    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisGeneratedSdk @Parameters 2>>$ErrorLogPath
-    if ($LASTEXITCODE -ne 0)
-    {
-        $FailedTasks += "GenertedSdk"
-    }
-    if ($FailedTasks.Length -ne 0)
-    {
-        Write-Information -MessageData "There are failed tasks: $FailedTasks" -InformationAction Continue
-        $ErrorLog = Get-Content -LiteralPath $ErrorLogPath | Join-String -Separator "`n"
-        Write-Error $ErrorLog
-    }
-
-    Return 0
 }
 
-if ($StaticAnalysisBreakingChange)
-{
-    if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)
-    {
+if ($StaticAnalysisBreakingChange.IsPresent) {
+    if ($PSBoundParameters.ContainsKey('TestModule')) {
+        Start-StaticAnlysisBreakingChange -TestModule $TestModule -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+    else {
+        Start-StaticAnlysisBreakingChange -CIPlanPath $CIPlanPath -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+}
+
+if ($StaticAnalysisDependency.IsPresent) {
+    if ($PSBoundParameters.ContainsKey('TestModule')) {
+        Start-StaticAnlysisDependency -TestModule $TestModule -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+    else {
+        Start-StaticAnlysisDependency -CIPlanPath $CIPlanPath -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+}
+
+if ($StaticAnalysisSignature.IsPresent) {
+    if ($PSBoundParameters.ContainsKey('TestModule')) {
+        Start-StaticAnlysisSignature -TestModule $TestModule -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+    else {
+        Start-StaticAnlysisSignature -CIPlanPath $CIPlanPath -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+}
+
+if ($StaticAnalysisHelp.IsPresent) {
+    if ($PSBoundParameters.ContainsKey('TestModule')) {
+        Start-StaticAnlysisHelp -TestModule $TestModule -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+    else {
+        Start-StaticAnlysisHelp -CIPlanPath $CIPlanPath -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+}
+
+if ($StaticAnalysisUX.IsPresent) {
+    if ($PSBoundParameters.ContainsKey('TestModule')) {
+        Start-StaticAnlysisUX -TestModule $TestModule -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+    else {
+        Start-StaticAnlysisUX -CIPlanPath $CIPlanPath -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+}
+
+if ($StaticAnalysisCmdletDiff.IsPresent) {
+    if ($PSBoundParameters.ContainsKey('TestModule')) {
+        Start-StaticAnlysisCmdletDiff -TestModule $TestModule -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+    else {
+        Start-StaticAnlysisCmdletDiff -CIPlanPath $CIPlanPath -OutputDirectory $StaticAnalysisOutputDirectory -RepoArtifacts $RepoArtifacts -BoundParameters $PSBoundParameters
+    }
+}
+
+if ($StaticAnalysisGeneratedSdk.IsPresent) {
+    if ($PSBoundParameters.ContainsKey('TestModule')) {
+        Start-StaticAnlysisGeneratedSdk -TestModule $TestModule -BoundParameters $PSBoundParameters
+    }
+    else {
+        Start-StaticAnlysisGeneratedSdk -CIPlanPath $CIPlanPath -BoundParameters $PSBoundParameters
+    }
+}
+
+function Start-StaticAnalysis {
+    [CmdletBinding(DefaultParameterSetName = 'UsingCIPlanPath')]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'UsingCIPlanPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "CIPlanPath '{0}' is not a valid path leaf")]
+        [string]
+        $CIPlanPath,
+
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "OutputDirectory '{0}' is not a valid path container")]
+        [string]
+        $OutputDirectory,
+
+        [ValidateSet('Debug', 'Release')]
+        [string]
+        $Configuration = 'Debug',
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingTestModule')]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TestModule,
+
+        [Parameter(Mandatory)]
+        [hashtable]
+        $BoundParameters,
+
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [String]
+        $RepoArtifacts = 'artifacts'
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $LASTEXITCODE = 0
+
+    if ($PSCmdlet.ParameterSetName -eq 'UsingTestModule') {
         $BreakingChangeCheckModuleList = $TargetModule
     }
-    else
-    {
-        $BreakingChangeCheckModuleList = Join-String -Separator '' -InputObject $CIPlan.'breaking-change'
+    else {
+        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
+        $BreakingChangeCheckModuleList = ($CIPlan.'breaking-change' | Join-String -Separator ';')
     }
-    if ("" -Ne $BreakingChangeCheckModuleList)
-    {
+
+    $Parameters = @{
+        RepoArtifacts                 = $RepoArtifacts
+        StaticAnalysisOutputDirectory = $StaticAnalysisOutputDirectory
+        Configuration                 = $Configuration
+    }
+
+    if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters) {
+        $Parameters["TargetModule"] = $TargetModule
+    }
+
+    $FailedTasks = @()
+
+    $ErrorLogPath = "$StaticAnalysisOutputDirectory/error.log"
+
+    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisBreakingChange @Parameters 2>$ErrorLogPath
+
+    if ($LASTEXITCODE -ne 0) {
+        $FailedTasks += 'BreakingChange'
+    }
+
+    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisDependency @Parameters 2>>$ErrorLogPath
+
+    if ($LASTEXITCODE -ne 0) {
+        $FailedTasks += 'Dependency'
+    }
+
+    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisSignature @Parameters 2>>$ErrorLogPath
+
+    if ($LASTEXITCODE -ne 0) {
+        $FailedTasks += 'Signature'
+    }
+
+    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisHelp @Parameters 2>>$ErrorLogPath
+
+    if ($LASTEXITCODE -ne 0) {
+        $FailedTasks += 'Help'
+    }
+
+    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisUX @Parameters 2>>$ErrorLogPath
+
+    if ($LASTEXITCODE -ne 0) {
+        $FailedTasks += 'UXMetadata'
+    }
+
+    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisCmdletDiff @Parameters 2>>$ErrorLogPath
+
+    if ($LASTEXITCODE -ne 0) {
+        $FailedTasks += 'CmdletDiff'
+    }
+
+    & ("$PSScriptRoot/ExecuteCIStep.ps1") -StaticAnalysisGeneratedSdk @Parameters 2>>$ErrorLogPath
+
+    if ($LASTEXITCODE -ne 0) {
+        $FailedTasks += 'GenertedSdk'
+    }
+
+    if ($FailedTasks.Length -gt 0) {
+        Write-Information -MessageData "There are failed tasks: $FailedTasks" -InformationAction Continue
+        $ErrorLog = Get-Content -LiteralPath $ErrorLogPath | Join-String -Separator "`n"
+        Write-Error -Message $ErrorLog -ErrorCategory InvalidResult -ErrorId 'Invoke-CIStep-InvalidResult-01' -TargetObject $FailedTasks.Length -ErrorAction Continue
+    }
+
+    $LASTEXITCODE | Write-Output
+}
+
+function Start-StaticAnalysisBreakingChange {
+    [CmdletBinding(DefaultParameterSetName = 'UsingCIPlanPath')]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'UsingCIPlanPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "CIPlanPath '{0}' is not a valid path leaf")]
+        [string]
+        $CIPlanPath,
+
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "OutputDirectory '{0}' is not a valid path container")]
+        [string]
+        $OutputDirectory,
+
+        [ValidateSet('Debug', 'Release')]
+        [string]
+        $Configuration = 'Debug',
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingTestModule')]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TestModule,
+
+        [Parameter(Mandatory)]
+        [hashtable]
+        $BoundParameters,
+
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [String]
+        $RepoArtifacts = 'artifacts'
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $LASTEXITCODE = 0
+
+    if ($PSCmdlet.ParameterSetName -eq 'UsingTestModule') {
+        $BreakingChangeCheckModuleList = $TargetModule
+    }
+    else {
+        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
+        $BreakingChangeCheckModuleList = ($CIPlan.'breaking-change' | Join-String -Separator ';')
+    }
+
+    if (-not [string]::IsNullOrEmpty($DependencyCheckModuleList)) {
         Write-Information -MessageData "Running static analysis for breaking change..." -InformationAction Continue
         & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers breaking-change -u -m $BreakingChangeCheckModuleList
-
-        $LASTEXITCode | Write-Output
     }
+
+    $LASTEXITCODE | Write-Output
 }
-if ($StaticAnalysisDependency)
-{
-    if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)
-    {
+
+function Start-StaticAnalysisDependency {
+    [CmdletBinding(DefaultParameterSetName = 'UsingCIPlanPath')]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'UsingCIPlanPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "CIPlanPath '{0}' is not a valid path leaf")]
+        [string]
+        $CIPlanPath,
+
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "OutputDirectory '{0}' is not a valid path container")]
+        [string]
+        $OutputDirectory,
+
+        [ValidateSet('Debug', 'Release')]
+        [string]
+        $Configuration = 'Debug',
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingTestModule')]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TestModule,
+
+        [Parameter(Mandatory)]
+        [hashtable]
+        $BoundParameters,
+
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [String]
+        $RepoArtifacts = 'artifacts'
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $LASTEXITCODE = 0
+
+    if ($PSCmdlet.ParameterSetName -eq 'UsingTestModule') {
         $DependencyCheckModuleList = $TargetModule
     }
-    else
-    {
-        $DependencyCheckModuleList = Join-String -Separator ';' -InputObject $CIPlan.dependency
+    else {
+        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
+        $DependencyCheckModuleList = ($CIPlan.signature | Join-String -Separator ';')
     }
-    if ("" -Ne $DependencyCheckModuleList)
-    {
+
+    if (-not [string]::IsNullOrEmpty($DependencyCheckModuleList)) {
         Write-Information -MessageData "Running static analysis for dependency..." -InformationAction Continue
-        dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers dependency -u -m $DependencyCheckModuleList
-        $LASTEXITCODE | Write-Output
-        & ($PSScriptRoot + "/CheckAssemblies.ps1") -BuildConfig $Configuration
+        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $OutputDirectory --analyzers dependency -u -m $DependencyCheckModuleList
     }
+
+    $LASTEXITCODE | Write-Output
 }
 
-if ($StaticAnalysisSignature)
-{
-    if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)
-    {
+function Start-StaticAnalysisSignature {
+    [CmdletBinding(DefaultParameterSetName = 'UsingCIPlanPath')]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'UsingCIPlanPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "CIPlanPath '{0}' is not a valid path leaf")]
+        [string]
+        $CIPlanPath,
+
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "OutputDirectory '{0}' is not a valid path container")]
+        [string]
+        $OutputDirectory,
+
+        [ValidateSet('Debug', 'Release')]
+        [string]
+        $Configuration = 'Debug',
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingTestModule')]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TestModule,
+
+        [Parameter(Mandatory)]
+        [hashtable]
+        $BoundParameters,
+
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [String]
+        $RepoArtifacts = 'artifacts'
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $LASTEXITCODE = 0
+
+    if ($PSCmdlet.ParameterSetName -eq 'UsingTestModule') {
         $SignatureCheckModuleList = $TargetModule
     }
-    else
-    {
-        $SignatureCheckModuleList = Join-String -Separator ';' -InputObject $CIPlan.signature
+    else {
+        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
+        $SignatureCheckModuleList = ($CIPlan.signature | Join-String -Separator ';')
     }
-    if ("" -Ne $SignatureCheckModuleList)
-    {
+
+    if (-not [string]::IsNullOrEmpty($SignatureCheckModuleList)) {
         Write-Information -MessageData "Running static analysis for signature..." -InformationAction Continue
-        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers signature -u -m $SignatureCheckModuleList
-        $LASTEXITCODE | Write-Output
+        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $OutputDirectory --analyzers signature -u -m $SignatureCheckModuleList
     }
+
+    $LASTEXITCODE | Write-Output
 }
 
-if ($StaticAnalysisHelp)
-{
-    if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)
-    {
+function Start-StaticAnalysisHelp {
+    [CmdletBinding(DefaultParameterSetName = 'UsingCIPlanPath')]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'UsingCIPlanPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "CIPlanPath '{0}' is not a valid path leaf")]
+        [string]
+        $CIPlanPath,
+
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "OutputDirectory '{0}' is not a valid path container")]
+        [string]
+        $OutputDirectory,
+
+        [ValidateSet('Debug', 'Release')]
+        [string]
+        $Configuration = 'Debug',
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingTestModule')]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TestModule,
+
+        [Parameter(Mandatory)]
+        [hashtable]
+        $BoundParameters,
+
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [String]
+        $RepoArtifacts = 'artifacts'
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $LASTEXITCODE = 0
+
+    if ($PSCmdlet.ParameterSetName -eq 'UsingTestModule') {
         $HelpCheckModuleList = $TargetModule
     }
-    else
-    {
-        $HelpCheckModuleList = Join-String -Separator ';' -InputObject $CIPlan.help
+    else {
+        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
+        $HelpCheckModuleList = ($CIPlan.Help | Join-String -Separator ';')
     }
-    if ("" -Ne $HelpCheckModuleList)
-    {
+
+    if (-not [string]::IsNullOrEmpty($HelpCheckModuleList)) {
         Write-Information -MessageData "Running static analysis for help..." -InformationAction Continue
-        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers help -u -m $HelpCheckModuleList
-        $LASTEXITCODE | Write-Output
+        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $OutputDirectory --analyzers help -u -m $HelpCheckModuleList
     }
+
+    $LASTEXITCODE | Write-Output
 }
 
-if ($StaticAnalysisUX)
-{
-    if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)
-    {
+function Start-StaticAnalysisUX {
+    [CmdletBinding(DefaultParameterSetName = 'UsingCIPlanPath')]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'UsingCIPlanPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "CIPlanPath '{0}' is not a valid path leaf")]
+        [string]
+        $CIPlanPath,
+
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "OutputDirectory '{0}' is not a valid path container")]
+        [string]
+        $OutputDirectory,
+
+        [ValidateSet('Debug', 'Release')]
+        [string]
+        $Configuration = 'Debug',
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingTestModule')]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TestModule,
+
+        [Parameter(Mandatory)]
+        [hashtable]
+        $BoundParameters,
+
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [String]
+        $RepoArtifacts = 'artifacts'
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $LASTEXITCODE = 0
+
+    if ($PSCmdlet.ParameterSetName -eq 'UsingTestModule') {
         $UXModuleList = $TargetModule
     }
-    else
-    {
-        $UXModuleList = Join-String -Separator ';' -InputObject $CIPlan.ux
+    else {
+        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
+        $UXModuleList = ($CIPlan.ux | Join-String -Separator ';')
     }
-    if ("" -Ne $UXModuleList)
-    {
+
+    if (-not [string]::IsNullOrEmpty($UXModuleList)) {
         Write-Information -MessageData "Running static analysis for UX metadata..." -InformationAction Continue
-        dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers ux -u -m $UXModuleList
-        if ($LASTEXITCODE -ne 0)
-        {
-            Return $LASTEXITCODE
-        }
+        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $OutputDirectory --analyzers ux -u -m $UXModuleList
     }
-    Return 0
+
+    $LASTEXITCODE | Write-Output
 }
 
-if ($StaticAnalysisCmdletDiff)
-{
-    if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)
-    {
+function Start-StaticAnalysisCmdletDiff {
+    [CmdletBinding(DefaultParameterSetName = 'UsingCIPlanPath')]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'UsingCIPlanPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "CIPlanPath '{0}' is not a valid path leaf")]
+        [string]
+        $CIPlanPath,
+
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "OutputDirectory '{0}' is not a valid path container")]
+        [string]
+        $OutputDirectory,
+
+        [ValidateSet('Debug', 'Release')]
+        [string]
+        $Configuration = 'Debug',
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingTestModule')]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TestModule,
+
+        [Parameter(Mandatory)]
+        [hashtable]
+        $BoundParameters,
+
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [String]
+        $RepoArtifacts = 'artifacts'
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $LASTEXITCODE = 0
+
+    if ($PSCmdlet.ParameterSetName -eq 'UsingTestModule') {
         $CmdletDiffModuleList = $TargetModule
     }
-    else
-    {
-        $CmdletDiffModuleList = Join-String -Separator ';' -InputObject $CIPlan.'cmdlet-diff'
+    else {
+        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
+        $CmdletDiffModuleList = ($CIPlan.'cmdlet-diff' | Join-String -Separator ';')
     }
-    if ("" -Ne $CmdletDiffModuleList)
-    {
+
+    if (-not [string]::IsNullOrEmpty($CmdletDiffModuleList)) {
         Write-Information -MessageData "Running static analysis for cmdlet diff..." -InformationAction Continue
-        dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $StaticAnalysisOutputDirectory --analyzers cmdlet-diff -u -m $CmdletDiffModuleList
-        if ($LASTEXITCODE -ne 0)
-        {
-            Return $LASTEXITCODE
-        }
+        & dotnet $RepoArtifacts/StaticAnalysis/StaticAnalysis.Netcore.dll -p $RepoArtifacts/$Configuration -r $OutputDirectory --analyzers cmdlet-diff -u -m $CmdletDiffModuleList
     }
-    Return 0
+
+    $LASTEXITCODE | Write-Output
 }
 
-if ($StaticAnalysisGeneratedSdk)
-{
-    if (Test-PSParameter -Name 'TargetModule' -Parameters $PSBoundParameters)
-    {
+function Start-StaticAnalysisGeneratedSdk {
+    [CmdletBinding(DefaultParameterSetName = 'UsingCIPlanPath')]
+    [OutputType([int])]
+    param (
+        [Parameter(Mandatory, ParameterSetName = 'UsingCIPlanPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "CIPlanPath '{0}' is not a valid path leaf")]
+        [string]
+        $CIPlanPath,
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingTestModule')]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TestModule,
+
+        [Parameter(Mandatory)]
+        [hashtable]
+        $BoundParameters
+    )
+
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+    $LASTEXITCODE = 0
+
+    if ($PSCmdlet.ParameterSetName -eq 'UsingTestModule') {
         $GeneratedSdkModuleList = $TargetModule
     }
-    else
-    {
-        $GeneratedSdkModuleList = Join-String -Separator ';' -InputObject $CIPlan.'generated-sdk'
+    else {
+        $CIPlan = Get-Content -LiteralPath $CIPlanPath | ConvertFrom-Json
+        $GeneratedSdkModuleList = ($CIPlan.'generated-sdk' | Join-String -Separator ';')
     }
-    if ("" -Ne $GeneratedSdkModuleList)
-    {
+
+    if (-not [string]::IsNullOrEmpty($GeneratedSdkModuleList)) {
         Write-Information -MessageData "Running static analysis to verify generated sdk..." -InformationAction Continue
-        $result = & ($PSScriptRoot + "/StaticAnalysis/GeneratedSdkAnalyzer/SDKGeneratedCodeVerify.ps1")
-        Write-Information -MessageData "Static analysis to verify generated sdk result: $result" -InformationAction Continue
-        if ($LASTEXITCODE -ne 0)
-        {
-            Return $LASTEXITCODE
-        }
+        & (Join-Path -Path $PSScriptRoot -ChildPath 'StaticAnalysis/GeneratedSdkAnalyzer/SDKGeneratedCodeVerify.ps1' -Resolve)
     }
-    Return 0
+
+    $LASTEXITCODE | Write-Output
 }

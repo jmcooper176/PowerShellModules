@@ -1,7 +1,7 @@
 ﻿<#
  =============================================================================
 <copyright file="StringBuilder.psd1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ Author = 'John Merryweather Cooper'
 CompanyName = 'John Merryweather Cooper'
 
 # Copyright statement for this module
-Copyright = 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+Copyright = 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Implements StringBuilder for PowerShell.'

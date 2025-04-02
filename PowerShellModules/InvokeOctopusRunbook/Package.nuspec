@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>InvokeOctopusRunbook</id>
+        <version>1.1.2785</version>
+        <title>Invoke Octopus Runbook</title>
+        <authors>John Merryweather Cooper</authors>
+        <owners>U.S. Office of Personnel Management</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <copyright>Copyright (c) 2023-2025, U.S. Office of Personnel Mangement.  All Rights Reserved.</copyright>
+        <license type="expression">BSD-3-Clause</license>
+        <repository type="git" url="https://github.com/OPM-OCIO-FITBS-HRSITPMO/RunbookDependencies" />
+        <description>
+            Contains Invoke-Runbook.ps1. Creates an Octopus runbook snapshot (optionally) and runs an Octopus runbook snapshot.
+        </description>
+        <readme>docs\README.md</readme>
+    </metadata>
+    <files>
+        <file src=".\Add-OctopusBootstrappedFunctionsIfMissing.ps1" target="Add-OctopusBootstrappedFunctionsIfMissing.ps1" />
+        <file src=".\Get-HttpErrorResponseBody.ps1" target="Get-HttpErrorResponseBody.ps1" />
+        <file src=".\Get-SpaceRepository.ps1" target="Get-SpaceRepository.ps1" />
+        <file src=".\Invoke-Runbook.ps1" target="Invoke-Runbook.ps1" />
+        <file src=".\Load-OctopusClientDlls.ps1" target="Load-OctopusClientDlls.ps1" />
+        <file src=".\Octopus.InvokeOctopusRunbook_Powershell.sql" target="Octopus.InvokeOctopusRunbook_Powershell.sql" />
+        <file src=".\README.md" target="docs\" />
+    </files>
+</package>

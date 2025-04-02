@@ -8,7 +8,7 @@
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2025 John Merryweather Cooper.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -34,7 +34,6 @@
     .DESCRIPTION
     This script performs a forward integration from the Development branch to the Feature-COM branch.
 #>
-
 
 [CmdletBinding()]
 param (

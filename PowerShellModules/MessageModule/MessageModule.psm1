@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="MessageModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="MessageModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "MessageModule.psm1" is part of "MessageModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Add-SeparatorIfNotNullOrEmpty
-#>
+##########################################>
 function Add-SeparatorIfNotNullOrEmpty {
     [CmdletBinding()]
     [OutputType([System.Text.StringBuilder])]
@@ -62,7 +63,8 @@ function Add-SeparatorIfNotNullOrEmpty {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -102,7 +104,7 @@ function Add-SeparatorIfNotNullOrEmpty {
         Adds a separator to the string builder 'Hello, World!'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -121,9 +123,9 @@ function Add-SeparatorIfNotNullOrEmpty {
     #>
 }
 
-<#
+<###########################################
     Format-Debug
-#>
+##########################################>
 function Format-Debug {
     [CmdletBinding()]
     [OutputType([string])]
@@ -151,7 +153,8 @@ function Format-Debug {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -201,7 +204,7 @@ function Format-Debug {
         DEBUG: Test debug message to format
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -226,9 +229,9 @@ function Format-Debug {
     #>
 }
 
-<#
+<###########################################
     Format-Error
-#>
+##########################################>
 function Format-Error {
     [CmdletBinding()]
     [OutputType([string])]
@@ -256,11 +259,12 @@ function Format-Error {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
-        $Category = $ErrorRecord.CategoryInfo.Category
+        $Category = $ErrorRecord.CategoryInfo.ErrorCategory
         $ErrorId = $ErrorRecord.FullyQualifiedErrorId
         $ExceptionName = $ErrorRecord.Exception.GetType().FullName
         $HResult = $ErrorRecord.Exception.HResult
@@ -313,10 +317,10 @@ function Format-Error {
 
         .EXAMPLE
         PS> Get-ChildItem -Path 'C:\Windows\Temp\DoesNotExist'
-        PS> $Error | Format-Error -InvocationInfo $MyInvocation | Write-Error -ErrorAction Continue
+        PS> $Error | Format-Error -InvocationInfo $MyInvocation | Write-NonTerminating
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -341,9 +345,9 @@ function Format-Error {
     #>
 }
 
-<#
+<###########################################
     Format-Information
-#>
+##########################################>
 function Format-Information {
     [CmdletBinding()]
     [OutputType([string])]
@@ -374,7 +378,8 @@ function Format-Information {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -431,7 +436,7 @@ function Format-Information {
         Test information message to format
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -456,9 +461,9 @@ function Format-Information {
     #>
 }
 
-<#
+<###########################################
     Format-Message
-#>
+##########################################>
 function Format-Message {
     [CmdletBinding()]
     [OutputType([string])]
@@ -493,7 +498,8 @@ function Format-Message {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
         $buffer = [System.Text.StringBuilder]::new()
 
@@ -567,7 +573,7 @@ function Format-Message {
         Formats a message with the content 'Hello, World!' at line 42, column 1 in the script 'HelloWorld.ps1'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -595,9 +601,9 @@ function Format-Message {
     #>
 }
 
-<#
+<###########################################
     Format-Metadata
-#>
+##########################################>
 function Format-Metadata {
     [CmdletBinding()]
     [OutputType([string])]
@@ -635,12 +641,12 @@ function Format-Metadata {
         [string]  `Format-Metadata` returns a formatted string to the PowerShell pipeline.
 
         .EXAMPLE
-        PS> Format-Metadata -Metadata @('ErrorId', 'ExceptionName', 'Category', 'HResult')
+        PS> Format-Metadata -Metadata @('ErrorId', 'ExceptionName', 'ErrorCategory', 'HResult')
 
-        ErrorId ExceptionName Category HResult
+        ErrorId ExceptionName ErrorCategory HResult
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -653,9 +659,9 @@ function Format-Metadata {
     #>
 }
 
-<#
+<###########################################
     Format-Origin
-#>
+##########################################>
 function Format-Origin {
     [CmdletBinding()]
     param (
@@ -680,7 +686,8 @@ function Format-Origin {
         $UseGccBrief
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     # Current use
     Set-Variable -Name MICROSOFT_TWO_PLACE_COMPILER_MESSAGE_FORMAT -Option Constant -Value '{0}({1},{2})'
@@ -783,7 +790,7 @@ function Format-Origin {
         Formats the origin of a message at line 42, column 1 in the script 'HelloWorld.ps1'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -805,9 +812,9 @@ function Format-Origin {
     #>
 }
 
-<#
+<###########################################
     Format-Verbose
-#>
+##########################################>
 function Format-Verbose {
     [CmdletBinding()]
     [OutputType([string])]
@@ -835,7 +842,8 @@ function Format-Verbose {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -885,7 +893,7 @@ function Format-Verbose {
         VERBOSE: Test verbose message to format
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -910,9 +918,9 @@ function Format-Verbose {
     #>
 }
 
-<#
+<###########################################
     Format-Warning
-#>
+##########################################>
 function Format-Warning {
     [CmdletBinding()]
     [OutputType([string])]
@@ -940,7 +948,8 @@ function Format-Warning {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -990,7 +999,7 @@ function Format-Warning {
         WARNING: Test warning message to format
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1015,9 +1024,9 @@ function Format-Warning {
     #>
 }
 
-<#
+<###########################################
     Write-DebugIf
-#>
+##########################################>
 function Write-DebugIf {
     [CmdletBinding(DefaultParameterSetName = 'UsingCondition')]
     param (
@@ -1099,7 +1108,7 @@ function Write-DebugIf {
         Writes a debug message to the PowerShell host.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1121,9 +1130,9 @@ function Write-DebugIf {
     #>
 }
 
-<#
+<###########################################
     Test-Debug
-#>
+##########################################>
 function Test-Debug {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -1163,7 +1172,7 @@ function Test-Debug {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1179,9 +1188,9 @@ function Test-Debug {
     #>
 }
 
-<#
+<###########################################
     Test-Verbose
-#>
+##########################################>
 function Test-Verbose {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -1219,7 +1228,7 @@ function Test-Verbose {
         False
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

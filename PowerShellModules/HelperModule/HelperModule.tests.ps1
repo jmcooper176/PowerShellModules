@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="HelperModule.tests.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="HelperModule.tests.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -46,6 +47,8 @@ This file "HelperModule.tests.ps1" is part of "HelperModule".
 
 #requires -Module Pester
 #requires -Module ConvertModule
+#requires -Module ErrorRecordModule
+#requires -Module HelperModule
 #requires -Module PowerShellModule
 
 BeforeAll {
@@ -82,15 +85,16 @@ Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -137,7 +141,7 @@ Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -315,12 +319,12 @@ Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
             $CompanyName | Should -Be 'John Merryweather Cooper'
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path '.\HelperModule.psd1' | Select-Object -ExpandProperty 'Copyright'
 
             # Assert
-            $Copyright | Should -Be 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+            $Copyright | Should -Be 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.'
         }
 
         It -Name 'should have a Description of Unit test helper functions for PowerShell.' -Tag 'Unit', 'Test' {
@@ -352,7 +356,7 @@ Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
         It -Name 'Should exist'  -Tag 'Unit', 'Test' {
             # Arrange
             $testPathSplat = @{
-                LiteralPath     = 'Function:\Select-ModuleByFilter'
+                Path     = 'Function:\Select-ModuleByFilter'
                 PathType = 'Leaf'
             }
 
@@ -376,7 +380,7 @@ Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
         It -Name 'exists'  -Tag 'Unit', 'Test' {
             # Arrange
             $testPathSplat = @{
-                LiteralPath     = 'Function:\Select-ModuleByProperty'
+                Path     = 'Function:\Select-ModuleByProperty'
                 PathType = 'Leaf'
             }
 
@@ -400,7 +404,7 @@ Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
         It -Name 'exists'  -Tag 'Unit', 'Test' {
             # Arrange
             $testPathSplat = @{
-                LiteralPath     = 'Function:\Test-HasMember'
+                Path     = 'Function:\Test-HasMember'
                 PathType = 'Leaf'
             }
 
@@ -426,7 +430,7 @@ Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
         It -Name 'exists'  -Tag 'Unit', 'Test' {
             # Arrange
             $testPathSplat = @{
-                LiteralPath     = 'Function:\Test-HasMethod'
+                Path     = 'Function:\Test-HasMethod'
                 PathType = 'Leaf'
             }
 
@@ -452,7 +456,7 @@ Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
         It -Name 'exists'  -Tag 'Unit', 'Test' {
             # Arrange
             $testPathSplat = @{
-                LiteralPath     = 'Function:\Test-HasMethod'
+                Path     = 'Function:\Test-HasMethod'
                 PathType = 'Leaf'
             }
 
@@ -480,7 +484,7 @@ Describe -Name 'HelperModule' -Tag 'Module', 'Under', 'Test' {
         It -Name 'exists'  -Tag 'Unit', 'Test' {
             # Arrange
             $testPathSplat = @{
-                LiteralPath     = 'Function:\Test-ModuleProperty'
+                Path     = 'Function:\Test-ModuleProperty'
                 PathType = 'Leaf'
             }
 

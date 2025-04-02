@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="HelperModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="HelperModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "HelperModule.psm1" is part of "HelperModule".
 =============================================================================
 #>
 
-<#
+<##########################################
     Get-AlertSet
-#>
+##########################################>
 function Get-AlertSet {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -65,10 +66,10 @@ function Get-AlertSet {
     }
 }
 
-<#
-    Get-Category
-#>
-function Get-Category {
+<##########################################
+    Get-ErrorCategory
+##########################################>
+function Get-ErrorCategory {
     [CmdletBinding()]
     [OutputType([string])]
     param (
@@ -82,13 +83,13 @@ function Get-Category {
     }
 
     PROCESS {
-        $Name | Get-HelpProperty -Property Category | Write-Output
+        $Name | Get-HelpProperty -Property ErrorCategory | Write-Output
     }
 }
 
-<#
+<##########################################
     Get-Component
-#>
+##########################################>
 function Get-Component {
     [CmdletBinding()]
     [OutputType([string])]
@@ -107,9 +108,9 @@ function Get-Component {
     }
 }
 
-<#
+<##########################################
     Get-Copyright
-#>
+##########################################>
 function Get-Copyright {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -134,9 +135,9 @@ function Get-Copyright {
     }
 }
 
-<#
+<##########################################
     Get-Description
-#>
+##########################################>
 function Get-Description {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -155,9 +156,9 @@ function Get-Description {
     }
 }
 
-<#
+<##########################################
     Get-Details
-#>
+##########################################>
 function Get-Details {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -176,9 +177,9 @@ function Get-Details {
     }
 }
 
-<#
+<##########################################
     Get-Examples
-#>
+##########################################>
 function Get-Examples {
     [CmdletBinding()]
     [OutputType([string])]
@@ -197,9 +198,9 @@ function Get-Examples {
     }
 }
 
-<#
+<##########################################
     Get-Functionality
-#>
+##########################################>
 function Get-Examples {
     [CmdletBinding()]
     [OutputType([string])]
@@ -218,9 +219,9 @@ function Get-Examples {
     }
 }
 
-<#
+<##########################################
     Get-HelpProperty
-#>
+##########################################>
 function Get-HelpProperty {
     [CmdletBinding([string], [string[]])]
     param (
@@ -230,7 +231,7 @@ function Get-HelpProperty {
         $Name,
 
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelingByPropertyName)]
-        [ValidateSet('alertSet', 'Category', 'Component', 'description', 'details', 'examples', 'Functionality', 'inputTypes',
+        [ValidateSet('alertSet', 'ErrorCategory', 'Component', 'description', 'details', 'examples', 'Functionality', 'inputTypes',
             'ModuleName', 'Name', 'parameters', 'PSSnapIn', 'relatedLinks', 'returnValues', 'Role', 'Synopsis', 'syntax')]
         [string[]]
         $Property
@@ -432,7 +433,7 @@ function Get-HelpProperty {
         Tested the object for the presence of the Name property.  Returned False.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         You may use this script only in accordance with the terms of the License Agreement that should have been included with this script.
 
@@ -462,9 +463,9 @@ function Get-HelpProperty {
     #>
 }
 
-<#
+<##########################################
     Get-InputTypes
-#>
+##########################################>
 function Get-InputTypes {
     [CmdletBinding()]
     [OutputType([string])]
@@ -475,7 +476,8 @@ function Get-InputTypes {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -483,9 +485,9 @@ function Get-InputTypes {
     }
 }
 
-<#
+<##########################################
     Get-ModuleManifestProperty
-#>
+##########################################>
 function Get-ModuleManifestProperty {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.ModuleAccessMode],
@@ -493,13 +495,13 @@ function Get-ModuleManifestProperty {
         [version],
         [System.Collections.Generic.IEnumerable[string]],
         [System.Collections.Generic.IEnumerable[ExperimentalFeature]],
-        [System.Collections.Generic.Dictionary[string,System.Management.Automation.AliasInfo]],
-        [System.Collections.Generic.Dictionary[string,System.Management.Automation.CmdletInfo]],
-        [System.Collections.Generic.Dictionary[string,System.Management.Automation.CommandInfo]],
+        [System.Collections.Generic.Dictionary[string, System.Management.Automation.AliasInfo]],
+        [System.Collections.Generic.Dictionary[string, System.Management.Automation.CmdletInfo]],
+        [System.Collections.Generic.Dictionary[string, System.Management.Automation.CommandInfo]],
         [System.Collections.ObjectModel.ReadOnlyCollection[string]],
         [System.Collections.ObjectModel.ReadOnlyCollection[psmoduleinfo]],
-        [System.Collections.Generic.Dictionary[string,System.Management.Automation.FunctionInfo]],
-        [System.Collections.Generic.Dictionary[string,psvariable]],
+        [System.Collections.Generic.Dictionary[string, System.Management.Automation.FunctionInfo]],
+        [System.Collections.Generic.Dictionary[string, psvariable]],
         [guid],
         [uri],
         [System.Reflection.Assembly],
@@ -513,7 +515,8 @@ function Get-ModuleManifestProperty {
         [System.Management.Automation.SessionState])]
     param (
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf representing the module manifest")]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -545,7 +548,8 @@ function Get-ModuleManifestProperty {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
         $stringProperties = @('Author', 'CompanyName', 'Copyright', 'Definition', 'Description', 'HelpInfoUri', 'ModuleBase',
             'Name', 'Path', 'PowerShellHostName', 'Prefix', 'ReleaseNotes', 'RootModule')
@@ -697,16 +701,16 @@ function Get-ModuleManifestProperty {
         Selected the module property.  Returned the property value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
     #>
 }
 
-<#
+<##########################################
     Get-ModuleName
-#>
+##########################################>
 function Get-ModuleName {
     [CmdletBinding()]
     [OutputType([string])]
@@ -717,7 +721,8 @@ function Get-ModuleName {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -725,9 +730,9 @@ function Get-ModuleName {
     }
 }
 
-<#
+<##########################################
     Get-Name
-#>
+##########################################>
 function Get-Name {
     [CmdletBinding()]
     [OutputType([string])]
@@ -738,7 +743,8 @@ function Get-Name {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -746,9 +752,9 @@ function Get-Name {
     }
 }
 
-<#
+<##########################################
     Get-Notes
-#>
+##########################################>
 function Get-Notes {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -759,7 +765,8 @@ function Get-Notes {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -770,9 +777,9 @@ function Get-Notes {
     }
 }
 
-<#
+<##########################################
     Get-Parameters
-#>
+##########################################>
 function Get-Parameters {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -791,9 +798,9 @@ function Get-Parameters {
     }
 }
 
-<#
+<##########################################
     Get-RelatedLinks
-#>
+##########################################>
 function Get-RelatedLinks {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -804,7 +811,8 @@ function Get-RelatedLinks {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -812,9 +820,9 @@ function Get-RelatedLinks {
     }
 }
 
-<#
+<##########################################
     Get-ReturnValues
-#>
+##########################################>
 function Get-ReturnValues {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -825,7 +833,8 @@ function Get-ReturnValues {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -833,9 +842,9 @@ function Get-ReturnValues {
     }
 }
 
-<#
+<##########################################
     Get-Role
-#>
+##########################################>
 function Get-Role {
     [CmdletBinding()]
     [OutputType([string])]
@@ -846,7 +855,8 @@ function Get-Role {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -854,9 +864,9 @@ function Get-Role {
     }
 }
 
-<#
+<##########################################
     Get-Synopsis
-#>
+##########################################>
 function Get-Synopsis {
     [CmdletBinding()]
     [OutputType([string])]
@@ -867,7 +877,8 @@ function Get-Synopsis {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -875,9 +886,9 @@ function Get-Synopsis {
     }
 }
 
-<#
+<##########################################
     Get-Syntax
-#>
+##########################################>
 function Get-Syntax {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -888,7 +899,8 @@ function Get-Syntax {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -896,15 +908,16 @@ function Get-Syntax {
     }
 }
 
-<#
+<##########################################
     Initialize-ModuleManifest
-#>
+##########################################>
 function Initialize-ModuleManifest {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "Path '{0}' is not a valid path leaf representing a module manifest")]
         [string]
         $Path,
 
@@ -948,13 +961,15 @@ function Initialize-ModuleManifest {
         $Prerelease,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath -Include '*.ps1', '*.psm1', '*.psd1', '*.dll', '*.cdxml', '*.xaml' $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath -Include '*.ps1', '*.psm1', '*.psd1', '*.dll', '*.cdxml', '*.xaml' $_ -PathType Leaf },
+            ErrorMessage = "RootModule '{0}' is not a valid path leaf")]
         [Alias('ModuleToProcess')]
         [string]
         $RootModule,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.dll', '*.psm1' -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.dll', '*.psm1' -PathType Leaf },
+            ErrorMessage = "NestedModules '{0}' are not valid path leaves")]
         [object[]]
         $NestedModules = @(),
 
@@ -1030,7 +1045,7 @@ function Initialize-ModuleManifest {
         [Parameter(ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
         [string[]]
-        $PackageProviders = @(),
+        $PackageManagementProviders = @(),
 
         [Parameter(ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
@@ -1038,7 +1053,8 @@ function Initialize-ModuleManifest {
         $ReleaseNotes = @(),
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.dll' -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.dll' -PathType Leaf },
+            ErrorMessage = "RequiredAssemblies '{0}' are not valid path leaves")]
         [string[]]
         $RequireAssemblies = @(),
 
@@ -1051,7 +1067,8 @@ function Initialize-ModuleManifest {
         $Tags = @(),
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.ps1xml' -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.ps1xml' -PathType Leaf },
+            ErrorMessage = "TypesToProcess '{0}' are not valid path leaves")]
         [string[]]
         $TypesToProcess = @(),
 
@@ -1061,12 +1078,14 @@ function Initialize-ModuleManifest {
         $VariablesToExport = '*',
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ (4.5 -gt $_) -and ($PSVersionTable.PSVersion.Major -le 5) })]
+        [ValidateScript({ (4.5 -gt $_) -and ($PSVersionTable.PSVersion.Major -le 5) },
+            ErrorMessage = "ClrVersion '{0}' is either less than or equal to 4.5 or PowerShell Major version is greater than 5")]
         [version]
         $ClrVersion,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ (4.5 -gt $_) -and ($PSVersionTable.PSVersion.Major -le 5) })]
+        [ValidateScript({ (4.5 -gt $_) -and ($PSVersionTable.PSVersion.Major -le 5) },
+            ErrorMessage = "DotNetFrameworkVersion '{0}' is either less than or equal to 4.5 or PowerShell Major version is greater than 5")]
         [version]
         $DotNetFrameworkVersion,
 
@@ -1085,22 +1104,26 @@ function Initialize-ModuleManifest {
         $PowerShellVersion = 5.1,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+            ErrorMessage = "HelpInfoUri '{0}' is not a valid, absolute URI")]
         [uri]
         $HelpInfoUri,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+            ErrorMessage = "IconUri '{0}' is not a valid, absolute URI")]
         [uri]
         $IconUri,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+            ErrorMessage = "LicenseUri '{0}' is not a valid, absolute URI")]
         [uri]
         $LicenseUri,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+            ErrorMessage = "ProjectUri '{0}' is not a valid, absolute URI")]
         [uri]
         $ProjectUri,
 
@@ -1121,31 +1144,31 @@ function Initialize-ModuleManifest {
 
     PROCESS {
         $newModuleManifestSplat = @{
-            Path = $Path
-            ModuleVersion = $ModuleVersion
-            ModuleList = $ModuleList
-            NestedModules = $NestedModules
-            RequiredModules = $RequiredModules
-            ProcessorArchitecture = $ProcessorArchitecture
-            PrivateData = $PrivateData
-            AliasesToExport = $AliasesToExport
-            CmdletsToExport = $CmdletsToExport
-            DSCResourcesToExport = $DscResourcesToExport
+            Path                       = $Path
+            ModuleVersion              = $ModuleVersion
+            ModuleList                 = $ModuleList
+            NestedModules              = $NestedModules
+            RequiredModules            = $RequiredModules
+            ProcessorArchitecture      = $ProcessorArchitecture
+            PrivateData                = $PrivateData
+            AliasesToExport            = $AliasesToExport
+            CmdletsToExport            = $CmdletsToExport
+            DSCResourcesToExport       = $DscResourcesToExport
             ExternalModuleDependencies = $ExternalModuleDependencies
-            FileList = $FileList
-            FormatsToProcess = $FormatsToProcess
-            FunctionsToExport = $FunctionsToExport
-            PackageProviders = $PackageProviders
-            ReleaseNotes = $ReleaseNotes
-            RequiredAssemblies = $RequireAssemblies
-            ScriptsToProcess = $ScriptsToProcess
-            Tags = $Tags
-            TypesToProcess = $TypesToProcess
-            VariablesToExport = $VariablesToExport
-            PowerShellVersion = $PowerShellVersion
-            PassThru = $PassThru.IsPresent
-            RequireLicenseAcceptance = $RequireLicenseAcceptance.IsPresent
-            WhatIf = $false
+            FileList                   = $FileList
+            FormatsToProcess           = $FormatsToProcess
+            FunctionsToExport          = $FunctionsToExport
+            PackageManagementProviders = $PackageManagementProviders
+            ReleaseNotes               = $ReleaseNotes
+            RequiredAssemblies         = $RequireAssemblies
+            ScriptsToProcess           = $ScriptsToProcess
+            Tags                       = $Tags
+            TypesToProcess             = $TypesToProcess
+            VariablesToExport          = $VariablesToExport
+            PowerShellVersion          = $PowerShellVersion
+            PassThru                   = $PassThru.IsPresent
+            RequireLicenseAcceptance   = $RequireLicenseAcceptance.IsPresent
+            WhatIf                     = $false
         }
 
         if ($PSBoundParameters.ContainsKey('Author')) {
@@ -1153,8 +1176,8 @@ function Initialize-ModuleManifest {
         }
         else {
             $userName = $env:USERNAME
-            $givenName = Get-AdUser -Identity | Select-Object -ExpandProperty GivenName
-            $surname = Get-AdUser -Identity | Select-Object -ExpandProperty GivenName
+            $givenName = Get-ADUser -Identity | Select-Object -ExpandProperty GivenName
+            $surname = Get-ADUser -Identity | Select-Object -ExpandProperty GivenName
             $Author = ('{0} {1}' -f $givenName, $surname)
             $newModuleManifestSplat.Add('Author', $Author)
         }
@@ -1178,7 +1201,7 @@ function Initialize-ModuleManifest {
             $newModuleManifestSplat.Add('Copyright', $Copyright)
         }
         else {
-            $Copyright = ('Copyright (c) {0}, {1}.  All Rights Reserved.' -f $CompanyName, ((Microsoft.PowerShell.Utility\Get-Date).ToUniversalTime().Year))
+            $Copyright = ('Copyright © {0}, {1}.  All Rights Reserved.' -f $CompanyName, ((Microsoft.PowerShell.Utility\Get-Date).ToUniversalTime().Year))
             $newModuleManifestSplat.Add('Copyright', $Copyright)
         }
 
@@ -1288,16 +1311,16 @@ function Initialize-ModuleManifest {
         Selected the module property.  Returned the property value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
     #>
 }
 
-<#
+<##########################################
     Measure-Description
-#>
+##########################################>
 function Measure-Description {
     [CmdletBinding()]
     [OutputType([int])]
@@ -1308,7 +1331,8 @@ function Measure-Description {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -1316,9 +1340,9 @@ function Measure-Description {
     }
 }
 
-<#
+<##########################################
     Measure-HelpProperty
-#>
+##########################################>
 function Measure-HelpProperty {
     [CmdletBinding()]
     [OutputType([int])]
@@ -1329,14 +1353,15 @@ function Measure-HelpProperty {
         $Name,
 
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelingByPropertyName)]
-        [ValidateSet('alertSet', 'Category', 'Component', 'description', 'details', 'examples', 'Functionality', 'inputTypes',
+        [ValidateSet('alertSet', 'ErrorCategory', 'Component', 'description', 'details', 'examples', 'Functionality', 'inputTypes',
             'ModuleName', 'Name', 'parameters', 'PSSnapIn', 'relatedLinks', 'returnValues', 'Role', 'Synopsis', 'syntax')]
         [string[]]
         $Property
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -1380,7 +1405,7 @@ function Measure-HelpProperty {
         Tested the object for the presence of the Name property.  Returned False.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         You may use this script only in accordance with the terms of the License Agreement that should have been included with this script.
 
@@ -1410,9 +1435,9 @@ function Measure-HelpProperty {
     #>
 }
 
-<#
+<##########################################
     Measure-Notes
-#>
+##########################################>
 function Measure-Notes {
     [CmdletBinding()]
     [OutputType([int])]
@@ -1423,7 +1448,8 @@ function Measure-Notes {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -1431,9 +1457,9 @@ function Measure-Notes {
     }
 }
 
-<#
+<##########################################
     Measure-Synopsis
-#>
+##########################################>
 function Measure-Synopsis {
     [CmdletBinding()]
     [OutputType([int])]
@@ -1444,7 +1470,8 @@ function Measure-Synopsis {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -1452,15 +1479,16 @@ function Measure-Synopsis {
     }
 }
 
-<#
+<##########################################
     Select-ModuleByFilter
-#>
+##########################################>
 function Select-ModuleByFilter {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.PSModuleInfo])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path")]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1472,7 +1500,8 @@ function Select-ModuleByFilter {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -1509,22 +1538,23 @@ function Select-ModuleByFilter {
         Selected the module by the filter script.  Returned the module object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
     #>
 }
 
-<#
+<##########################################
     Select-ModuleByProperty
-#>
+##########################################>
 function Select-ModuleByProperty {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.PSModuleInfo])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1541,7 +1571,8 @@ function Select-ModuleByProperty {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -1580,22 +1611,23 @@ function Select-ModuleByProperty {
         Selected the module by the property value.  Returned the module object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
     #>
 }
 
-<#
+<##########################################
     Set-ModuleManifestProperty
-#>
+##########################################>
 function Set-ModuleManifestProperty {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([void])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path,
 
@@ -1624,7 +1656,8 @@ function Set-ModuleManifestProperty {
         $Guid,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "RootModule '{0}' is not a valid path leaf")]
         [string]
         $RootModule,
 
@@ -1720,7 +1753,7 @@ function Set-ModuleManifestProperty {
         [Parameter(ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
         [string[]]
-        $PackageProviders = @(),
+        $PackageManagementProviders = @(),
 
         [Parameter(ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
@@ -1767,22 +1800,26 @@ function Set-ModuleManifestProperty {
         $PowerShellVersion = 5.1,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+            ErrorMessage = "HelpInfoUri '{0}' is not a valid, absolute URI")]
         [uri]
         $HelpInfoUri,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+            ErrorMessage = "IconUri '{0}' is not a valid, absolute URI")]
         [uri]
         $IconUri,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+            ErrorMessage = "LicenseUri '{0}' is not a valid, absolute URI")]
         [uri]
         $LicenseUri,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') })]
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+            ErrorMessage = "ProjectUri '{0}' is not a valid, absolute URI")]
         [uri]
         $ProjectUri,
 
@@ -1799,37 +1836,37 @@ function Set-ModuleManifestProperty {
 
     PROCESS {
         $updateModuleManifestSplat = @{
-            Path = $Path
-            Author = $Author
-            CompanyName = $CompanyName
-            Copyright = $Copyright
-            Description = $Description
-            Guid = $Guid
-            RootModule = $RootModule
-            ModuleVersion = $ModuleVersion
-            ModuleList = $ModuleList
-            NestedModules = $NestedModules
-            RequiredModules = $RequiredModules
-            ProcessorArchitecture = $ProcessorArchitecture
-            PrivateData = $PrivateData
-            AliasesToExport = $AliasesToExport
-            CmdletsToExport = $CmdletsToExport
-            CompatiblePSEditions = $CompatiblePSEditions
-            DSCResourcesToExport = $DscResourcesToExport
+            Path                       = $Path
+            Author                     = $Author
+            CompanyName                = $CompanyName
+            Copyright                  = $Copyright
+            Description                = $Description
+            Guid                       = $Guid
+            RootModule                 = $RootModule
+            ModuleVersion              = $ModuleVersion
+            ModuleList                 = $ModuleList
+            NestedModules              = $NestedModules
+            RequiredModules            = $RequiredModules
+            ProcessorArchitecture      = $ProcessorArchitecture
+            PrivateData                = $PrivateData
+            AliasesToExport            = $AliasesToExport
+            CmdletsToExport            = $CmdletsToExport
+            CompatiblePSEditions       = $CompatiblePSEditions
+            DSCResourcesToExport       = $DscResourcesToExport
             ExternalModuleDependencies = $ExternalModuleDependencies
-            FileList = $FileList
-            FormatsToProcess = $FormatsToProcess
-            FunctionsToExport = $FunctionsToExport
-            PackageProviders = $PackageProviders
-            ReleaseNotes = $ReleaseNotes
-            RequiredAssemblies = $RequireAssemblies
-            ScriptsToProcess = $ScriptsToProcess
-            Tags = $Tags
-            TypesToProcess = $TypesToProcess
-            VariablesToExport = $VariablesToExport
-            PowerShellVersion = $PowerShellVersion
-            PassThru = $PassThru.IsPresent
-            RequireLicenseAcceptance = $RequireLicenseAcceptance.IsPresent
+            FileList                   = $FileList
+            FormatsToProcess           = $FormatsToProcess
+            FunctionsToExport          = $FunctionsToExport
+            PackageManagementProviders = $PackageManagementProviders
+            ReleaseNotes               = $ReleaseNotes
+            RequiredAssemblies         = $RequireAssemblies
+            ScriptsToProcess           = $ScriptsToProcess
+            Tags                       = $Tags
+            TypesToProcess             = $TypesToProcess
+            VariablesToExport          = $VariablesToExport
+            PowerShellVersion          = $PowerShellVersion
+            PassThru                   = $PassThru.IsPresent
+            RequireLicenseAcceptance   = $RequireLicenseAcceptance.IsPresent
         }
 
         if ($PSCmdlet.ShouldProcess($updateModuleManifestSplat, $CmdletName)) {
@@ -1864,16 +1901,16 @@ function Set-ModuleManifestProperty {
         Selected the module property.  Returned the property value.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced
     #>
 }
 
-<#
+<##########################################
     Test-HasMethod
-#>
+##########################################>
 function Test-HasMember {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -1886,11 +1923,31 @@ function Test-HasMember {
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $Name
+        $Name,
+
+        [switch]
+        $Strict
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($null -eq $Object) {
+            $message = "$($CmdletName) : ArgumentNullException : The value of the Object parameter cannot be null."
+
+            if ($Strict.IsPresent) {
+                $ex = [System.ArgumentNullException]::new('Object', $message)
+
+                Write-Error -Message $message -Exception $ex -ErrorCategory InvalidArgument -TargetObject $Object -ErrorAction Continue
+
+                throw $ex
+            }
+            else {
+                Write-Warning -Message $message
+                $false | Write-Output
+            }
+        }
     }
 
     PROCESS {
@@ -1939,7 +1996,7 @@ function Test-HasMember {
         Tested the object for the presence of the Name method.  Returned False.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         You may use this script only in accordance with the terms of the License Agreement that should have been included with this script.
 
@@ -1969,9 +2026,9 @@ function Test-HasMember {
     #>
 }
 
-<#
+<##########################################
     Test-HasMethod
-#>
+##########################################>
 function Test-HasMethod {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -1988,7 +2045,8 @@ function Test-HasMethod {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -2038,7 +2096,7 @@ function Test-HasMethod {
         Tested the object for the presence of the Name method.  Returned False.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         You may use this script only in accordance with the terms of the License Agreement that should have been included with this script.
 
@@ -2068,9 +2126,9 @@ function Test-HasMethod {
     #>
 }
 
-<#
+<##########################################
     Test-HasProperty
-#>
+##########################################>
 function Test-HasProperty {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -2087,7 +2145,8 @@ function Test-HasProperty {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -2137,7 +2196,7 @@ function Test-HasProperty {
         Tested the object for the presence of the Name property.  Returned False.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         You may use this script only in accordance with the terms of the License Agreement that should have been included with this script.
 
@@ -2167,9 +2226,9 @@ function Test-HasProperty {
     #>
 }
 
-<#
+<##########################################
     Test-HelpProperty
-#>
+##########################################>
 function Test-HelpProperty {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -2180,14 +2239,15 @@ function Test-HelpProperty {
         $Name,
 
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelingByPropertyName)]
-        [ValidateSet('alertSet', 'Category', 'Component', 'description', 'details', 'examples', 'Functionality', 'inputTypes',
+        [ValidateSet('alertSet', 'ErrorCategory', 'Component', 'description', 'details', 'examples', 'Functionality', 'inputTypes',
             'ModuleName', 'Name', 'parameters', 'PSSnapIn', 'relatedLinks', 'returnValues', 'Role', 'Synopsis', 'syntax')]
         [string[]]
         $Property
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -2238,7 +2298,7 @@ function Test-HelpProperty {
         Tested the object for the presence of the Name property.  Returned False.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         You may use this script only in accordance with the terms of the License Agreement that should have been included with this script.
 
@@ -2268,15 +2328,16 @@ function Test-HelpProperty {
     #>
 }
 
-<#
+<##########################################
     Test-ModuleProperty
-#>
+##########################################>
 function Test-ModuleProperty {
     [CmdletBinding()]
     [OutputType([bool])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -2288,7 +2349,8 @@ function Test-ModuleProperty {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {

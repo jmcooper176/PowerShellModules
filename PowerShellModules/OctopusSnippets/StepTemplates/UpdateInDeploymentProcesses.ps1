@@ -1,0 +1,190 @@
+﻿<#
+ =============================================================================
+<copyright file="UpdateInDeploymentProcesses.ps1" company="U.S. Office of Personnel
+Management">
+    Copyright © 2025, U.S. Office of Personnel Management.
+    All Rights Reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+       1. Redistributions of source code must retain the above
+          copyright notice, this list of conditions and the following
+          disclaimer.
+
+       2. Redistributions in binary form must reproduce the above
+          copyright notice, this list of conditions and the following
+          disclaimer in the documentation and/or other materials
+          provided with the distribution.
+
+       3. Neither the name of the copyright holder nor the names of
+          its contributors may be used to endorse or promote products
+          derived from this software without specific prior written
+          permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+   COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+   INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+   ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+   POSSIBILITY OF SUCH DAMAGE.
+</copyright>
+<author>John Merryweather Cooper</author>
+<date>Created:  2025-2-25</date>
+<summary>
+This file "UpdateInDeploymentProcesses.ps1" is part of "OctopusSnippets".
+</summary>
+<remarks>description</remarks>
+=============================================================================
+#>
+
+<#
+.Synopsis
+   Updates the Step Templates used on Deployment Processes to the latest versions
+.DESCRIPTION
+   Step templates can be updated from the library on Octopus, but that doesnt mean that the Deployment processes using that template will start using the latest version right away. Normally, the user would have to update the step template on each deployment process manually. This script takes care of that.
+.EXAMPLE
+   Update-StepTemplatesOnDeploymentProcesses -ActionTemplateID "ActionTemplates-3" -OctopusURI "http://localhost" -APIKey "API-RLMWLZBPMX5DRPLCRNZETFS4HA"
+.EXAMPLE
+   Update-StepTemplatesOnDeploymentProcesses -AllActionTemplates -OctopusURI "http://Octopusdeploy.MyCompany.com" -APIKey "API-TSET42BPMX5DRPLCRNZETFS4HA"
+.LINK
+   Github project: https://github.com/Dalmirog/OctopusSnippets
+#>
+Function Update-StepTemplatesOnDeploymentProcesses
+{
+    [CmdletBinding()]
+    Param
+    (
+        # Action Template ID. Use when you only want to update the deployment processes that only use this Action Template.
+        [Parameter(Mandatory=$true,ParameterSetName= "SingleActionTemplate")]
+        [string]$ActionTemplateID,
+
+        # If used, all the action templates will be updated on all the deployment processes.
+        [Parameter(Mandatory=$true, ParameterSetName= "AllActionTemplates")]
+        [switch]$AllActionTemplates,
+
+        # Octopus instance URL
+        [Parameter(Mandatory=$true)]
+        [string]$OctopusURI,
+
+        # Octopus API Key. How to create an API Key = http://docs.octopusdeploy.com/display/OD/How+to+create+an+API+key
+        [Parameter(Mandatory=$true)]
+        [string]$APIKey,
+
+        # Full path of Octopus.Client.dll. You can get it from https://www.nuget.org/packages/Octopus.Client/
+        [Parameter(Mandatory=$false)]
+        $OctopusClientDLLPath = "C:\Program Files\Octopus Deploy\Tentacle\octopus.client.dll" #Default Tentacle install dir
+    )
+
+    Begin
+    {
+        if(!(Test-Path "$OctopusClientDLLPath")){
+
+            Write-Warning -Message "Octopus Tentacle doesnt seem to be insalled on '$OctopusClientDLLPath'. Please use the parameter -OctopusClientDLLPath to specify the path where the Octopus Tentacle was installed. `nTIP - This path should be the parent directory of: Octopus.Client.dll"
+            break
+        }
+        else{
+            Add-Type -Path $OctopusClientDLLPath -ErrorAction SilentlyContinue
+        }
+        $headers = @{"X-Octopus-ApiKey"="$($apikey)";}
+
+        #Create endpoint connection
+        $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint "$($OctopusURI)","$($apikey)"
+        $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
+
+
+    }
+    Process
+    {
+        If($PSCmdlet.ParameterSetName -eq "SingleActionTemplate"){
+            $templates = Invoke-WebRequest -Uri "$($OctopusURI)/api/actiontemplates/$ActionTemplateID" -Method Get -Headers $headers | Select-Object -ExpandProperty content| ConvertFrom-Json
+        }
+
+        Else{$templates = Invoke-WebRequest -Uri "$($OctopusURI)/api/actiontemplates/All" -Method Get -Headers $headers | Select-Object -ExpandProperty content| ConvertFrom-Json}
+
+        Foreach ($template in $templates){
+
+            $usage = Invoke-WebRequest -Uri "$($OctopusURI)/api/actiontemplates/$($template.ID)/usage" -Method Get -Headers $headers | Select-Object -ExpandProperty content | ConvertFrom-Json
+
+            #Getting all the DeploymentProcesses that need to be updated
+            $deploymentprocesstoupdate = $usage | Where-Object -FilterScript {$_.version -ne $template.Version}
+
+            Write-Information -MessageData "Template: $($template.name)" -ForegroundColor Magenta
+
+            If($null -eq $deploymentprocesstoupdate){
+
+                Write-Information -MessageData "`t--All deployment processes up to date" -ForegroundColor Green
+
+            }
+
+            Else{
+
+                Foreach($d in $deploymentprocesstoupdate){
+
+                    #Getting DeploymentProcess obj
+                    $process = $repository.DeploymentProcesses.Get($d.DeploymentProcessId)
+
+                    #Finding the step that uses the step template
+                    $steps = $process.Steps | Where-Object -FilterScript {$_.actions.properties.values.value -eq $template.Id}
+
+                    try{
+
+                        foreach($step in $steps){
+
+                            Write-Information -MessageData "`t--Updating Step [$($step.name)] of project [$($d.projectname)]" -ForegroundColor Yellow
+
+                            $step.Actions.properties.'Octopus.Action.Script.Scriptbody' = $template.Properties.'Octopus.Action.Script.ScriptBody'
+
+                            #Start NotProudOfThisLogicButItWorks
+                            $properties = $step.Actions.properties | Select-Object -ExpandProperty keys | Where-Object -FilterScript {$_ -notlike "Octopus.action*"}
+
+                            #Comparing properties of current step and deleting the
+                            #ones that are not in the latest version of the step template
+                            foreach($p in $properties){
+                                if($p -notin $template.parameters.name){
+                                    $null = $Step.actions.properties.remove($p)
+                                }
+                            }
+
+                            #Comparing the latest properties of the step template
+                            #and adding the ones missing on the step
+                            foreach ($p in $template.Parameters){
+                                If($p.name -notin $properties){
+                                    $null = $step.Actions.properties.add($p.name,$p.Defaultvalue)
+                                }
+                            }
+                            #End NotProudOfThisLogicButItWorks
+
+                            #Updating the Template.Version property to the latest
+                            $step.Actions.properties.'Octopus.Action.Template.version' = $template.Version
+                        }
+                        If($repository.DeploymentProcesses.Modify($process))
+                        {
+                            Write-Information -MessageData "`t--Project updated: $($d.projectname)" -ForegroundColor Green
+                        }
+                    }
+
+                    catch{
+                        Write-Error -Message "Error updating Process template for Octopus project: $($d.projectname)"
+                        $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
+                    }
+
+                }
+
+            }
+        }
+
+    }
+    End
+    {
+    }
+}
+
+#Update-StepTemplatesOnDeploymentProcesses -OctopusURI $OctopusURL -APIKey $OctopusAPIKey -AllActionTemplates

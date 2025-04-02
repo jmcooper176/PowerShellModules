@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="GitHubModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="GitHubModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -48,9 +49,9 @@ This file "GitHubModule.psm1" is part of "GitHubModule".
 # GitHubModule.psm1
 #
 
-<#
+<##########################################
     Add-MultilineStepSummary
-#>
+##########################################>
 function Add-MultilineStepSummary {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -97,7 +98,7 @@ function Add-MultilineStepSummary {
         PS> 'This is a multi-line step summary' | Add-MultilineStepSummary
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -116,9 +117,9 @@ function Add-MultilineStepSummary {
     #>
 }
 
-<#
+<##########################################
     Add-StepSummary
-#>
+##########################################>
 function Add-StepSummary {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -165,7 +166,7 @@ function Add-StepSummary {
         PS> 'This is a single-line step summary' | Add-StepSummary
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -184,20 +185,22 @@ function Add-StepSummary {
     #>
 }
 
-<#
+<##########################################
     Add-SystemPath
-#>
+##########################################>
 function Add-SystemPath {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingPath')]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingLiteralPath', ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path container")]
         [string]
         $LiteralPath,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Container })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Container },
+            ErrorMessage = "Path '{0}' is not a valid path container")]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -248,7 +251,7 @@ function Add-SystemPath {
         Adds the path to 'git' to the GITHUB_PATH.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -276,9 +279,9 @@ function Add-SystemPath {
     #>
 }
 
-<#
+<##########################################
     ConvertTo-Tuple
-#>
+##########################################>
 function ConvertTo-Tuple {
     [CmdletBinding()]
     [OutputType([object])]
@@ -334,7 +337,7 @@ function ConvertTo-Tuple {
         Returns a tuple representing the environment name/value pair.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -359,9 +362,9 @@ function ConvertTo-Tuple {
     #>
 }
 
-<#
+<##########################################
     Export-EnvironmentVariableFile
-#>
+##########################################>
 function Export-EnvironmentVariableFile {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -392,7 +395,7 @@ function Export-EnvironmentVariableFile {
     }
 
     PROCESS {
-        Write-Verbose -Message "$($CmdletName):  Writing content '$($Content)' to '$($EnvironmentFile)' at file path $($tuple.Item2)"
+        Write-Verbose "$($CmdletName):  Writing content '$($Content)' to '$($EnvironmentFile)' at file path $($tuple.Item2)"
 
         try {
             Add-Content -LiteralPath $tuple.Item2 -Value $Content -Encoding UTF8 -PassThru:$Echo.IsPresent
@@ -437,7 +440,7 @@ function Export-EnvironmentVariableFile {
         Adds the content to the file path stored in the GITHUB_STEP_SUMMARY environment variable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -465,9 +468,9 @@ function Export-EnvironmentVariableFile {
     #>
 }
 
-<#
+<##########################################
     Get-GitHubEnvironmentVariable
-#>
+##########################################>
 function Get-GitHubEnvironmentVariable {
     [CmdletBinding()]
     [OutputType([string])]
@@ -564,7 +567,7 @@ function Get-GitHubEnvironmentVariable {
         .EXAMPLE
         PS> Get-GitHubEnvironmentVariable -Name 'GITHUB_WORKFLOW'
 
-        NuGet Deploy Build
+        Nuget Deploy Build
 
         Returns the value of the GITHUB_WORKFLOW environment variable.
 
@@ -594,9 +597,9 @@ function Get-GitHubEnvironmentVariable {
         GITHUB_REF_NAME                      main
         GITHUB_REF_PROTECTED                 true
         GITHUB_REF_TYPE                      branch
-        GITHUB_REPOSITORY                    OPM-OCIO-DEVSECOPS/SkyOps-NuGet
+        GITHUB_REPOSITORY                    jmcooper176/NuGet
         GITHUB_REPOSITORY_ID                 784921339
-        GITHUB_REPOSITORY_OWNER              OPM-OCIO-DEVSECOPS
+        GITHUB_REPOSITORY_OWNER              jmcooper176
         GITHUB_REPOSITORY_OWNER_ID           168688749
         GITHUB_RETENTION_DAYS                90
         GITHUB_RUN_ATTEMPT                   1
@@ -608,12 +611,12 @@ function Get-GitHubEnvironmentVariable {
         GITHUB_STEP_SUMMARY                  D:\a\_temp\_runner_file_commands\step_summary_325ac9ee-3615-4c18-bc1c-a7b02d0cef95
         GITHUB_TRIGGERING_ACTOR              John-Cooper2_opmgov
         GITHUB_WORKFLOW                      NuGet Deploy Build
-        GITHUB_WORKFLOW_REF                  OPM-OCIO-DEVSECOPS/SkyOps-NuGet/.github/workflows/nuget-Deploy-Build.yml@refs/heads/main
+        GITHUB_WORKFLOW_REF                  jmcooper176/NuGet/.github/workflows/nuget-Deploy-Build.yml@refs/heads/main
         GITHUB_WORKFLOW_SHA                  070eca72e4cd84b4f5a8df341938cec434a16c33
-        GITHUB_WORKSPACE                     D:\a\SkyOps-NuGet\SkyOps-NuGet
+        GITHUB_WORKSPACE                     D:\a\NuGet\NuGet
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -641,9 +644,9 @@ function Get-GitHubEnvironmentVariable {
     #>
 }
 
-<#
+<##########################################
     Remove-StepSummary
-#>
+##########################################>
 function Remove-StepSummary {
     [CmdletBinding(SupportsShouldProcess)]
     param ()
@@ -679,7 +682,7 @@ function Remove-StepSummary {
         Deletes the file pointed to by GITHUB_STEP_SUMMARY.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -704,16 +707,17 @@ function Remove-StepSummary {
     #>
 }
 
-<#
+<##########################################
     Set-GitHubEnvironmentVariable
-#>
+##########################################>
 function Set-GitHubEnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [ValidateScript({ ($_ -notlike 'GITHUB_*') -and ($_ -notlike 'RUNNER_*') })]
+        [ValidateScript({ ($_ -notlike 'GITHUB_*') -and ($_ -notlike 'RUNNER_*') },
+            ErrorMessage = "Name '{0}' is either prefixed by 'GITHUB_' or 'RUNNER_' which is not supported")]
         [string]
         $Name,
 
@@ -766,7 +770,7 @@ function Set-GitHubEnvironmentVariable {
         This is a test
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -782,9 +786,9 @@ function Set-GitHubEnvironmentVariable {
     #>
 }
 
-<#
+<##########################################
     Set-MultilineEnvironmentVariable
-#>
+##########################################>
 function Set-MultilineEnvironmentVariable {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -860,7 +864,7 @@ function Set-MultilineEnvironmentVariable {
         This is a test
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -891,9 +895,9 @@ function Set-MultilineEnvironmentVariable {
     #>
 }
 
-<#
+<##########################################
     Set-MultilineStepSummary
-#>
+##########################################>
 function Set-MultilineStepSummary {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -937,7 +941,7 @@ function Set-MultilineStepSummary {
         PS> 'This is a multi-line step summary' | Set-MultilineStepSummary
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -953,9 +957,9 @@ function Set-MultilineStepSummary {
     #>
 }
 
-<#
+<##########################################
     Set-OutputParameter
-#>
+##########################################>
 function Set-OutputParameter {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -1011,7 +1015,7 @@ function Set-OutputParameter {
         [string]  If `Echo` is true, `Set-OutParameter` outputs the name=value pair to the PowerShell pipeline; otherwise, there is no output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ModulePublisher.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ModulePublisher.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,141 +45,154 @@ This file "ModulePublisher.psm1" is part of "ModulePublisher".
 =============================================================================
 #>
 
-<#
+<##########################################
     Get-ModuleOrder
-#>
-function Get-ModuleOrder
-{
+##########################################>
+function Get-ModuleOrder {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "Directory '{0}' is not a valid path container")]
         [string]
-        $directory)
+        $Directory)
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     $regex = New-Object -TypeName System.Text.RegularExpressions.Regex -ArgumentList "Az(ureRM)?\.[0-9].*"
     $orderedPackages = @()
-    $packages = (Get-ChildItem -LiteralPath $directory -Filter "*.nupkg")
-    $profileExtension = $packages | Where-Object -FilterScript {$_.Name.Contains(".Accounts.") -or $_.Name.Contains(".Profile.")}
-    $storage = $packages | Where-Object -FilterScript {$_.Name.Contains("Azure.Storage.") -or $_.Name.Contains("Az.Storage.")}
-    $azurerm = $packages | Where-Object -FilterScript {$regex.IsMatch($_.Name)}
+    $packages = (Get-ChildItem -LiteralPath $Directory -Filter "*.nupkg")
+    $profileExtension = $packages | Where-Object -FilterScript { $_.Name.Contains(".Accounts.") -or $_.Name.Contains(".Profile.") }
+    $storage = $packages | Where-Object -FilterScript { $_.Name.Contains("Azure.Storage.") -or $_.Name.Contains("Az.Storage.") }
+    $azurerm = $packages | Where-Object -FilterScript { $regex.IsMatch($_.Name) }
 
-    if ($null -ne $profileExtension -and $profileExtension.Length -gt 0)
-    {
+    if ($null -ne $profileExtension -and $profileExtension.Length -gt 0) {
         $orderedPackages += $profileExtension[0]
     }
 
-    if ($null -ne $storage -and $storage.Length -gt 0)
-    {
+    if ($null -ne $storage -and $storage.Length -gt 0) {
         $orderedPackages += $storage
     }
 
-    foreach ($package in $packages)
-    {
-        if (!$package.Name.Contains(".Accounts.") -and `
-            !$package.Name.Contains(".Profile.") -and `
-            !$package.Name.Contains("Azure.Storage.") -and `
-            !$package.Name.Contains("Az.Storage.") -and `
-            !$regex.IsMatch($package.Name))
-        {
+    $packages | ForEach-Object -Process {
+        if (-not $_.Name.Contains('.Accounts.') -and `
+                -not $_.Name.Contains('.Profile.') -and `
+                -not $_.Name.Contains('Azure.Storage.') -and `
+                -not $_.Name.Contains('Az.Storage.') -and `
+                -not $regex.IsMatch($_.Name)) {
             $orderedPackages += $package
         }
     }
 
-    if ($null -ne $azurerm -and $azurerm.Length -gt 0)
-    {
+    if ($null -ne $azurerm -and $azurerm.Length -gt 0) {
         $orderedPackages += $azurerm[0]
     }
 
     $orderedPackages | Write-Output
 }
 
-function Get-RepoLocation
-{
+function Get-RepoLocation {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $repoName)
+        $repoName,
+
+        [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+            ErrorMessage = "Location '{0}' is not a valid, absolute URI to a PowerShell repository")]
+        [string]
+        $Location = 'https://www.poshtestgallery.com/api/v2/package/'
+    )
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-    $location = "https://www.poshtestgallery.com/api/v2/package/"
-
-    if ($repoName -eq "PSGallery")
-    {
-        $location = "https://www.powershellgallery.com/api/v2/package/"
+    if ($repoName -eq 'PSGallery') {
+        $Location = "https://www.powershellgallery.com/api/v2/package/"
     }
 
-    $location | Write-Output
+    $Location | Write-Output
 }
 
-function Get-ApiKey
-{
+function Get-ApiKey {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $repoName)
+        $RepoName,
 
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        [string]
+        $VaultName = 'kv-azuresdk',
 
-        $vaultKey = "PSTestGalleryApiKey"
+        [string]
+        $VaultKey = 'PSTestGalleryApiKey'
+    )
 
-        if ($repoName -eq "PSGallery")
-        {
-            $vaultKey = "PowerShellGalleryApiKey"
-        }
+    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-        $context = (Get-AzContext -ErrorAction Ignore)
+    if ($RepoName -eq "PSGallery") {
+        $VaultKey = 'PowerShellGalleryApiKey'
+    }
 
-        if ($null -eq $context -or $null -eq $context.Account -or $null -eq $context.Account.Id)
-        {
-            Connect-AzAccount -ErrorAction Stop
-        }
+    $context = (Get-AzContext -ErrorAction Ignore)
 
-        $secret = Get-AzKeyVaultSecret -VaultName kv-azuresdk -Name $vaultKey -ErrorAction Stop
+    if (($null -eq $context) -or ($null -eq $context.Account) -or ($null -eq $context.Account.Id)) {
+        Connect-AzAccount -ErrorAction Stop
+    }
 
-        if($null -eq $secret.SecretValueText)
-        {
-            $secret = Get-AzKeyVaultSecret -VaultName kv-azuresdk -Name $vaultKey -ErrorAction Stop
-            $secretPlainText = ConvertFrom-SecureString -SecureString $secret.SecretValue -AsPlainText
-            $secretPlainText | Write-Output
-        }
-        else
-        {
-            $secret.SecretValueText | Write-Output
-        }
+    $secret = Get-AzKeyVaultSecret -VaultName $VaultName -Name $VaultKey -ErrorAction Stop
+
+    if ($null -eq $secret.SecretValueText) {
+        $secret = Get-AzKeyVaultSecret -VaultName $ValutName -Name $VaultKey -ErrorAction Stop
+        $secretPlainText = ConvertFrom-SecureString -SecureString $secret.SecretValue -AsPlainText
+        $secretPlainText | Write-Output
+    }
+    else {
+        $secret.SecretValueText | Write-Output
+    }
 }
 
-function Update-NuGetPackage
-{
-    [CmdletBinding(SupportsShouldProcess)]
+function Update-NugetPackage {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath
+        $NugetExe,
+
+        [string]
+        $LicenseUri = 'https://raw.githubusercontent.com/Azure/azure-powershell/dev/LICENSE.txt',
+
+        [string]
+        $ProjectUri = 'https://github.com/Azure/azure-powershell',
+
+        [switch]
+        $AcceptLicense,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+
         $regex = New-Object -TypeName System.Text.RegularExpressions.Regex -ArgumentList  "([0-9\.]+)nupkg$"
         $regex2 = "<requireLicenseAcceptance>false</requireLicenseAcceptance>"
     }
 
-    PROCESS
-    {
+    PROCESS {
         $file = Get-Item -LiteralPath $Path
 
         $zipPath = $file.FullName.Replace(".nupkg", ".zip")
@@ -186,25 +200,26 @@ function Update-NuGetPackage
         $dirPath = Join-Path -Path $file.Directory.FullName -ChildPath $dirName
         Rename-Item -Path $file.FullName -NewName $zipPath
         Expand-Archive -Path $zipPath -DestinationPath $dirPath
+
         $relDir = Join-Path -Path -Path $dirPath -ChildPath '`[Content_Types`].xml'
         $packPath = Join-Path -Path $dirPath -ChildPath "package"
         $modulePath = Join-Path -Path $dirPath -ChildPath ($dirName + ".nuspec")
         Remove-Item -Recurse -Path $relDir -Force
         Remove-Item -Recurse -Path $packPath -Force
         Remove-Item -Path $contentPath -Force
+
         $content = (Get-Content -LiteralPath $modulePath) -join [Environment]::NewLine
-        $content = $content -replace $regex2, ("<licenseUrl>https://raw.githubusercontent.com/Azure/azure-powershell/dev/LICENSE.txt</licenseUrl>`r`n    <projectUrl>https://github.com/Azure/azure-powershell</projectUrl>`r`n    <requireLicenseAcceptance>true</requireLicenseAcceptance>")
+        $content = $content -replace $regex2, ("<licenseUrl>$LicenseUri</licenseUrl>`r`n    <projectUrl>$ProjectUri</projectUrl>`r`n    <requireLicenseAcceptance>$AcceptLicense.IsPresent</requireLicenseAcceptance>")
         $content | Out-File -FilePath $modulePath -Force
 
         if ($PSCmdlet.ShouldProcess($modulePath, $CmdletName)) {
-            &$NuGetPath pack $modulePath -OutputDirectory $file.Directory.FullName
+            & $NugetExe pack $modulePath -OutputDirectory $file.Directory.FullName
         }
     }
 }
 
-function Remove-RMPackage
-{
-    [CmdletBinding(SupportsShouldProcess=$true)]
+function Remove-RMPackage {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
         [PSObject]
@@ -220,12 +235,21 @@ function Remove-RMPackage
         [string]
         $ApiKey,
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath = (Join-Path -Path $PSScriptRoot -ChildPath "nuget"))
+        $NugetExe = (Join-Path -Path $PSScriptRoot -ChildPath "NuGet.exe"),
+
+        [switch]
+        $Force
+    )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -233,132 +257,147 @@ function Remove-RMPackage
         $Version = $ModuleInfo.Version
 
         if ($PSCmdlet.ShouldProcess(
-            "Removing NuGet Package using command $NuGetPath delete $Name $Version $ApiKey -Source $RepoLocation -Verbosity detailed", $CmdletName)) {
-            &$NuGetPath delete $Name $Version $ApiKey -Source $RepoLocation -Verbosity detailed -NoPrompt
+                "Removing Nuget Package using command $NugetExe delete $Name $Version $ApiKey -Source $RepoLocation -Verbosity detailed", $CmdletName)) {
+            & $NugetExe delete $Name $Version $ApiKey -Source $RepoLocation -Verbosity detailed -NoPrompt
         }
     }
 }
 
 function Remove-RMPackage {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]
         $ModuleNameString,
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath = (Join-Path -Path $PSScriptRoot -ChildPath "nuget"),
+        $NugetExe = (Join-Path -Path $PSScriptRoot -ChildPath "NuGet.exe"),
 
-        [Parameter(ParameterSetName="ByName", Mandatory)]
+        [Parameter(ParameterSetName = "ByName", Mandatory)]
         [ValidateSet('TestGallery', 'PSGallery')]
         [string]
-        $RepoName
+        $RepoName,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
         $RepoLocation = (Get-RepoLocation -repoName $RepoName)
-        $ApiKey = (Get-ApiKey -repoName $RepoName)
+        $ApiKey = (Get-APIKey -repoName $RepoName)
         $modules = (Find-Module -Name $ModuleNameString -Repository $RepoName)
-        $modules | ForEach-Object -Process { Find-Module -Name $_.Name -Repository $RepoName -AllVersions } | Remove-RMPackage -RepoLocation $RepoLocation -ApiKey $ApiKey -NuGetPath $NuGetPath -WhatIf:([bool]$WhatIfPreference) -ErrorAction Stop
+        $modules | ForEach-Object -Process {
+            Find-Module -Name $_.Name -Repository $RepoName -AllVersions
+        } | Remove-RMPackage -RepoLocation $RepoLocation -ApiKey $ApiKey -NugetExe $NugetExe -WhatIf:([bool]$WhatIfPreference) -ErrorAction Stop
     }
 }
 
-function Update-Package
-{
-    [CmdletBinding(SupportsShouldProcess)]
+function Update-Package {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "Directory '{0}' is not a valid path container")]
         [string]
-        $Path,
+        $Directory,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath
-        )
+        $NugetExe,
+
+        [switch]
+        $Force
+    )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
-    PROCESS
-    {
-        $modules = (Get-ModuleOrder -directory $Path)
+    PROCESS {
+        Get-ModuleOrder -Directory $Directory | ForEach-Object -Process {
+            $package = $_
 
-        foreach ($package in $modules)
-        {
             if ($PSCmdlet.ShouldProcess($package, $CmdletName)) {
-                Update-NuGetPackage -Path $package -NuGetPath $NuGetPath
+                Update-NugetPackage -Path $package -NugetExe $NugetExe
             }
         }
     }
 }
 
-function Publish-RMModule
-{
-    [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'ByName')]
+function Publish-RMModule {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingRepoName')]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "Directory '{0}' is not a valid path container")]
         [string]
-        $Path,
+        $Directory,
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath = (Join-Path -Path $PSScriptRoot -ChildPath "nuget"),
+        $NugetExe = (Join-Path -Path $PSScriptRoot -ChildPath "NuGet.exe"),
 
-        [Parameter(ParameterSetName="ByLocation", Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'UsingRepoLocation')]
         [ValidateNotNullOrEmpty()]
         [string]
         $RepoLocation,
 
-        [Parameter(ParameterSetName="ByLocation", Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'UsingRepoLocation')]
         [ValidateNotNullOrEmpty()]
         [string]
         $ApiKey,
 
-        [Parameter(ParameterSetName="ByName", Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'UsingRepoName')]
         [ValidateSet('TestGallery', 'PSGallery')]
         [string]
-        $RepoName
+        $RepoName,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
-    PROCESS
-    {
-        if ($PSCmdlet.ParameterSetName -eq "ByName")
-        {
-            $RepoLocation = (Get-RepoLocation -repoName $RepoName)
-            $ApiKey = (Get-ApiKey -repoName $RepoName)
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingRepoLocation') {
+            $RepoLocation = $RepoLocation
+            $ApiKey = $ApiKey
+        }
+        else {
+            $RepoLocation = (Get-RepoLocation -RepoName $RepoName)
+            $ApiKey = (Get-APIKey -RepoName $RepoName)
         }
 
-        $modules = (Get-ModuleOrder -directory $Path)
+        Get-ModuleOrder -Directory $Directory | Where-Object -FilterScript { Test-Path -LiteralPath $_.FullName -PathType Leaf } | ForEach-Object -Process {
+            $package = $_
 
-        foreach ($package in $modules)
-        {
-          $packagePath = $package.FullName
-
-          if (-not (Test-Path -LiteralPath $packagePath -PathType Leaf))
-          {
-            throw "Module at $packagePath does not exist"
-          }
-
-          if ($PSCmdlet.ShouldProcess($packagePath, "Pushing package $packagePath to NuGet source $RepoLocation using command '$NuGetPath push $packagePath $ApiKey -Source $RepoLocation'"))
-          {
-            Write-Information -MessageData "Pushing package $packagePath to NuGet source $RepoLocation" -InformationAction Continue
-            &$NuGetPath push $packagePath $ApiKey -Source $RepoLocation -Verbosity detailed
-            Write-Information -MessageData "Pushed package $packagePath to NuGet source $RepoLocation" -InformationAction Continue
-          }
+            if ($PSCmdlet.ShouldProcess($package.FullName, $CmdletName)) {
+                & $NugetExe push $package.FullName $ApiKey -Source $RepoLocation -Verbosity detailed
+            }
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Build-Installer.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Build-Installer.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "Build-Installer.ps1" is part of "BuildScripts".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -81,50 +82,47 @@ This file "Build-Installer.ps1" is part of "BuildScripts".
     Build Windows Installer XML (WiX) installer.
 #>
 
+[CmdletBinding()]
+param ()
+
 $scriptFolder = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 . ($scriptFolder + '.\SetupEnv.ps1')
 
 $packageFolder = "$env:AzurePSRoot\artifacts"
-if (Test-Path -LiteralPath $packageFolder -PathType Container) {
+
+if (Test-Path $packageFolder) {
     Remove-Item -Path $packageFolder -Recurse -Force
 }
 
-$keyPath = "HKLM:\SOFTWARE\Microsoft\Windows Installer XML"
-if (${env:ADX64Platform}) {
-    $keyPath = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows Installer XML"
-}
+if (Get-Command -Name wix) {
+    $wixPath = Get-Command -Name wix | Select-Object -ExpandProperty Path
+    $wixInstallRoot = Get-ItemProperty -LiteralPath $wixPath -Name DirectoryName
 
-$allWixVersions = Get-ChildItem $keyPath
-if ($null -ne $allWixVersions) {
-    foreach ($wixVersion in $allWixVersions) {
-        $wixInstallRoot = $wixVersion.GetValue("InstallRoot", $null)
-        if ($null -ne $wixInstallRoot) {
-            Write-Verbose -Message "WIX tools were installed at $wixInstallRoot"
-            break
-        }
+    Write-Verbose -Message "WIX tools was installed at $wixInstallRoot"
+    break
+}
+else {
+    Write-Warning -Message "You do not have Windows Installer XML Toolset installed, which is needed to build setup."
+    & dotnet tool install wix --global
+
+    if ($LASTEXITCODE -eq 0) {
+        Write-Verbose -Message "Install of WiX succeeded"
+    }
+    elseif ($LASTEXITCODE -gt 0) {
+        Write-Warning -Message (("Install of WiX had errors '{0}|0x{0:X8}' that indicate failure") -f $LASTEXITCODE)
+    }
+    else {
+        Write-Error -Message (("Install of WiX had errors '{0}|0x{0:X8}' that indicate system failure") -f $LASTEXITCODE) -ErrorCategory InvalidResult -ErrorId 'BuildInstaller-SystemFailure-01' -TargetObject $LASTEXITCODE
+        throw (("Install of WiX had errors '{0}|0x{0:X8}' that indicate system failure") -f $LASTEXITCODE)
     }
 }
-
-if ($null -eq $wixInstallRoot) {
-    Write-Warning -Message "You don't have Windows Installer XML Toolset installed, which is needed to build setup."
-    Write-Informatioon -MessageData "Press (Y) to install through codeplex web page we will open for you; (N) to skip" -InformationAction Continue
-
-    $keyPressed = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyUp")
-
-    if ($keyPressed.Character -eq "y" ) {
-        Start-Process -FilePath 'cmd.exe' -ArgumentList "/C start http://wix.codeplex.com/downloads/get/762937" -Wait
-        Read-Host "Press any key to continue after the installation is finished"
-    }
-}
-
-#add wix to the PATH. Note, no need to be very accurate here,
-#and we just register both 3.8 & 3.5 to simplify the script
-$env:path = $env:path + ";$wixInstallRoot"
 
 # Regenerate the installer files
-&"$env:AzurePSRoot\tools\Installer\generate.ps1" 'Debug'
+$generatePath = Join-Path -Path $env:AzurePSRoot -ChildPath 'tools\Installer\generate.ps1' -Resolve
+& "$generatePath" 'Debug'
 
 # Build the cmdlets and installer in debug mode
-msbuild "$env:AzurePSRoot\build.proj" /t:Build
+$projectPath = Join-Path -Path $env:AzurePSRoot -ChildPath 'build.proj' -Resolve
+& msbuild /t:Build "$projectPath"
 
-Write-Information -MessageData "MSI file path: $env:AzurePSRoot\setup\build\Debug\AzurePowerShell.msi" -InformationAction Continue
+Write-Information -MessageData "MSI output file path: $env:AzurePSRoot\setup\build\Debug\AzurePowerShell.msi" -InformationAction Continue

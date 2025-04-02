@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="VersionModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="VersionModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -48,9 +49,9 @@ This file "VersionModule.psm1" is part of "VersionModule".
 # VersionModule.psm1
 #
 
-<#
+<###########################################
     Compare-PerlVersion
-#>
+##########################################>
 function Compare-PerlVersion {
     [CmdletBinding()]
     [OutputType([int])]
@@ -99,7 +100,7 @@ function Compare-PerlVersion {
         Compare the Perl version 5.0101 to the System.Version object with a major version of 5, a minor version of 10, a build version of 1, and a revision of 0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -118,9 +119,9 @@ function Compare-PerlVersion {
     #>
 }
 
-<#
+<###########################################
     Compare-PythonVersion
-#>
+##########################################>
 function Compare-PythonVersion {
     [CmdletBinding()]
     [OutputType([int])]
@@ -169,7 +170,7 @@ function Compare-PythonVersion {
         Compare the Python version 3.9.1 to the System.Version object with a major version of 3, a minor version of 9, a build version of 1, and a revision of 0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -188,9 +189,9 @@ function Compare-PythonVersion {
     #>
 }
 
-<#
+<###########################################
     Compare-StringVersion
-#>
+##########################################>
 function Compare-StringVersion {
     [CmdletBinding()]
     [OutputType([int])]
@@ -240,7 +241,7 @@ function Compare-StringVersion {
         Compare the System.Version object with a major version of 1, a minor version of 0, a build version of 0, and a revision of 0 to the string version '1.0.0'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -259,9 +260,9 @@ function Compare-StringVersion {
     #>
 }
 
-<#
+<###########################################
     Compare-WindowsVersion
-#>
+##########################################>
 function Compare-WindowsVersion {
     [CmdletBinding()]
     [OutputType([int])]
@@ -310,7 +311,7 @@ function Compare-WindowsVersion {
         Compare the System.Version object with a major version of 10, a minor version of 0, a build version of 19041, and a revision of 0 to the Windows version 10.0.19041.0.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -329,9 +330,9 @@ function Compare-WindowsVersion {
     #>
 }
 
-<#
+<###########################################
     ConvertFrom-PerlVersion
-#>
+##########################################>
 function ConvertFrom-PerlVersion {
     [CmdletBinding()]
     [OutputType([version])]
@@ -377,7 +378,7 @@ function ConvertFrom-PerlVersion {
         Convert the Perl version 5.0101 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -399,9 +400,9 @@ function ConvertFrom-PerlVersion {
     #>
 }
 
-<#
+<###########################################
     ConvertFrom-PythonVersion
-#>
+##########################################>
 function ConvertFrom-PythonVersion {
     [CmdletBinding()]
     [OutputType([version])]
@@ -417,31 +418,36 @@ function ConvertFrom-PythonVersion {
     if ($PythonVersion.Contains("!")) {
         $parts = $PythonVersion -split '!'
         $elements = $parts[1] -split '.'
-    } else {
+    }
+    else {
         $elements = $PythonVersion -split '.'
     }
 
     if ($elements[0] -match '\d+') {
         $major = [int]$Matches[0]
-    } else {
+    }
+    else {
         $major = 0
     }
 
     if ($elements[1] -match '\d+') {
         $minor = [int]$Matches[0]
-    } else {
+    }
+    else {
         $minor = 0
     }
 
     if ($elements[2] -match '\d+') {
         $build = [int]$Matches[0]
-    } else {
+    }
+    else {
         $build = 0
     }
 
     if ($elements[3] -match '\d+') {
         $revision = [int]$Matches[0]
-    } else {
+    }
+    else {
         $revision = 0
     }
 
@@ -473,7 +479,7 @@ function ConvertFrom-PythonVersion {
         Convert the Python version 3.9.1 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -497,7 +503,7 @@ function ConvertFrom-PythonVersion {
 
 <#
     ConvertFrom-SemanticVersion
-#>
+##########################################>
 function ConvertFrom-SemanticVersion {
     [CmdletBinding()]
     [OutputType([version])]
@@ -543,7 +549,7 @@ function ConvertFrom-SemanticVersion {
         Convert the Semantic version 1.0.0 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -565,9 +571,9 @@ function ConvertFrom-SemanticVersion {
     #>
 }
 
-<#
+<###########################################
     ConvertFrom-StringVersion
-#>
+##########################################>
 function ConvertFrom-StringVersion {
     [CmdletBinding()]
     [OutputType([version])]
@@ -633,7 +639,7 @@ function ConvertFrom-StringVersion {
         Convert the string version '1.0.0' to a System.Version object with strict requirements.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -655,9 +661,9 @@ function ConvertFrom-StringVersion {
     #>
 }
 
-<#
+<###########################################
     ConvertFrom-WindowsVersion
-#>
+##########################################>
 function ConvertFrom-WindowsVersion {
     [CmdletBinding()]
     [OutputType([version])]
@@ -703,7 +709,7 @@ function ConvertFrom-WindowsVersion {
         Convert the Windows version 10.0.19041.0 to a System.Version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -725,21 +731,23 @@ function ConvertFrom-WindowsVersion {
     #>
 }
 
-<#
+<###########################################
     Get-AssemblyVersion
-#>
+##########################################>
 function Get-AssemblyVersion {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     [OutputType([version])]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath
     )
@@ -754,7 +762,8 @@ function Get-AssemblyVersion {
                 $LiteralPath | ForEach-Object -Process {
                     [System.Reflection.AssemblyName]::GetAssemblyName($_).Version | Write-Output
                 }
-            } else {
+            }
+            else {
                 $Path | Resolve-Path | ForEach-Object -Process {
                     [System.Reflection.AssemblyName]::GetAssemblyName($_).Version | Write-Output
                 }
@@ -791,7 +800,7 @@ function Get-AssemblyVersion {
         Get the assembly version for the file `mydotnetfile.exe` in the `C:\Windows\System32` directory.
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -822,21 +831,23 @@ function Get-AssemblyVersion {
     #>
 }
 
-<#
+<###########################################
     Get-FileVersion
-#>
+##########################################>
 function Get-FileVersion {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -878,7 +889,8 @@ function Get-FileVersion {
     PROCESS {
         if ($PSCmdlet.ParameterSetName -eq "UsingLiteralPath") {
             $getFileVersionInfoSplat.Add('LiteralPath', $LiteralPath)
-        } else {
+        }
+        else {
             $getFileVersionInfoSplat.Add('Path', $Path)
         }
 
@@ -939,7 +951,7 @@ function Get-FileVersion {
         Returns the file version for the file `notepad.exe` in the `C:\Windows\System32` directory.
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -963,21 +975,23 @@ function Get-FileVersion {
     #>
 }
 
-<#
+<###########################################
     Get-FileVersionInfo
-#>
+##########################################>
 function Get-FileVersionInfo {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     [OutputType([System.Diagnostics.FileVersionInfo])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -1017,7 +1031,8 @@ function Get-FileVersionInfo {
     PROCESS {
         if ($PSCmdlet.ParameterSetName -eq "UsingLiteralPath") {
             $getItemSplat.Add('LiteralPath', $LiteralPath)
-        } else {
+        }
+        else {
             $getItemSplat.Add('Path', $Path)
         }
 
@@ -1071,7 +1086,7 @@ function Get-FileVersionInfo {
         [string]  Returns the file version string for the path.
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> Get-FileVersion 'C:\Windows\System32\notepad.exe'
@@ -1102,21 +1117,23 @@ function Get-FileVersionInfo {
     #>
 }
 
-<#
+<###########################################
     Get-InformationalVersion
-#>
+##########################################>
 function Get-InformationalVersion {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -1158,7 +1175,8 @@ function Get-InformationalVersion {
 
         if ($PSCmdlet.ParameterSetName -eq "UsingLiteralPath") {
             $getFileVersionInfoSplat.Add('LiteralPath', $LiteralPath)
-        } else {
+        }
+        else {
             $getFileVersionInfoSplat.Add('Path', $Path)
         }
 
@@ -1212,7 +1230,7 @@ function Get-InformationalVersion {
         [string]  Returns the informational or product version string for the path.
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> Get-InformationalVersion 'C:\Windows\System32\notepad.exe'
@@ -1246,9 +1264,9 @@ function Get-InformationalVersion {
 
 New-Alias -Name Get-ProductVersion -Value Get-InformationalVersion
 
-<#
+<###########################################
     Get-ModuleVersion
-#>
+##########################################>
 function Get-ModuleVersion {
     [CmdletBinding(DefaultParameterSetName = 'UsingModuleManifest')]
     [OutputType([version])]
@@ -1260,7 +1278,8 @@ function Get-ModuleVersion {
         $ModuleName,
 
         [Parameter(ParameterSetName = 'UsingModuleManifest')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.psd1' -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -Include '*.psd1' -PathType 'Leaf' },
+            ErrorMessage = "ModuleManifest '{0}' is not a valid path leaf with extension '.psd1'")]
         [string]
         $ModuleManifest
     )
@@ -1271,7 +1290,7 @@ function Get-ModuleVersion {
         Write-Verbose -Message "$($CmdletName):  Getting Module Version"
         Get-Module -ListAvailable |
             Where-Object -Property Name -EQ $ModuleName |
-                Select-Object -ExpandProperty Version -First 1 | Write-Output
+            Select-Object -ExpandProperty Version -First 1 | Write-Output
     }
     else {
         [version](Test-ModuleManifest -Path $ModuleManifest | Select-Object -ExpandProperty Version) | Write-Output
@@ -1297,7 +1316,7 @@ function Get-ModuleVersion {
         [version]  `Get-ModuleVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1325,9 +1344,9 @@ function Get-ModuleVersion {
     #>
 }
 
-<#
+<###########################################
     Initialize-Version
-#>
+##########################################>
 function Initialize-Version {
     [CmdletBinding(DefaultParameterSetName = 'UsingVersion')]
     param (
@@ -1363,34 +1382,38 @@ function Initialize-Version {
             if ($SemanticVersion.Major -gt $MAX_MAJOR) {
                 Write-Warning -Message "$($CmdletName):  Major greater than '$($MAX_MAJOR)' will not be comparable with System.Version"
                 $major = $MAX_MAJOR
-            } elseif ($SemanticVersion.Major -lt 0) {
+            }
+            elseif ($SemanticVersion.Major -lt 0) {
                 $newErrorRecordSplat = @{
-                    Exception = [System.ArgumentException]::new('Version is de-normal with negative Major', 'SemanticVersion')
-                    ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                    Exception     = [System.ArgumentException]::new('Version is de-normal with negative Major', 'SemanticVersion')
+                    ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
                     ErrorCategory = 'InvalidArgument'
-                    TargetObject = $SemanticVersion
-                    TargetName = 'SemanticVersion'
+                    TargetObject  = $SemanticVersion
+                    TargetName    = 'SemanticVersion'
                 }
 
                 New-ErrorRecord @newErrorRecordSplat | Write-Fatal
-            } else {
+            }
+            else {
                 $major = $SemanticVersion.Major
             }
 
             if ($SemanticVersion.Minor -gt $MAX_MINOR) {
                 Write-Warning -Message "$($CmdletName):  Minor greater than '$($MAX_MINOR)' will not be comparable with System.Version"
                 $minor = $MAX_MINOR
-            } elseif ($SemanticVersion.Minor -lt 0) {
+            }
+            elseif ($SemanticVersion.Minor -lt 0) {
                 $newErrorRecordSplat = @{
-                    Exception = [System.ArgumentException]::new('Version is de-normal with negative Minor', 'SemanticVersion')
-                    ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                    Exception     = [System.ArgumentException]::new('Version is de-normal with negative Minor', 'SemanticVersion')
+                    ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
                     ErrorCategory = 'InvalidArgument'
-                    TargetObject = $SemanticVersion
-                    TargetName = 'SemanticVersion'
+                    TargetObject  = $SemanticVersion
+                    TargetName    = 'SemanticVersion'
                 }
 
                 New-ErrorRecord @newErrorRecordSplat | Write-Fatal
-            } else {
+            }
+            else {
                 $minor = $SemanticVersion.Minor
             }
 
@@ -1398,23 +1421,26 @@ function Initialize-Version {
 
             if ($SemanticVersion.Patch -lt 0) {
                 $newErrorRecordSplat = @{
-                    Exception = [System.ArgumentException]::new('Version is de-normal with negative Patch', 'SemanticVersion')
-                    ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                    Exception     = [System.ArgumentException]::new('Version is de-normal with negative Patch', 'SemanticVersion')
+                    ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
                     ErrorCategory = 'InvalidArgument'
-                    TargetObject = $SemanticVersion
-                    TargetName = 'SemanticVersion'
+                    TargetObject  = $SemanticVersion
+                    TargetName    = 'SemanticVersion'
                 }
 
                 New-ErrorRecord @newErrorRecordSplat | Write-Fatal
-            } elseif ((($SemanticVersion.Patch - $revision) / 100000) -gt $MAX_BUILD) {
+            }
+            elseif ((($SemanticVersion.Patch - $revision) / 100000) -gt $MAX_BUILD) {
                 Write-Warning -Message "$($CmdletName):  Patch build part greater than '$($MAX_BUILD)' and will overflow a System.int"
                 $build = $MAX_BUILD
                 $patch = $build * 100000 + $revision
-            } elseif (($SemanticVersion.Patch / 100000) -gt $MAX_REVISION) {
+            }
+            elseif (($SemanticVersion.Patch / 100000) -gt $MAX_REVISION) {
                 Write-Warning -Message "$($CmdletName):  Patch revision part greater than '$($MAX_REVISION)' and may overflow a System.int"
                 $revision = $MAX_REVISION
                 $patch = $build * 100000 + $revision
-            } else {
+            }
+            else {
                 $patch = $SemanticVersion.Patch
             }
 
@@ -1428,13 +1454,15 @@ function Initialize-Version {
                 New-Object -TypeName System.Management.Automation.SemanticVersion `
                     -ArgumentList $major, $minor, $patch, $SemanticVersion.PrereleaseLabel | Write-Output
             }
-        } else {
+        }
+        else {
             if ($PE.IsPresent) {
                 Set-Variable -Name MAX_MAJOR -Option Constant -Value 127
                 Set-Variable -Name MAX_MINOR -Option Constant -Value 255
                 Set-Variable -Name MAX_BUILD -Option Constant -Value 32767
                 Set-Variable -Name MAX_REVISION -Option Constant -Value 65534
-            } else {
+            }
+            else {
                 Set-Variable -Name MAX_MAJOR -Option Constant -Value 65534
                 Set-Variable -Name MAX_MINOR -Option Constant -Value 65534
                 Set-Variable -Name MAX_BUILD -Option Constant -Value 65534
@@ -1446,52 +1474,60 @@ function Initialize-Version {
             if ($Version.Major -gt $MAX_MAJOR) {
                 Write-Warning -Message "$($CmdletName):  Major greater than '$($MAX_MAJOR)' will break all PE Headers including C++ Native and MSI"
                 $major = $MAX_MAJOR
-            } elseif ($Version.Major -lt 0) {
+            }
+            elseif ($Version.Major -lt 0) {
                 $newErrorRecordSplat = @{
-                    Exception = [System.ArgumentException]::new('Version is de-normal with negative Major', 'Version')
-                    ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                    Exception     = [System.ArgumentException]::new('Version is de-normal with negative Major', 'Version')
+                    ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
                     ErrorCategory = 'InvalidArgument'
-                    TargetObject = $Version
-                    TargetName = 'Version'
+                    TargetObject  = $Version
+                    TargetName    = 'Version'
                 }
 
                 New-ErrorRecord @newErrorRecordSplat | Write-Fatal
-            } else {
+            }
+            else {
                 $major = $Version.Major
             }
 
             if ($Version.Minor -gt $MAX_MINOR) {
                 Write-Warning -Message "$($CmdletName):  Minor greater than '$($MAX_MINOR)' will break all PE Headers including C++ Native and MSI"
                 $minor = $MAX_MINOR
-            } elseif ($Version.Minor -lt 0) {
+            }
+            elseif ($Version.Minor -lt 0) {
                 $newErrorRecordSplat = @{
-                    Exception = [System.ArgumentException]::new('Version is de-normal with negative Minor', 'Version')
-                    ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
+                    Exception     = [System.ArgumentException]::new('Version is de-normal with negative Minor', 'Version')
+                    ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
                     ErrorCategory = 'InvalidArgument'
-                    TargetObject = $Version
-                    TargetName = 'Version'
+                    TargetObject  = $Version
+                    TargetName    = 'Version'
                 }
 
                 New-ErrorRecord @newErrorRecordSplat | Write-Fatal
-            } else {
+            }
+            else {
                 $minor = $Version.Minor
             }
 
             if ($Version.Build -gt $MAX_BUILD) {
                 Write-Warning -Message "$($CmdletName):  Build greater than '$($MAX_BUILD)' may overflow in PE Headers including C++ Native and MSI"
                 $build = $MAX_BUILD
-            } elseif ($Version.Build -lt 0) {
+            }
+            elseif ($Version.Build -lt 0) {
                 $build = 0
-            } else {
+            }
+            else {
                 $build = $Version.Build
             }
 
             if ($Version.Revision -gt $MAX_REVISION) {
                 Write-Warning -Message "$($CmdletName):  Revision greater than '$($MAX_REVISION)' will break all PE Headers including C++ Native and MSI"
                 $revision = $MAX_REVISION
-            } elseif ($Version.Revision -lt 0) {
+            }
+            elseif ($Version.Revision -lt 0) {
                 $revision = 0
-            } else {
+            }
+            else {
                 $revision = $Version.Revision
             }
 
@@ -1531,7 +1567,7 @@ function Initialize-Version {
         Normalizes the version object.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1565,9 +1601,9 @@ function Initialize-Version {
     #>
 }
 
-<#
+<###########################################
     New-AssemblyVersion
-#>
+##########################################>
 function New-AssemblyVersion {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([version])]
@@ -1629,7 +1665,7 @@ function New-AssemblyVersion {
         [version]  `New-AssemblyVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-AssemblyVersion -Major 1 -Minor 0 -Build 1234
@@ -1666,9 +1702,9 @@ function New-AssemblyVersion {
     #>
 }
 
-<#
+<###########################################
     New-BuildNumber
-#>
+##########################################>
 function New-BuildNumber {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([int])]
@@ -1685,7 +1721,8 @@ function New-BuildNumber {
 
     if (Test-PSParameter -Name 'Utc' -Parameters $PSBoundParameters) {
         Write-Verbose -Message "$($CmdletName):  UTC time '$($Utc)' passed as a parameter"
-    } else {
+    }
+    else {
         $Utc = Get-UtcDate
     }
 
@@ -1720,7 +1757,7 @@ function New-BuildNumber {
         Create a new build number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1745,9 +1782,9 @@ function New-BuildNumber {
     #>
 }
 
-<#
+<###########################################
     New-CalendarVersion
-#>
+##########################################>
 function New-CalendarVersion {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([version])]
@@ -1770,7 +1807,8 @@ function New-CalendarVersion {
 
     if ($Long.IsPresent) {
         $year = $utc.Year
-    } else {
+    }
+    else {
         $year = $utc.Year % 100
     }
 
@@ -1780,7 +1818,8 @@ function New-CalendarVersion {
         $monthDay = ((($utc.Year - $OffsetFrom.Year) * 12) + $utc.Month - $OffsetFrom.Month)
         $monthDay = ($monthDay * 100) + $utc.Day
         $version = New-Version -Major $year -Minor $monthDay -Build $midnight -Revision 0
-    } else {
+    }
+    else {
         $month = $utc.Month
         $day = $utc.Day
         $version = New-Version -Major $year -Minor $month -Build $day -Revision $midnight
@@ -1822,7 +1861,7 @@ function New-CalendarVersion {
         Create a new calendar version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1855,9 +1894,9 @@ function New-CalendarVersion {
 
 New-Alias -Name New-CalVersion -Value New-CalendarVersion
 
-<#
+<###########################################
     New-FileVersion
-#>
+##########################################>
 function New-FileVersion {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([version])]
@@ -1935,7 +1974,7 @@ function New-FileVersion {
         [version]  `New-FileVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-FileVersion -Major 1 -Minor 0 -Build 1234 -Revision 0
@@ -1978,9 +2017,9 @@ function New-FileVersion {
     #>
 }
 
-<#
+<###########################################
     New-InformationalVersion
-#>
+##########################################>
 function New-InformationalVersion {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -2022,7 +2061,8 @@ function New-InformationalVersion {
 
     if ($Release.IsPresent) {
         $Revision = 0
-    } elseif (-not (Test-PSParameter -Name 'Revision' -Parameters $PSBoundParameters)) {
+    }
+    elseif (-not (Test-PSParameter -Name 'Revision' -Parameters $PSBoundParameters)) {
         $Revision = New-RevisionNumber -MaxRevision $MAX_REVISION -OffsetFrom $OffsetFrom -Utc $utc
     }
 
@@ -2067,7 +2107,7 @@ function New-InformationalVersion {
         [string]  `New-InformationalVersion` returns an instance to the PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
         PS> New-InformationalVersion -Major 1 -Minor 0 -Build 1234 -Revision 0
@@ -2121,14 +2161,15 @@ function New-InformationalVersion {
 
 New-Alias -Name New-ProductVersion -Value New-InformationalVersion
 
-<#
+<###########################################
     New-JsonVersion
-#>
+##########################################>
 function New-JsonVersion {
     [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -2210,7 +2251,7 @@ function New-JsonVersion {
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     $jsonTemplate =
-@'
+    @'
     {
     "BuildMetadataWithCommitId": [
       "",
@@ -2435,14 +2476,15 @@ function New-JsonVersion {
     $json | ConvertTo-Json | Write-Output
 }
 
-<#
+<###########################################
     New-XmlVersion
-#>
+##########################################>
 function New-XmlVersion {
     [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -2524,33 +2566,33 @@ function New-XmlVersion {
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     $newJsonVersion = @{
-        FilePath = $FilePath
-        ShortId = $ShortId
-        LongId = $LongId
-        Major = $Major
-        Minor = $Minor
-        CommitAuthorDate = $CommitAuthorDate
-        CommitDate = $CommitDate
-        BuildMetadata = $BuildMetadata
-        DevRelease = $DevRelease
-        LocalRelease = $LocalRelease
-        PostRelease = $PostRelease
-        Prerelease = $Prerelease
+        FilePath          = $FilePath
+        ShortId           = $ShortId
+        LongId            = $LongId
+        Major             = $Major
+        Minor             = $Minor
+        CommitAuthorDate  = $CommitAuthorDate
+        CommitDate        = $CommitDate
+        BuildMetadata     = $BuildMetadata
+        DevRelease        = $DevRelease
+        LocalRelease      = $LocalRelease
+        PostRelease       = $PostRelease
+        Prerelease        = $Prerelease
         PrereleaseVersion = $PrereleaseVersion
-        Tag = $Tag
-        BuildRef = $BuildRef
-        Branch = $Branch
-        Epoch = $Epoch
-        PublicRelease = $PublicRelease:IsPresent
-        ZeroDay = $ZeroDay
+        Tag               = $Tag
+        BuildRef          = $BuildRef
+        Branch            = $Branch
+        Epoch             = $Epoch
+        PublicRelease     = $PublicRelease:IsPresent
+        ZeroDay           = $ZeroDay
     }
 
     New-JsonVersion @newJsonVersion | ConvertFrom-Json | ConvertTo-Xml | Write-Output
 }
 
-<#
+<###########################################
     New-PatchNumber
-#>
+##########################################>
 function New-PatchNumber {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([int])]
@@ -2573,7 +2615,8 @@ function New-PatchNumber {
 
     if (Test-PSParameter -Name 'Utc' -Parameters $PSBoundParameters) {
         Write-Verbose -Message "$($CmdletName) : UTC time '$($Utc)' passed as a parameter"
-    } else {
+    }
+    else {
         $Utc = Get-UtcDate
     }
 
@@ -2583,16 +2626,18 @@ function New-PatchNumber {
 
         if ($build -gt $MaxBuild) {
             $newErrorRecordSplat = @{
-                Exception = [System.ArgumentOutOfRangeException]::new('build', $build, "Build portion of patch is greater than '$($MaxBuild)' and will overflow")
-                ErrorId = Format-ErrorId -Caller $CmdletName -Name 'ArgumentOutOfRangeException' -Position $MyInvocation.ScriptLineNumber
+                Exception     = [System.ArgumentOutOfRange]::new('build', $build, "Build portion of patch is greater than '$($MaxBuild)' and will overflow")
+                ErrorId       = Format-ErrorId -Caller $CmdletName -Name 'ArgumentException' -Position $MyInvocation.ScriptLineNumber
                 ErrorCategory = 'LimitsExceeded'
-                TargetObject = $build
+                TargetObject  = $build
             }
 
             New-ErrorRecord @newErrorRecordSplat | Write-Fatal
-        } elseif ($revision -gt $MaxRevision) {
+        }
+        elseif ($revision -gt $MaxRevision) {
             Write-Warning -Message "$($CmdletName) : Revision portion of patch is greater than '$($MaxRevision)' and may overflow"
-        } else {
+        }
+        else {
             Write-Verbose -Message "$($CmdletName) : Both the build and revision parts of patch are in range"
         }
 
@@ -2632,7 +2677,7 @@ function New-PatchNumber {
         Create a new patch number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2672,9 +2717,9 @@ function New-PatchNumber {
     #>
 }
 
-<#
+<###########################################
     New-PerlVersion
-#>
+##########################################>
 function New-PerlVersion {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([double])]
@@ -2732,7 +2777,7 @@ function New-PerlVersion {
         Create a new Perl version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2748,35 +2793,36 @@ function New-PerlVersion {
     #>
 }
 
-<#
+<###########################################
     New-PythonVersion
-#>
+##########################################>
 function New-PythonVersion {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
     param (
-        [ValidateScript({ $_ -ge 0 })]
+        [ValidateRange('NonNegative')]
         [int]
         $Epoch,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ $_ -ge 0 })]
+        [ValidateRange('NonNegative')]
         [int]
         $Release,
 
-        [ValidateScript({ $_ -ge 0 })]
+        [ValidateRange('NonNegative')]
         [int]
         $Micro = 0,
 
-        [ValidateScript({ $_ -ge 0 })]
+        [ValidateRange('NonNegative')]
         [int]
         $Build,
 
-        [ValidateScript({ $_ -ge 0 })]
+        [ValidateRange('NonNegative')]
         [int]
         $Revision,
 
-        [ValidateScript({ Test-CPreRelease -PreRelease $_ })]
+        [ValidateScript({ Test-CPreRelease -PreRelease $_ },
+            ErrorMessage = "PreRelease '{0}' is not a valid semantic version suffix")]
         [string]
         $PreRelease,
 
@@ -2788,7 +2834,7 @@ function New-PythonVersion {
         [string]
         $DevRelease,
 
-        [ValidateScript({ $_ -ge 0 })]
+        [ValidateRange('NonNegative')]
         [int]
         $Local
     )
@@ -2889,7 +2935,7 @@ function New-PythonVersion {
         Create a new Python version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2917,9 +2963,9 @@ function New-PythonVersion {
     #>
 }
 
-<#
+<###########################################
     New-RevisionNumber
-#>
+##########################################>
 function New-RevisionNumber {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([int])]
@@ -2938,8 +2984,9 @@ function New-RevisionNumber {
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     if (Test-PSParameter -Name 'Utc' -Parameters $PSBoundParameters) {
-        Write-Verbose -Message "$($CmdletName) : UTC time '$($Utc)' passed as a parameter"
-    } else {
+        Write-Verbose "$($CmdletName) : UTC time '$($Utc)' passed as a parameter"
+    }
+    else {
         $Utc = Get-UtcDate
     }
 
@@ -2977,7 +3024,7 @@ function New-RevisionNumber {
         Create a new revision number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -2999,9 +3046,9 @@ function New-RevisionNumber {
     #>
 }
 
-<#
+<###########################################
     New-SemanticVersion
-#>
+##########################################>
 function New-SemanticVersion {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingParts')]
     param (
@@ -3053,7 +3100,7 @@ function New-SemanticVersion {
     Set-Variable -Name MAX_REVISION -Option Constant -Value 83647 -WhatIf:$false
 
     if ($PSVersionTable.PSVersion.Major -lt 6) {
-        Write-Warning -Message "$($CmdletName) : Semantic Versions are not supported on this PowerShell Major '$($PSVersionTable.PSVersion.Major)' version"
+        Write-Warning "$($CmdletName) : Semantic Versions are not supported on this PowerShell Major '$($PSVersionTable.PSVersion.Major)' version"
 
         if (Test-PSParameter -Name 'Patch' -Parameters $PSBoundParameters) {
             return New-FileVersion -Major $Major -Minor $Minor -Build $Patch
@@ -3068,6 +3115,7 @@ function New-SemanticVersion {
             [semver]::new($Value) | Write-Output
         }
         catch {
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
             $Error | Write-Fatal
         }
     }
@@ -3093,15 +3141,15 @@ function New-SemanticVersion {
         if ($PSCmdlet.ShouldProcess(@($Major, $Minor, $Patch, $metaData), $CmdletName)) {
             if ((Test-PSParameter -Name 'PrereleaseLabel' -Parameters $PSBoundParameters) -and ($metaData.Length -gt 0)) {
                 Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported.  Using Prerelease and Build Labels"
-                [semver]::new($Major, $Minor, $Patch, $PreReleaseLabel, $metadata) | Write-OutPut
+                [semver]::new($Major, $Minor, $Patch, $PreReleaseLabel, $metadata) | Write-Output
             }
             elseif ($metaData.Length -gt 0) {
                 Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported.  Using Build Label"
-                [semver]::new($Major, $Minor, $Patch, $metadata) | Write-OutPut
+                [semver]::new($Major, $Minor, $Patch, $metadata) | Write-Output
             }
             else {
                 Write-Verbose -Message "$($CmdletName) : SemanticVersion is supported without metadata" | Write-Verbose
-                [semver]::new($Major, $Minor, $Patch) | Write-OutPut
+                [semver]::new($Major, $Minor, $Patch) | Write-Output
             }
         }
     }
@@ -3169,7 +3217,7 @@ function New-SemanticVersion {
         representing the QFE file version.
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All
         Rights Reserved.
 
         .EXAMPLE
@@ -3210,9 +3258,9 @@ function New-SemanticVersion {
 
 New-Alias -Name New-SemVersion -Value New-SemanticVersion
 
-<#
+<###########################################
     New-Version
-#>
+##########################################>
 function New-Version {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingQuads')]
     [OutputType([version])]
@@ -3250,6 +3298,7 @@ function New-Version {
             [version]::new($Value) | Write-Output
         }
         catch {
+            $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
             $Error | Write-Fatal
         }
     }
@@ -3296,7 +3345,7 @@ function New-Version {
         Create a new version.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3312,9 +3361,9 @@ function New-Version {
     #>
 }
 
-<#
+<###########################################
     New-WindowsVersion
-#>
+##########################################>
 function New-WindowsVersion {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([ulong])]
@@ -3375,7 +3424,7 @@ function New-WindowsVersion {
         Generates a windows version number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3388,9 +3437,9 @@ function New-WindowsVersion {
     #>
 }
 
-<#
+<###########################################
     Test-CPreRelease
-#>
+##########################################>
 function Test-CPreRelease {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -3466,7 +3515,7 @@ function Test-CPreRelease {
         Test if a string is a valid pre-release label.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3479,9 +3528,9 @@ function Test-CPreRelease {
     #>
 }
 
-<#
+<###########################################
     Test-PreRelease
-#>
+##########################################>
 function Test-PreRelease {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -3558,7 +3607,7 @@ function Test-PreRelease {
         Test if a string is a valid pre-release label.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3571,20 +3620,22 @@ function Test-PreRelease {
     #>
 }
 
-<#
+<###########################################
     Write-AssemblyVersionToAssemblyInfo
-#>
+##########################################>
 function Write-AssemblyVersionToAssemblyInfo {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -3685,7 +3736,7 @@ function Write-AssemblyVersionToAssemblyInfo {
         VERBOSE: AssemblyVersion in File 'C:\Path\To\AssemblyInfo.cs' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3722,20 +3773,22 @@ function Write-AssemblyVersionToAssemblyInfo {
     #>
 }
 
-<#
+<###########################################
     Write-AssemblyFileVersionToAssemblyInfo
-#>
+##########################################>
 function Write-AssemblyFileVersionToAssemblyInfo {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -3836,7 +3889,7 @@ function Write-AssemblyFileVersionToAssemblyInfo {
         VERBOSE: AssemblyFileVersion in File 'C:\Path\To\AssemblyInfo.cs' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -3885,20 +3938,22 @@ function Write-AssemblyFileVersionToAssemblyInfo {
     #>
 }
 
-<#
+<###########################################
     Write-FileVersionToSdkProj
-#>
+##########################################>
 function Write-FileVersionToSdkProj {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -3980,7 +4035,7 @@ function Write-FileVersionToSdkProj {
         VERBOSE: FileVersion in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4017,21 +4072,23 @@ function Write-FileVersionToSdkProj {
     #>
 }
 
-<#
+<###########################################
     Write-AssemblyInformationalVersionToAssemblyInfo
-#>
+##########################################>
 function Write-AssemblyInformationalVersionToAssemblyInfo {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingLiteralPath')]
         [Parameter(Mandatory, ParameterSetName = 'UsingXPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -4134,7 +4191,7 @@ function Write-AssemblyInformationalVersionToAssemblyInfo {
         VERBOSE: AssemblyInformationalVersion in File 'C:\Path\To\AssemblyInfo.cs' updated to '1.2.0.0'
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4180,19 +4237,21 @@ function Write-AssemblyInformationalVersionToAssemblyInfo {
     #>
 }
 
-<#
+<###########################################
     Write-InformationalVersionToSdkProj
-#>
+##########################################>
 function Write-InformationalVersionToSdkProj {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -4274,7 +4333,7 @@ function Write-InformationalVersionToSdkProj {
         VERBOSE: InformationalVersion in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4311,14 +4370,15 @@ function Write-InformationalVersionToSdkProj {
     #>
 }
 
-<#
+<###########################################
     Write-ModuleVersion
-#>
+##########################################>
 function Write-ModuleVersion {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -Include '*.psd1' -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -Include '*.psd1' -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path,
 
@@ -4352,7 +4412,7 @@ function Write-ModuleVersion {
         None.  `Write-ModuleVersion` does not return any PowerShell pipeline output.
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4371,20 +4431,22 @@ function Write-ModuleVersion {
     #>
 }
 
-<#
+<###########################################
     Write-PackageVersionToSdkProj
-#>
+##########################################>
 function Write-PackageVersionToSdkProj {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -4465,7 +4527,7 @@ function Write-PackageVersionToSdkProj {
         VERBOSE: PackageVersion in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4502,20 +4564,22 @@ function Write-PackageVersionToSdkProj {
     #>
 }
 
-<#
+<###########################################
     Write-VersionToSdkProj
-#>
+##########################################>
 function Write-VersionToSdkProj {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -4596,7 +4660,7 @@ function Write-VersionToSdkProj {
         VERBOSE: Version in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -4633,20 +4697,22 @@ function Write-VersionToSdkProj {
     #>
 }
 
-<#
+<###########################################
     Write-XPathVersion
-#>
+##########################################>
 function Write-XPathVersion {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
@@ -4729,7 +4795,7 @@ function Write-XPathVersion {
         VERBOSE: Version XPath '//Project/PropertyGroup/Version' in File 'C:\Path\To\SdkProject.csproj' updated to '1.2.3.4'
 
         .NOTES
-        Copyright © 2023-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

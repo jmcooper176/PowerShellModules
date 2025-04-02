@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ListDictionary.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ListDictionary.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,26 +52,26 @@ This file "ListDictionary.psm1" is part of "ContainersModule".
 #
 
 class ListDictionary : System.Collections.Specialized.ListDictionary {
-    <#
+    <###########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName
 
-    <#
+    <###########################################
         Hidden Properties
-    #>
+    ##########################################>
     hidden [System.Collections.Specialized.ListDictionary]$Instance
 
-    <#
+    <###########################################
         Constructors
-    #>
+    ##########################################>
     ListDictionary() {
         $this.Instance = [System.Collections.Specialized.ListDictionary]::new()
     }
 
-    <#
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [void]Add([object]$key, [object]$value) {
         $this.Instance.Add($key, $value)
     }
@@ -98,7 +99,7 @@ class ListDictionary : System.Collections.Specialized.ListDictionary {
 
 <#
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-ListDictionary {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([ListDictionary])]

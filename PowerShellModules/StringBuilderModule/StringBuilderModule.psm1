@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="StringBuilderModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="StringBuilderModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "StringBuilderModule.psm1" is part of "StringBuilderModule".
 =============================================================================
 #>
 
-<#
+<##########################################
     Add-Begin
-#>
+##########################################>
 function Add-Begin {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([System.Text.StringBuilder])]
@@ -227,9 +228,9 @@ function Add-Begin {
     }
 }
 
-<#
+<##########################################
     Add-End
-#>
+##########################################>
 function Add-End {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([System.Text.StringBuilder])]
@@ -553,9 +554,9 @@ New-Alias -Name Add-VerticalTab -Value (Add-End -Buffer $Buffer -Character [char
 New-Alias -Name Add-VolumeSeparator -Value (Add-End -Buffer $Buffer -Character ([System.IO.Path]::VolumeSeparatorChar))
 #>
 
-<#
+<##########################################
     Clear-Buffer
-#>
+##########################################>
 function Clear-Buffer {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -575,9 +576,9 @@ function Clear-Buffer {
     }
 }
 
-<#
+<##########################################
     Close-Buffer
-#>
+##########################################>
 function Close-Buffer {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -598,9 +599,9 @@ function Close-Buffer {
     }
 }
 
-<#
+<##########################################
     ConvertTo-String
-#>
+##########################################>
 function ConvertTo-String {
     [CmdletBinding()]
     [OutputType([string])]
@@ -639,9 +640,9 @@ function ConvertTo-String {
     }
 }
 
-<#
+<##########################################
     Edit-Buffer
-#>
+##########################################>
 function Edit-Buffer {
     [CmdletBinding(DefaultParameterSetName = 'UsingObject')]
     [OutputType([System.Text.StringBuilder])]
@@ -829,9 +830,9 @@ function Edit-Buffer {
     }
 }
 
-<#
+<##########################################
     Find-Replace
-#>
+##########################################>
 function Find-Replace {
     [CmdletBinding(DefaultParameterSetName = 'UsingString', SupportsShouldProcess)]
     [OutputType([System.Text.StringBuilder])]
@@ -875,9 +876,9 @@ function Find-Replace {
     }
 }
 
-<#
+<##########################################
     Format-End
-#>
+##########################################>
 function Format-End {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([System.Text.StringBuilder])]
@@ -931,9 +932,9 @@ function Format-End {
     }
 }
 
-<#
+<##########################################
     Get-Character
-#>
+##########################################>
 function Get-Character {
     [CmdletBinding()]
     [OutputType([char])]
@@ -991,9 +992,9 @@ function Join-AppendString {
     }
 }
 
-<#
+<##########################################
     New-StringBuilder
-#>
+##########################################>
 function New-StringBuilder {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([System.Text.StringBuilder])]
@@ -1032,9 +1033,9 @@ function New-StringBuilder {
     }
 }
 
-<#
+<##########################################
     Remove-Substring
-#>
+##########################################>
 function Remove-Substring {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([System.Text.StringBuilder])]
@@ -1062,9 +1063,9 @@ function Remove-Substring {
     }
 }
 
-<#
+<##########################################
     Set-Character
-#>
+##########################################>
 function Set-Character {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([System.Text.StringBuilder])]

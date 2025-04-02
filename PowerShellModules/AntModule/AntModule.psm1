@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="AntModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="AntModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,13 +45,14 @@ This file "AntModule.psm1" is part of "AntModule".
 =============================================================================
 #>
 
-using module CommandLine
-using module ProcessLauncher
+# using module CommandLine
+# using module ProcessLauncher
 
 <#
  =============================================================================
-<copyright file="AntModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rights
+<copyright file="AntModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights
     Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -93,9 +95,9 @@ This file "AntModule.psm1" is part of "PSInstallCom.Utility".
 =============================================================================
 #>
 
-<#
+<###########################################
     Get-AntPath
-#>
+##########################################>
 function Get-AntPath {
     [CmdletBinding()]
     param ()
@@ -103,16 +105,16 @@ function Get-AntPath {
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
     # search on the path
-    $antPath = Get-Command -Name 'ant' -CommandType Application | Select-Object -ExpandProperty Path
+    $antPath = Get-Command -Name 'ant.exe' -CommandType Application | Select-Object -ExpandProperty Path
 
     # search on ANT_HOME
-    if (-not (Test-Path -LiteralPath $antPath -PathType Leaf)) {
+    if (-not (Test-Path -Path $antPath -PathType Leaf)) {
         $antPath = Join-Path -Path $env:ANT_HOME -ChildPath 'bin' -AdditionalChildPath 'ant.exe'
     }
 
     # default to fileName
-    if (-not (Test-Path -LiteralPath $antPath -PathType Leaf)) {
-        $antPath = 'ant'
+    if (-not (Test-Path -Path $antPath -PathType Leaf)) {
+        $antPath = 'ant.exe'
     }
 
     $antPath | Write-Output
@@ -133,7 +135,7 @@ function Get-AntPath {
         .EXAMPLE
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -142,19 +144,23 @@ function Start-Ant {
     [OutputType([bool])]
     param (
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "BuildFile '{0}' is not a valid path leaf")]
         [string]
         $BuildFile,
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "LibPath '{0}' is not a valid path container")]
         [string]
         $LibPath,
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "LogPath '{0}' is not a valid path container")]
         [string]
         $LogPath,
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "PropertiesFile '{0}' is not a valid path leaf")]
         [string]
         $PropertyFile,
 
@@ -311,9 +317,9 @@ function Start-Ant {
         .EXAMPLE
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         Get-AntPath
-    #>
+    ##########################################>
 }

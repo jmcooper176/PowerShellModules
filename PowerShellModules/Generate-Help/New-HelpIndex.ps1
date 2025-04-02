@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="New-HelpIndex.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="New-HelpIndex.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "New-HelpIndex.ps1" is part of "Generate-Help".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -106,23 +107,20 @@ param(
 
 Import-LocalizedData -BindingVariable "Azpsd1" -BaseDirectory $PSScriptRoot/Az -FileName "Az.psd1"
 
-if ([string]::isNullOrEmpty($Version))
-{
+if ([string]::isNullOrEmpty($Version)) {
     $Version = $Azpsd1.ModuleVersion
-    Write-Information -MessageData "Using version obtained from Az.psd1: $Version."
+    Write-Host "Using version obtained from Az.psd1: $Version." -ForegroundColor Green;
 }
 
-if ([string]::isNullOrEmpty($SourceBaseUri))
-{
+if ([string]::isNullOrEmpty($SourceBaseUri)) {
     $tag = $Azpsd1.PrivateData.PSData.ReleaseNotes.Split("`n")[0].Replace(" ", "").Trim("`r")
     $SourceBaseUri = "https://github.com/Azure/azure-powershell/tree/v$tag"
-    Write-Information -MessageData "Using default SourceBaseUri: $SourceBaseUri."
+    Write-Host "Using default SourceBaseUri: $SourceBaseUri." -ForegroundColor Green;
 }
 
-if ([string]::isNullOrEmpty($EditBaseUri))
-{
+if ([string]::isNullOrEmpty($EditBaseUri)) {
     $EditBaseUri = "https://github.com/Azure/azure-powershell/blob/main"
-    Write-Information -MessageData "Using default EditBaseUri: $EditBaseUri."
+    Write-Host "Using default EditBaseUri: $EditBaseUri." -ForegroundColor Green;
 }
 
 $output = @{}
@@ -134,18 +132,19 @@ $outputModules = @{}
 
 #Create mappings file
 & "$PSScriptRoot/CreateMappings.ps1" -OutputFile $OutputFile/../groupMapping.json -WarningFile $OutputFile/../groupMappingWarnings.json
-$labelMapping = Get-Content -LiteralPath $OutputFile/../groupMapping.json -Raw | ConvertFrom-Json
+$labelMapping = Get-Content -Raw $OutputFile/../groupMapping.json | ConvertFrom-Json
 
 $RMpsd1s = @()
 $HelpFolders = @()
 
 $resourceManagerPath = "$PSScriptRoot/../artifacts/$BuildConfig/"
 
-$RMpsd1s += Get-ChildItem -Path $resourceManagerPath -Depth 1 | Where-Object -Property Name -like "*.psd1" | Where-Object -Property FullName -notlike "*dll-Help*"
+$RMpsd1s += Get-ChildItem -Path $resourceManagerPath -Depth 1 | Where-Object -FilterScript {
+    $_.Name -like "*.psd1" -and $_.FullName -notlike "*dll-Help*"
 }
 
 & ($PSScriptRoot + "\PreloadToolDll.ps1")
-$HelpFolders += Get-ChildItem -Path "$PSScriptRoot/../src" -Recurse -Directory | where { $_.Name -eq "help" -and (-not [Tools.Common.Utilities.ModuleFilter]::IsAzureStackModule($_.FullName)) -and $_.FullName -notlike "*\bin\*" -and (-not $_.Parent.BaseName.EndsWith(".Autorest"))}
+$HelpFolders += Get-ChildItem -Path "$PSScriptRoot/../src" -Recurse -Directory | where { $_.Name -eq "help" -and (-not [Tools.Common.Utilities.ModuleFilter]::IsAzureStackModule($_.FullName)) -and $_.FullName -notlike "*\bin\*" -and (-not $_.Parent.BaseName.EndsWith(".Autorest")) }
 
 # Map the name of the cmdlet to the location of the help file
 $HelpFileMapping = @{}
@@ -174,49 +173,35 @@ $RMpsd1s | ForEach-Object -Process {
 
     $cmdletsToExport | ForEach-Object -Process {
         $cmdletHelpFile = $HelpFileMapping["$_.md"]
-        if ($null -eq $cmdletHelpFile -and $Target -eq "Latest")
-        {
+        if ($cmdletHelpFile -eq $null -and $Target -eq "Latest") {
             throw "No help file found for cmdlet $_"
         }
 
         $cmdletLabel = $labelMapping.$_
-        if ($cmdletLabel -eq $null -and $Target -eq "Latest")
-        {
+        if ($cmdletLabel -eq $null -and $Target -eq "Latest") {
             throw "No label found for cmdlet $_"
         }
 
         $helpSourceUrl = "$SourceBaseUri\src\$(($cmdletHelpFile -split "\\src\\*")[1])".Replace("\", "/")
         $helpEditUrl = "$EditBaseUri\src\$(($cmdletHelpFile -split "\\src\\*")[1])".Replace("\", "/")
-        $outputCmdlets.Add("$_", @{
-            service = $cmdletLabel
-            sourceUrl = $helpSourceUrl
-            editUrl = $helpEditUrl
-        })
+        $outputCmdlets.Add("$_", @{"service" = $cmdletLabel; "sourceUrl" = $helpSourceUrl; "editUrl" = $helpEditUrl })
     }
 
     $moduleHelpFile = $HelpFileMapping["$($_.BaseName).md"]
 
-    if ($null -eq $moduleHelpFile -and $Target -eq "Latest")
-    {
+    if ($moduleHelpFile -eq $null -and $Target -eq "Latest") {
         throw "No module help file found for module $($_.BaseName)"
     }
 
     $moduleSourceUrl = "$SourceBaseUri\src\$(($moduleHelpFile -split "\\src\\*")[1])".Replace("\", "/")
     $moduleEditUrl = "$EditBaseUri\src\$(($moduleHelpFile -split "\\src\\*")[1])".Replace("\", "/")
 
-    if ($null -ne $moduleHelpFile)
-    {
-        $outputModules.Add("$($_.BaseName)", @{
-            module = @{
-                sourceUrl = $moduleSourceUrl
-                editUrl = $moduleEditUrl
-            }
-
-            cmdlets = $outputCmdlets})
-        }
+    if ($moduleHelpFile -ne $null) {
+        $outputModules.Add("$($_.BaseName)", @{"module" = @{"sourceUrl" = $moduleSourceUrl; "editUrl" = $moduleEditUrl }; "cmdlets" = $outputCmdlets })
+    }
 }
 
 $output.Add("modules", $outputModules)
 $json = ConvertTo-Json $output -Depth 4
-Write-Information -MessageData "Index file successfully created: $OutputFile."
+Write-Host "Index file successfully created: $OutputFile." -ForegroundColor Green;
 $json | Out-File $OutputFile

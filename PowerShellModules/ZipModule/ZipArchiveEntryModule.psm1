@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ZipArchiveEntryModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ZipArchiveEntryModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "ZipArchiveEntryModule.psm1" is part of "ZipModule".
 =============================================================================
 #>
 
-<#
+<##########################################
     Get-Archive
-#>
+##########################################>
 function Get-Archive {
     [CmdletBinding()]
     [OutputType([System.IO.Compression.ZipArchive])]
@@ -67,9 +68,9 @@ function Get-Archive {
     }
 }
 
-<#
+<##########################################
     Get-CompressedLength
-#>
+##########################################>
 function Get-CompressedLength {
     [CmdletBinding()]
     [OutputType([long])]
@@ -90,9 +91,9 @@ function Get-CompressedLength {
     }
 }
 
-<#
+<##########################################
     Get-Crc32
-#>
+##########################################>
 function Get-Crc32 {
     [CmdletBinding()]
     [OutputType([uint32])]
@@ -113,9 +114,9 @@ function Get-Crc32 {
     }
 }
 
-<#
+<##########################################
     Get-Entry
-#>
+##########################################>
 function Get-Entry {
     [CmdletBinding()]
     [OutputType([System.IO.Compression.ZipArchiveEntry])]
@@ -125,7 +126,8 @@ function Get-Entry {
         $Archive,
 
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "EntryName '{0}' is not a valid path leaf")]
         [string]
         [Alias('FullName')]
         $EntryName
@@ -146,9 +148,9 @@ function Get-Entry {
     }
 }
 
-<#
+<##########################################
     Get-Length
-#>
+##########################################>
 function Get-Length {
     [CmdletBinding()]
     [OutputType([long])]
@@ -169,9 +171,9 @@ function Get-Length {
     }
 }
 
-<#
+<##########################################
     Get-Name
-#>
+##########################################>
 function Get-Name {
     [CmdletBinding()]
     [OutputType([string])]
@@ -192,9 +194,9 @@ function Get-Name {
     }
 }
 
-<#
+<##########################################
     Get-Path
-#>
+##########################################>
 function Get-Path {
     [CmdletBinding()]
     [OutputType([string])]
@@ -215,9 +217,9 @@ function Get-Path {
     }
 }
 
-<#
+<##########################################
     New-Entry
-#>
+##########################################>
 function New-Entry {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingCreateEntry')]
     [OutputType([System.IO.Compression.ZipArchiveEntry])]
@@ -228,14 +230,16 @@ function New-Entry {
         $Archive,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingCreateEntryFromFile')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "SourceFileName '{0}' is not a valid path leaf")]
         [Alias('FileName', 'FullName')]
         [string]
         $SourceFileName,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingCreateEntryFromFile')]
         [Parameter(Mandatory, ParameterSetName = 'UsingCreateEntry', ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "EntryName '{0}' is not a valid path leaf")]
         [string]
         [Alias('Name', 'RelativeName')]
         $EntryName,
@@ -265,9 +269,9 @@ function New-Entry {
     }
 }
 
-<#
+<##########################################
     Open-Entry
-#>
+##########################################>
 function Open-Entry {
     [CmdletBinding()]
     [OutputType([System.IO.Stream])]
@@ -293,9 +297,9 @@ function Open-Entry {
     }
 }
 
-<#
+<##########################################
     Remove-Entry
-#>
+##########################################>
 function Remove-Entry {
     [CmdletBinding(SupportsShouldProcess)]
     param(
@@ -322,9 +326,9 @@ function Remove-Entry {
     }
 }
 
-<#
+<##########################################
     Test-Entry
-#>
+##########################################>
 function Test-Entry {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -334,7 +338,8 @@ function Test-Entry {
         $Archive,
 
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "EntryName '{0}' is not a valid path leaf")]
         [string]
         [Alias('FullName')]
         $EntryName
@@ -356,9 +361,9 @@ function Test-Entry {
     }
 }
 
-<#
+<##########################################
     Test-IsEncrypted
-#>
+##########################################>
 function Test-IsEncrypted {
     [CmdletBinding()]
     [OutputType([bool])]

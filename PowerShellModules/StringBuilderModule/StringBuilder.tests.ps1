@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="StringBuilder.tests.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="StringBuilder.tests.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -83,15 +84,16 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -138,7 +140,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -174,10 +176,10 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
 
             # Act And Assert
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
@@ -187,10 +189,10 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -210,7 +212,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -584,7 +586,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -632,7 +634,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -685,7 +687,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             Get-Module -ListAvailable | Where-Object -Property Name -EQ 'StringBuilderModule' | Remove-Module -Verbose
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -733,7 +735,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -788,7 +790,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -848,7 +850,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             Get-Module -ListAvailable | Where-Object -Property Name -EQ 'StringBuilderModule' | Remove-Module -Verbose
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -903,7 +905,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -959,7 +961,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1020,7 +1022,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             Get-Module -ListAvailable | Where-Object -Property Name -EQ 'StringBuilderModule' | Remove-Module -Verbose
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1076,7 +1078,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1135,7 +1137,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1194,7 +1196,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1262,7 +1264,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1330,7 +1332,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1338,8 +1340,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         It -Name 'should return a [StringBuilder] object' -Tag 'Unit', 'Test' {
             # Arrange
             $HashTable = @{
-                Value = 'Hello, World!'
-                Length = 13
+                Value    = 'Hello, World!'
+                Length   = 13
                 Capacity = 200
             }
 
@@ -1355,8 +1357,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $expected = 'Hello, World!'
 
             $HashTable = @{
-                Value = $expected
-                Length = 13
+                Value    = $expected
+                Length   = 13
                 Capacity = 200
             }
 
@@ -1372,8 +1374,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $expected = 200
 
             $HashTable = @{
-                Value = 'Hello, World!'
-                Length = 13
+                Value    = 'Hello, World!'
+                Length   = 13
                 Capacity = $expected
             }
 
@@ -1389,8 +1391,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $expected = 13
 
             $HashTable = @{
-                Value = 'Hello, World!'
-                Length = $excepted
+                Value    = 'Hello, World!'
+                Length   = $excepted
                 Capacity = 200
             }
 
@@ -1406,7 +1408,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1414,8 +1416,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         It -Name 'should return a [StringBuilder] object' -Tag 'Unit', 'Test' {
             # Arrange
             $HashTable = @{
-                Value = 'Hello, World!'
-                Length = 13
+                Value    = 'Hello, World!'
+                Length   = 13
                 Capacity = 200
             }
 
@@ -1431,8 +1433,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $expected = 'Hello, World!'
 
             $HashTable = @{
-                Value = $expected
-                Length = 13
+                Value    = $expected
+                Length   = 13
                 Capacity = 200
             }
 
@@ -1448,8 +1450,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $expected = 200
 
             $HashTable = @{
-                Value = 'Hello, World!'
-                Length = 13
+                Value    = 'Hello, World!'
+                Length   = 13
                 Capacity = $expected
             }
 
@@ -1466,8 +1468,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $expected = $value.Length
 
             $HashTable = @{
-                Value = $value
-                Length = $expected
+                Value    = $value
+                Length   = $expected
                 Capacity = 200
             }
 
@@ -1488,7 +1490,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             Get-Module -ListAvailable | Where-Object -Property Name -EQ 'StringBuilderModule' | Remove-Module -Verbose
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1496,8 +1498,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         It -Name 'should return a [StringBuilder] object' -Tag 'Unit', 'Test' {
             # Arrange
             $HashTable = @{
-                Value = 'Hello, World!'
-                Length = 12
+                Value    = 'Hello, World!'
+                Length   = 12
                 Capacity = 200
             }
 
@@ -1513,8 +1515,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $expected = 'Hello, World!'
 
             $HashTable = @{
-                Value = $expected
-                Length = 13
+                Value    = $expected
+                Length   = 13
                 Capacity = 200
             }
 
@@ -1530,8 +1532,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $expected = 200
 
             $HashTable = @{
-                Value = 'Hello, World!'
-                Length = 13
+                Value    = 'Hello, World!'
+                Length   = 13
                 Capacity = $expected
             }
 
@@ -1548,8 +1550,8 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
             $expected = $value.Length
 
             $HashTable = @{
-                Value = $value
-                Length = $excepted
+                Value    = $value
+                Length   = $excepted
                 Capacity = 200
             }
 
@@ -1565,7 +1567,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1599,7 +1601,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }
@@ -1633,7 +1635,7 @@ Describe -Name 'StringBuilder' -Tag 'Module', 'Under', 'Test' {
         AfterAll {
             $TypeAcceleratorsClass = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
             $Accelerators = $TypeAcceleratorsClass::Get
-            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object -Process {
+            $Accelerators | Where-Object -Property Name -EQ 'StringBuilder' | ForEach-Object {
                 $TypeAcceleratorsClass::Remove($_.FullName)
             }
         }

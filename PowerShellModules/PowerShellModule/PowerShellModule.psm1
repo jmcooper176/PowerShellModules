@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="PowerShellModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="PowerShellModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "PowerShellModule.psm1" is part of "PowerShellModule".
 =============================================================================
 #>
 
-<#
+<##########################################
     Add-Entry
-#>
+##########################################>
 function Add-Entry {
     [CmdletBinding()]
     param (
@@ -102,7 +103,7 @@ function Add-Entry {
         Added 'MyKey' = 'MyValue' to 'MyMap'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -118,9 +119,9 @@ function Add-Entry {
     #>
 }
 
-<#
+<##########################################
     Add-Parameter
-#>
+##########################################>
 function Add-Parameter {
     [CmdletBinding()]
     param (
@@ -171,7 +172,7 @@ function Add-Parameter {
         Added 'MyKey' = 'MyValue' to 'PSBoundParameters'.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -187,9 +188,9 @@ function Add-Parameter {
     #>
 }
 
-<#
+<##########################################
     Enter-Block
-#>
+##########################################>
 function Enter-Block {
     [CmdletBinding()]
     param (
@@ -224,7 +225,7 @@ function Enter-Block {
                 $newErrorRecordSplat = @{
                     Exception = $_.Exception
                     Message = 'Retried ScriptBlock without success'
-                    Category = 'InvalidOperation'
+                    ErrorCategory = 'InvalidOperation'
                     TargetObject = $ScriptBlock
                     ErrorId = Format-ErrorId -Caller $CmdletName -Name $_.Exception.GetType().Name -Position $MyInvocation.ScriptLineNumber
                 }
@@ -274,7 +275,7 @@ function Enter-Block {
          29      42.71      80.57      19.69   19340    2 ArcControlAssist
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -305,9 +306,9 @@ function Enter-Block {
     #>
 }
 
-<#
+<##########################################
     Get-BuildVersion
-#>
+##########################################>
 function Get-BuildVersion {
     [CmdletBinding()]
     [OutputType([int])]
@@ -358,7 +359,7 @@ function Get-BuildVersion {
         Gets the PowerShell build or patch number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -380,9 +381,9 @@ function Get-BuildVersion {
     #>
 }
 
-<#
+<##########################################
     Get-MajorVersion
-#>
+##########################################>
 function Get-MajorVersion {
     [CmdletBinding()]
     [OutputType([int])]
@@ -428,7 +429,7 @@ function Get-MajorVersion {
         Gets the PowerShell major number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -447,9 +448,9 @@ function Get-MajorVersion {
     #>
 }
 
-<#
+<##########################################
     Get-MinorVersion
-#>
+##########################################>
 function Get-MinorVersion {
     [CmdletBinding()]
     [OutputType([int])]
@@ -495,7 +496,7 @@ function Get-MinorVersion {
         Gets the PowerShell minor number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -514,9 +515,9 @@ function Get-MinorVersion {
     #>
 }
 
-<#
+<##########################################
     Get-Parameter
-#>
+##########################################>
 function Get-Parameter {
     [CmdletBinding()]
     [OutputType([System.Object])]
@@ -552,7 +553,7 @@ function Get-Parameter {
         Specifies the PSBoundParameters [hashtable].
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .INPUTS
         None.  `Get-Parameter` does not accept input from the pipeline.
@@ -582,9 +583,9 @@ function Get-Parameter {
     #>
 }
 
-<#
+<##########################################
     Get-Version
-#>
+##########################################>
 function Get-Version {
     [CmdletBinding()]
     [OutputType([version])]
@@ -615,7 +616,7 @@ function Get-Version {
         Gets the PowerShell version number.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -631,9 +632,9 @@ function Get-Version {
     #>
 }
 
-<#
+<##########################################
     Initialize-Class
-#>
+##########################################>
 function Initialize-Class {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([string])]
@@ -685,7 +686,7 @@ function Initialize-Class {
         Initialized a class.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -701,9 +702,9 @@ function Initialize-Class {
     #>
 }
 
-<#
+<##########################################
     Initialize-Cmdlet
-#>
+##########################################>
 function Initialize-Cmdlet {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingName')]
     [OutputType([string])]
@@ -769,7 +770,7 @@ function Initialize-Cmdlet {
         Initialized a cmdlet.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -785,9 +786,9 @@ function Initialize-Cmdlet {
     #>
 }
 
-<#
+<##########################################
     Initialize-Function
-#>
+##########################################>
 function Initialize-Function {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingName')]
     [OutputType([string])]
@@ -853,7 +854,7 @@ function Initialize-Function {
         Initialized a function.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -869,9 +870,9 @@ function Initialize-Function {
     #>
 }
 
-<#
+<##########################################
     Initialize-Method
-#>
+##########################################>
 function Initialize-Method {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingName')]
     [OutputType([string])]
@@ -938,7 +939,7 @@ function Initialize-Method {
         Initialized a method.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -954,9 +955,9 @@ function Initialize-Method {
     #>
 }
 
-<#
+<##########################################
     Initialize-Script
-#>
+##########################################>
 function Initialize-Script {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingName')]
     [OutputType([string])]
@@ -1022,7 +1023,7 @@ function Initialize-Script {
         Initialized a script.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1038,9 +1039,9 @@ function Initialize-Script {
     #>
 }
 
-<#
+<##########################################
     Initialize-Test
-#>
+##########################################>
 function Initialize-Test {
     [CmdletBinding()]
     [OutputType([string])]
@@ -1052,7 +1053,8 @@ function Initialize-Test {
         $Name,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path
     )
@@ -1079,7 +1081,7 @@ function Initialize-Test {
     Update-Variable -Name MINIMUM_DESCRIPTION_LENGTH -Option Constant -Scope Global  -Value 30
     Update-Variable -Name MINIMUM_SYNOPSIS_LENGTH -Option Constant -Scope Global -Value 25
     Update-Variable -Name COMPANY_NAME_STRING -Option Constant -Scope Global  -Value 'John Merryweather Cooper'
-    Update-Variable -Name COPYRIGHT_STRING -Option Constant -Scope Global -Value 'Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.'
+    Update-Variable -Name COPYRIGHT_STRING -Option Constant -Scope Global -Value 'Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.'
 
     $fileInfo = Get-Item -LiteralPath $Path
     $ScriptExtension = $fileInfo | Select-Object -ExpandProperty Extension
@@ -1132,7 +1134,7 @@ function Initialize-Test {
         Initialized test suite.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1148,9 +1150,9 @@ function Initialize-Test {
     #>
 }
 
-<#
+<##########################################
     Measure-String
-#>
+##########################################>
 function Measure-String {
     [CmdletBinding()]
     param (
@@ -1207,7 +1209,7 @@ function Measure-String {
         String is 10 characters long.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1223,9 +1225,9 @@ function Measure-String {
     #>
 }
 
-<#
+<##########################################
     Test-Prerequisites
-#>
+##########################################>
 function Test-Prerequisites {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -1243,7 +1245,7 @@ function Test-Prerequisites {
 
     PROCESS {
         $Name | ForEach-Object -Process {
-            if (Get-Module -ListAvailable | Where-Object -Property Name -EQ $_) {
+            if (Get-Module -ListAvailable | Where-Object -FilterScript { $_.Name -eq $_ }) {
                 $true | Write-Output
             }
             else {
@@ -1270,7 +1272,7 @@ function Test-Prerequisites {
         [bool]  `Test-Prerequisites` returns a boolean value to the pipeline.  `True` if the module is available; otherwise `False` if the module is not available.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -1298,9 +1300,9 @@ function Test-Prerequisites {
     #>
 }
 
-<#
+<##########################################
     Update-Variable
-#>
+##########################################>
 function Update-Variable {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -1343,7 +1345,7 @@ function Update-Variable {
 
             switch ($Option) {
                 'ReadOnly' {
-                    if (-not (Test-Path -LiteralPath variable:$variableName -PathType Leaf)) {
+                    if (-not (Test-Path -LiteralPath variable:$variableName)) {
                         if ($PSCmdlet.ShouldProcess("Creating ReadOnly Variable '$($variableName)' in '$($Scope)' with Description", $CmdletName)) {
                             Set-Variable -Name $variableName -Value $Value -Option $_ -Scope $Scope -Description $Description
                         }
@@ -1361,7 +1363,7 @@ function Update-Variable {
                 }
 
                 'Constant' {
-                    if (-not (Test-Path -LiteralPath variable:$variableName -PathType Leaf)) {
+                    if (-not (Test-Path -LiteralPath variable:$variableName)) {
                         if ($PSCmdlet.ShouldProcess("Creating Constant Variable '$($variableName)' in '$($Scope)' with Description", $CmdletName)) {
                             Set-Variable -Name $variableName -Value $Value -Option $_ -Scope $Scope -Description $Description
                         }
@@ -1374,7 +1376,7 @@ function Update-Variable {
                 }
 
                 'AllScope' {
-                    if (Test-Path -LiteralPath variable:$variableName -PathType Leaf) {
+                    if (Test-Path -LiteralPath variable:$variableName) {
                         if ($PSCmdlet.ShouldProcess("Updating AllScope Variable '$($variableName)' in '$($Scope)' with Description", $CmdletName)) {
                             Set-Variable -Name $variableName -Value $Value -Option $_ -Scope $Scope -Description $Description
                         }
@@ -1389,7 +1391,7 @@ function Update-Variable {
                 }
 
                 default {
-                    if (Test-Path -LiteralPath variable:$variableName -PathType Leaf) {
+                    if (Test-Path -LiteralPath variable:$variableName) {
                         if ($PSCmdlet.ShouldProcess("Updating Variable '$($variableName)' in '$($Scope)' with Description", $CmdletName)) {
                             Set-Variable -Name $variableName -Value $Value -Option $_ -Scope $Scope -Description $Description
                         }
@@ -1441,7 +1443,7 @@ function Update-Variable {
 
         Reports that the current version of PowerShell is greater than 7.x
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1457,9 +1459,9 @@ function Update-Variable {
     #>
 }
 
-<#
+<##########################################
     Test-Parameter
-#>
+##########################################>
 function Test-Parameter {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -1503,7 +1505,7 @@ function Test-Parameter {
         Reports 'Farce' is not present in $PSBoundParameters
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
         .LINK
         about_Functions_Advanced
         .LINK
@@ -1517,9 +1519,9 @@ function Test-Parameter {
     #>
 }
 
-<#
+<##########################################
     Test-Version
-#>
+##########################################>
 function Test-Version {
     [CmdletBinding(DefaultParameterSetName = 'UsingBuild')]
     [OutputType([bool])]
@@ -1671,7 +1673,7 @@ function Test-Version {
         Reports that the current version of PowerShell is greater than 7.x
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="LinqModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="LinqModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,15 +45,18 @@ This file "LinqModule.psm1" is part of "LinqModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Find-First
-#>
+##########################################>
 function Find-First {
     [CmdletBinding()]
     [OutputType([object])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [System.Collections.ArrayList]
         $List,
 
@@ -84,7 +88,7 @@ function Find-First {
             $newErrorRecordSplat = @{
                 ErrorId      = Format-ErrorId -Caller $CmdletName -Name 'InvalidOperationException' -Position $MyInvocation.ScriptLineNumber
                 Exception    = [System.InvalidOperationException]::new($message)
-                Category     = 'InvalidOperation'
+                ErrorCategory     = 'InvalidOperation'
                 TargetObject = $Array
             }
 
@@ -93,15 +97,18 @@ function Find-First {
     }
 }
 
-<#
+<###########################################
     Find-FirstOrDefault
-#>
+##########################################>
 function Find-FirstOrDefault {
     [CmdletBinding()]
     [OutputType([object])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [System.Collections.ArrayList]
         $List,
 
@@ -128,15 +135,18 @@ function Find-FirstOrDefault {
     }
 }
 
-<#
+<###########################################
     Find-Last
-#>
+##########################################>
 function Find-Last {
     [CmdletBinding()]
     [OutputType([object])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [System.Collections.ArrayList]
         $List,
 
@@ -162,7 +172,7 @@ function Find-Last {
                 $newErrorRecordSplat = @{
                     ErrorId      = Format-ErrorId -Caller $CmdletName -Name 'InvalidOperationException' -Position $MyInvocation.ScriptLineNumber
                     Exception    = [System.InvalidOperationException]::new($message)
-                    Category     = 'InvalidOperation'
+                    ErrorCategory     = 'InvalidOperation'
                     TargetObject = $Array
                 }
 
@@ -172,15 +182,18 @@ function Find-Last {
     }
 }
 
-<#
+<###########################################
     Find-LastOrDefault
-#>
+##########################################>
 function Find-LastOrDefault {
     [CmdletBinding()]
     [OutputType([object])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [System.Collections.ArrayList]
         $List,
 
@@ -207,15 +220,18 @@ function Find-LastOrDefault {
     }
 }
 
-<#
+<###########################################
     Find-Singleton
-#>
+##########################################>
 function Find-Singleton {
     [CmdletBinding()]
     [OutputType([object])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -235,7 +251,7 @@ function Find-Singleton {
             $newErrorRecordSplat = @{
                 ErrorId      = Format-ErrorId -Caller $CmdletName -Name 'InvalidOperationException' -Position $MyInvocation.ScriptLineNumber
                 Exception    = [System.InvalidOperationException]::new($message)
-                Category     = 'InvalidOperation'
+                ErrorCategory     = 'InvalidOperation'
                 TargetObject = $List
             }
 
@@ -247,15 +263,18 @@ function Find-Singleton {
     }
 }
 
-<#
+<###########################################
     Find-SingletonOrDefault
-#>
+##########################################>
 function Find-SingletonOrDefault {
     [CmdletBinding()]
     [OutputType([object])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -278,15 +297,18 @@ function Find-SingletonOrDefault {
     }
 }
 
-<#
+<###########################################
     Get-Reverse
-#>
+##########################################>
 function Get-Reverse {
     [CmdletBinding()]
     [OutputType([Array])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-ArrayAny -Array $_ })]
+        [ValidateScript({ Test-ArrayAny -Array $_ },
+            ErrorMessage = "Array '{0}' is a null or empty array")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [Array]
         $Array,
 
@@ -313,15 +335,18 @@ function Get-Reverse {
     }
 }
 
-<#
+<###########################################
     Group-Distinct
-#>
+##########################################>
 function Group-Distinct {
     [CmdletBinding()]
     [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List
     )
@@ -335,15 +360,18 @@ function Group-Distinct {
     }
 }
 
-<#
+<###########################################
     Group-DistinctBy
-#>
+##########################################>
 function Group-DistinctBy {
     [CmdletBinding()]
     [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -361,17 +389,24 @@ function Group-DistinctBy {
     }
 }
 
-<#
+<###########################################
     Group-Each
-#>
+##########################################>
 function Group-Each {
     [CmdletBinding()]
-    [OutputType([Array])]
+    [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
-        $List
+        $List,
+
+        [Parameter(Mandatory)]
+        [scriptblock]
+        $Filter
     )
 
     BEGIN {
@@ -379,19 +414,24 @@ function Group-Each {
     }
 
     PROCESS {
-        $List.ToArray() | Group-Object | Write-Output
+        $List | ForEach-Object -Process {
+            Invoke-Command -ScriptBlock $Filter -ArgumentList $_ | Write-Output
+        }
     }
 }
 
-<#
+<###########################################
     Group-Ordered
-#>
+##########################################>
 function Group-Ordered {
     [CmdletBinding()]
-    [OutputType([Array])]
+    [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List
     )
@@ -401,19 +441,22 @@ function Group-Ordered {
     }
 
     PROCESS {
-        $List.ToArray() | Sort-Object | Group-Object | Write-Output
+        $List | Sort-Object | Write-Output
     }
 }
 
-<#
+<###########################################
     Group-OrderedBy
-#>
+##########################################>
 function Group-OrderedBy {
     [CmdletBinding()]
-    [OutputType([Array])]
+    [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -427,19 +470,22 @@ function Group-OrderedBy {
     }
 
     PROCESS {
-        $List.ToArray() | Sort-Object -Property $Property | Group-Object -Property $Property | Write-Output
+        $List | Sort-Object -Property $Property | Write-Output
     }
 }
 
-<#
+<###########################################
     Group-OrderedByDescending
-#>
+##########################################>
 function Group-OrderedByDescending {
     [CmdletBinding()]
     [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -457,15 +503,18 @@ function Group-OrderedByDescending {
     }
 }
 
-<#
+<###########################################
     Group-OrderedDescending
-#>
+##########################################>
 function Group-OrderedDescending {
     [CmdletBinding()]
     [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List
     )
@@ -479,15 +528,18 @@ function Group-OrderedDescending {
     }
 }
 
-<#
+<###########################################
     Measure-Predicate
-#>
+##########################################>
 function Measure-Predicate {
     [CmdletBinding()]
     [OutputType([int])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -512,9 +564,9 @@ function Measure-Predicate {
     }
 }
 
-<#
+<###########################################
     New-Range
-#>
+##########################################>
 function New-Range {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([int[]])]
@@ -538,9 +590,9 @@ function New-Range {
     }
 }
 
-<#
+<###########################################
     New-Repeat
-#>
+##########################################>
 function New-Repeat {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([object])]
@@ -564,15 +616,18 @@ function New-Repeat {
     }
 }
 
-<#
+<###########################################
     Select-One
-#>
+##########################################>
 function Select-One {
     [CmdletBinding()]
     [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -592,15 +647,18 @@ function Select-One {
     }
 }
 
-<#
+<###########################################
     Skip-First
-#>
+##########################################>
 function Skip-First {
     [CmdletBinding()]
     [OutputType([Array])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-ArrayAny -Array $_ })]
+        [ValidateScript({ Test-ArrayAny -Array $_ },
+            ErrorMessage = "Array '{0}' is a null or empty array")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [Array]
         $Array,
 
@@ -619,15 +677,18 @@ function Skip-First {
     }
 }
 
-<#
+<###########################################
     Skip-Last
-#>
+##########################################>
 function Skip-Last {
     [CmdletBinding()]
     [OutputType([Array])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-ArrayAny -Array $_ })]
+        [ValidateScript({ Test-ArrayAny -Array $_ },
+            ErrorMessage = "Array '{0}' is a null or empty array")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [Array]
         $Array,
 
@@ -646,15 +707,18 @@ function Skip-Last {
     }
 }
 
-<#
+<###########################################
     Skip-While
-#>
+##########################################>
 function Skip-While {
     [CmdletBinding()]
     [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -683,15 +747,18 @@ function Skip-While {
     }
 }
 
-<#
+<###########################################
     Test-All
-#>
+##########################################>
 function Test-All {
     [CmdletBinding()]
     [OutputType([bool])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -715,9 +782,9 @@ function Test-All {
     }
 }
 
-<#
+<###########################################
     Test-Any
-#>
+##########################################>
 function Test-Any {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -750,9 +817,9 @@ function Test-Any {
     }
 }
 
-<#
+<###########################################
     Test-ArrayAny
-#>
+##########################################>
 function Test-ArrayAny {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -785,15 +852,18 @@ function Test-ArrayAny {
     }
 }
 
-<#
+<###########################################
     Test-Contains
-#>
+##########################################>
 function Test-Contains {
     [CmdletBinding(DefaultParameterSetName = 'UsingPredicate')]
     [OutputType([bool])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 
@@ -820,20 +890,23 @@ function Test-Contains {
     }
 }
 
-<#
+<###########################################
     Use-First
-#>
+##########################################>
 function Use-First {
     [CmdletBinding()]
     [OutputType([Array])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-ArrayAny -Array $_ })]
+        [ValidateScript({ Test-ArrayAny -Array $_ },
+            ErrorMessage = "Array '{0}' is a null or empty array")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [Array]
         $Array,
 
         [Parameter(Mandatory)]
-        [ValidateRange(0, 2147483647)]
+        [ValidateRange('NonNegative')]
         [int]
         $Count
     )
@@ -847,20 +920,23 @@ function Use-First {
     }
 }
 
-<#
+<###########################################
     Use-Last
-#>
+##########################################>
 function Use-Last {
     [CmdletBinding()]
     [OutputType([Array])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-ArrayAny -Array $_ })]
+        [ValidateScript({ Test-ArrayAny -Array $_ },
+            ErrorMessage = "Array '{0}' is a null or empty array")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [Array]
         $Array,
 
         [Parameter(Mandatory)]
-        [ValidateRange(0, 2147483647)]
+        [ValidateRange('NonNegative')]
         [int]
         $Count
     )
@@ -874,15 +950,18 @@ function Use-Last {
     }
 }
 
-<#
+<###########################################
     Use-While
-#>
+##########################################>
 function Use-While {
     [CmdletBinding()]
     [OutputType([ArrayList])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Any -List $_ })]
+        [ValidateScript({ Test-Any -List $_ },
+            ErrorMessage = "List '{0}' is a null or empty collection")]
+        [AllowNull()]
+        [AllowEmptyCollection()]
         [ArrayList]
         $List,
 

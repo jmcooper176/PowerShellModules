@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="UtcModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="UtcModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "UtcModule.psm1" is part of "UtcModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     ConvertTo-FileTime
-#>
+##########################################>
 function ConvertTo-FileTime {
     [CmdletBinding()]
     [OutputType([long])]
@@ -64,9 +65,9 @@ function ConvertTo-FileTime {
     $DateTime.ToFileTimeUtc() | Write-Output
 }
 
-<#
+<###########################################
     ConvertTo-LocalTime
-#>
+##########################################>
 function ConvertTo-LocalTime {
     [CmdletBinding()]
     [OutputType([datetime])]
@@ -84,9 +85,9 @@ function ConvertTo-LocalTime {
     $DateTime.ToLocalTime() | Write-Output
 }
 
-<#
+<###########################################
     Format-DateTime
-#>
+##########################################>
 function Format-DateTime {
     [CmdletBinding(DefaultParameterSetName = 'UsingCustom')]
     [OutputType([string])]
@@ -203,9 +204,9 @@ function Format-DateTime {
     }
 }
 
-<#
+<###########################################
     Format-Now
-#>
+##########################################>
 function Format-Now {
     [CmdletBinding(DefaultParameterSetName = 'UsingCustom')]
     [OutputType([string])]
@@ -314,9 +315,9 @@ function Format-Now {
     }
 }
 
-<#
+<###########################################
     Format-TimeSpan
-#>
+##########################################>
 function Format-TimeSpan {
     [CmdletBinding(DefaultParameterSetName = 'UsingCustom')]
     [OutputType([string])]
@@ -363,9 +364,9 @@ function Format-TimeSpan {
     }
 }
 
-<#
+<###########################################
     Get-Date (Called as Get-UtcDate because of prefixing in the PSD1)
-#>
+##########################################>
 function Get-Date {
     [CmdletBinding()]
     [OutputType([DateTime])]
@@ -397,7 +398,7 @@ function Get-Date {
         [DateTime].  `Get-Date` returns a [DateTime] object to the PowerShell pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -416,9 +417,9 @@ function Get-Date {
     #>
 }
 
-<#
+<###########################################
     Get-Day
-#>
+##########################################>
 function Get-Day {
     [CmdletBinding()]
     [OutputType([int])]
@@ -441,9 +442,9 @@ function Get-Day {
     }
 }
 
-<#
+<###########################################
     Get-DayOfWeek
-#>
+##########################################>
 function Get-DayOfWeek {
     [CmdletBinding()]
     [OutputType([System.DayOfWeek])]
@@ -466,9 +467,9 @@ function Get-DayOfWeek {
     }
 }
 
-<#
+<###########################################
     Get-DayOfYear
-#>
+##########################################>
 function Get-DayOfYear {
     [CmdletBinding()]
     [OutputType([int])]
@@ -491,9 +492,9 @@ function Get-DayOfYear {
     }
 }
 
-<#
+<###########################################
     Get-Hour
-#>
+##########################################>
 function Get-Hour {
     [CmdletBinding()]
     [OutputType([int])]
@@ -516,9 +517,9 @@ function Get-Hour {
     }
 }
 
-<#
+<###########################################
     Get-Kind
-#>
+##########################################>
 function Get-Kind {
     [CmdletBinding()]
     [OutputType([System.DateTimeKind])]
@@ -541,9 +542,9 @@ function Get-Kind {
     }
 }
 
-<#
+<###########################################
     Get-Microsecond
-#>
+##########################################>
 function Get-Microsecond {
     [CmdletBinding()]
     [OutputType([int])]
@@ -566,9 +567,9 @@ function Get-Microsecond {
     }
 }
 
-<#
+<###########################################
     Get-Millisecond
-#>
+##########################################>
 function Get-Millisecond {
     [CmdletBinding()]
     [OutputType([int])]
@@ -591,9 +592,9 @@ function Get-Millisecond {
     }
 }
 
-<#
+<###########################################
     Get-Month
-#>
+##########################################>
 function Get-Month {
     [CmdletBinding()]
     [OutputType([int])]
@@ -616,9 +617,9 @@ function Get-Month {
     }
 }
 
-<#
+<###########################################
     Get-Nanosecond
-#>
+##########################################>
 function Get-Nanosecond {
     [CmdletBinding()]
     [OutputType([int])]
@@ -641,9 +642,9 @@ function Get-Nanosecond {
     }
 }
 
-<#
+<###########################################
     Get-Offset
-#>
+##########################################>
 function Get-Offset {
     [CmdletBinding(DefaultParameterSetName = 'UsingTotalDays')]
     [OutputType([timespan], [double])]
@@ -692,9 +693,9 @@ function Get-Offset {
     }
 }
 
-<#
+<###########################################
     Get-Second
-#>
+##########################################>
 function Get-Second {
     [CmdletBinding()]
     [OutputType([int])]
@@ -717,9 +718,9 @@ function Get-Second {
     }
 }
 
-<#
+<###########################################
     Get-Ticks
-#>
+##########################################>
 function Get-Ticks {
     [CmdletBinding()]
     [OutputType([long])]
@@ -742,9 +743,9 @@ function Get-Ticks {
     }
 }
 
-<#
+<###########################################
     Get-TimeOfDay
-#>
+##########################################>
 function Get-TimeOfDay {
     [CmdletBinding()]
     [OutputType([timespan])]
@@ -767,9 +768,9 @@ function Get-TimeOfDay {
     }
 }
 
-<#
+<###########################################
     Get-Year
-#>
+##########################################>
 function Get-Year {
     [CmdletBinding()]
     [OutputType([int])]
@@ -792,9 +793,9 @@ function Get-Year {
     }
 }
 
-<#
+<###########################################
     Resize-TimeOfDay
-#>
+##########################################>
 function Resize-TimeOfDay {
     [CmdletBinding()]
     [OutputType([double])]

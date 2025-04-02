@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="LocalAccountModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="LocalAccountModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -58,16 +59,17 @@ function Test-LocalGroupMember {
         $Name = 'Administrators'
     )
 
-    foreach ($item in $Member) {
+    $Member | ForEach-Object -Process {
         try {
-            $members = Get-LocalGroupMember -Name $Name -Member $item -ErrorAction stop | Measure-Object
+            $members = Get-LocalGroupMember -Name $Name -Member $_ -ErrorAction stop | Measure-Object
             $members.Count -eq 1
         }
         catch {
-            Write-Warning -Message ("Local User or Group '{0}' is NOT found." -f $item)
+            Write-Warning -Message ("Local User or Group '{0}' is NOT found." -f $_)
             $false
         }
     }
+
     <#
     .SYNOPSIS
     Test Member for membership in local group Name.

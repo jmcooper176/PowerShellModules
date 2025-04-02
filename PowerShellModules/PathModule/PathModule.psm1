@@ -1,7 +1,8 @@
-﻿<#
+<#
  =============================================================================
-<copyright file="PathModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="PathModule.psm1" company="John Merryweather Cooper
+">
+    Copyright � 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -36,796 +37,2180 @@
    POSSIBILITY OF SUCH DAMAGE.
 </copyright>
 <author>John Merryweather Cooper</author>
-<date>Created:  2024-9-12</date>
+<date>Created:  2025-2-20</date>
 <summary>
-This file "PathModule.psm1" is part of "PathModule".
+This file "PathModule.psm1" is part of "PurgeNugetFeeds".
 </summary>
 <remarks>description</remarks>
 =============================================================================
 #>
 
-<#
-    Get-Cmdlet
-#>
-function Get-Cmdlet {
-    [CmdletBinding()]
-    [OutputType([string])]
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -IsValid })]
-        [SupportsWildcards()]
-        [string[]]
-        $Name,
+#
+# PathModule.psm1
+#
 
-        [switch]
-        $All,
-
-        [switch]
-        $ListImported,
-
-        [switch]
-        $UseAbbreviationExpansion,
-
-        [switch]
-        $UseFuzzyMatch
-    )
-
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $getCommandSplat = @{
-            All                      = $All.IsPresent
-            CommandType              = 'Cmdlet'
-            ListImported             = $ListImported.IsPresent
-            UseAbbreviationExpansion = $UseAbbreviationExpansion.IsPresent
-            UseFuzzyMatch            = $UseFuzzyMatch.IsPresent
-        }
-    }
-
-    PROCESS {
-        if ($getCommandSplat.ContainsKey('Name')) {
-            $getCommandSplat['Name'] = $Name
-        }
-        else {
-            $getCommandSplat.Add('Name', $Name)
-        }
-
-        Get-Command @getCommandSplat | Write-Output
-    }
-
-    <#
-        .SYNOPSIS
-        .DESCRIPTION
-        .PARAMETER Name
-        .PARAMETER All
-        .PARAMETER ListImported
-        .PARAMETER UseAbbreviationExpansion
-        .PARAMETER UseFuzzyMatch
-        .INPUTS
-        .OUTPUTS
-        .EXAMPLE
-        .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
-        .LINK
-        about_CommonParameters
-        .LINK
-        about_Functions_Advanced
-        .LINK
-        Get-Command
-        .LINK
-        Set-StrictMode
-        .LINK
-        Set-Variable
-    #>
-}
-
-<#
-    Get-Executable
-#>
-function Get-Executable {
-    [CmdletBinding()]
-    [OutputType([string])]
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -IsValid })]
-        [SupportsWildcards()]
-        [string[]]
-        $Name,
-
-        [switch]
-        $All,
-
-        [switch]
-        $ListImported,
-
-        [switch]
-        $UseAbbreviationExpansion,
-
-        [switch]
-        $UseFuzzyMatch
-    )
-
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $getCommandSplat = @{
-            All                      = $All.IsPresent
-            CommandType              = @('Application', 'ExternalScript')
-            ListImported             = $ListImported.IsPresent
-            UseAbbreviationExpansion = $UseAbbreviationExpansion.IsPresent
-            UseFuzzyMatch            = $UseFuzzyMatch.IsPresent
-        }
-    }
-
-    PROCESS {
-        if ($getCommandSplat.ContainsKey('Name')) {
-            $getCommandSplat['Name'] = $Name
-        }
-        else {
-            $getCommandSplat.Add('Name', $Name)
-        }
-
-        Get-Command @getCommandSplat | Write-Output
-    }
-
-    <#
-        .SYNOPSIS
-        .DESCRIPTION
-        .PARAMETER Name
-        .PARAMETER All
-        .PARAMETER ListImported
-        .PARAMETER UseAbbreviationExpansion
-        .PARAMETER UseFuzzyMatch
-        .INPUTS
-        .OUTPUTS
-        .EXAMPLE
-        .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
-        .LINK
-        about_CommonParameters
-        .LINK
-        about_Functions_Advanced
-        .LINK
-        Get-Command
-        .LINK
-        Set-StrictMode
-        .LINK
-        Set-Variable
-    #>
-}
-
-<#
-    Get-Filter
-#>
-function Get-Filter {
-    [CmdletBinding()]
-    [OutputType([System.Management.Automation.FunctionInfo])]
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -IsValid })]
-        [SupportsWildcards()]
-        [string[]]
-        $Name,
-
-        [switch]
-        $All,
-
-        [switch]
-        $ListImported,
-
-        [switch]
-        $UseAbbreviationExpansion,
-
-        [switch]
-        $UseFuzzyMatch
-    )
-
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $getCommandSplat = @{
-            All                      = $All.IsPresent
-            CommandType              = 'Filter'
-            ListImported             = $ListImported.IsPresent
-            UseAbbreviationExpansion = $UseAbbreviationExpansion.IsPresent
-            UseFuzzyMatch            = $UseFuzzyMatch.IsPresent
-        }
-    }
-
-    PROCESS {
-        if ($getCommandSplat.ContainsKey('Name')) {
-            $getCommandSplat['Name'] = $Name
-        }
-        else {
-            $getCommandSplat.Add('Name', $Name)
-        }
-
-        Get-Command @getCommandSplat | Write-Output
-    }
-
-    <#
-        .SYNOPSIS
-        .DESCRIPTION
-        .PARAMETER Name
-        .PARAMETER All
-        .PARAMETER ListImported
-        .PARAMETER UseAbbreviationExpansion
-        .PARAMETER UseFuzzyMatch
-        .INPUTS
-        .OUTPUTS
-        .EXAMPLE
-        .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
-        .LINK
-        about_CommonParameters
-        .LINK
-        about_Functions_Advanced
-        .LINK
-        Get-Command
-        .LINK
-        Set-StrictMode
-        .LINK
-        Set-Variable
-    #>
-}
-
-<#
-    Get-Function
-#>
-function Get-Function {
-    [CmdletBinding()]
-    [OutputType([System.Management.Automation.FunctionInfo])]
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -IsValid })]
-        [SupportsWildcards()]
-        [string[]]
-        $Name,
-
-        [switch]
-        $All,
-
-        [switch]
-        $ListImported,
-
-        [switch]
-        $UseAbbreviationExpansion,
-
-        [switch]
-        $UseFuzzyMatch
-    )
-
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $getCommandSplat = @{
-            All                      = $All.IsPresent
-            CommandType              = 'Function'
-            ListImported             = $ListImported.IsPresent
-            UseAbbreviationExpansion = $UseAbbreviationExpansion.IsPresent
-            UseFuzzyMatch            = $UseFuzzyMatch.IsPresent
-        }
-    }
-
-    PROCESS {
-        if ($getCommandSplat.ContainsKey('Name')) {
-            $getCommandSplat['Name'] = $Name
-        }
-        else {
-            $getCommandSplat.Add('Name', $Name)
-        }
-
-        Get-Command @getCommandSplat | Write-Output
-    }
-
-    <#
-        .SYNOPSIS
-        .DESCRIPTION
-        .PARAMETER Name
-        .PARAMETER All
-        .PARAMETER ListImported
-        .PARAMETER UseAbbreviationExpansion
-        .PARAMETER UseFuzzyMatch
-        .INPUTS
-        .OUTPUTS
-        .EXAMPLE
-        .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
-        .LINK
-        about_CommonParameters
-        .LINK
-        about_Functions_Advanced
-        .LINK
-        Get-Command
-        .LINK
-        Set-StrictMode
-        .LINK
-        Set-Variable
-    #>
-}
-
-<#
-    Get-ModuleExecutable
-#>
-function Get-ModuleExecutale {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -IsValid })]
-        [SupportsWildcards()]
-        [string[]]
-        $Module,
-
-        [switch]
-        $All,
-
-        [switch]
-        $ListImported,
-
-        [switch]
-        $UseAbbreviationExpansion,
-
-        [switch]
-        $UseFuzzyMatch
-    )
-
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $getCommandSplat = @{
-            All                      = $All.IsPresent
-            CommandType              = @('Alias', 'Function', 'Cmdlet')
-            ListImported             = $ListImported.IsPresent
-            UseAbbreviationExpansion = $UseAbbreviationExpansion.IsPresent
-            UseFuzzyMatch            = $UseFuzzyMatch.IsPresent
-        }
-    }
-
-    PROCESS {
-        if ($getCommandSplat.ContainsKey('Module')) {
-            $getCommandSplat['Module'] = $Module
-        }
-        else {
-            $getCommandSplat.Add('Module', $Module)
-        }
-
-        Get-Command @getCommandSplat | Write-Output
-    }
-
-    <#
-        .SYNOPSIS
-        .DESCRIPTION
-        .PARAMETER Module
-        .PARAMETER All
-        .PARAMETER ListImported
-        .PARAMETER UseAbbreviationExpansion
-        .PARAMETER UseFuzzyMatch
-        .INPUTS
-        .OUTPUTS
-        .EXAMPLE
-        .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
-        .LINK
-        about_CommonParameters
-        .LINK
-        about_Functions_Advanced
-        .LINK
-        Get-Command
-        .LINK
-        Set-StrictMode
-        .LINK
-        Set-Variable
-    #>
-}
-
-<#
-    Get-PathAlias
-#>
-function Get-PathAlias {
-    [CmdletBinding()]
-    [OutputType([string])]
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -IsValid })]
-        [SupportsWildcards()]
-        [string[]]
-        $Name,
-
-        [switch]
-        $All,
-
-        [switch]
-        $ListImported,
-
-        [switch]
-        $UseAbbreviationExpansion,
-
-        [switch]
-        $UseFuzzyMatch
-    )
-
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $getCommandSplat = @{
-            All                      = $All.IsPresent
-            CommandType              = 'Alias'
-            ListImported             = $ListImported.IsPresent
-            UseAbbreviationExpansion = $UseAbbreviationExpansion.IsPresent
-            UseFuzzyMatch            = $UseFuzzyMatch.IsPresent
-        }
-    }
-
-    PROCESS {
-        if ($getCommandSplat.ContainsKey('Name')) {
-            $getCommandSplat['Name'] = $Name
-        }
-        else {
-            $getCommandSplat.Add('Name', $Name)
-        }
-
-        Get-Command @getCommandSplat | Write-Output
-    }
-
-    <#
-        .SYNOPSIS
-        .DESCRIPTION
-        .PARAMETER Name
-        .PARAMETER All
-        .PARAMETER ListImported
-        .PARAMETER UseAbbreviationExpansion
-        .PARAMETER UseFuzzyMatch
-        .INPUTS
-        .OUTPUTS
-        .EXAMPLE
-        .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
-        .LINK
-        about_CommonParameters
-        .LINK
-        about_Functions_Advanced
-        .LINK
-        Get-Command
-        .LINK
-        Set-StrictMode
-        .LINK
-        Set-Variable
-    #>
-}
-
-<#
-    Get-RegistryValue
-#>
-function Get-RegistryValue {
+<###########################################
+    ConvertTo-PathUri
+##########################################>
+function ConvertTo-PathUri {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
-    [OutputType([object])]
+    [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [AllowNull()]
-        [AllowEmptyString()]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
         [SupportsWildcards()]
-        [Alias('RegistryEntry')]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [AllowNull()]
-        [AllowEmptyString()]
-        [Alias('LiteralRegistryEntry')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
         [string[]]
-        $LiteralPath,
-
-        [ValidateNotNullOrEmpty()]
-        [SupportsWildcards()]
-        [Alias('Property', 'SubKey')]
-        [string[]]
-        $Name,
-
-        [ValidateSet('HKLM', 'HKCU')]
-        [string]
-        $Drive = 'HKLM'
+        $LiteralPath
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $platform = [Environment]::OSVersion | Select-Object -ExpandProperty Platform
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
-        if ($platform -notlike 'Win*NT') {
-            return $false
-        }
-
         if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
-            $LiteralPath | Get-Item | ForEach-Object -Process {
-                if (Test-RegistryPath -LiteralPath $_ -Drive $Drive -Name $Name) {
-                    Get-ItemPropety -LiteralPath $_ -Name $Name | Write-Output
+            $LiteralPath | ForEach-Object -Process {
+                if ([string]::IsNullOrWhiteSpace($_)) {
+                    [string]::Empty | Write-Output
                 }
                 else {
-                    $null | Write-Output
+                    $uri = New-Object -TypeName System.Uri -ArgumentList $_
+                    $uri.AbsoluteUri | Write-Output
                 }
             }
+        }
+        else {
+            $Path | Resolve-Path | ForEach-Object -Process {
+                if ([string]::IsNullOrWhiteSpace($_)) {
+                    [string]::Empty | Write-Output
+                }
+                else {
+                    $uri = New-Object -TypeName System.Uri -ArgumentList $_
+                    $uri.AbsoluteUri | Write-Output
+                }
+            }
+        }
+    }
+}
+
+<###########################################
+    Get-Attribute
+##########################################>
+function Get-Attribute {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([System.IO.FileAttributes])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty Attributes | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty Attributes | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-BaseName
+##########################################>
+function Get-BaseName {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty BaseName | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty BaseName | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-CommandPath
+##########################################>
+function Get-CommandPath {
+    [CmdletBinding(DefaultParameterSetName = 'UsingName')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingName')]
+        [ValidateScript({ Test-Path -Path $_ -IsValid },
+            ErrorMessage = "Name '{0}' is not a valid executable base name")]
+        [SupportsWildcards()]
+        [string[]]
+        $Name,
+
+        [ValidateSet('Alias', 'All', 'Application', 'Cmdlet', 'ExternalScript', 'Filter', 'Function', 'Script')]
+        [System.Management.Automation.CommandTypes]
+        $CommandType = 'All',
+
+        [Parameter(Mandatory, ParameterSetName = 'UsingAll')]
+        [switch]
+        $All
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingAll') {
+            $getCommandSplat = @{
+                All = $All.IsPresent
+            }
+
+            if ($PSBoundParameters.ContainsKey('CommandType')) {
+                $getCommandSplat.Add('CommandType', $CommandType)
+            }
+
+            Get-Command @getCommandSplat | Select-Object -ExpandProperty Path | Write-Output
+        }
+        else {
+            $getCommandSplat = @{
+                Name = $Name
+            }
+
+            if ($PSBoundParameters.ContainsKey('CommandType')) {
+                $getCommandSplat.Add('CommandType', $CommandType)
+            }
+
+            Get-Command @getCommandSplat | Select-Object -ExpandProperty Path | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-CreationTime
+##########################################>
+function Get-CreationTime {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([datetime])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty CreationTime | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty CreationTime | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-CreationTimeUtc
+##########################################>
+function Get-CreationTimeUtc {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([datetime])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty CreationTimeUtc | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty CreationTimeUtc | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-Directory
+##########################################>
+function Get-Directory {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([System.IO.DirectoryInfo])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType File },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-LiteralPath -Path $_ -PathType File },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty CreationTimeUtc | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty CreationTimeUtc | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-DirectoryName
+##########################################>
+function Get-DirectoryName {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType File },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType File },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty DirectoryName | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty DirectoryName | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-DriveInfo
+##########################################>
+function Get-DriveInfo {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([PSDriveInfo])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty PSDrive | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty PSDrive | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-Exist
+##########################################>
+function Get-Exist {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -IsValid },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty Exists | Write-Output
         }
         else {
             $Path | Get-Item | ForEach-Object -Process {
-                if (Test-RegistryPath -Path $_ -Drive $Drive -Name $Name) {
-                    Get-ItemPropety -Path $_ -Name $Name | Write-Output
-                }
-                else {
-                    $null | Write-Output
-                }
+                $Path | Get-Item | Select-Object -ExpandProperty Exists | Write-Output
             }
         }
     }
 }
 
-<#
-    Get-Script
-#>
-function Get-Script {
-    [CmdletBinding()]
-    [OutputType([System.Management.Automation.FunctionInfo])]
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -IsValid })]
-        [SupportsWildcards()]
-        [string[]]
-        $Name,
-
-        [switch]
-        $All,
-
-        [switch]
-        $ListImported,
-
-        [switch]
-        $UseAbbreviationExpansion,
-
-        [switch]
-        $UseFuzzyMatch
-    )
-
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $getCommandSplat = @{
-            All                      = $All.IsPresent
-            CommandType              = 'ExternalScript'
-            ListImported             = $ListImported.IsPresent
-            UseAbbreviationExpansion = $UseAbbreviationExpansion.IsPresent
-            UseFuzzyMatch            = $UseFuzzyMatch.IsPresent
-        }
-    }
-
-    PROCESS {
-        if ($getCommandSplat.ContainsKey('Name')) {
-            $getCommandSplat['Name'] = $Name
-        }
-        else {
-            $getCommandSplat.Add('Name', $Name)
-        }
-
-        Get-Command @getCommandSplat | Write-Output
-    }
-
-    <#
-        .SYNOPSIS
-        .DESCRIPTION
-        .PARAMETER Name
-        .PARAMETER All
-        .PARAMETER ListImported
-        .PARAMETER UseAbbreviationExpansion
-        .PARAMETER UseFuzzyMatch
-        .INPUTS
-        .OUTPUTS
-        .EXAMPLE
-        .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
-        .LINK
-        about_CommonParameters
-        .LINK
-        about_Functions_Advanced
-        .LINK
-        Get-Command
-        .LINK
-        Set-StrictMode
-        .LINK
-        Set-Variable
-    #>
-}
-
-<#
-    Get-RegistryValue
-#>
-function Set-RegistryValue {
+<###########################################
+    Get-Extension
+##########################################>
+function Get-Extension {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
-    [OutputType([void])]
+    [OutputType([string])]
     param (
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [AllowNull()]
-        [AllowEmptyString()]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
         [SupportsWildcards()]
-        [Alias('RegistryEntry')]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [AllowNull()]
-        [AllowEmptyString()]
-        [Alias('LiteralRegistryEntry')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty Extension | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty Extension | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-FullName
+##########################################>
+function Get-FullName {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty FullName | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty FullName | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-File
+#>
+function Get-File {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([System.IO.FileInfo])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Write-Output
+        }
+        else {
+            $Path | Get-Item | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-IsContainer
+#>
+function Get-IsContainer {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty PSIsContainer | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty PSIsContainer | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-IsReadOnly
+#>
+function Get-IsReadOnly {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -IsValid },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty IsReadOnly | Write-Output
+        }
+        else {
+            $Path | Get-Item | ForEach-Object -Process {
+                $Path | Get-Item | Select-Object -ExpandProperty IsReadOnly | Write-Output
+            }
+        }
+    }
+}
+
+<###########################################
+    Get-Length
+#>
+function Get-Length {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([long])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path eaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty Length | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty Length | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-LinkTarget
+#>
+function Get-LinkTarget {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty LinkTarget | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty LinkTarget | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-LinkType
+#>
+function Get-LinkType {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty LinkType | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty LinkType | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-Mode
+#>
+function Get-Mode {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty Mode | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty Mode | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-ModeWithoutHardLink
+#>
+function Get-ModeWithoutHardLink {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty ModeWithoutHardLink | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty ModeWithoutHardLink | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-Name
+#>
+function Get-Name {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty Name | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty Name | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-Parent
+#>
+function Get-Parent {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Container },
+            ErrorMessage = "Path '{0}' is not a valid path container or")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path container")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty Parent | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty Parent | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-ProviderInfo
+#>
+function Get-ProviderInfo {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([ProviderInfo])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty PSProvider | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty PSProvider | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-PSChildName
+#>
+function Get-PSChildName {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty PSChildName | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty PSChildName | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-PSParentPath
+#>
+function Get-PSParentPath {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty PSParentPath | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty PSParentPath | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-PSPath
+#>
+function Get-PSPath {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty PSPath | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty PSPath | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-ResolvedTarget
+#>
+function Get-ResolvedTarget {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty ResolvedTarget | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty ResolvedTarget | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-Root
+#>
+function Get-Root {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Container },
+            ErrorMessage = "Path '{0}' is not a valid path container")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path container")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty Root | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty Root | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-UnixFileMode
+#>
+function Get-UnixFileMode {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([System.IO.UnixFileMode])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty UnixFileMode | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty UnixFileMode | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Get-VersionInfo
+#>
+function Get-VersionInfo {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([System.Diagnostics.FileVersionInfo])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty VersionInfo | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty VersionInfo | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Set-Attribute
+#>
+function Set-Attribute {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
         [string[]]
         $LiteralPath,
 
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [psobject]
-        $InputObject,
-
-        [ValidateNotNullOrEmpty()]
-        [SupportsWildcards()]
-        [Alias('Property', 'SubKey')]
-        [string]
-        $Name,
-
-        [ValidateSet('HKLM', 'HKCU')]
-        [string]
-        $Drive = 'HKLM',
-
-        [ValidateSet('String', 'ExpandString', 'Binary', 'DWord', 'MultiString', 'QWord')]
-        [Microsoft.Win32.RegistryValueKind]
-        $Type = 'String',
+        [Parameter(Mandatory)]
+        [System.IO.Attributes]
+        $Attribute,
 
         [switch]
         $Force
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
-        $platform = [Environment]::OSVersion | Select-Object -ExpandProperty Platform
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
-        if ($platform -notlike 'Win*NT') {
-            return
-        }
-
         if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
-            $LiteralPath | Get-Item | ForEach-Object -Process {
-                $pathInfo = $_
+            $LiteralPath | Set-ItemProperty -Name Attributes -Value $Attribute
+        }
+        else {
+            $Path | Set-ItemProperty -Name Attributes -Value $Attribute
+        }
+    }
+}
 
-                if (Test-RegistryPath -LiteralPath $_ -Drive $Drive -Name $Name) {
-                    $InputObject | ForEach-Object -Process {
-                        $reference = $_
+<###########################################
+    Set-CreationTime
+#>
+function Set-CreationTime {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
 
-                        switch ($reference) {
-                            { $_ -is [int] } { $Type = 'DWord' }
-                            { $_ -is [long] } { $type = 'QWord' }
-                        }
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath,
 
-                        Set-ItemPropety -LiteralPath $pathInfo.FullName -Name $Name -Type $Type -Force:$Force.IsPresent
-                    }
-                }
+        [Parameter(Mandatory)]
+        [datetime]
+        $Local,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Set-ItemProperty -Name CreationTime -Value $Local
+        }
+        else {
+            $Path | Set-ItemProperty -Name CreationTime -Value $Local
+        }
+    }
+}
+
+<###########################################
+    Set-CreationTimeUtc
+#>
+function Set-CreationTimeUtc {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath,
+
+        [Parameter(Mandatory)]
+        [datetime]
+        $Utc,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Set-ItemProperty -Name CreationTimeUtc -Value $Utc
+        }
+        else {
+            $Path | Set-ItemProperty -Name CreationTimeUtc -Value $Utc
+        }
+    }
+}
+
+<###########################################
+    Set-Extension
+#>
+function Set-Extension {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath,
+
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]
+        $Extension,
+
+        [switch]
+        $PassThru,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            if ($PassThru.IsPresent) {
+                $LiteralPath | ForEach-Object -Process { [System.IO.Path]::ChangeExtension($_, $Extension) | Write-Output }
+            }
+            else {
+                $LiteralPath | ForEach-Object -Process { [System.IO.Path]::ChangeExtension($_, $Extension) | Out-Null }
             }
         }
         else {
-            $Path | Get-Item | ForEach-Object -Process {
-                $pathInfo = $_
-
-                if (Test-RegistryPath -LiteralPath $_ -Drive $Drive -Name $Name) {
-                    $InputObject | ForEach-Object -Process {
-                        $reference = $_
-
-                        switch ($reference) {
-                            { $_ -is [int] } { $Type = 'DWord' }
-                            { $_ -is [long] } { $type = 'QWord' }
-                        }
-
-                        Set-ItemPropety -LiteralPath $pathInfo.FullName -Name $Name -Type $Type -Force:$Force.IsPresent
-                    }
-                }
+            if ($PassThru.IsPresent) {
+                $Path | Resolve-Path | ForEach-Object -Process { [System.IO.Path]::ChangeExtension($_, $Extension) | Write-Output }
+            }
+            else {
+                $Path | Resolve-Path | ForEach-Object -Process { [System.IO.Path]::ChangeExtension($_, $Extension) | Out-Null }
             }
         }
     }
 }
 
-<#
-    Test-RegistryPath
+<###########################################
+    Set-IsReadOnly
 #>
-function Test-RegistryPath {
+function Set-IsReadOnly {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath,
+
+        [Parameter(Mandatory)]
+        [bool]
+        $Toggle,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Set-ItemProperty -Name IsReadOnly -Value $Toggle
+        }
+        else {
+            $Path | Set-ItemProperty -Name IsReadOnly -Value $Toggle
+        }
+    }
+}
+
+<###########################################
+    Set-LastAccessTime
+#>
+function Set-LastAccessTime {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath,
+
+        [Parameter(Mandatory)]
+        [datetime]
+        $Local,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Set-ItemProperty -Name LastAccessTime -Value $Local
+        }
+        else {
+            $Path | Set-ItemProperty -Name LastAccessTime -Value $Local
+        }
+    }
+}
+
+<###########################################
+    Set-LastAccessTimeUtc
+#>
+function Set-LastAccessTimeUtc {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath,
+
+        [Parameter(Mandatory)]
+        [datetime]
+        $Utc,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Set-ItemProperty -Name LastAccessTimeUtc -Value $Utc
+        }
+        else {
+            $Path | Set-ItemProperty -Name LastAccessTimeUtc -Value $Utc
+        }
+    }
+}
+
+<###########################################
+    Set-LastWriteTime
+#>
+function Set-LastWriteTime {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath,
+
+        [Parameter(Mandatory)]
+        [datetime]
+        $Local,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Set-ItemProperty -Name LastAccessTime -Value $Local
+        }
+        else {
+            $Path | Set-ItemProperty -Name LastAccessTime -Value $Local
+        }
+    }
+}
+
+<###########################################
+    Set-LastWriteTimeUtc
+#>
+function Set-LastWriteTimeUtc {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath,
+
+        [Parameter(Mandatory)]
+        [datetime]
+        $Utc,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Set-ItemProperty -Name LastWriteTimeUtc -Value $Utc
+        }
+        else {
+            $Path | Set-ItemProperty -Name LastWriteTimeUtc -Value $Utc
+        }
+    }
+}
+
+<###########################################
+    Set-UnixFileMode
+#>
+function Set-UnixFileMode {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low', DefaultParameterSetName = 'UsingPath')]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath,
+
+        [Parameter(Mandatory)]
+        [System.IO.UnixFileMode]
+        $FileMode,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Set-ItemProperty -Name UnixFileMode -Value $FileMode
+        }
+        else {
+            $Path | Set-ItemProperty -Name UnixFileMode -Value $FileMode
+        }
+    }
+}
+
+<###########################################
+    Test-AbsolutePath
+#>
+function Test-AbsolutePath {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     [OutputType([bool])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [AllowNull()]
-        [AllowEmptyString()]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
         [SupportsWildcards()]
-        [Alias('RegistryEntry')]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        $sessionState = [System.Management.Automation.SessionState]::new()
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | ForEach-Object -Process {
+                (Split-Path -LiteralPath $_ -IsAbsolute) -or $sessionState.Path.IsPSAbsolute($_) | Write-Output
+            }
+        }
+        else {
+            $Path | Resolve-Path | ForEach-Object -Process {
+                (Split-Path -Path $_ -IsAbsolute) -or $sessionState.Path.IsPSAbsolute($_) | Write-Output
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-Exist
+#>
+function Test-Exist {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -IsValid },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | ForEach-Object -Process {
+                $_.Exists -or (Test-Path -LiteralPath $_ -PathType Any) | Write-Output
+            }
+        }
+        else {
+            $Path | Get-Item | ForEach-Object -Process {
+                $_.Exists -or (Test-Path -Path $_ -PathType Any) | Write-Output
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-IsReadOnly
+#>
+function Test-IsReadOnly {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty IsReadOnly | Write-Output
+        }
+        else {
+            $Path | Get-Item | ForEach-Object -Process {
+                $Path | Get-Item | Select-Object -ExpandProperty IsReadOnly | Write-Output
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-FullPath
+#>
+function Test-FullPath {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [SupportsWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
         [AllowNull()]
         [AllowEmptyString()]
-        [Alias('LiteralRegistryEntry')]
         [string[]]
-        $LiteralPath,
-
-        [ValidateNotNullOrEmpty()]
-        [SupportsWildcards()]
-        [Alias('Property', 'SubKey')]
-        [string[]]
-        $Name,
-
-        [ValidateSet('HKLM', 'HKCU')]
-        [string]
-        $Drive = 'HKLM'
+        $LiteralPath
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-        $platform = [Environment]::OSVersion | Select-Object -ExpandProperty Platform
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
-        if ($platform -notlike 'Win*NT') {
-            return $false
-        }
-
         if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
-            $LiteralPath | Get-Item | ForEach-Object -Process {
-                $pathInfo = $_
-
-                if ($pathInfo.PSDrive -ne $Drive) {
-                    return $false
+            $LiteralPath | ForEach-Object -Process {
+                if (Test-NullOrWhiteSpace -LiteralPath $) {
+                    $false | Write-Output
                 }
-
-                if (Test-Path -LiteralPath $_) {
-                    if ($PSBoundParameters.ContainsKey('Name')) {
-                        $Name | Resolve-Path | ForEach-Object -Process {
-                            $property = $_
-
-                            if ($property -notin $pathInfo.Property) {
-                                $false | Write-Output
-                            }
-                        }
-                    }
-                    else {
-                        $true | Write-Output
-                    }
+                elseif (-not (Test-Valid -LiteralPath $_)) {
+                    $false | Write-Output
+                }
+                elseif (-not (Test-PathRooted -LiteralPath $_)) {
+                    $false | Write-Output
                 }
                 else {
-                    $false | Write-Output
+                    Test-AbsolutePath -LiteralPath $_ | Write-Output
                 }
             }
         }
         else {
-            $Path | Get-Item | ForEach-Object -Process {
-                $pathInfo = $_
-
-                if ($pathInfo.PSDrive -ne $Drive) {
-                    return $false
-                }
-
-                if (Test-Path -Path $_) {
-                    if ($PSBoundParameters.ContainsKey('Name')) {
-                        $Name | Resolve-Path | ForEach-Object -Process {
-                            $property = $_
-
-                            if ($property -notin $pathInfo.Property) {
-                                $false | Write-Output
-                            }
-                        }
-                    }
-                    else {
-                        $true | Write-Output
-                    }
-                }
-                else {
+            $Path | Resolve-Path | ForEach-Object -Process {
+                if (Test-NullOrWhiteSpace -LiteralPath $) {
                     $false | Write-Output
                 }
+                elseif (-not (Test-Valid -Path $_)) {
+                    $false | Write-Output
+                }
+                elseif (-not (Test-PathRooted -Path $_)) {
+                    $false | Write-Output
+                }
+                else {
+                    Test-AbsolutePath -Path $_ | Write-Output
+                }
             }
+        }
+    }
+}
+
+<###########################################
+    Test-IsContainer
+#>
+function Test-IsContainer {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Any },
+            ErrorMessage = "Path '{0}' is not a valid path that is either container or leaf")]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Any },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path that is either container or leaf")]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Get-Item | Select-Object -ExpandProperty PSIsContainer | Write-Output
+        }
+        else {
+            $Path | Get-Item | Select-Object -ExpandProperty PSIsContainer | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Test-NullOrEmpty
+#>
+function Test-NullOrEmpty {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | ForEach-Object -Process {
+                [string]::IsNullOrEmpty($_) | Write-Output
+            }
+        }
+        else {
+            $Path | Resolve-Path | ForEach-Object -Process {
+                [string]::IsNullOrEmpty($_) | Write-Output
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-NullOrWhiteSpace
+#>
+function Test-NullOrWhiteSpace {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | ForEach-Object -Process {
+                [string]::IsNullOrWhiteSpace($_) | Write-Output
+            }
+        }
+        else {
+            $Path | Resolve-Path | ForEach-Object -Process {
+                [string]::IsNullOrWhiteSpace($_) | Write-Output
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-PathRooted
+#>
+function Test-PathRooted {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScritp({ Test-Path -Path $_ -PathType Any })]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScritp({ Test-Path -LiteralPath $_ -PathType Any })]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | ForEach-Object -Process { [System.IO.Path]::IsPathRooted($_) | Write-Output }
+        }
+        else {
+            $Path | Resolve-Path | ForEach-Object -Process {
+                [System.IO.Path]::IsPathRooted($_) | Write-Output
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-PathUnqualified
+#>
+function Test-PathUnqualifed {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScritp({ Test-Path -Path $_ -PathType Any })]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScritp({ Test-Path -Path $_ -PathType Any })]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | ForEach-Object -Process {
+                $unqualified = Split-Path -Path $_ -NoQualifier
+                $normalized = $_ -replace [System.IO.Path]::AltDirectorySeparatorChar, [System.IO.Path]::DirectorySeparatorChar
+                $unqualifed -eq $normalize | Write-Output
+            }
+        }
+        else {
+            $Path | Resolve-Path | ForEach-Object -Process {
+                if ([string]::IsNullOrWhiteSpace($_)) {
+                    $false | Write-Output
+                }
+                else {
+                    $unqualified = Split-Path -Path $_ -NoQualifier
+                    $normalized = $_ -replace [System.IO.Path]::AltDirectorySeparatorChar, [System.IO.Path]::DirectorySeparatorChar
+                    $unqualifed -eq $normalize | Write-Output
+                }
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-PathUri
+##########################################>
+function Test-PathUri {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScritp({ Test-Path -Path $_ -PathType Any })]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScritp({ Test-Path -LiteralPath $_ -PathType Any })]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | ConvertTo-PathUri | ForEach-Object -Process {
+                if ([string]::IsNullOrWhiteSpace($_)) {
+                    $false | Write-Output
+                }
+                else {
+                    Test-Uri -Uri $_ | Write-Output
+                }
+            }
+        }
+        else {
+            $Path | ConvertTo-PathUri | ForEach-Object -Process {
+                if ([string]::IsNullOrWhiteSpace($_)) {
+                    $false | Write-Output
+                }
+                else {
+                    Test-Uri -Uri $_ | Write-Output
+                }
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-PathVolume
+##########################################>
+function Test-PathVolume {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScritp({ Test-Path -Path $_ -PathType Any })]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScritp({ Test-Path -LiteralPath $_ -PathType Any })]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | ForEach-Object -Process {
+                $qualifier = Split-Path -LiteralPath $_ -Qualifer
+                ($qualifier -eq $_.TrimEnd([System.IO.Path]::DirectorySeparatorChar)) -or ($qualifier -eq $_.TrimEnd([System.IO.Path]::AltDirectorySeparatorChar)) | Write-Output
+            }
+        }
+        else {
+            $Path | Resolve-Path | ForEach-Object -Process {
+                $qualifier = Split-Path -Path $_ -Qualifer
+                ($qualifier -eq $_.TrimEnd([System.IO.Path]::DirectorySeparatorChar)) -or ($qualifier -eq $_.TrimEnd([System.IO.Path]::AltDirectorySeparatorChar)) | Write-Output
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-RelativePath
+##########################################>
+function Test-RelativePath {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateScritp({ Test-Path -Path $_ -PathType Any })]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateScritp({ Test-LiteralPath -Path $_ -PathType Any })]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+
+        $sessionState = [System.Management.Automation.SessionState]::new()
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | ForEach-Object -Process {
+                (-not (Test-AbsolutePath -LiteralPath $_)) | Write-Output
+            }
+        }
+        else {
+            $Path | Resolve-Path | ForEach-Object -Process {
+                (-not (Test-AbsolutePath -Path $_)) | Write-Output
+            }
+        }
+    }
+}
+
+<###########################################
+    Test-Uri
+##########################################>
+function Test-Uri {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $Uri,
+
+        [ValidateSet('Absolute', 'RelativeOrAbsolute', 'Relative')]
+        [System.UriKind]
+        $UriKind = 'Absolute'
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        $Uri | ForEach-Object -Process {
+            [uri]::IsWellFormedUriString($_, $UriKind) | Write-Output
+        }
+    }
+}
+
+<###########################################
+    Test-Valid
+##########################################>
+function Test-Valid {
+    [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
+        [ValidateNotNullOrEmpty()]
+        [SupportsWildcards()]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $LiteralPath
+    )
+
+    BEGIN {
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+    }
+
+    PROCESS {
+        if ($PSCmdlet.ParameterSetName -eq 'UsingLiteralPath') {
+            $LiteralPath | Test-Path -IsValid | Write-Output
+        }
+        else {
+            $Path | Test-Path -IsValid | Write-Output
         }
     }
 }

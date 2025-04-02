@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="GitModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="GitModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,14 +45,15 @@ This file "GitModule.psm1" is part of "GitModule".
 =============================================================================
 #>
 
-<#
+<##########################################
     Get-GitBranchRemote
-#>
+##########################################>
 function Get-GitBranchRemote {
     [CmdletBinding()]
     [OutputType([string[]])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD,
 
@@ -59,7 +61,8 @@ function Get-GitBranchRemote {
         $Local
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
 
@@ -74,9 +77,9 @@ function Get-GitBranchRemote {
     Pop-Location
 }
 
-<#
+<##########################################
     Get-GitShow
-#>
+##########################################>
 function Get-GitShow {
     [CmdletBinding()]
     param (
@@ -90,13 +93,15 @@ function Get-GitShow {
         [string]
         $Format,
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
         Push-Location $WorkingDirectory
         $currentBranch = Get-GitBranch -WorkingDirectory $WorkingDirectory
@@ -115,14 +120,15 @@ function Get-GitShow {
     }
 }
 
-<#
+<##########################################
     Get-GitRevisionParse
-#>
+##########################################>
 function Get-GitRevisionParse {
     [CmdletBinding()]
     [OutputType([string])]
     param(
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD,
 
@@ -136,7 +142,8 @@ function Get-GitRevisionParse {
         $ShowTopLevel
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
 
@@ -156,9 +163,9 @@ function Get-GitRevisionParse {
     Pop-Location
 }
 
-<#
+<##########################################
     Get-GitAuthorHead
-#>
+##########################################>
 function Get-GitAuthorHead {
     [CmdletBinding()]
     [OutputType([string])]
@@ -168,22 +175,24 @@ function Get-GitAuthorHead {
         [string[]]
         $Branch = 'main',
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
         $Branch | ForEach-Object -Process {
             Get-GitBranchRemote -WorkingDirectory $WorkingDirectory -Local |
                 Where-Object -FilterScript { $_ -ne 'HEAD' } |
-                    Get-GitShow -Format '%an' -WorkingDirectory $WorkingDirectory |
-                        Select-Object -First 1 } |
-                            Write-Output
+                Get-GitShow -Format '%an' -WorkingDirectory $WorkingDirectory |
+                Select-Object -First 1 } |
+                Write-Output
     }
 
     <#
@@ -206,7 +215,7 @@ function Get-GitAuthorHead {
         PS> Get-GitAuthorHead
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -240,9 +249,9 @@ function Get-GitAuthorHead {
     #>
 }
 
-<#
+<##########################################
     Get-GitAuthorDateHead
-#>
+##########################################>
 function Get-GitAuthorDateHead {
     [CmdletBinding()]
     [OutputType([string])]
@@ -252,22 +261,24 @@ function Get-GitAuthorDateHead {
         [string[]]
         $Branch = 'main',
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
         $Branch | ForEach-Object -Process {
             Get-GitBranchRemote -WorkingDirectory $WorkingDirectory -Local |
                 Where-Object -FilterScript { $_ -ne 'HEAD' } |
-                    Get-GitShow -Format '%ad' |
-                        Select-Object -First 1 } |
-                            Write-Output
+                Get-GitShow -Format '%ad' |
+                Select-Object -First 1 } |
+                Write-Output
     }
 
     <#
@@ -292,7 +303,7 @@ function Get-GitAuthorDateHead {
         2025-01-27 12:00:00
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -326,31 +337,35 @@ function Get-GitAuthorDateHead {
     #>
 }
 
-<#
+<##########################################
     Get-GitCommitMetadata
-#>
+##########################################>
 function Get-GitCommitMetadata {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingPath')]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType 'Leaf' },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [AllowWildcards()]
         [string[]]
         $Path,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'UsingLiteralPath')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType 'Leaf' },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string[]]
         $LiteralPath,
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -358,20 +373,21 @@ function Get-GitCommitMetadata {
             $LiteralPath | ForEach-Object -Process {
                 Get-Item -LiteralPath $_ |
                     Get-GitRepositoryMetadata -WorkingDirectory $WorkingDirectory |
-                        Select-Object -ExpandProperty CommitMetadata |
-                            Write-Output
+                    Select-Object -ExpandProperty CommitMetadata |
+                    Write-Output
+                }
             }
-        } else {
-            $Path | Resolve-Path | ForEach-Object -Process {
-                Get-Item -Path $_ |
-                    Get-GitRepositoryMetadata -WorkingDirectory $WorkingDirectory |
+            else {
+                $Path | Resolve-Path | ForEach-Object -Process {
+                    Get-Item -Path $_ |
+                        Get-GitRepositoryMetadata -WorkingDirectory $WorkingDirectory |
                         Select-Object -ExpandProperty CommitMetadata |
-                            Write-Output
+                        Write-Output
+                    }
+                }
             }
-        }
-    }
 
-    <#
+            <#
         .SYNOPSIS
         Get Git commit metadata from the specified leaf location.
 
@@ -398,7 +414,7 @@ function Get-GitCommitMetadata {
         Returns the Git commit metadata for the file `semver.txt`
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -427,38 +443,40 @@ function Get-GitCommitMetadata {
         .LINK
         Write-Output
     #>
-}
+        }
 
-<#
+        <##########################################
     Get-GitCommitterHead
-#>
-function Get-GitCommitterHead {
-    [CmdletBinding()]
-    [OutputType([string])]
-    param (
-        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateNotNullOrEmpty()]
-        [string[]]
-        $Branch = 'main',
+##########################################>
+        function Get-GitCommitterHead {
+            [CmdletBinding()]
+            [OutputType([string])]
+            param (
+                [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
+                [ValidateNotNullOrEmpty()]
+                [string[]]
+                $Branch = 'main',
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
-        [string]
-        $WorkingDirectory = $PWD
-    )
+                [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+                    ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
+                [string]
+                $WorkingDirectory = $PWD
+            )
 
-    BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-    }
+            BEGIN {
+                Set-StrictMode -Version 3.0
+                Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+            }
 
-    PROCESS {
-        $Branch | ForEach-Object -Process {
-            $branchToProcess = $_
+            PROCESS {
+                $Branch | ForEach-Object -Process {
+                    $branchToProcess = $_
 
-            Get-GitBranchRemote -WorkingDirectory $WorkingDirectory -Local |
-                Where-Object -FilterScript { $_ -ne 'HEAD' } |
-                    Get-GitShow -Format '%cn' |
+                    Get-GitBranchRemote -WorkingDirectory $WorkingDirectory -Local |
+                        Where-Object -FilterScript { $_ -ne 'HEAD' } |
+                        Get-GitShow -Format '%cn' |
                         Select-Object -First 1 } |
-                            Write-Output
+                        Write-Output
     }
 
     <#
@@ -483,7 +501,7 @@ function Get-GitCommitterHead {
         John Merryweather Cooper
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -517,9 +535,9 @@ function Get-GitCommitterHead {
     #>
 }
 
-<#
+<##########################################
     Get-GitCommitterDateHead
-#>
+##########################################>
 function Get-GitCommitterDateHead {
     [CmdletBinding()]
     [OutputType([string])]
@@ -529,13 +547,15 @@ function Get-GitCommitterDateHead {
         [string[]]
         $Branch = 'main',
 
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -544,9 +564,9 @@ function Get-GitCommitterDateHead {
 
             Get-GitBranchRemote -WorkingDirectory $WorkingDirectory -Local |
                 Where-Object -FilterScript { $_ -ne 'HEAD' } |
-                    Get-GitShow -Format '%cd' |
-                        Select-Object -First 1 } |
-                            Write-Output
+                Get-GitShow -Format '%cd' |
+                Select-Object -First 1 } |
+                Write-Output
     }
 
     <#
@@ -571,7 +591,7 @@ function Get-GitCommitterDateHead {
         2025-01-27 12:00:00
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -605,19 +625,21 @@ function Get-GitCommitterDateHead {
     #>
 }
 
-<#
+<##########################################
     Get-GitRepositoryMetadata
-#>
+##########################################>
 function Get-GitRepositoryMetadata {
     [CmdletBinding()]
     [OutputType([psobject])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     $gitRepository = New-Object -TypeName System.Management.Automation.PSObject
 
@@ -656,7 +678,7 @@ function Get-GitRepositoryMetadata {
         PS> Get-GitRepositoryMetadata | Format-List
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -720,19 +742,21 @@ function Get-GitRepositoryMetadata {
     #>
 }
 
-<#
+<##########################################
     Get-GitShortId
-#>
+##########################################>
 function Get-GitShortId {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Get-GitRevisionParse -WorkingDirectory $WorkingDirectory -Short | Write-Output
 
@@ -753,7 +777,7 @@ function Get-GitShortId {
         PS> Get-GitShortId
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -775,19 +799,21 @@ function Get-GitShortId {
     #>
 }
 
-<#
+<##########################################
     Get-GitLongId
-#>
+##########################################>
 function Get-GitLongId {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Get-GitRevisionParse -WorkingDirectory $WorkingDirectory | Write-Output
 
@@ -808,7 +834,7 @@ function Get-GitLongId {
         PS> Get-GitLongId
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -830,19 +856,21 @@ function Get-GitLongId {
     #>
 }
 
-<#
+<##########################################
     Get-GitRef
-#>
+##########################################>
 function Get-GitRef {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
     & git symbolic-ref --short HEAD | Write-Output
@@ -865,7 +893,7 @@ function Get-GitRef {
         PS> Get-GitRef
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -887,19 +915,21 @@ function Get-GitRef {
     #>
 }
 
-<#
+<##########################################
     Get-GitLongRef
-#>
+##########################################>
 function Get-GitLongRef {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
     & git symbolic-ref HEAD | Write-Output
@@ -922,7 +952,7 @@ function Get-GitLongRef {
         PS> Get-GitLongRef
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -944,19 +974,21 @@ function Get-GitLongRef {
     #>
 }
 
-<#
+<##########################################
     Get-GitBranch
-#>
+##########################################>
 function Get-GitBranch {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
     & git branch --show-current | Write-Output
@@ -979,7 +1011,7 @@ function Get-GitBranch {
         PS> Get-GitBranch
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -1001,19 +1033,21 @@ function Get-GitBranch {
     #>
 }
 
-<#
+<##########################################
     Get-GitCommitMetadata
-#>
+##########################################>
 function Get-GitCommitMetadata {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
     & git log -1 '--pretty=format:"%H %s"' | Write-Output
@@ -1036,7 +1070,7 @@ function Get-GitCommitMetadata {
         PS> Get-GitCommitMetadata
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -1058,19 +1092,21 @@ function Get-GitCommitMetadata {
     #>
 }
 
-<#
+<##########################################
     Get-GitFormattedLog
-#>
+##########################################>
 function Get-GitFormattedLog {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
     & git log --no-merges --pretty=short | Write-Output
@@ -1093,7 +1129,7 @@ function Get-GitFormattedLog {
         PS> Get-GitFormattedLog
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -1118,19 +1154,21 @@ function Get-GitFormattedLog {
     #>
 }
 
-<#
+<##########################################
     Get-GitRepositoryName
-#>
+##########################################>
 function Get-GitRepositoryName {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Get-GitRepositoryPath -WorkingDirectory $WorkingDirectory | Split-Path -Leaf | Write-Output
 
@@ -1153,7 +1191,7 @@ function Get-GitRepositoryName {
         PSInstallCom
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -1181,19 +1219,21 @@ function Get-GitRepositoryName {
     #>
 }
 
-<#
+<##########################################
     Get-GitRepositoryPath
-#>
+##########################################>
 function Get-GitRepositoryPath {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Get-GitRevisionParse -WorkingDirectory $WorkingDirectory -ShowTopLevel | Write-Output
 
@@ -1216,7 +1256,7 @@ function Get-GitRepositoryPath {
         ./GitHub/PSInstallCom
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -1241,19 +1281,21 @@ function Get-GitRepositoryPath {
     #>
 }
 
-<#
+<##########################################
     Get-GitRepositoryUrl
-#>
+##########################################>
 function Get-GitRepositoryUrl {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
     & git remote get-url origin | Write-Output
@@ -1275,10 +1317,10 @@ function Get-GitRepositoryUrl {
         .EXAMPLE
         PS> Get-GitRepositoryUrl
 
-        https://github.com/jmcooper176/PowerShellModules
+        https://github.com/OPM-jmcooper176/PowerShellModules
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -1303,19 +1345,21 @@ function Get-GitRepositoryUrl {
     #>
 }
 
-<#
+<##########################################
     Get-GitTag
-#>
+##########################################>
 function Get-GitTag {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
 
@@ -1347,7 +1391,7 @@ function Get-GitTag {
         1.2.3.4
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -1372,19 +1416,21 @@ function Get-GitTag {
     #>
 }
 
-<#
+<##########################################
     Get-GitVersion
-#>
+##########################################>
 function Get-GitVersion {
     [CmdletBinding()]
     [OutputType([string])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Get-GitTag -WorkingDirectory $WorkingDirectory | Write-Output
 
@@ -1407,7 +1453,7 @@ function Get-GitVersion {
         1.2.3.4
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -1432,19 +1478,21 @@ function Get-GitVersion {
     #>
 }
 
-<#
+<##########################################
     Test-GitRepository
-#>
+##########################################>
 function Test-GitRepository {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
     Test-Path -LiteralPath '.\.git' -PathType Container | Write-Output
@@ -1469,7 +1517,7 @@ function Test-GitRepository {
         True
 
         .NOTES
-        Copyright © 2025 John Merryweather Cooper.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
         .LINK
         about_CommonParameters
@@ -1494,14 +1542,15 @@ function Test-GitRepository {
     #>
 }
 
-<#
+<##########################################
     Test-HasTag
-#>
+##########################################>
 function Test-HasTag {
     [CmdletBinding()]
     [OutputType([bool])]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "WorkingDirectory '{0}' is not a valid path container")]
         [string]
         $WorkingDirectory = $PWD,
 
@@ -1510,7 +1559,8 @@ function Test-HasTag {
         $Tag
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    Set-StrictMode -Version 3.0
+    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
 
     Push-Location $WorkingDirectory
 

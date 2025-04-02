@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="ServiceAccountModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="ServiceAccountModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -67,7 +68,7 @@ function Format-MessageFromModule {
             if (! ($ret = [LogonCli.ServiceAccount]::FormatMessageFromModule($err, $ModuleName, [ref]$result))) {
                 $result
             } else {
-                Write-Error -Message "Cannot get message ID: $err. Error code: $ret" -Category 'InvalidResult'
+                Write-Error -Message "Cannot get message ID: $err. Error code: $ret" -ErrorCategory 'InvalidResult'
             }
         }
     }
@@ -244,7 +245,7 @@ function Use-ServiceAccount {
 
             switch($Action) {
                 'Add' {
-                    Write-Verbose -Message 'Installing account using NetAddServiceAccount'
+                    Write-Verbose 'Installing account using NetAddServiceAccount'
 
                     if ($PromptForPassword.IsPresent) {
                         $Credential = Get-Credential -Message "Enter the password for the account '$($Account)'"
@@ -338,7 +339,7 @@ function Use-ServiceAccount {
             }
 
             if ($ret) {
-                Write-Verbose -Message "Returning user-friendly error message for status code: $ret"
+                Write-Verbose "Returning user-friendly error message for status code: $ret"
 
                 $ret | Format-MessageFromModule -ModuleName 'Ntdll.dll' | Write-Error
             }
@@ -455,9 +456,9 @@ function Use-ServiceAccount {
     #>
 }
 
-<#
+<###########################################
     ConvertFrom-Encrypted
-#>
+##########################################>
 function ConvertFrom-Encrypted {
     [CmdletBinding()]
     [OutputType([string])]
@@ -500,9 +501,9 @@ function ConvertFrom-Encrypted {
     #>
 }
 
-<#
+<###########################################
     ConvertTo-Encrypted
-#>
+##########################################>
 function ConvertTo-Encrypted {
     [CmdletBinding()]
     [OutputType([securestring])]

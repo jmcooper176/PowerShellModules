@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="New-OutputTypeIndex.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="New-OutputTypeIndex.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "New-OutputTypeIndex.ps1" is part of "Generate-Help".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -94,53 +95,43 @@ param(
 # Get all psd1 files
 $psd1Files = Get-Item $PSScriptRoot\..\artifacts\$BuildConfig\Az.*\Az.*.psd1
 
-$profilePsd1 = $psd1Files | Where-Object -Property Name -like "*Az.Accounts.psd1"
+$profilePsd1 = $psd1Files | Where-Object -FilterScript { $_.Name -like "*Az.Accounts.psd1" }
 Import-LocalizedData -BindingVariable "psd1File" -BaseDirectory $profilePsd1.DirectoryName -FileName $profilePsd1.Name
 
-foreach ($nestedModule in $psd1File.RequiredAssemblies)
-{
+foreach ($nestedModule in $psd1File.RequiredAssemblies) {
     $dllPath = Join-Path -Path $profilePsd1.DirectoryName -ChildPath $nestedModule
     $Assembly = [Reflection.Assembly]::LoadFrom($dllPath)
 }
 
 $outputTypes = New-Object -TypeName System.Collections.Generic.HashSet[string]
 
-$psd1Files | ForEach -Process {
+$psd1Files | foreach -Process {
     Import-LocalizedData -BindingVariable "psd1File" -BaseDirectory $_.DirectoryName -FileName $_.Name
 
-    foreach ($nestedModule in $psd1File.NestedModules)
-    {
-        if('.dll' -ne [System.IO.Path]::GetExtension($nestedModule))
-        {
-            continue
+    foreach ($nestedModule in $psd1File.NestedModules) {
+        if ('.dll' -ne [System.IO.Path]::GetExtension($nestedModule)) {
+            continue;
         }
 
         $dllPath = Join-Path -Path $_.DirectoryName -ChildPath $nestedModule
         $Assembly = [Reflection.Assembly]::LoadFrom($dllPath)
         $exportedTypes = $Assembly.GetTypes()
 
-        foreach ($exportedType in $exportedTypes)
-        {
-            foreach ($attribute in $exportedType.CustomAttributes)
-            {
-                if ($attribute.AttributeType.Name -eq "OutputTypeAttribute")
-                {
+        foreach ($exportedType in $exportedTypes) {
+            foreach ($attribute in $exportedType.CustomAttributes) {
+                if ($attribute.AttributeType.Name -eq "OutputTypeAttribute") {
                     $cmdletOutputTypes = $attribute.ConstructorArguments.Value.Value
-                    foreach ($cmdletOutputType in $cmdletOutputTypes)
-                    {
+                    foreach ($cmdletOutputType in $cmdletOutputTypes) {
                         $outputTypes.Add($cmdletOutputType.FullName) | Out-Null
                     }
                 }
             }
 
-            foreach ($property in $exportedType.GetProperties() | Where-Object -Property CustomAttributes.AttributeType.Name -contains "ParameterAttribute")
-            {
-                if ($property.PropertyType.FullName -like "*System.Nullable*``[``[*")
-                {
+            foreach ($property in $exportedType.GetProperties() | Where-Object -FilterScript { $_.CustomAttributes.AttributeType.Name -contains "ParameterAttribute" }) {
+                if ($property.PropertyType.FullName -like "*System.Nullable*``[``[*") {
                     $outputTypes.Add(($property.PropertyType.BaseType.FullName -replace "[][]", "")) | Out-Null
                 }
-                elseif ($property.PropertyType.FullName -notlike "*``[``[*")
-                {
+                elseif ($property.PropertyType.FullName -notlike "*``[``[*") {
                     $outputTypes.Add(($property.PropertyType.FullName -replace "[][]", "")) | Out-Null
                 }
             }

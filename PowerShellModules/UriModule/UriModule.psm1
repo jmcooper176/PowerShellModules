@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="UriModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="UriModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,21 +45,23 @@ This file "UriModule.psm1" is part of "UriModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Format-UriDataString
-#>
+##########################################>
 function Format-UriDataString {
     [CmdletBinding()]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute })]
+        [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute },
+            ErrorMessage = "StringToEscape '{0}' is not a valid, relative or absolute URI")]
         [string]
         $StringToEscape
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -90,7 +93,7 @@ function Format-UriDataString {
         This command escapes the characters in the original [uri] string.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -118,20 +121,22 @@ function Format-UriDataString {
     #>
 }
 
-<#
+<###########################################
     Join-Uri
-#>
+##########################################>
 function Join-Uri {
     [CmdletBinding()]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-SchemeName -SchemeName $_ })]
+        [ValidateScript({ Test-SchemeName -SchemeName $_ },
+            ErrorMessage = "Scheme '{0}' is not a valid HTTP scheme")]
         [string]
         $Scheme,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-HostName -HostName $_ })]
+        [ValidateScript({ Test-HostName -HostName $_ },
+            ErrorMessage = "HostName '{0}' is not a valid TCP/IP hostname")]
         [string]
         $HostName,
 
@@ -149,7 +154,8 @@ function Join-Uri {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -207,7 +213,7 @@ function Join-Uri {
         Returns a new [uri] original string.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -217,26 +223,29 @@ function Join-Uri {
     #>
 }
 
-<#
+<###########################################
     New-RelativeUri
-#>
+##########################################>
 function New-RelativeUri {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([uri])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Uri -Uri $_ })]
+        [ValidateScript({ Test-Uri -Uri $_ },
+            ErrorMessage = "Base '{0}' is not a valid, absolute URI")]
         [uri]
         $Base,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute })]
+        [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute },
+            ErrorMessage = "Uri '{0}' is not a valid, relative or absolute URI")]
         [uri]
         $Uri
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name -WhatIf:$false
     }
 
     PROCESS {
@@ -283,7 +292,7 @@ function New-RelativeUri {
         Returns a new relative [uri] string.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -293,15 +302,16 @@ function New-RelativeUri {
     #>
 }
 
-<#
+<###########################################
     Split-Uri
-#>
+##########################################>
 function Split-Uri {
     [CmdletBinding(DefaultParameterSetName = 'UsingAbsoluteUri')]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Uri -Uri $_ })]
+        [ValidateScript({ Test-Uri -Uri $_ },
+            ErrorMessage = "Source '{0}' is not a valid, absolute URI")]
         [uri]
         $Source,
 
@@ -379,7 +389,8 @@ function Split-Uri {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -538,7 +549,7 @@ function Split-Uri {
 
     <#
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -548,25 +559,28 @@ function Split-Uri {
     #>
 }
 
-<#
+<###########################################
     Test-BaseOf
-#>
+##########################################>
 function Test-BaseOf {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Uri -Uri $_ })]
+        [ValidateScript({ Test-Uri -Uri $_ },
+            ErrorMessage = "Base '{0}' is not a valid, absolute URI")]
         [uri]
         $Base,
 
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute })]
+        [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute },
+            ErrorMessage = "Uri '{0}' is not a valid, relative or absolute URI")]
         [uri]
         $Uri
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -578,7 +592,7 @@ function Test-BaseOf {
 
     <#
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -588,9 +602,9 @@ function Test-BaseOf {
     #>
 }
 
-<#
+<###########################################
     Test-HostName
-#>
+##########################################>
 function Test-HostName {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -603,7 +617,8 @@ function Test-HostName {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -621,7 +636,7 @@ function Test-HostName {
 
     <#
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -631,9 +646,9 @@ function Test-HostName {
     #>
 }
 
-<#
+<###########################################
     Test-SchemeName
-#>
+##########################################>
 function Test-SchemeName {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -646,7 +661,8 @@ function Test-SchemeName {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -664,7 +680,7 @@ function Test-SchemeName {
 
     <#
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -674,9 +690,9 @@ function Test-SchemeName {
     #>
 }
 
-<#
+<###########################################
     Test-Uri
-#>
+##########################################>
 function Test-Uri {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -692,12 +708,13 @@ function Test-Uri {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
         $Uri | ForEach-Object -Process {
-            if ($null -eq $_) {
+            if ($_ -eq $null) {
                 Write-Warning -Message "$($CmdletName) : Parameter 'Uri' is null"
                 $false | Write-Output
             }
@@ -747,7 +764,7 @@ function Test-Uri {
         The pipe [uri] is a well-formed [uri] of kind 'Absolute'.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters
@@ -775,21 +792,23 @@ function Test-Uri {
     #>
 }
 
-<#
+<###########################################
     Undo-UriDataString
-#>
+##########################################>
 function Undo-UriDataString {
     [CmdletBinding()]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute })]
+        [ValidateScript({ Test-Uri -Uri $_ -Kind RelativeOrAbsolute },
+            ErrorMessage = "StringToUnescape '{0}' is not a valid, relative or absolute URI")]
         [string]
         $StringToUnescape
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
     }
 
     PROCESS {
@@ -817,7 +836,7 @@ function Undo-UriDataString {
         [string]  `Undo-UriDataString returns an un-escaped string to the PowerShell pipeline.
 
         .NOTES
-        Copyright © 2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_CommonParameters

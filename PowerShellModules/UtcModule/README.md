@@ -4,4 +4,4 @@
 John Merryweather Cooper <jmcooper8654@gmail.com>
 
 ## Owner
-John Merryweather Cooper - DevSecOps Architect
+John Merryweather Cooper - SkyOps

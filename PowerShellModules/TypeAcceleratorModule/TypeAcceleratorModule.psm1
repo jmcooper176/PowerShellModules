@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="TypeAcceleratoModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="TypeAcceleratoModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "TypeAcceleratoModule.psm1" is part of "TypeAcceleratorModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Add-TypeAccelerator
-#>
+##########################################>
 function Add-TypeAccelerator {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -113,7 +114,7 @@ function Add-TypeAccelerator {
         This command adds the `[Vine]` type as a type accelerator to the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         The type accelerator is removed when the module is removed.
 
@@ -140,9 +141,9 @@ function Add-TypeAccelerator {
     #>
 }
 
-<#
+<###########################################
     Get-TypeAccelerator
-#>
+##########################################>
 function Get-TypeAccelerator {
     [CmdletBinding(DefaultParameterSetName = 'UsingTypeName')]
     [OutputType([string])]
@@ -242,7 +243,7 @@ function Get-TypeAccelerator {
         This command gets the type accelerator for the `Vine` type in the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Advanced_Function
@@ -264,7 +265,7 @@ function Get-TypeAccelerator {
     #>
 }
 
-<#
+<###########################################
     Get-TypeAcceleratorClass
 #>
 function Get-TypeAcceleratorClass {
@@ -296,7 +297,7 @@ function Get-TypeAcceleratorClass {
         This command gets the internal TypeAccelerators class to use its static methods.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Advanced_Function
@@ -312,9 +313,9 @@ function Get-TypeAcceleratorClass {
     #>
 }
 
-<#
+<###########################################
     Register-TypeAccelerator
-#>
+##########################################>
 function Register-TypeAccelerator {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -360,7 +361,7 @@ function Register-TypeAccelerator {
         This command registers the `[Vine]` type as a type accelerator to the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         The type accelerator is removed when the module is removed.
 
@@ -390,9 +391,9 @@ function Register-TypeAccelerator {
     #>
 }
 
-<#
+<###########################################
     Remove-TypeAccelerator
-#>
+##########################################>
 function Remove-TypeAccelerator {
     [CmdletBinding(SupportsShouldProcess, DefaultParameterSetName = 'UsingTypeName')]
     param (
@@ -406,7 +407,8 @@ function Remove-TypeAccelerator {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand -WhatIf:$false
 
         # Get the internal TypeAccelerators class to use its static methods.
         $TypeAcceleratorsClass = Get-TypeAcceleratorClass
@@ -460,7 +462,7 @@ function Remove-TypeAccelerator {
         This command removes the `[Vine]` type as a type accelerator from the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         The type accelerator is not removed if it is not registered.
 
@@ -491,9 +493,9 @@ function Remove-TypeAccelerator {
     #>
 }
 
-<#
+<###########################################
     Test-TypeAcceleratorRegistered
-#>
+##########################################>
 function Test-TypeAcceleratorRegistered {
     [CmdletBinding(DefaultParameterSetName = 'UsingExportableType')]
     param (
@@ -508,7 +510,8 @@ function Test-TypeAcceleratorRegistered {
     )
 
     BEGIN {
-        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+        Set-StrictMode -Version 3.0
+        Set-Variable -Name CmdletName -Option ReadOnly -Value $PSCmdlet.MyInvocation.MyCommand
 
         # Get the internal TypeAccelerators class to use its static methods.
         $TypeAcceleratorsClass = Get-TypeAcceleratorClass
@@ -566,7 +569,7 @@ function Test-TypeAcceleratorRegistered {
         This command tests if the `Vine` type accelerator is registered in the current session.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .LINK
         about_Advanced_Function

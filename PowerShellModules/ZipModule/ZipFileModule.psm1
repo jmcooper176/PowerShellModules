@@ -1,7 +1,7 @@
 ﻿<#
  =============================================================================
 <copyright file="ZipFileModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,20 +44,22 @@ This file "ZipFileModule.psm1" is part of "ZipModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Get-Comment
-#>
+##########################################>
 function Get-Comment {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     [OutputType([string])]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingLiteralPath', ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string]
         $LiteralPath,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path
     )
@@ -85,20 +87,22 @@ function Get-Comment {
     }
 }
 
-<#
+<###########################################
     Get-Entry
-#>
+##########################################>
 function Get-Entry {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     [OutputType([System.IO.Compress.ZipArchiveEntry])]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingLiteralPath', ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string]
         $LiteralPath,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path
     )
@@ -126,20 +130,22 @@ function Get-Entry {
     }
 }
 
-<#
+<###########################################
     Get-Entry
-#>
+##########################################>
 function Get-Entry {
     [CmdletBinding(DefaultParameterSetName = 'UsingPath')]
     [OutputType([System.IO.Compress.ZipArchiveMode])]
     param (
         [Parameter(Mandatory, ParameterSetName = 'UsingLiteralPath', ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [string]
         $LiteralPath,
 
         [Parameter(Mandatory, ParameterSetName = 'UsingPath', ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path
     )
@@ -167,20 +173,22 @@ function Get-Entry {
     }
 }
 
-<#
+<###########################################
     New-ZipFile
-#>
+##########################################>
 function New-ZipFile {
     [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "SourceDirectory '{0}' is not a valid path container")]
         [Alias('Source')]
         [string]
         $SourceDirectory,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "DestinationArchive '{0}' is not a valid path leaf")]
         [Alias('Destination')]
         [string]
         $DestinationArchive,
@@ -211,20 +219,22 @@ function New-ZipFile {
     }
 }
 
-<#
+<###########################################
     Out-ZipFile
-#>
+##########################################>
 function Out-ZipFile {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "DestinationDirectory '{0}' is not a valid path container")]
         [Alias('Destination')]
         [string]
         $DestinationDirectory,
 
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "SourceArchive '{0}' is not a valid path leaf")]
         [Alias('Source')]
         [string]
         $SourceArchive,

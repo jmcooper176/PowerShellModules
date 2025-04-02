@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="LogModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="LogModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,9 +45,9 @@ This file "LogModule.psm1" is part of "LogModule".
 =============================================================================
 #>
 
-<#
+<###########################################
     Write-LogConsole
-#>
+##########################################>
 function Write-LogConsole {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -56,7 +57,8 @@ function Write-LogConsole {
         $Message,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf or empty")]
         [string]
         $FilePath,
 
@@ -262,7 +264,7 @@ function Write-LogConsole {
         `Write-LogConsole` sends to it.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -280,9 +282,9 @@ function Write-LogConsole {
     #>
 }
 
-<#
+<###########################################
     Write-LogDebug
-#>
+##########################################>
 function Write-LogDebug {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -292,7 +294,8 @@ function Write-LogDebug {
         $Message,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -407,7 +410,7 @@ function Write-LogDebug {
         `Write-LogDebug` only writes to the debug stream. It does not write any objects to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -422,9 +425,9 @@ function Write-LogDebug {
     #>
 }
 
-<#
+<###########################################
     Write-LogError
-#>
+##########################################>
 function Write-LogError {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -444,7 +447,8 @@ function Write-LogError {
         $Exception,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -605,7 +609,7 @@ function Write-LogError {
             `Write-LogError` only writes to the error stream. It does not write any objects to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -620,9 +624,9 @@ function Write-LogError {
     #>
 }
 
-<#
+<###########################################
     Write-LogEvent
-#>
+##########################################>
 function Write-LogEvent {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -647,7 +651,8 @@ function Write-LogEvent {
         $Source,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -700,8 +705,8 @@ function Write-LogEvent {
             Source  = $Source
         }
 
-        if (Test-PSParameter -Name 'Category' -Parameters $PSBoundParameters) {
-            $writeEventHash.Add('Category', $Category)
+        if (Test-PSParameter -Name 'ErrorCategory' -Parameters $PSBoundParameters) {
+            $writeEventHash.Add('ErrorCategory', $Category)
         }
 
         if (Test-PSParameter -Name 'ComputerName' -Parameters $PSBoundParameters) {
@@ -766,8 +771,8 @@ function Write-LogEvent {
         .PARAMETER Prefix
         The prefix to apply before the message string in logging.
 
-        .PARAMETER Category
-        Specifies a task category for the event. Enter an integer that is associated with the strings in the category message file
+        .PARAMETER ErrorCategory
+        Specifies a task ErrorCategory for the event. Enter an integer that is associated with the strings in the ErrorCategory message file
         for the event log.
 
         .PARAMETER ComputerName
@@ -832,7 +837,7 @@ function Write-LogEvent {
         This cmdlet returns objects that represents the events in the logs as output to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -844,9 +849,9 @@ function Write-LogEvent {
     #>
 }
 
-<#
+<###########################################
     Write-LogVerbose
-#>
+##########################################>
 function Write-LogVerbose {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -856,7 +861,8 @@ function Write-LogVerbose {
         $Message,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -977,7 +983,7 @@ function Write-LogVerbose {
         `Write-LogVerbose` only writes to the error stream. It does not write any objects to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 
@@ -986,9 +992,9 @@ function Write-LogVerbose {
     #>
 }
 
-<#
+<###########################################
     Write-LogWarning
-#>
+##########################################>
 function Write-LogWarning {
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -998,7 +1004,8 @@ function Write-LogWarning {
         $Message,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+            ErrorMessage = "FilePath '{0}' is not a valid path leaf")]
         [string]
         $FilePath,
 
@@ -1116,7 +1123,7 @@ function Write-LogWarning {
             `Write-LogWarning` only writes to host. It does not write any objects to the pipeline.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
         .EXAMPLE
 

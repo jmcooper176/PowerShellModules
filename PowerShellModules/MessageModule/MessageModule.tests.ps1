@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="MessageModule.tests.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="MessageModule.tests.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -82,15 +83,16 @@ Describe -Name 'MessageModule' -Tag 'Module', 'Under', 'Test' {
             # Act
             $errors.Value | ForEach-Object -Process {
                 $success = $false
-                $message = ('{0}@{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
+                $message = ('{0}/{1} : Parse error generating abstract syntax tree' -f $ModulePath, $ModuleName)
                 $newErrorRecordSplat = @{
-                    Exception    = [System.Management.Automation.ParseException]::new($message)
-                    Category     = 'ParseError'
-                    ErrorId      = ('{0}-ParseException-{1}' -f $ModuleName, $MyInvocation.ScriptLineNumber)
-                    TargetObject = $_
+                    Exception     = [System.Management.Automation.ParseException]::new($message)
+                    ErrorCategory = 'ParseError'
+                    ErrorId       = Format-ErrorId -Caller $ModuleName -Name 'ParseException' -Position $MyInvocation.ScriptLineNumber
+                    Message       = $message
+                    TargetObject  = $_
                 }
 
-                New-ErrorRecord @newErrorRecordSplat | Write-Error -ErrorAction Continue
+                New-ErrorRecord @newErrorRecordSplat | Write-NonTerminating
             }
 
             # Assert
@@ -137,7 +139,7 @@ Describe -Name 'MessageModule' -Tag 'Module', 'Under', 'Test' {
             $CompanyName | Should -Be $COMPANY_NAME_STRING
         }
 
-        It -Name 'should have a Copyright of Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
+        It -Name 'should have a Copyright of Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.' -Tag 'Unit', 'Test' {
             # Arrange and Act
             $Copyright = Test-ModuleManifest -Path $ModulePath | Select-Object -ExpandProperty 'Copyright'
 
@@ -173,10 +175,10 @@ Describe -Name 'MessageModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique
+                Sort-Object -Unique
 
             # Act And Assert
             $exportedCmdlets.Count | Should -Be $exportedFunctions.Count
@@ -186,10 +188,10 @@ Describe -Name 'MessageModule' -Tag 'Module', 'Under', 'Test' {
             # Arrange
             $exportedCmdlets = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedCmdlets' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
             $exportedFunctions = Test-ModuleManifest -Path $ModulePath |
                 Select-Object -ExpandProperty 'ExportedFunctions' |
-                    Sort-Object -Unique -Descending
+                Sort-Object -Unique -Descending
 
             # Act
             for ($i = 0; $i -lt $exportedCmdlets.Count; $i++) {
@@ -354,20 +356,19 @@ Describe -Name 'MessageModule' -Tag 'Module', 'Under', 'Test' {
 
         It -Name 'should emit formatted message' -Tag 'Unit', 'Test' {
             # Arrange
-            $message = 'This is a message.'
-            $errorId = Format-ErrorId -Caller $MyInvocation -Name 'Exception' -Position $MyInvocation.ScriptLineNumber
+            $message = "Exception of type 'System.Exception' was thrown."
             $newErrorRecordSplat = @{
-                Exception = [System.Exception]::new($message)
-                Category = 'NotSpecified'
-                ErrorId = $errorId
-                TargetObject = $message
-                TargetName = 'message'
+                Exception     = [System.Exception]::new($message)
+                ErrorCategory = 'NotSpecified'
+                ErrorId       = Format-ErrorId -Caller $MyInvocation -Name 'SystemException' -Position $MyInvocation.ScriptLineNumber
+                TargetObject  = $message
+                TargetName    = 'message'
             }
 
             $errorRecord = New-ErrorRecord @newErrorRecordSplat
 
             # Act
-            $FormattedMessage = Format-Error -ErrorRecord $errorRecord -InvocationInfo $MyInvocation -Content $Message -Metadata @($errorId, 'Exception', 0)
+            $FormattedMessage = Format-Error -ErrorRecord $errorRecord -InvocationInfo $MyInvocation -Content $message -Metadata @($newErrorRecordSplat['ErrorId'], 'SystemException', 0)
 
             # Assert
             $FormattedMessage.Contains($message) | Should -BeTrue
@@ -375,20 +376,19 @@ Describe -Name 'MessageModule' -Tag 'Module', 'Under', 'Test' {
 
         It -Name 'should emit piped formatted message' -Tag 'Unit', 'Test' {
             # Arrange
-            $message = 'This is a message.'
-            $errorId = Format-ErrorId -Caller $MyInvocation -Name 'Exception' -Position $MyInvocation.ScriptLineNumber
+            $message = "Exception of type 'System.Exception' was thrown."
             $newErrorRecordSplat = @{
-                Exception = [System.Exception]::new($message)
-                Category = 'NotSpecified'
-                ErrorId = $errorId
-                TargetObject = $message
-                TargetName = 'message'
+                Exception     = [System.Exception]::new($message)
+                ErrorCategory = 'NotSpecified'
+                ErrorId       = Format-ErrorId -Caller $MyInvocation -Name 'SystemException' -Position $MyInvocation.ScriptLineNumber
+                TargetObject  = $message
+                TargetName    = 'message'
             }
 
             $errorRecord = New-ErrorRecord @newErrorRecordSplat
 
             # Act
-            $FormattedMessage = $errorRecord | Format-Error -InvocationInfo $MyInvocation -Content $Message -Metadata @($errorId, 'Exception', 0)
+            $FormattedMessage = $errorRecord | Format-Error -InvocationInfo $MyInvocation -Content $Message -Metadata @($newErrorRecordSplat['ErrorId'], 'SystemException', 0)
 
             # Assert
             $FormattedMessage.Contains($message) | Should -BeTrue

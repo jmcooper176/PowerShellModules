@@ -1,7 +1,9 @@
-﻿<#
+﻿<###########################################
  =============================================================================
-<copyright file="PublishModule.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+<copyright file="PublishModule.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
+    All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions
@@ -49,14 +51,15 @@ This file "PublishModule.psm1" is part of "PublishModule".
 #
 #################################################>
 
-<#
+<###########################################
     Out-FileNoBom
-#>
+########################################>
 function Out-FileNoBom {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "LiteralPath '{0}' is not a valid path leaf")]
         [Alias('File')]
         [string]
         $LiteralPath,
@@ -82,6 +85,10 @@ function Out-FileNoBom {
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
 
         $setContentSplat = @{
             LiteralPath = [string]::Empty
@@ -130,13 +137,13 @@ function Out-FileNoBom {
         entire `Value` is written to the file as a single string.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.  All Rigths Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rigths Reserved.
     #>
 }
 
-<#
+<###########################################
     Get-Directory
-#>
+##########################################>
 function Get-Directory {
     [CmdletBinding()]
     param
@@ -169,7 +176,7 @@ function Get-Directory {
         Either Latest or Stack.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -179,9 +186,9 @@ function Get-Directory {
 #
 #################################################>
 
-<#
+<###########################################
     Get-RollupModule
-#>
+##########################################>
 function Get-RollupModule {
     [CmdletBinding()]
     param
@@ -242,13 +249,13 @@ function Get-RollupModule {
         If built using .NET core.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Get-AdminModule
-#>
+##########################################>
 function Get-AdminModule {
     [CmdletBinding()]
     param
@@ -256,8 +263,6 @@ function Get-AdminModule {
         [ValidateSet('Debug', 'Release')]
         [string]
         $BuildConfig,
-
-        [ValidateSet('Latest', 'Stack')]
 
         [ValidateSet('Stack', 'All', 'Latest', 'NetCore')]
         [string]
@@ -270,14 +275,15 @@ function Get-AdminModule {
 
     PROCESS {
         $targets = @()
-        if ($Scope -eq "Stack") {
+
+        if ($Scope -eq 'Stack') {
             $packageFolder, $resourceManagerRootFolder = Get-Directory -BuildConfig $BuildConfig
 
-            $resourceManagerModules = Get-ChildItem -Path $resourceManagerRootFolder -Directory -Filter Azs.*
-            foreach ($module in $resourceManagerModules) {
-                $targets += $module.FullName
+            Get-ChildItem -Path $resourceManagerRootFolder -Directory -Filter 'Azs.*' | ForEach-Object -Process {
+                $targets += $_.FullName
             }
         }
+
         $targets | Write-Output
     }
 
@@ -295,13 +301,13 @@ function Get-AdminModule {
         The Module or class of Modules to build.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Get-ClientModule
-#>
+##########################################>
 function Get-ClientModule {
     [CmdletBinding()]
     param
@@ -359,10 +365,10 @@ function Get-ClientModule {
 
         # Handle things which don't support netcore yet.
         if (-not $IsNetCore.IsPresent) {
-            $ServiceScopes = @('All', 'Latest', 'Service')
+            $ServiceScopes = @('All', 'Latest', 'ServiceManagement')
 
             if ($Scope -in $ServiceScopes) {
-                $targets += Join-Path -Path $packageFolder -ChildPath "$buildConfig\Service\Azure"
+                $targets += Join-Path -Path $packageFolder -ChildPath "$buildConfig\ServiceManagement\Azure"
             }
         }
 
@@ -379,10 +385,10 @@ function Get-ClientModule {
             $excludedModules = @('AzureRM.Profile', 'Azure.Storage', 'Az.Accounts')
 
             # Add all modules for AzureRM for Azure
-            foreach ($module in $resourceManagerModules) {
+            $resourceManagerModules | ForEach-Object -Process {
                 # AzureRM.Profile already added, Azure.Storage built from test dependencies
-                if (-not ($module.Name -in $excludedModules)) {
-                    $targets += $module.FullName
+                if (-not ($_.Name -in $excludedModules)) {
+                    $targets += $_.FullName
                 }
             }
         }
@@ -410,13 +416,13 @@ function Get-ClientModule {
         If built with .NET core.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Get-AllModule
-#>
+##########################################>
 function Get-AllModule {
     [CmdletBinding()]
     [OutputType([Hashtable])]
@@ -464,8 +470,8 @@ function Get-AllModule {
     Write-Information -MessageData " " -InformationAction Continue
 
     return @{
-        ClientModules = $clientModules
-        AdminModules  = $adminModules
+        ClientModules = $clientModules;
+        AdminModules  = $adminModules;
         RollUpModules = $rollUpModules
     }
 
@@ -489,33 +495,41 @@ function Get-AllModule {
         If the modules are built using Net Core.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
 <#################################################
 #
-#       Create and update NuGet functions.
+#       Create and update nuget functions.
 #
 #################################################>
 
-<#
+<###########################################
     Remove-ModuleDependency
-#>
+##########################################>
 function Remove-ModuleDependency {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path,
 
         [switch]
-        $KeepRequiredModules
+        $KeepRequiredModules,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -527,17 +541,19 @@ function Remove-ModuleDependency {
         }
 
         $regex = New-Object -TypeName System.Text.RegularExpressions.Regex -ArgumentList "NestedModules\s*=\s*@\([^\)]+\)"
-        $content = (Get-Content -LiteralPath $Path) -join [Environment]::NewLine
+        $content = (Get-Content -Path $Path) -join [Environment]::NewLine
 
         $file = Get-Item -LiteralPath $Path
         Import-LocalizedData -BindingVariable ModuleMetadata -BaseDirectory $file.DirectoryName -FileName $file.Name
-        $ReplacedNestedModules = ""
-        foreach ($nestedModule in $ModuleMetadata.NestedModules) {
-            if ('.dll' -ne [System.IO.Path]::GetExtension($nestedModule)) {
+        $ReplacedNestedModules = [string]::Empty
+
+        $ModuleMetadata.NestedModules | ForEach-Object -Process {
+            if ((Get-ItemProperty -LiteralPath $NestedModule -Name Extension) -ne '.dll') {
                 $ReplacedNestedModules += "'$nestedModule', "
             }
         }
-        if ("" -ne $ReplacedNestedModules) {
+
+        if (-not [string]::IsNullOrEmpty($ReplacedNestedModules)) {
             $ReplacedNestedModules = $ReplacedNestedModules.Substring(0, $ReplacedNestedModules.Length - 2)
         }
 
@@ -556,19 +572,20 @@ function Remove-ModuleDependency {
         Switch to keep RequiredModules.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
     #>
 }
 
-<#
-    Update-NuGetPackage
-#>
-function Update-NuGetPackage {
-    [CmdletBinding(SupportsShouldProcess)]
+<###########################################
+    Update-NugetPackage
+##########################################>
+function Update-NugetPackage {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "TempRepoPath '{0}' is not a valid path container")]
         [string]
         $TempRepoPath,
 
@@ -578,18 +595,27 @@ function Update-NuGetPackage {
         $ModuleName,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "DirPath '{0}' is not a valid path container")]
         [string]
         $DirPath,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath
+        $NugetExe,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -611,7 +637,9 @@ function Update-NuGetPackage {
         Out-FileNoBom -File (Join-Path -Path (Get-Location) -ChildPath $modulePath) -Text $content
 
         # https://stackoverflow.com/a/36369540/294804
-        &$NuGetPath pack $modulePath -OutputDirectory $TempRepoPath -NoPackageAnalysis
+        if ($PSCmdlet.ShouldProcess($modulePath, $CmdletName)) {
+            & $NugetExe pack $modulePath -OutputDirectory $TempRepoPath -NoPackageAnalysis
+        }
     }
 
     <#
@@ -627,47 +655,58 @@ function Update-NuGetPackage {
         .PARAMETER DirPath
         Path to the directory holding the modules to update.
 
-        .PARAMETER NuGetPath
-        Path to the NuGet executable.
+        .PARAMETER NugetExe
+        Path to the Nuget executable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Add-Module
-#>
+##########################################>
 function Add-Module {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
-        [String[]]
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "ModulePaths '{0}' are not valid path leaves")]
+        [string[]]
         $ModulePaths,
 
+        [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]
         $TempRepo,
 
-        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "TempRepoPath '{0}' is not a valid path container")]
         [string]
         $TempRepoPath,
 
-        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath
+        $NugetExe,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
-        foreach ($modulePath in $ModulePaths) {
-            Write-Verbose -Message $modulePath
-            $module = Get-Item -Path $modulePath
-            Write-Verbose -Message "Updating $module module from $modulePath"
-            Add-Module -Path $modulePath -TempRepo $TempRepo -TempRepoPath $TempRepoPath -NuGetPath $NuGetPath
-            Write-Verbose -Message "Updated $module module"
+        $ModulePaths | ForEach-Object -Process {
+            Add-Module -Path $_ -TempRepo $TempRepo -TempRepoPath $TempRepoPath -NugetExe $NugetExe
         }
     }
 
@@ -684,17 +723,17 @@ function Add-Module {
         .PARAMETER TempRepoPath
         Path to local temporary repository.
 
-        .PARAMETER NuGetPath
-        Path to NuGet executable.
+        .PARAMETER NugetExe
+        Path to nuget executable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Save-PackageLocally
-#>
+##########################################>
 function Save-PackageLocally {
     [CmdletBinding()]
     param(
@@ -719,11 +758,11 @@ function Save-PackageLocally {
             Write-Verbose -Message "Required dependency $ModuleName, $RequiredVersion found in the repo $TempRepo"
         }
         else {
-            Write-Warning -Message "Required dependency $ModuleName, $RequiredVersion not found in the repo $TempRepo"
+            Write-Warning "Required dependency $ModuleName, $RequiredVersion not found in the repo $TempRepo"
             Write-Verbose -Message "Downloading the package from PsGallery to the path $TempRepoPath"
             # We try to download the package from the PsGallery as we are likely intending to use the existing version of the module.
             # If the module not found in psgallery, the following commnad would fail and hence publish to local repo process would fail as well
-            Save-Package -Name $ModuleName -RequiredVersion $RequiredVersion -ProviderName NuGet -Path $TempRepoPath -Source https://www.powershellgallery.com/api/v2 | Out-Null
+            Save-Package -Name $ModuleName -RequiredVersion $RequiredVersion -ProviderName Nuget -Path $TempRepoPath -Source https://www.powershellgallery.com/api/v2 | Out-Null
             $NupkgFilePath = Join-Path -Path $TempRepoPath -ChildPath "$ModuleName.$RequiredVersion.nupkg"
             $ModulePaths = $env:PSModulePath -split ';'
             $DestinationModulePath = [System.IO.Path]::Combine($ModulePaths[0], $ModuleName, $RequiredVersion)
@@ -746,13 +785,13 @@ function Save-PackageLocally {
         Path to the local temporary repository
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Save-PackagesFromPSGallery
-#>
+##########################################>
 function Save-PackagesFromPsGallery {
     [CmdletBinding()]
     param(
@@ -775,10 +814,12 @@ function Save-PackagesFromPsGallery {
     PROCESS {
         Write-Verbose -Message "Saving..."
 
-        foreach ($modulePath in $ModulePaths) {
+        $ModulePaths | ForEach-Object -Process {
+            $modulePath = $_
+
             Write-Verbose -Message "module path $modulePath"
 
-            $module = (Get-Item -Path $modulePath).Name
+            $module = Get-ItemProperty -LiteralPath $modulePath -Name Name
             $moduleManifest = $module + ".psd1"
 
             Write-Information -MessageData "Verifying $module has all the dependencies in the repo $TempRepo" -InformationAction Continue
@@ -786,11 +827,13 @@ function Save-PackagesFromPsGallery {
             $psDataFile = Import-PowerShellDataFile (Join-Path $modulePath -ChildPath $moduleManifest)
             $RequiredModules = $psDataFile['RequiredModules']
 
-            if ($null -ne $RequiredModules) {
-                foreach ($tmp in $RequiredModules) {
-                    foreach ($module in $tmp) {
-                        Save-PackageLocally -Module $module -TempRepo $TempRepo -TempRepoPath $TempRepoPath
-                    }
+            $RequiredModules | Where-Object -FilterScript { $null -ne $_ } | ForEach-Object -Process {
+                $tmp = $_
+
+                $tmp | ForEach-Object -Process {
+                    $module = $_
+
+                    Save-PackageLocally -Module $module -TempRepo $TempRepo -TempRepoPath $TempRepoPath
                 }
             }
         }
@@ -815,15 +858,15 @@ function Save-PackagesFromPsGallery {
         Path to local temporary repository.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Add-AllModule
-#>
+##########################################>
 function Add-AllModule {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
         [string[]]
@@ -835,38 +878,45 @@ function Add-AllModule {
         $TempRepo,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "TempRepoPath '{0}' is not a valid path container")]
         [string]
         $TempRepoPath,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath
+        $NugetExe
     )
 
     $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
+    if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+        $ConfirmPreference = 'None'
+    }
+
     $Keys = @('ClientModules', 'AdminModules', 'RollupModules')
     Write-Verbose -Message "$($CmdletName) : Adding modules to local repo"
 
-    foreach ($module in $Keys) {
-        $modulePath = $Modules[$module]
-        Write-Verbose -Message "$($CmdletName) : Adding '$($module)' modules to local repo"
+    $Keys | ForEach-Object -Process {
+        $modulePath = $Modules[$_]
 
         # Save missing dependencies locally from PS gallery.
         Save-PackagesFromPsGallery -TempRepo $TempRepo -TempRepoPath $TempRepoPath -ModulePaths $modulePath
 
         # Add the modules to the local repository
-        Add-Module -TempRepo $TempRepo -TempRepoPath $TempRepoPath -ModulePath $modulePath -NuGetPath $NuGetPath
-        Write-Verbose -Message " "
+        Add-Module -TempRepo $TempRepo -TempRepoPath $TempRepoPath -ModulePath $modulePath -NugetExe $NugetExe
     }
+
     Write-Verbose -Message "$($CmdletName) : Removing lower version Az.Accounts packages"
     $packages = Get-ChildItem -LiteralPath "./artifacts" -Filter "Az.Accounts.*.nupkg"
     $latestVersion = [version]"0.0.0"
     $latestPackage = $null
 
-    foreach ($package in $packages) {
+    $packages | ForEach-Object -Process {
+        $package = $_
+
         $fileName = $package.Name
         $versionString = $fileName.Replace('Az.Accounts.', '').Replace('.nupkg', '')
         $version = [version]$versionString
@@ -875,15 +925,11 @@ function Add-AllModule {
             $latestVersion = $version
             $latestPackage = $package
         }
-    }
 
-    foreach ($package in $packages) {
         if ($package.FullName -ne $latestPackage.FullName) {
             Remove-Item $package.FullName -Force
         }
     }
-
-    Write-Verbose -Message " "
 
     <#
         .SYNOPSIS
@@ -898,11 +944,11 @@ function Add-AllModule {
         .PARAMETER TempRepoPath
         Path to the temporary reposityroy.
 
-        .PARAMETER NuGetPath
-        Location of NuGet executable.
+        .PARAMETER NugetExe
+        Location of nuget executable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
@@ -912,20 +958,29 @@ function Add-AllModule {
 #
 #################################################>
 
-<#
+<###########################################
     Add-RootModule
-#>
+##########################################>
 function Add-RootModule {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string]
-        $Path)
+        $Path,
+
+        [switch]
+        $Force
+    )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -943,7 +998,7 @@ function Add-RootModule {
             else {
                 $message = "$($CmdletName) : Invalid PowerShell file type by extension '$($file.Extension)'"
                 $newErrorRecodSplat = @{
-                    Category           = 'InvalidArgument'
+                    ErrorCategory      = 'InvalidArgument'
                     CategoryActivity   = 'Adding/Updating PowerShell PSM1 root module dependency'
                     CategoryReason     = "Invalid PowerShell file type by extension '$($file.Extension)'"
                     CategoryTargetName = 'Path'
@@ -955,10 +1010,7 @@ function Add-RootModule {
                     TargetObject       = $Path
                 }
 
-                $er = New-ErrorRecord @newErrorRecodSplat
-
-                Write-Error -ErrorRecord $er -ErrorAction Continue
-                throw $er
+                New-ErrorRecord @newErrorRecodSplat | Write-Fatal
             }
         }
     }
@@ -971,29 +1023,37 @@ function Add-RootModule {
         Path to the module manifest or module script file.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Add-ModuleVersion
-#>
+##########################################>
 function Add-ModuleVersion {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string]
         $Path,
 
         [Parameter(Mandatory)]
         [version]
-        $ModuleVersion
+        $ModuleVersion,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -1010,7 +1070,7 @@ function Add-ModuleVersion {
             else {
                 $message = "$($CmdletName) : Invalid PowerShell file type by extension '$($file.Extension)'"
                 $newErrorRecordSplat = @{
-                    Category           = 'InvalidArgument'
+                    ErrorCategory      = 'InvalidArgument'
                     CategoryActivity   = 'Adding/Updating PowerShell PSM1 root module dependency'
                     CategoryReason     = "Invalid PowerShell file type by extension '$($file.Extension)'"
                     CategoryTargetName = 'Path'
@@ -1022,10 +1082,7 @@ function Add-ModuleVersion {
                     TargetObject       = $Path
                 }
 
-                $er = New-ErrorRecord @newErrorRecordSplat
-
-                Write-Error -ErrorRecord $er -ErrorAction Continue
-                throw $er
+                New-ErrorRecord @newErrorRecordSplat | Write-Fatal
             }
         }
     }
@@ -1041,29 +1098,37 @@ function Add-ModuleVersion {
         The version to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Add-Guid
-#>
+##########################################>
 function Add-Guid {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string]
         $Path,
 
         [Parameter(Mandatory)]
         [guid]
-        $Guid
+        $Guid,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -1080,7 +1145,7 @@ function Add-Guid {
             else {
                 $message = "$($CmdletName) : Invalid PowerShell file type by extension '$($file.Extension)'"
                 $newErrorRecordSplat = @{
-                    Category           = 'InvalidArgument'
+                    ErrorCategory      = 'InvalidArgument'
                     CategoryActivity   = 'Adding/Updating PowerShell Guid module dependency'
                     CategoryReason     = "Invalid PowerShell file type by extension '$($file.Extension)'"
                     CategoryTargetName = 'Path'
@@ -1092,10 +1157,7 @@ function Add-Guid {
                     TargetObject       = $Path
                 }
 
-                $er = New-ErrorRecord @newErrorRecordSplat
-
-                Write-Error -ErrorAction $er -ErrorAction Continue
-                throw $er
+                New-ErrorRecord @newErrorRecordSplat | Write-Fatal
             }
         }
     }
@@ -1111,18 +1173,19 @@ function Add-Guid {
         The Guid to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Add-Author
-#>
+##########################################>
 function Add-Author {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1130,11 +1193,18 @@ function Add-Author {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $Author
+        $Author,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -1151,7 +1221,7 @@ function Add-Author {
             else {
                 $message = "$($CmdletName) : Invalid PowerShell file type by extension '$($file.Extension)'"
                 $newErrorRecordSplat = @{
-                    Category           = 'InvalidArgument'
+                    ErrorCategory      = 'InvalidArgument'
                     CategoryActivity   = 'Adding/Updating PowerShell Author module dependency'
                     CategoryReason     = "Invalid PowerShell file type by extension '$($file.Extension)'"
                     CategoryTargetName = 'Path'
@@ -1162,10 +1232,7 @@ function Add-Author {
                     TargetObject       = $Path
                 }
 
-                $er = New-ErrorRecord @newErrorRecordSplat
-
-                Write-Error -ErrorRecord $er -ErrorAction Continue
-                throw $er
+                New-ErrorRecord @newErrorRecordSplat | Write-Fatal
             }
         }
     }
@@ -1181,18 +1248,19 @@ function Add-Author {
         The Author to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Add-CompanyName
-#>
+##########################################>
 function Add-CompanyName {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1200,11 +1268,18 @@ function Add-CompanyName {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $CompanyName
+        $CompanyName,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -1221,22 +1296,19 @@ function Add-CompanyName {
             else {
                 $message = "$($CmdletName) : Invalid PowerShell file type by extension '$($file.Extension)'"
                 $newErrorRecordSplat = @{
-                    Category           = 'InvalidArgument'
+                    ErrorCategory      = 'InvalidArgument'
                     CategoryActivity   = 'Adding/Updating PowerShell CompanyName module dependency'
                     CategoryReason     = "Invalid PowerShell file type by extension '$($file.Extension)'"
                     CategoryTargetName = 'Path'
                     CategoryTargetType = 'System.String'
-                    ErrorId            = Format-ErrorId -Caller $CmdletName -Name 'PSArgumentExtension' -Position $MyInvocation.ScriptLineNumber
+                    ErrorId            = Format-ErrorId -Caller $CmdletName -Name 'InvalidOperationExtension' -Position $MyInvocation.ScriptLineNumber
                     Exception          = [System.Management.Automation.PSArgumentException]::new($message, 'Path')
                     Message            = $message
                     RecommendedAction  = "Please provide a Parameter 'Path' with a valid file extension from { '.psd1', '.psm1' }"
                     TargetObject       = $Path
                 }
 
-                $er = New-ErrorRecord @newErrorRecordSplat
-
-                Write-Error -ErrorRecord $er -ErrorAction Continue
-                throw $er
+                New-ErrorRecord @newErrorRecordSplat | Write-Fatal
             }
         }
     }
@@ -1252,18 +1324,19 @@ function Add-CompanyName {
         The Author to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Add-Copyright
-#>
+##########################################>
 function Add-Copyright {
-    [CmdletBinding(DefaultParameterSetName = 'UsingCopyright', SupportsShouldProcess)]
+    [CmdletBinding(DefaultParameterSetName = 'UsingCopyright', SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf })]
+        [ValidateScript({ Get-ChildItem -Path $_ -Recurse | Test-Path -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [SupportsWildcards()]
         [string]
         $Path,
@@ -1292,11 +1365,18 @@ function Add-Copyright {
         [AllowNull()]
         [AllowEmptyCollection()]
         [object[]]
-        $Arguments
+        $Arguments,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
 
         Set-Variable -Name CopyrightFormat -Option Constant -Value "Copyright © {0}, {1}.  All Rights Reserved." -WhatIf:$false
 
@@ -1340,7 +1420,7 @@ function Add-Copyright {
                         else {
                             $message = "$($CmdletName) : Invalid PowerShell file type by extension '$($file.Extension)'"
                             $newErrorRecordSplat = @{
-                                Category           = 'InvalidArgument'
+                                ErrorCategory      = 'InvalidArgument'
                                 CategoryActivity   = 'Adding/Updating PowerShell Copyright module dependency'
                                 CategoryReason     = "Invalid PowerShell file type by extension '$($file.Extension)'"
                                 CategoryTargetName = 'Path'
@@ -1373,18 +1453,19 @@ function Add-Copyright {
         The Copyright to add or update in the module manifest.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     New-ModuleManifestError
-#>
+##########################################>
 function New-ModuleManifestError {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path,
 
@@ -1410,86 +1491,105 @@ function New-ModuleManifestError {
         [string]
         $TargetType = 'System.String',
 
-        [System.Exception]
+        [type]
         $ExceptionType = [System.ArgumentException],
 
-        [System.Collections.ArrayList]
-        $ExtensionList
-    )
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string[]]
+        $ExtensionList,
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
-
-    $file = Get-Item -LiteralPath $Path
-
-    $buffer = New-StringBuilder
-    $first = $true
-
-    $ExtensionList | ForEach-Object -Process {
-        if ($first) {
-            Add-Start -Buffer $buffer -String ("'{0}'" -f $_)
-            $first = $false
-        }
-        else {
-            Add-End -Buffer $buffer -String ", "
-            Add-End -Buffer $buffer -String ("'{0}'" -f $_)
-        }
-    }
-
-    $extensions = ConvertTo-String -Buffer $buffer
-
-    $message = "$($CmdletName) : Invalid PowerShell file type by extension '$($file.Extension)'"
-    $newErrorRecordSplat = @{
-        Category           = $Category
-        CategoryActivity   = "Adding/Updating PowerShell '$($Key)' module dependency"
-        CategoryReason     = "Invalid PowerShell file type by extension '$($file.Extension)'"
-        CategoryTargetName = $TargetName
-        CategoryTargetType = $TargetType
-        ErrorId            = Format-ErrorId -Caller $CmdletName -Name $ExceptionType.Name -Position $MyInvocation.ScriptLineNumber
-        Exception          = [System.InvalidOperationException]::new($message)
-        InnerException     = $ExceptionType
-        Message            = $message
-        RecommendAction    = "Please provide a Parameter '$($TargetName)' with a valid file extension from { $($extensions) }"
-        TargetObject       = $Path
-    }
-
-    $er = New-ErrorRecord @newErrorRecordSplat
-
-    Write-Error -ErrorRecord $er -ErrorAction Continue
-    throw $er
-}
-
-<#
-    Add-Module
-#>
-function Add-Module {
-    [CmdletBinding()]
-    param(
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $Path,
-
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $TempRepo,
-
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $TempRepoPath,
-
-        [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
-        [string]
-        $NuGetPath
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
+
+    PROCESS {
+        $buffer = New-StringBuilder
+        $first = $true
+
+        $ExtensionList | ForEach-Object -Process {
+            if ($first) {
+                Add-Start -Buffer $buffer -String ("'{0}'" -f $_)
+                $first = $false
+            }
+            else {
+                Add-End -Buffer $buffer -String ", "
+                Add-End -Buffer $buffer -String ("'{0}'" -f $_)
+            }
+        }
+
+        $extensions = ConvertTo-String -Buffer $buffer
+
+        $message = "$($CmdletName) : Invalid PowerShell file type by extension '$($file.Extension)'"
+        $newErrorRecordSplat = @{
+            ErrorCategory      = $Category
+            CategoryActivity   = "Adding/Updating PowerShell '$($Key)' module dependency"
+            CategoryReason     = "Invalid PowerShell file type by extension '$($file.Extension)'"
+            CategoryTargetName = $TargetName
+            CategoryTargetType = $TargetType
+            ErrorId            = Format-ErrorId -Caller $CmdletName -Name $ExceptionType.Name -Position $MyInvocation.ScriptLineNumber
+            Exception          = [System.InvalidOperationException]::new($message)
+            Message            = $message
+            RecommendAction    = "Please provide a Parameter '$($TargetName)' with a valid file extension from { $($extensions) }"
+            TargetObject       = $Path
+        }
+
+        New-ErrorRecord @newErrorRecordSplat | Write-Output
+    }
+}
+
+<###########################################
+    Add-Module
+##########################################>
+function Add-Module {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
+        [string]
+        $Path,
+
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $TempRepo,
+
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "TempRepoPath '{0}' is not a valid path container")]
+        [string]
+        $TempRepoPath,
+
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
+        [string]
+        $NugetExe,
+
+        [switch]
+        $Force
+    )
+
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
         Get-Item -LiteralPath $Path | ForEach-Object -Process {
             $moduleName = $_.BaseName
-            $moduleManifest = Join-Path $moduleName -ChildPath '.psd1'
+            $moduleManifest = Join-Path -Path $moduleName -ChildPath '.psd1'
             $moduleSourcePath = Join-Path -Path $_.DirectoryName -ChildPath $moduleManifest
 
             Get-Item -LiteralPath $moduleSourcePath | ForEach-Object -Process {
@@ -1502,28 +1602,23 @@ function Add-Module {
                 }
 
                 if (Find-Module -Name $moduleName -Repository $TempRepo -RequiredVersion $moduleVersion -AllowPrerelease -ErrorAction SilentlyContinue) {
-                    Write-Verbose -Message "Existing module found: $moduleName"
                     $moduleNupkgPath = Join-Path -Path $TempRepoPath -ChildPath ($moduleName + "." + $moduleVersion + ".nupkg")
-                    Write-Verbose -Message "Deleting the module: $moduleNupkgPath"
                     Remove-Item -Path $moduleNupkgPath -Force
                 }
 
-                Write-Verbose -Message "Publishing the module $moduleName"
-                Publish-Module -Path $Path -Repository $TempRepo -Force | Out-Null
-                Write-Verbose -Message "$moduleName published"
+                Publish-Module -Path $Path -Repository $TempRepo -Force
 
                 # Create a psm1 and alter psd1 dependencies to allow fine-grained
                 # control over assembly loading.  Opt out by definitng a RootModule.
                 if ($ModuleMetadata.RootModule) {
                     Write-Verbose -Message "Root module found, done"
-                    #return
                 }
                 else {
                     Write-Verbose -Message "No root module found, creating"
                 }
 
                 Write-Verbose -Message "Changing to local repository directory for module modifications $TempRepoPath"
-                Push-Location $TempRepoPath
+                Push-Location -LiteralPath $TempRepoPath
 
                 try {
                     # Paths
@@ -1532,11 +1627,11 @@ function Add-Module {
                     $dirPath = Join-Path -Path . -ChildPath $moduleName
                     $unzippedManifest = Join-Path -Path $dirPath -ChildPath ($moduleName + ".psd1")
 
-                    # Validate NuGet is there
+                    # Validate nuget is there
                     if (-not (Test-Path -LiteralPath $nupkgPath -PathType Leaf)) {
                         $message = "$($CmdletName) : Module at '$($nupkgPath)' in '$($TempRepoPath)' does not exist"
                         $newErrorRecordSplat = @{
-                            Category           = 'ObjectNotFound'
+                            ErrorCategory      = 'ObjectNotFound'
                             CategoryActivity   = 'Publishing PowerShell module to NuGet'
                             CategoryReason     = "Module at '$($nupkgPath)' in '$($TempRepoPath) does not exist"
                             CategoryTargetName = 'nupkgPath'
@@ -1548,16 +1643,10 @@ function Add-Module {
                             TargetObject       = $nupkgPath
                         }
 
-                        $er = New-ErrorRecord @newErrorRecordSplat
-
-                        Write-Error -ErrorRecord $er -ErrorAction Continue
-                        throw $er
+                        New-ErrorRecord @newErrorRecordSplat | Write-Fatal
                     }
 
-                    Write-Verbose -Message "Renaming package $nupkgPath to zip archive $zipPath"
                     Rename-Item $nupkgPath $zipPath
-
-                    Write-Verbose -Message "$($CmdletName) : Expanding $zipPath"
                     Expand-Archive $zipPath -DestinationPath $dirPath
 
                     if ($ModuleMetadata.RootModule) {
@@ -1568,15 +1657,12 @@ function Add-Module {
                         Add-RootModule -Path $unzippedManifest
                     }
 
-                    Write-Verbose -Message "Removing module manifest dependencies for $unzippedManifest"
-                    Remove-ModuleDependency -Path (Join-Path $TempRepoPath $unzippedManifest -Resolve)
+                    Remove-ModuleDependency -Path (Join-Path -Path $TempRepoPath -ChildPath $unzippedManifest -Resolve)
 
                     Remove-Item -Path $zipPath -Force
 
-                    Write-Verbose -Message "$($CmdletName) : Repackaging $dirPath"
-                    Update-NuGetPackage -TempRepoPath $TempRepoPath -ModuleName $moduleName -DirPath $dirPath -NuGetPath $NuGetPath
+                    Update-NugetPackage -TempRepoPath $TempRepoPath -ModuleName $moduleName -DirPath $dirPath -NugetExe $NugetExe
 
-                    Write-Verbose -Message "$($CmdletName) : Removing temporary folder $dirPath"
                     Remove-Item -Recurse $dirPath -Force -ErrorAction Stop
                 }
                 finally {
@@ -1599,22 +1685,23 @@ function Add-Module {
         .PARAMETER TempRepoPath
         Path to the local temporary repository.
 
-        .PARAMETER NuGetPath
-        Path to NuGet exectuable.
+        .PARAMETER NugetExe
+        Path to nuget exectuable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Publish-PowerShellModule
-#>
+##########################################>
 function Publish-PowershellModule {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
         [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "Path '{0}' is not a valid path leaf")]
         [string]
         $Path,
 
@@ -1624,7 +1711,8 @@ function Publish-PowershellModule {
         $ApiKey,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "TempRepoPath '{0}' is not a valid path container")]
         [string]
         $TempRepoPath,
 
@@ -1634,13 +1722,21 @@ function Publish-PowershellModule {
         $RepoLocation,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath
+        $NugetExe,
+
+        [switch]
+        $Force
     )
 
     BEGIN {
         $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
     }
 
     PROCESS {
@@ -1653,7 +1749,7 @@ function Publish-PowershellModule {
         if (-not (Test-Path -LiteralPath $nupkgPath -PathType Leaf)) {
             $message = "$($CmdletName) : Module at '$($nupkgPath)' in '$($TempRepoPath)' does not exist"
             $newErrorRecordSplat = @{
-                Category           = 'ObjectNotFound'
+                ErrorCategory      = 'ObjectNotFound'
                 CategoryActivity   = 'Publishing PowerShell module to NuGet'
                 CategoryReason     = "Module at '$($nupkgPath)' in '$($TempRepoPath) does not exist"
                 CategoryTargetName = 'nupkgPath'
@@ -1665,16 +1761,14 @@ function Publish-PowershellModule {
                 TargetObject       = $nupkgPath
             }
 
-            $er = New-ErrorRecord @newErrorRecordSplat
-
-            Write-Error -ErrorRecord $er -ErrorAction Continue
-            throw $er
+            New-ErrorRecord @newErrorRecordSplat | Write-Fatal
         }
 
-        Write-Verbose -Message "$($CmdletName) : Pushing package $moduleName to NuGet source '$($RepoLocation)'"
-        &$NuGetPath push $nupkgPath $ApiKey -s $RepoLocation
-        $formatLastExitCode = ('0x{0:X8}|{0}' -f $LASTEXITCODE)
-        Write-Verbose -Message "$($CmdletName) : Pushed package $moduleName to NuGet source '$($RepoLocation)' with exit code '$($formatLastExitCode)'"
+        if ($PSCmdlet.ShouldProcess($nupkgPath, $CmdletName)) {
+            & $NugetExe push $nupkgPath $ApiKey -Source $RepoLocation
+            $formatLastExitCode = ('0x{0:X8}|{0}' -f $LASTEXITCODE)
+            Write-Information -MessageData "$($CmdletName) : Pushed package $moduleName to nuget source '$($RepoLocation)' with exit code '$($formatLastExitCode)'" -InformationAction Continue
+        }
     }
 
     <#
@@ -1687,67 +1781,78 @@ function Publish-PowershellModule {
         Key used to publish.
 
         .PARAMETER TempRepoPath
-        Path to the local temporary repository containing NuGet.
+        Path to the local temporary repository containing nuget.
 
         .PARAMETER RepoLocation
         Repository we are publishing too.
 
-        .PARAMETER NuGetPath
-        Path to NuGet executable.
+        .PARAMETER NugetExe
+        Path to nuget executable.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
-
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }
 
-<#
+<###########################################
     Publish-AllModule
-#>
+##########################################>
 function Publish-AllModule {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param(
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [PSObject]
         $ModulePaths,
 
+        [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]
         $ApiKey,
 
-        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+            ErrorMessage = "TempRepoPath '{0}' is not a valid path container")]
         [string]
         $TempRepoPath,
 
+        [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]
         $RepoLocation,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+            ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
         [string]
-        $NuGetPath,
+        $NugetExe,
 
         [switch]
-        $PublishLocal
+        $PublishLocal,
+
+        [switch]
+        $Force
     )
 
-    $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
+    BEGIN {
+        $CmdletName = Initialize-PSCmdlet -MyInvocation $MyInvocation
 
-    Set-Variable -Name CmdletName -Option ReadOnly -Value $MyInvocation.MyCommand.Name
+        if ($Force.IsPresent -and -not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = 'None'
+        }
+    }
 
-    if (!$PublishLocal) {
-        foreach ($module in $ModulePaths.Keys) {
-            $paths = $Modules[$module]
-            foreach ($modulePath in $paths) {
-                $module = Get-Item -Path $modulePath
-                Write-Information -MessageData "Pushing $module module from $modulePath" -InformationAction Continue
-                Publish-PowershellModule -Path $modulePath -ApiKey $apiKey -TempRepoPath $TempRepoPath -RepoLocation $RepoLocation -NuGetPath $NuGetPath
-                Write-Information -MessageData "Pushed $module module" -InformationAction Continue
+    PROCESS {
+        if (-not $PublishLocal) {
+            $ModulePaths.Keys | ForEach-Object -Process {
+                $ModulePaths[$_] | ForEach-Object -Process {
+                    Publish-PowershellModule -Path $_ -ApiKey $ApiKey -TempRepoPath $TempRepoPath -RepoLocation $RepoLocation -NugetExe $NugetExe
+                }
             }
         }
     }
 
     <#
-        .SYNOPSIS Publish the NuGets to PSGallery
+        .SYNOPSIS Publish the nugets to PSGallery
 
         .PARAMETER ApiKey
         Key used to publish.
@@ -1758,21 +1863,21 @@ function Publish-AllModule {
         .PARAMETER RepoLocation
         Name of repository we are publishing too.
 
-        .PARAMETER NuGetPath
-        Path to NuGet executable.
+        .PARAMETER NugetExe
+        Path to nuget executable.
 
         .PARAMETER PublishLocal
         If publishing locally we don't do anything.
 
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 
     #>
 }
 
-<#
+<###########################################
     Find-Executable
-#>
+##########################################>
 function Find-Executable {
     [CmdletBinding()]
     [OutputType([string])]
@@ -1801,7 +1906,7 @@ function Find-Executable {
             if ([string]::IsNullOrEmpty($path) -or -not (Test-Path -LiteralPath $path -PathType Leaf)) {
                 $message = "$($CmdletName) : Name '$($_)' with Command Type '$($CommandType)' executable not found in the PATH"
                 $newErrorRecordSplat = @{
-                    Category           = 'ObjectNotFound'
+                    ErrorCategory      = 'ObjectNotFound'
                     CategoryActivity   = "Searching for Parameter 'Name' '$($_)' with Parameter '$($CommandType)' in the PATH"
                     CategoryReason     = "Object '$($_)' and Command Type '$($CommandType)' not found in the PATH"
                     CategoryTargetName = 'Name'
@@ -1838,6 +1943,6 @@ function Find-Executable {
         .OUTPUTS
         .EXAMPLE
         .NOTES
-        Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+        Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
     #>
 }

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="New-Package.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="New-Package.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "New-Package.ps1" is part of "New-Package".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -83,10 +84,11 @@ This file "New-Package.ps1" is part of "New-Package".
     Generates a new NuGet package.
 #>
 
-[CmdletBinding(SupportsShouldProcess)]
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
 param (
     [Parameter(Mandatory)]
-    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+        ErrorMessage = "NuSpecPath '{0}' is not a valid path leaf")]
     [Alias('PSPath')]
     [string]
     $NuSpecPath,
@@ -96,7 +98,8 @@ param (
     [System.Version]
     $PackageVersion,
 
-    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+        ErrorMessage = "OutputDirectory '{0}' is not a valid path container")]
     [string]
     $OutputDirectory = (Get-Location),
 
@@ -127,25 +130,25 @@ $nugetSplat = @(
 if ((Test-PSParameter -Name 'PreRelease' -Parameters $PSBoundParameters) -and $NotTool.IsPresent) {
     if ($PSCmdlet.ShouldProcess($NuSpecPath, $ScriptName)) {
         Push-Location -LiteralPath $nuspecDir
-        & nuget @nugetSplat -Suffix $PreRelease
+        nuget @nugetSplat -Suffix $PreRelease
         Pop-Location
     }
 } elseif (Test-PSParameter -Name 'PreRelease' -Parameters $PSBoundParameters) {
     if ($PSCmdlet.ShouldProcess($NuSpecPath, $ScriptName)) {
         Push-Location -LiteralPath $nuspecDir
-        & nuget @nugetSplat -Suffix $PreRelease -Tool
+        nuget @nugetSplat -Suffix $PreRelease -Tool
         Pop-Location
     }
 } elseif ($NotTool.IsPresent) {
     if ($PSCmdlet.ShouldProcess($NuSpecPath, $ScriptName)) {
         Push-Location -LiteralPath $nuspecDir
-        & nuget @nugetSplat
+        nuget @nugetSplat
         Pop-Location
     }
 } else {
     if ($PSCmdlet.ShouldProcess($NuSpecPath, $ScriptName)) {
         Push-Location -LiteralPath $nuspecDir
-        & nuget @nugetSplat -Tool
+        nuget @nugetSplat -Tool
         Pop-Location
     }
 }

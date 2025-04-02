@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="PublishModules.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="PublishModules.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "PublishModules.ps1" is part of "PublishModule".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -92,23 +93,32 @@ This file "PublishModules.ps1" is part of "PublishModule".
 param(
     [ValidateSet('Debug', 'Release')]
     [string]
-    $Configuration,
+    $Configuration = 'Release',
 
-    [ValidateSet('All', 'Latest', 'Stack', 'NetCore', 'Service', 'AzureStorage')]
+    [ValidateSet('All', 'Latest', 'Stack', 'NetCore', 'ServiceManagement', 'AzureStorage')]
     [string]
     $Scope,
 
+    [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string]
     $ApiKey,
 
-    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+    [ValidateScript({ [uri]::IsWellFormedUriString($_, 'Absolute') },
+        ErrorMessage = "RepositoryLocation '{0}' is not a valid, absolute PowerShell NuGet repository")]
     [string]
-    $RepositoryLocation,
+    $RepositoryLocation = 'https://proget.opm.gov/nuget/SkyOps-PowerShell/v2',
 
-    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+    [Parameter(Mandatory)]
+    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf },
+        ErrorMessage = "NugetExe '{0}' is not a valid path leaf")]
     [string]
-    $NuGetPath,
+    $NugetExe,
+
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $TempRepoName,
 
     [switch]
     $IsNetCore,
@@ -123,25 +133,9 @@ param(
 #
 ###################################>
 
-if (-not $PSBountParameters.ContainsKey('Configuration')) {
-    Write-Verbose -Message "Setting build configuration to 'Release'"
-    $buildConfig = "Release"
-}
-
-if (-not $PSBountParameters.ContainsKey('RepositoryLocation')) {
-    Write-Verbose -Message "Setting repository location to 'https://proget.opm.gov/nuget/SkyOps-PowerShell/v2'"
-    $repositoryLocation = 'https://proget.opm.gov/nuget/SkyOps-PowerShell/v2'
-}
-
-if (-not $PSBoundParameters.ContainsKey('NuGetPath')) {
-    Write-Verbose -Message "Determining NuGet path"
-    $NuGetPath = Get-Command -All | Where-Object -FilterScript { $_.Name -eq 'nuget' } | Select-Object -ExpandProperty Source
-}
-
 Write-Information -MessageData "Publishing $Scope package (and its dependencies)" -InformationAction Continue
 
 Get-PackageProvider -Name NuGet -Force
-Write-Information -MessageData ([Environment]::NewLine) -InformationAction Continue
 
 # NOTE: Can only be Azure or Azure Stack, not both.
 $packageFolder = Join-Path -Path $PSScriptRoot -ChildPath '..\artifacts' -Resolve
@@ -153,32 +147,28 @@ if ($Scope -eq 'Stack') {
 # Set temporary repo location
 [string]$tempRepoPath = "$packageFolder"
 
-if (Test-Path -LiteralPath $RepositoryLocation -PathType Container) {
-    if ($Scope -eq 'Stack') {
-        $tempRepoPath = (Join-Path -Path $RepositoryLocation -ChildPath "Stack")
-    } else {
-        $tempRepoPath = (Join-Path -Path $RepositoryLocation -ChildPath "..\artifacts" -Resolve)
-    }
+if ($Scope -eq 'Stack') {
+    $tempRepoPath = (Join-Path -Path $RepositoryLocation -ChildPath "Stack")
+} else {
+    $tempRepoPath = (Join-Path -Path $RepositoryLocation -ChildPath "..\artifacts" -Resolve)
 }
 
 New-Item -Path $tempRepoPath -ItemType Directory -Force | Out-Null
-
-$tempRepoName = ([System.Guid]::NewGuid()).ToString()
 
 $repo = Get-PSRepository | Where-Object -FilterScript { $_.SourceLocation -eq $tempRepoPath }
 
 if ($null -ne $repo) {
     $tempRepoName = $repo.Name
 } else {
-    Register-PSRepository -Name $tempRepoName -SourceLocation $tempRepoPath -PublishLocation $tempRepoPath -InstallationPolicy Trusted -PackageProvider NuGet
+    Register-PSRepository -Name $tempRepoName -SourceLocation $tempRepoPath -PublishLocation $tempRepoPath -InstallationPolicy Trusted -PackageManagementProvider NuGet
 }
 
 $env:PSModulePath += ";$tempRepoPath"
 
 try {
     $modules = Get-AllModules -BuildConfig $Configuration -Scope $Scope -PublishLocal:$PublishLocal.IsPresent -IsNetCore:$IsNetCore.IsPresent
-    Add-AllModules -ModulePaths $modules -TempRepo $tempRepoName -TempRepoPath $tempRepoPath -NuGetPath $NuGetPath
-    Publish-AllModules -ModulePaths $modules -ApiKey $apiKey -TempRepoPath $tempRepoPath -RepoLocation $repositoryLocation -NuGetPath $NuGetPath -PublishLocal:$PublishLocal.IsPresent
+    Add-AllModules -ModulePaths $modules -TempRepo $tempRepoName -TempRepoPath $tempRepoPath -NugetExe $NugetExe
+    Publish-AllModules -ModulePaths $modules -ApiKey $ApiKey -TempRepoPath $tempRepoPath -RepoLocation $RepositoryLocation -NugetExe $NugetExe -PublishLocal:$PublishLocal.IsPresent
 } catch {
     $Errors | Write-Fatal
 } finally {

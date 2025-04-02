@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Generate-CmdletDesignMarkdown.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Generate-CmdletDesignMarkdown.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "Generate-CmdletDesignMarkdown.ps1" is part of "Generate-CmdletDesignM
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -106,7 +107,7 @@ This file "Generate-CmdletDesignMarkdown.ps1" is part of "Generate-CmdletDesignM
     Generated azure-powershell\ModuleCmdletDesign\Az.Databricks.Cmdlet.Design.md completed.
 
     .NOTES
-    Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.  All Rights Reserved.
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.  All Rights Reserved.
 #>
 
 #requires -version 7.4
@@ -114,15 +115,18 @@ This file "Generate-CmdletDesignMarkdown.ps1" is part of "Generate-CmdletDesignM
 
 [CmdletBinding()]
 param (
-    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+        ErrorMessage = "Path '{0}' is not a valid path container")]
     [string]
     $Path = $PSScriptRoot,
 
-    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container },
+        ErrorMessage = "OutPath '{0}' is not a valid path container")]
     [string]
     $OutPath = $PSScriptRoot,
 
-    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -IsValid },
+        ErrorMessage = "OutputFileName '{0}' is not a valid path file name")]
     [string]
     $OutputFileName = 'Cmdlet.Design.md',
 
@@ -163,29 +167,29 @@ try {
         $verb = if ($_.Name.Split('-')[0] -eq 'New') { '0New' } else { $_.Name.Split('-')[0] }
 
         # Join priority with Noun.
-        $originNoun = $_.Name.Split('-')[1].Split('.')[0]
+        $originNoun = $_.Name.Split('-')[1].Split('.')[0];
         $Noun = if ($null -eq $NounPriorityHash) { $originNoun } else { (if ($null -eq $NounPriorityHash[$originNoun]) { $originNoun } else { $NounPriorityHash[$originNoun].ToString() + $originNoun }) }
 
-        $_.Cmdlet = $_.Name.Split('.')[0]
+        $_.Cmdlet = $_.Name.Split('.')[0];
         $_.Verb = $verb
         $_.Noun = $Noun
     } | Sort-Object -Property 'Noun', 'Verb' | ForEach-Object -Process {
-            $contentStr = Get-Content -LiteralPath $_.FullName | Out-String
-            $designDoc = $contentStr.Substring($contentStr.IndexOf("# $($_.Cmdlet)"), $contentStr.IndexOf('## PARAMETERS') - $contentStr.IndexOf("# $($_.Cmdlet)"))
+        $contentStr = Get-Content -LiteralPath $_.FullName | Out-String
+        $designDoc = $contentStr.Substring($contentStr.IndexOf("# $($_.Cmdlet)"), $contentStr.IndexOf('## PARAMETERS') - $contentStr.IndexOf("# $($_.Cmdlet)"))
 
-            if ($designDoc.Contains('{{ Add title here }}')) {
-                $designDoc = $designDoc.Remove($designDoc.IndexOf('## DESCRIPTION'))
-            }
-            else {
-                $designDoc = $designDoc.Remove($designDoc.IndexOf('## DESCRIPTION'), $designDoc.IndexOf('## EXAMPLES') - $designDoc.IndexOf('## DESCRIPTION'))
-            }
-
-            $designDoc = $designDoc -replace '```(\r\n\w{1})', '```powershell$1'
-            $designDoc = $designDoc -replace '###', '+'
-            $designDoc = $designDoc -replace '#+', '####'
-
-            $designDoc | Out-File -FilePath $outFilePath -Append -ErrorAction Stop
+        if ($designDoc.Contains('{{ Add title here }}')) {
+            $designDoc = $designDoc.Remove($designDoc.IndexOf('## DESCRIPTION'))
         }
+        else {
+            $designDoc = $designDoc.Remove($designDoc.IndexOf('## DESCRIPTION'), $designDoc.IndexOf('## EXAMPLES') - $designDoc.IndexOf('## DESCRIPTION'))
+        }
+
+        $designDoc = $designDoc -replace '```(\r\n\w{1})', '```powershell$1'
+        $designDoc = $designDoc -replace '###', '+'
+        $designDoc = $designDoc -replace '#+', '####'
+
+        $designDoc | Out-File -FilePath $outFilePath -Append -ErrorAction Stop
+    }
 
     Write-Information -MessageData "$($ScriptName):  Generated '$($outFilePath)' completed." -InformationAction Continue
 }

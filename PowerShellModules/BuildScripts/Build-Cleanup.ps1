@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="Build-Cleanup.ps1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="Build-Cleanup.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -54,7 +55,7 @@ This file "Build-Cleanup.ps1" is part of "BuildScripts".
 
     .COMPANYNAME John Merryweather Cooper
 
-    .COPYRIGHT Copyright © 2022-2025, John Merryweather Cooper.  All Rights Reserved.
+    .COPYRIGHT Copyright © 2022, 2023, 2024, 2025, John Merryweather.  All Rights Reserved
 
     .TAGS
 
@@ -78,7 +79,7 @@ This file "Build-Cleanup.ps1" is part of "BuildScripts".
 
 <#
 .SYNOPSIS
-    Clean up unrelated files before NuGet publish
+    Clean up unrelated files before nuget publish
 
 .PARAMETER GenerateDocumentationFile
     Decide whether keeps XML files
@@ -87,14 +88,15 @@ This file "Build-Cleanup.ps1" is part of "BuildScripts".
 [CmdletBinding()]
 param
 (
-    [Parameter()]
-    [string]$BuildConfig = "Debug",
-    [Parameter()]
-    [string]$GenerateDocumentationFile = "false"
+    [ValidateSet('Debug', 'Release')]
+    [string]
+    $BuildConfig = 'Debug',
 
+    [switch]
+    $GenerateDocumentationFile
 )
 
-$output = Join-Path (Get-Item $PSScriptRoot).Parent.FullName "artifacts\$BuildConfig"
+$output = Join-Path -Path (Get-Item $PSScriptRoot).Parent.FullName -ChildPath "artifacts\$BuildConfig"
 Write-Verbose -Message "The output folder is set to $output"
 $resourceManagerPath = $output
 
@@ -102,13 +104,16 @@ $outputPaths = @($output)
 $resourcesFolders = @("de", "es", "fr", "it", "ja", "ko", "ru", "zh-Hans", "zh-Hant", "cs", "pl", "pt-BR", "tr")
 $keepItems = @("*.dll-Help.xml", "Scaffold.xml", "RoleSettings.xml", "WebRole.xml", "WorkerRole.xml")
 $removeItems = @("*.lastcodeanalysissucceeded", "*.dll.config", "*.pdb")
-if ($GenerateDocumentationFile -eq "false") {
+$webdependencies = @("Microsoft.Web.Hosting.dll", "Microsoft.Web.Delegation.dll", "Microsoft.Web.Administration.dll", "Microsoft.Web.Deployment.Tracing.dll")
+
+if (-not $GenerateDocumentationFile.IsPresent) {
     Write-Verbose -Message "Removing *.xml files from $output"
     $removeItems += "*.xml"
 }
-$webdependencies = @("Microsoft.Web.Hosting.dll", "Microsoft.Web.Delegation.dll", "Microsoft.Web.Administration.dll", "Microsoft.Web.Deployment.Tracing.dll")
 
-foreach ($path in $outputPaths) {
+$outputPaths | ForEach-Object -Process {
+    $path = $_
+
     Write-Verbose -Message "Removing generated NuGet folders from $path"
     Get-ChildItem -Include $resourcesFolders -Recurse -Force -Path $path | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
 
@@ -124,12 +129,14 @@ foreach ($path in $outputPaths) {
     Get-ChildItem -Include $webdependencies -Recurse -Path $path | Remove-Item -Force
 }
 
-$resourceManagerPaths = @($resourceManagerPath)
+@($resourceManagerPath) | ForEach-Object -Process {
+    $RMPath = $_
 
-foreach ($RMPath in $resourceManagerPaths) {
-    $resourceManagerFolders = Get-ChildItem -Path $RMPath -Directory
-    foreach ($RMFolder in $resourceManagerFolders) {
+    Get-ChildItem -Path $RMPath -Directory | ForEach-Object -Process {
+        $RMFolder = $_
+
         $psd1 = Get-ChildItem -Path $RMFolder.FullName -Filter "$($RMFolder.Name).psd1"
+
         if ($null -eq $psd1) {
             Write-Information -MessageData "Could not find .psd1 file in folder $RMFolder" -InformationAction Continue
             continue
@@ -140,34 +147,41 @@ foreach ($RMPath in $resourceManagerPaths) {
         $acceptedDlls = @(
             # netcoreapp, can't be in RequiredAssemblies, but we need to pack it
             "Microsoft.Azure.PowerShell.AuthenticationAssemblyLoadContext.dll",
+
             # customized AutoMapper
             "Microsoft.Azure.PowerShell.AutoMapper.dll"
         )
 
         # NestedModule Assemblies may have a folder path, just getting the dll name alone
-        foreach ($cmdAssembly in $ModuleMetadata.NestedModules) {
+        $ModuleMetadata.NestedModules | ForEach-Object -Process {
+            $cmdAssembly = $_
+
             # if the nested module is script module, we need to keep the dll behind the script module
             if ($cmdAssembly.EndsWith(".psm1")) {
                 if (!$cmdAssembly.Contains("/") -and !$cmdAssembly.Contains("\")) {
-                    $acceptedDlls += "Microsoft.Azure.PowerShell.Cmdlets." + ($cmdAssembly -split '.')[-2] + ".dll"
+                    $acceptedDlls += "Microsoft.Azure.PowerShell.Cmdlets." + $cmdAssembly.Split(".")[-2] + ".dll"
                 }
+
                 continue
             }
+
             if ($cmdAssembly.Contains("/")) {
-                $acceptedDlls += ($cmdAssembly -split '/')[-1]
+                $acceptedDlls += $cmdAssembly.Split("/")[-1]
             }
             else {
-                $acceptedDlls += ($cmdAssembly -split '\')[-1]
+                $acceptedDlls += $cmdAssembly.Split("\")[-1]
             }
         }
 
         # RequiredAssmeblies may have a folder path, just getting the dll name alone
-        foreach ($assembly in $ModuleMetadata.RequiredAssemblies) {
+        $ModuleMetadata.RequiredAssemblies | ForEach-Object -Process {
+            $assembly = $_
+
             if ($assembly.Contains("/")) {
-                $acceptedDlls += ($assembly -split '/')[-1]
+                $acceptedDlls += $assembly.Split("/")[-1]
             }
             else {
-                $acceptedDlls += ($assembly -split '\')[-1]
+                $acceptedDlls += $assembly.Split("\")[-1]
             }
         }
 
@@ -175,29 +189,29 @@ foreach ($RMPath in $resourceManagerPaths) {
         $removedDlls = Get-ChildItem -LiteralPath $RMFolder.FullName -Filter "*.dll" -Recurse |
             Where-Object -FilterScript { $acceptedDlls -notcontains $_.Name -and !$_.FullName.Contains("Assemblies") }
 
-        # do not remove lib dlls (for example Az.Accounts/lib/netcoreapp2.1/Azure.Core.dll)
-        $libPattern = [System.IO.Path]::DirectorySeparatorChar + "lib" + [System.IO.Path]::DirectorySeparatorChar;
-        $removedDlls |
-            Where-Object -FilterScript { -not $_.FullName.Contains($libPattern) } |
-            ForEach-Object -Process {
-                Write-Information -MessageData "Removing $($_.Name)" -InformationAction Continue
-                Remove-Item -Path $_.FullName -Force
+            # do not remove lib dlls (for example Az.Accounts/lib/netcoreapp2.1/Azure.Core.dll)
+            $libPattern = [System.IO.Path]::DirectorySeparatorChar + "lib" + [System.IO.Path]::DirectorySeparatorChar;
+            $removedDlls |
+                Where-Object -FilterScript { -not $_.FullName.Contains($libPattern) } |
+                ForEach-Object -Process {
+                    Write-Information -MessageData "Removing $($_.Name)" -InformationAction Continue
+                    Remove-Item -Path $_.FullName -Force
+                }
+
+                Write-Information -MessageData "Removing scripts and psd1 in $($RMFolder.FullName)" -InformationAction Continue
+
+                $exludedPsd1 = @(
+                    "PsSwaggerUtility*.psd1",
+                    "Az.KeyVault.Extension.psd1"
+                )
+
+                $removedPsd1 = Get-ChildItem -Path "$($RMFolder.FullName)" -Include "*.psd1" -Exclude $exludedPsd1 -Recurse |
+                    Where-Object -FilterScript {
+                        $_.FullName -ne "$($RMFolder.FullName)$([IO.Path]::DirectorySeparatorChar)$($RMFolder.Name).psd1"
+                    }
+                    $removedPsd1 | ForEach-Object -Process {
+                        Write-Information -MessageData "Removing $($_.FullName)"  -InformationAction Continue
+                        Remove-Item -Path $_.FullName -Force
+                    }
+                }
             }
-
-        Write-Information -MessageData "Removing scripts and psd1 in $($RMFolder.FullName)" -InformationAction Continue
-
-        $exludedPsd1 = @(
-            "PsSwaggerUtility*.psd1",
-            "Az.KeyVault.Extension.psd1"
-        )
-
-        $removedPsd1 = Get-ChildItem -Path "$($RMFolder.FullName)" -Include "*.psd1" -Exclude $exludedPsd1 -Recurse |
-            Where-Object -FilterScript {
-                $_.FullName -ne "$($RMFolder.FullName)$([IO.Path]::DirectorySeparatorChar)$($RMFolder.Name).psd1"
-            }
-        $removedPsd1 | ForEach-Object -Process {
-            Write-Information -MessageData "Removing $($_.FullName)"  -InformationAction Continue
-            Remove-Item -Path $_.FullName -Force
-        }
-    }
-}

@@ -1,7 +1,8 @@
 ﻿<#
  =============================================================================
-<copyright file="NameValueCollection.psm1" company="John Merryweather Cooper">
-    Copyright © 2022-2025, John Merryweather Cooper.
+<copyright file="NameValueCollection.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,26 +52,26 @@ This file "NameValueCollection.psm1" is part of "ContainersModule".
 #
 
 class NameValueCollection : System.Collections.Specialized.NameValueCollection {
-    <#
+    <###########################################
         Public Properties
-    #>
+    ##########################################>
     [string]$ClassName
 
-    <#
+    <###########################################
         Hidden Properties
-    #>
+    ##########################################>
 
-    <#
+    <###########################################
         Constructors
-    #>
+    ##########################################>
     NameValueCollection() {
         $this.ClassName = ([type]'System.Collections.Specialized.NameValueCollection').Name
         $this.Instance = [System.Collections.Specialized.NameValueCollection]::new()
     }
 
-    <#
+    <###########################################
         Public Methods
-    #>
+    ##########################################>
     [void]Add([string]$name, [string]$value) {
         $this.Instance.Add($name, $value)
     }
@@ -96,9 +97,9 @@ class NameValueCollection : System.Collections.Specialized.NameValueCollection {
     }
 }
 
-<#
+<###########################################
     Import-Module supporting Constructor
-#>
+##########################################>
 function New-NameValueCollection {
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([NameValueCollection])]

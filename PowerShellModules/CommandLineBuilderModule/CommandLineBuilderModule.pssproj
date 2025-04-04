@@ -26,11 +26,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Compile Include="CommandLineBuilderModyle.psd1" />
-    <Compile Include="CommandLineBuilderModyle.psm1" />
-    <Compile Include="CommandLineBuilderModyle.tests.ps1" />
+    <Compile Include="CommandLine.Module.tests.ps1" />
+    <Compile Include="CommandLineBuilderClass.psm1" />
+    <Compile Include="CommandLineBuilderClass.tests.ps1" />
+    <Compile Include="CommandLineModule.psd1" />
+    <Compile Include="CommandLineModule.psm1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="RELEASENOTES.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets" Condition="Exists('$(MSBuildExtensionsPath)\PowerShell Tools for Visual Studio\PowerShellTools.targets')" />
 </Project>

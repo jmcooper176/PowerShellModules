@@ -39,7 +39,388 @@
 
 namespace Octopus.Client.Cmdlet
 {
-    internal class Target
+    using Octopus.Client;
+    using Octopus.Client.Model;
+
+    using System;
+    using System.Collections.Generic;
+    using System.Management.Automation;
+
+    [Cmdlet(VerbsCommon.Get, "Target")]
+    [OutputType(typeof(List<TargetResource>), ParameterSetName = ["UsingFindAll", "UsingFindMany"])]
+    [OutputType(typeof(TargetResource), ParameterSetName = ["UsingFindOne"])]
+    public class GetTarget : PSCmdlet, IDisposable
     {
+        #region Public Properties
+
+        [Parameter(Mandatory = true, ParameterSetName = "UsingFindAll")]
+        public SwitchParameter All { get; set; }
+
+        [Parameter(Mandatory = true, ParameterSetName = "UsingFindOne")]
+        public SwitchParameter First { get; set; }
+
+        [Parameter(Mandatory = true, ParameterSetName = "UsingFindMany")]
+        public SwitchParameter Many { get; set; }
+
+        [Parameter(Mandatory = true)]
+        public string OctopusApiKey { get; set; }
+
+        [Parameter(Mandatory = true)]
+        public string OctopusUrl { get; set; }
+
+        public Predicate<TargetResource> Selector { get; set; } = (a => a != null);
+
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true)]
+        public string SpaceName { get; set; }
+
+        #endregion Public Properties
+
+        #region Private Fields
+
+        private OctopusClient? client;
+
+        private bool disposedValue;
+
+        private IOctopusRepository? repository;
+
+        #endregion Private Fields
+
+        #region Public Methods
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion Public Methods
+
+        #region Protected Methods
+
+        protected override void BeginProcessing()
+        {
+            // Create repository object
+            var endpoint = new OctopusServerEndpoint(OctopusUrl, OctopusApiKey);
+            repository = new OctopusRepository(endpoint);
+            client = new OctopusClient(endpoint);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    client?.Dispose();
+                }
+
+                client = null;
+                repository = null;
+                disposedValue = true;
+            }
+        }
+
+        protected override void EndProcessing()
+        {
+            Dispose();
+        }
+
+        protected override void ProcessRecord()
+        {
+            try
+            {
+                // Get space
+                var space = repository.Spaces.FindByName(SpaceName);
+                var repositoryForSpace = client.ForSpace(space);
+
+                if (this.ParameterSetName == "UsingFindAll")
+                {
+                    WriteObject(repository.Targets.FindAll());
+                }
+                else if (this.ParameterSetName == "UsingFindOne")
+                {
+                    WriteObject(repository.Targets.FindOne(a => Selector.Invoke(a)));
+                }
+                else
+                {
+                    WriteObject(repository.Targets.FindMany(a => Selector.Invoke(a)));
+                }
+            }
+            catch (Exception ex)
+            {
+                this.WriteError(ex, ErrorCategory.InvalidResult, repository?.Targets, nameof(GetTarget), 0);
+            }
+        }
+
+        protected override void StopProcessing()
+        {
+            Dispose();
+            this.WriteFatal(new PipelineStoppedException(), ErrorCategory.OperationStopped, this, nameof(GetTarget), 0);
+        }
+
+        #endregion Protected Methods
+    }
+
+    [Cmdlet(VerbsCommon.New, "Target")]
+    [CmdletBinding(SupportsShouldProcess = true, ConfirmImpact = ConfirmImpact.Low)]
+    [OutputType(typeof(TargetResource))]
+    public class NewTarget : PSCmdlet, IDisposable
+    {
+        #region Private Fields
+
+        private OctopusClient? client;
+
+        private bool disposedValue;
+
+        private IOctopusRepository? repository;
+
+        #endregion Private Fields
+
+        #region Public Properties
+
+        public SwitchParameter Force { get; set; }
+
+        [Parameter(Mandatory = true)]
+        public string OctopusApiKey { get; set; }
+
+        [Parameter(Mandatory = true)]
+        public string OctopusUrl { get; set; }
+
+        #endregion Public Properties
+
+        #region Protected Methods
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected override void BeginProcessing()
+        {
+            if (Force.IsPresent && !this.MyInvocation.BoundParameters.ContainsKey("Confirm"))
+            {
+                this.SessionState.PSVariable.Set("ConfirmPreference", ConfirmImpact.None);
+            }
+
+            // Create repository object
+            var endpoint = new OctopusServerEndpoint(OctopusUrl, OctopusApiKey);
+            repository = new OctopusRepository(endpoint);
+            client = new OctopusClient(endpoint);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    client?.Dispose();
+                }
+
+                client = null;
+                repository = null;
+                disposedValue = true;
+            }
+        }
+
+        protected override void EndProcessing()
+        {
+            Dispose();
+        }
+
+        protected override void ProcessRecord()
+        {
+            if (this.ShouldProcess("Target", "UpdateTarget"))
+            {
+                base.ProcessRecord();
+            }
+        }
+
+        protected override void StopProcessing()
+        {
+            Dispose();
+            this.WriteFatal(new PipelineStoppedException(), ErrorCategory.OperationStopped, this, nameof(NewTarget), 0);
+        }
+
+        #endregion Protected Methods
+    }
+
+    [Cmdlet(VerbsCommon.Remove, "Target")]
+    [CmdletBinding(SupportsShouldProcess = true, ConfirmImpact = ConfirmImpact.Low)]
+    [OutputType(typeof(void))]
+    public class RemoveTarget : PSCmdlet, IDisposable
+    {
+        #region Public Properties\
+
+        public SwitchParameter Force { get; set; }
+
+        [Parameter(Mandatory = true)]
+        public string OctopusApiKey { get; set; }
+
+        [Parameter(Mandatory = true)]
+        public string OctopusUrl { get; set; }
+
+        #endregion Public Properties\
+
+        #region Public Methods
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion Public Methods
+
+        #region Protected Methods
+
+        protected override void BeginProcessing()
+        {
+            if (Force.IsPresent && !this.MyInvocation.BoundParameters.ContainsKey("Confirm"))
+            {
+                this.SessionState.PSVariable.Set("ConfirmPreference", ConfirmImpact.None);
+            }
+
+            // Create repository object
+            var endpoint = new OctopusServerEndpoint(OctopusUrl, OctopusApiKey);
+            repository = new OctopusRepository(endpoint);
+            client = new OctopusClient(endpoint);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    client?.Dispose();
+                }
+
+                client = null;
+                repository = null;
+                disposedValue = true;
+            }
+        }
+
+        protected override void EndProcessing()
+        {
+            Dispose();
+        }
+
+        protected override void ProcessRecord()
+        {
+            if (this.ShouldProcess("Target", "RemoveTarget"))
+            {
+                base.ProcessRecord();
+            }
+        }
+
+        protected override void StopProcessing()
+        {
+            Dispose();
+            this.WriteFatal(new PipelineStoppedException(), ErrorCategory.OperationStopped, this, nameof(RemoveTarget), 0);
+        }
+
+        #endregion Protected Methods
+
+        #region Private Fields
+
+        private OctopusClient? client;
+
+        private bool disposedValue;
+
+        private IOctopusRepository? repository;
+
+        #endregion Private Fields
+    }
+
+    [Cmdlet(VerbsData.Update, "Target")]
+    [CmdletBinding(SupportsShouldProcess = true, ConfirmImpact = ConfirmImpact.Low)]
+    [OutputType(typeof(TargetResource))]
+    public class UpdateTarget : PSCmdlet, IDisposable
+    {
+        #region Private Fields
+
+        private OctopusClient? client;
+
+        private bool disposedValue;
+
+        private IOctopusRepository? repository;
+
+        #endregion Private Fields
+
+        #region Public Properties
+
+        public SwitchParameter Force { get; set; }
+
+        [Parameter(Mandatory = true)]
+        public string OctopusApiKey { get; set; }
+
+        [Parameter(Mandatory = true)]
+        public string OctopusUrl { get; set; }
+
+        #endregion Public Properties
+
+        #region Protected Methods
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected override void BeginProcessing()
+        {
+            if (Force.IsPresent && !this.MyInvocation.BoundParameters.ContainsKey("Confirm"))
+            {
+                this.SessionState.PSVariable.Set("ConfirmPreference", ConfirmImpact.None);
+            }
+
+            // Create repository object
+            var endpoint = new OctopusServerEndpoint(OctopusUrl, OctopusApiKey);
+            repository = new OctopusRepository(endpoint);
+            client = new OctopusClient(endpoint);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    client?.Dispose();
+                }
+
+                client = null;
+                repository = null;
+                disposedValue = true;
+            }
+        }
+
+        protected override void EndProcessing()
+        {
+            Dispose();
+        }
+
+        protected override void ProcessRecord()
+        {
+            if (this.ShouldProcess("Target", "UpdateTarget"))
+            {
+                base.ProcessRecord();
+            }
+        }
+
+        protected override void StopProcessing()
+        {
+            Dispose();
+            this.WriteFatal(new PipelineStoppedException(), ErrorCategory.OperationStopped, this, nameof(UpdateTarget), 0);
+        }
+
+        #endregion Protected Methods
     }
 }

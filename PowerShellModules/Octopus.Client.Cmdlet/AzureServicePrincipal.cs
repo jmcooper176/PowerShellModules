@@ -134,7 +134,8 @@
             }
             catch (Exception ex)
             {
-                WriteWarning(ex.Message);
+                var er = new ErrorRecord(ex, Common.FormatErrorId(nameof(NewAzureServicePrincipal), ex, 0), ErrorCategory.InvalidOperation, azureAccount);
+                WriteError(er);
             }
         }
 

@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Octopus.Client.Cmdlet\Octopus.Client.Cmdlet.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.13.0" />
   </ItemGroup>
 

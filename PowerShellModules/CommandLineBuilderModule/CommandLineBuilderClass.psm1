@@ -1,8 +1,8 @@
 <#
  =============================================================================
-<copyright file="CommandLineBuilderClass.psm1" company="U.S. Office of Personnel
-Management">
-    Copyright © 2025, U.S. Office of Personnel Management.
+<copyright file="CommandLineBuilderClass.psm1" company="John Merryweather Cooper
+">
+    Copyright © 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -987,7 +987,7 @@ function New-CommandLineBuilder {
         Create a new [CommandLineBuilder] instance and gets the value of the `Length` property.
 
         .NOTES
-        Copyright © 2024-2025, U.S. Office of Personnel Managment.  All Rights Reserved.
+        Copyright © 2024-2025, John Merryweather Cooper Managment.  All Rights Reserved.
 
         .LINK
         about_Functions_Advanced

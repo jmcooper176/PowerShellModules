@@ -1,8 +1,8 @@
 <#
  =============================================================================
-<copyright file="RegisterSSHEndpoint.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright © 2025, U.S. Office of Personnel Management.
+<copyright file="RegisterSSHEndpoint.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without

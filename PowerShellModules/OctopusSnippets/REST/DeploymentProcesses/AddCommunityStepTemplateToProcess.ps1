@@ -1,8 +1,8 @@
 <#
  =============================================================================
-<copyright file="AddCommunityStepTemplateToProcess.ps1" company="U.S. Office of Personnel
-Management">
-    Copyright © 2025, U.S. Office of Personnel Management.
+<copyright file="AddCommunityStepTemplateToProcess.ps1" company="John Merryweather Cooper
+">
+    Copyright © 2025, John Merryweather Cooper.
     All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -59,18 +59,16 @@ $projectName = "A project"
 $communityStepTemplateName = "Run Octopus Deploy Runbook"
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Get community step templates
-$communityActionTemplatesList = Invoke-RestMethod -Uri "$octopusURL/api/communityactiontemplates?skip=0&take=2000" -Headers $header 
+$communityActionTemplatesList = Invoke-RestMethod -Uri "$octopusURL/api/communityactiontemplates?skip=0&take=2000" -Headers $header
 
 Write-Information -MessageData "Checking if $communityStepTemplateName is installed in Space $spaceName"
 $installStepTemplate = $true
-$stepTemplatesList = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/actiontemplates?skip=0&take=2000&partialName=$([uri]::EscapeDataString($communityStepTemplateName))" -Headers $header 
+$stepTemplatesList = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/actiontemplates?skip=0&take=2000&partialName=$([uri]::EscapeDataString($communityStepTemplateName))" -Headers $header
 foreach ($stepTemplate in $stepTemplatesList.Items) {
-    
-    
     if ($null -eq $stepTemplate.CommunityActionTemplateId) {
         Write-Information -MessageData "The step template $($stepTemplate.Name) is not a community step template, moving on."
         continue
@@ -79,7 +77,7 @@ foreach ($stepTemplate in $stepTemplatesList.Items) {
     if ($stepTemplate.Name.ToLower().Trim() -eq $communityStepTemplateName.ToLower().Trim()) {
         Write-Information -MessageData "The step template $($stepTemplate.Name) matches $communityStepTemplateName.  No need to install the step template."
 
-        $communityActionTemplate = $communityActionTemplatesList.Items | Where-Object -FilterScript { $_.Id -eq $stepTemplate.CommunityActionTemplateId }                
+        $communityActionTemplate = $communityActionTemplatesList.Items | Where-Object -FilterScript { $_.Id -eq $stepTemplate.CommunityActionTemplateId }
 
         if ($null -eq $communityActionTemplate) {
             Write-Information -MessageData "Unable to find the community step template in the library, skipping the version check."
@@ -94,12 +92,12 @@ foreach ($stepTemplate in $stepTemplatesList.Items) {
         else {
             Write-Information -MessageData "The step template $($stepTemplate.Name) is on version $($stepTemplate.Version) while the matching community template is on version $($communityActionTemplate.Version).  Updating the step template."
 
-            $actionTemplate = Invoke-RestMethod -Method Put -Uri "$octopusURL/api/communityactiontemplates/$($communityActionTemplate.Id)/installation/$($space.Id)" -Headers $header 
+            $actionTemplate = Invoke-RestMethod -Method Put -Uri "$octopusURL/api/communityactiontemplates/$($communityActionTemplate.Id)/installation/$($space.Id)" -Headers $header
             Write-Information -MessageData "Succesfully updated the step template.  The version is now $($actionTemplate.Version)"
 
             $installStepTemplate = $false
         }
-        
+
         break
     }
 }
@@ -119,7 +117,7 @@ if ($installStepTemplate -eq $true) {
     }
 
     Write-Information -MessageData "Installing the step template $communityStepTemplateName to $($space.Name)."
-    $actionTemplate = Invoke-RestMethod -Method Post -Uri "$octopusURL/api/communityactiontemplates/$($communityActionTemplateToInstall.Id)/installation/$($space.Id)" -Headers $header 
+    $actionTemplate = Invoke-RestMethod -Method Post -Uri "$octopusURL/api/communityactiontemplates/$($communityActionTemplateToInstall.Id)/installation/$($space.Id)" -Headers $header
     Write-Information -MessageData "Succesfully installed the step template.  The Id of the new action template is $($actionTemplate.Id)"
 }
 else {
@@ -131,9 +129,8 @@ else {
     }
 }
 
-
 # Get project
-$projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header 
+$projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header
 $project = $projects.Items | Where-Object -FilterScript { $_.Name -eq $projectName }
 
 # Get deployment process

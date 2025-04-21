@@ -128,18 +128,18 @@ foreach($userRecord in $usersList) {
         IsService = $userRecord.IsService
         EmailAddress = $userRecord.EmailAddress
     }
-    if($includeActiveDirectoryDetails -eq $True) 
+    if($includeActiveDirectoryDetails -eq $True)
     {
         $user | Add-Member -MemberType NoteProperty -Name "AD_Upn" -Value $null
         $user | Add-Member -MemberType NoteProperty -Name "AD_Sam" -Value $null
         $user | Add-Member -MemberType NoteProperty -Name "AD_Email" -Value $null
     }
-    if($includeAzureActiveDirectoryDetails -eq $True) 
+    if($includeAzureActiveDirectoryDetails -eq $True)
     {
         $user | Add-Member -MemberType NoteProperty -Name "AAD_DN" -Value $null
         $user | Add-Member -MemberType NoteProperty -Name "AAD_Email" -Value $null
     }
-    
+
     $usersTeams = $teams | Where-Object -FilterScript { $_.MemberUserIds -icontains $user.Id }
 
     if ($includeUserTeams -eq $True) {
@@ -169,16 +169,16 @@ foreach($userRecord in $usersList) {
     }
 
     if($userRecord.Identities.Count -gt 0) {
-        if($includeActiveDirectoryDetails -eq $True) 
+        if($includeActiveDirectoryDetails -eq $True)
         {
             $activeDirectoryIdentity = $userRecord.Identities | Where-Object -FilterScript {$_.IdentityProviderName -eq "Active Directory"} | Select-Object -ExpandProperty Claims
-            if($null -ne $activeDirectoryIdentity) {               
+            if($null -ne $activeDirectoryIdentity) {
                 $user.AD_Upn = (($activeDirectoryIdentity | ForEach-Object -Process {"$($_.upn.Value)"}) -Join "|")
                 $user.AD_Sam = (($activeDirectoryIdentity | ForEach-Object -Process {"$($_.sam.Value)"}) -Join "|")
                 $user.AD_Email = (($activeDirectoryIdentity | ForEach-Object -Process {"$($_.email.Value)"}) -Join "|")
             }
         }
-        if($includeAzureActiveDirectoryDetails -eq $True) 
+        if($includeAzureActiveDirectoryDetails -eq $True)
         {
             $azureAdIdentity = $userRecord.Identities | Where-Object -FilterScript {$_.IdentityProviderName -eq "Azure AD"} | Select-Object -ExpandProperty Claims
             if($null -ne $azureAdIdentity) {

@@ -71,7 +71,7 @@ try
 
     # Get user role
     $userRole = $repositoryForSpace.UserRoles.FindByName($userRoleName)
-    
+
     # Get scopeduserrole
     $scopedUserRole = $repositoryForSpace.Teams.GetScopedUserRoles($team) | Where-Object -FilterScript {$_.UserRoleId -eq $userRole.Id}
 

@@ -56,11 +56,11 @@ $machineNames = @("server-01")
 
 $spaceName = "Default"
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 $spaceId = $space.Id
 
-# Get machine 
+# Get machine
 $machineList = New-Object -TypeName.Collections.ArrayList
 
 foreach ($machineName in $machineNames) {
@@ -74,7 +74,7 @@ foreach ($machineName in $machineNames) {
 
 $script = 'echo \"hello\"'
 
-$arguments = @{    
+$arguments = @{
     MachineIds = $machineList
     TargetType = "Machines"
     Syntax = "Bash"
@@ -89,5 +89,5 @@ $scriptTaskBody = (@{
     SpaceId = $spaceId
 }) | ConvertTo-Json -Depth 10
 
-# Run the runbook 
+# Run the runbook
 Invoke-RestMethod -Method "POST" "$($octopusURL)/api/tasks" -body $scriptTaskBody -Headers $header -ContentType "application/json"

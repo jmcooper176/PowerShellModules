@@ -73,12 +73,12 @@ $importTaskCancelInSeconds=300
 $octopusURL = $octopusURL.TrimEnd('/')
 
 # Get Source Space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($sourceSpaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($sourceSpaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $sourceSpaceName }
 $exportTaskSpaceId = $space.Id
 
 # Get Destination Space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($destinationSpaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($destinationSpaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $destinationSpaceName }
 $importTaskSpaceId = $space.Id
 
@@ -110,12 +110,12 @@ if ($importTaskWaitForFinish -eq $true)
     $currentTime = Get-Date
     $dateDifference = $currentTime - $startTime
     $taskStatusUrl = "$octopusURL/api/$importTaskSpaceId/tasks/$importServerTaskId"
-    $numberOfWaits = 0    
+    $numberOfWaits = 0
     While ($dateDifference.TotalSeconds -lt $importTaskCancelInSeconds)
     {
         Write-Information -MessageData "Waiting 5 seconds to check status"
         Start-Sleep -Seconds 5
-        $taskStatusResponse = Invoke-RestMethod $taskStatusUrl -Headers $header        
+        $taskStatusResponse = Invoke-RestMethod $taskStatusUrl -Headers $header
         $taskStatusResponseState = $taskStatusResponse.State
         if ($taskStatusResponseState -eq "Success")
         {
@@ -125,7 +125,7 @@ if ($importTaskWaitForFinish -eq $true)
         elseif($taskStatusResponseState -eq "Failed" -or $taskStatusResponseState -eq "Canceled")
         {
             Write-Information -MessageData "The task has finished with a status of $taskStatusResponseState status, completing"
-            exit 1            
+            exit 1
         }
         $numberOfWaits += 1
         if ($numberOfWaits -ge 10)
@@ -136,16 +136,16 @@ if ($importTaskWaitForFinish -eq $true)
         else
         {
             Write-Information -MessageData "The task state is currently $taskStatusResponseState"
-        }  
+        }
         $startTime = $taskStatusResponse.StartTime
         if ($null -eq $startTime -or [string]::IsNullOrWhiteSpace($startTime) -eq $true)
-        {        
+        {
             Write-Information -MessageData "The task is still queued, let's wait a bit longer"
             $startTime = Get-Date
         }
         $startTime = [DateTime]$startTime
         $currentTime = Get-Date
-        $dateDifference = $currentTime - $startTime        
+        $dateDifference = $currentTime - $startTime
     }
     Write-Information -MessageData "The cancel timeout has been reached, cancelling the import task"
     Invoke-RestMethod "$octopusURL/api/$importTaskSpaceId/tasks/$importTaskSpaceId/cancel" -Headers $header -Method Post | Out-Null

@@ -67,20 +67,20 @@ foreach ($space in $spaceList.Items)
     Write-Information -MessageData "Found $taskCount currently running tasks"
     foreach ($task in $taskList.Items)
     {
-        $taskId = $task.Id            
+        $taskId = $task.Id
 
         if ($task.Name -eq "Deploy"){
-            # The running task is a deployment, get the details including all the logs                
+            # The running task is a deployment, get the details including all the logs
             $taskDetails = (Invoke-WebRequest -Uri "$OctopusUrl/api/tasks/$taskId/details?verbose=true&tail=1000" -Headers $header).content | ConvertFrom-Json
             $activityLogs = $taskDetails.ActivityLogs
 
             foreach($activity in $activityLogs)
             {
                 $childrenList = $activity.Children
-                
+
                 foreach ($child in $childrenList)
                 {
-                    Write-Information -MessageData $child                        
+                    Write-Information -MessageData $child
                     if ($child.Status -eq "Running")
                     {
                         $grandchildList = $child.Children
@@ -90,8 +90,8 @@ foreach ($space in $spaceList.Items)
                             {
                                 $logElements = $grandchild.LogElements
                                 foreach($log in $logElements)
-                                {     
-                                    Write-Information -MessageData $log.MessageText                                   
+                                {
+                                    Write-Information -MessageData $log.MessageText
                                     if ($log.MessageText -like $workerMatchName)
                                     {
                                         Write-Information -MessageData "$taskId is currently running on the worker we want to delete, going to cancel it"
@@ -102,13 +102,13 @@ foreach ($space in $spaceList.Items)
                                         Invoke-WebRequest -Uri "$OctopusUrl/api/tasks/$taskId/cancel" -Headers $header -Method Post
                                         break;
                                     }
-                                }                                    
+                                }
                             }
-                        }                                                        
+                        }
                     }
                 }
             }
-        }                        
+        }
     }
 }
 
@@ -138,7 +138,7 @@ foreach ($cancelledDeployment in $cancelledDeploymentList)
 {
     Write-Information -MessageData $cancelledDeployment.DeploymentId
 
-    $deploymentSpaceId = $cancelledDeployment.SpaceId    
+    $deploymentSpaceId = $cancelledDeployment.SpaceId
     $deploymentId = $cancelledDeployment.DeploymentId
 
     $deploymentInfo = (Invoke-WebRequest -Uri "$OctopusUrl/api/$deploymentSpaceId/Deployments/$deploymentId" -Headers $header -Method GET) | ConvertFrom-Json
@@ -156,7 +156,7 @@ foreach ($cancelledDeployment in $cancelledDeploymentList)
         SpecificMachineIds = $deploymentInfo.SpecificMachineIds
         TenantId = $deploymentInfo.TenantId
         UseGuidedFailure = $deploymentInfo.UseGuidedFailure
-    } 
+    }
 
     $bodyAsJson = $bodyRaw | ConvertTo-Json
 

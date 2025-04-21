@@ -59,16 +59,16 @@ function Invoke-OctopusApi
         $method,
         $item
     )
-    
+
     if ([string]::IsNullOrWhiteSpace($SpaceId))
     {
         $url = "$OctopusUrl/api/$EndPoint"
     }
     else
     {
-        $url = "$OctopusUrl/api/$spaceId/$EndPoint"    
-    }  
-    
+        $url = "$OctopusUrl/api/$spaceId/$EndPoint"
+    }
+
     if ([string]::IsNullOrWhiteSpace($method))
     {
     	$method = "GET"
@@ -99,11 +99,11 @@ function Invoke-OctopusApi
                 Write-Information -MessageData "Unauthorized error returned from $url, please verify API key and try again" -ForegroundColor Red
             }
             elseif ($_.ErrorDetails.Message)
-            {                
+            {
                 Write-Information -MessageData -Message "Error calling $url StatusCode: $($_.Exception.Response) $($_.ErrorDetails.Message)" -ForegroundColor Red
                 Write-Information -MessageData $_.Exception -ForegroundColor Red
-            }            
-            else 
+            }
+            else
             {
                 Write-Information -MessageData $_.Exception -ForegroundColor Red
             }
@@ -114,7 +114,7 @@ function Invoke-OctopusApi
         }
 
         Exit 1
-    }    
+    }
 }
 
 $spacesList = Invoke-OctopusApi -OctopusUrl $octopusUrl -endPoint "spaces?skip=0&take=1000" -spaceId $null -apiKey $OctopusApiKey -item $null -method "GET"

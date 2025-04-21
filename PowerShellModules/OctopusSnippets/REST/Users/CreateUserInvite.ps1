@@ -50,8 +50,8 @@ This file "CreateUserInvite.ps1" is part of "OctopusSnippets".
 [String]$OctopusURL="OCTOPUS_URL"
 [String]$OctopusAPIKey = "API_KEY"
 
-$header = @{ 
-  "X-Octopus-ApiKey" = $OctopusAPIKey 
+$header = @{
+  "X-Octopus-ApiKey" = $OctopusAPIKey
   "method"="POST"
   "accept"="application/json"
   }

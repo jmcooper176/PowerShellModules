@@ -81,10 +81,8 @@ foreach ($projectKey in $projects)
 
     # Get Project template ID
     $variableTemplate = ($project.Templates | Where-Object Name -eq $variableTemplateName | Select-Object -First 1)
-    
-    
-    if($null -ne $variableTemplate) {
 
+    if($null -ne $variableTemplate) {
         $variableTemplateId = $variableTemplate.Id
         $variableTemplateIsSensitiveControlType = $variableTemplate.DisplaySettings.{Octopus.ControlType} -eq "Sensitive"
 
@@ -101,10 +99,10 @@ foreach ($projectKey in $projects)
             # Check sensitive control types differently
             if($variableTemplateIsSensitiveControlType -eq $True) {
                 # If $newValue denotes an octopus variable e.g. #{SomeVar}, treat it as if it were text
-                if($NewValueIsBoundToOctopusVariable -eq $True) {      
-                    Write-Information -MessageData "Adding in new text value (treating as octopus variable) in Environment '$envKey' for $variableTemplateName"             
+                if($NewValueIsBoundToOctopusVariable -eq $True) {
+                    Write-Information -MessageData "Adding in new text value (treating as octopus variable) in Environment '$envKey' for $variableTemplateName"
                     $project.Variables.$envKey.$variableTemplateId = $newValue
-                }    
+                }
                 else {
                     $newSensitiveValue = [PsCustomObject]@{
                         HasValue = $True
@@ -113,11 +111,11 @@ foreach ($projectKey in $projects)
                     Write-Information -MessageData "Adding in new sensitive value = '********' in Environment '$envKey' for $variableTemplateName"
                     $project.Variables.$envKey.$variableTemplateId = $newSensitiveValue
                 }
-            } 
+            }
             else {
                 Write-Information -MessageData "Adding in new value = $newValue in Environment '$envKey' for $variableTemplateName"
                 $project.Variables.$envKey.$variableTemplateId = $newValue
-            }       
+            }
         }
     }
     else {

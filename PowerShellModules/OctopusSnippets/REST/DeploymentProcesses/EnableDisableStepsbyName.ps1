@@ -65,7 +65,6 @@ $projectList = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/
 
 # Loop through projects
 foreach ($project in $projectList) {
-    
     # If you do not want to apply this to Runbooks, comment out the section noted below
     # <-------->
     $runbooksListLink = "/api/$($space.Id)/projects/$($project.Id)/runbooks/all"
@@ -83,7 +82,7 @@ foreach ($project in $projectList) {
             Write-Warning -Message "Failed to GET the Runbook process for `"$($runbook.Name)`" inside the Project `"$($project.Name)`" via the following URL: $octopusURL$runbookProcessLink"
         }
         # Find and enable/disable Steps in Runbook process
-        if ($runbookProcess.Steps.name -contains $stepName) { 
+        if ($runbookProcess.Steps.name -contains $stepName) {
             $modifiedRunbookProcess = $runbookProcess
             Foreach ($action in $modifiedRunbookProcess.Steps.actions | Where-Object -FilterScript { $_.Name -eq $stepName }) {
                 $action.IsDisabled = $disable
@@ -96,7 +95,7 @@ foreach ($project in $projectList) {
                 Write-Information -MessageData "Enabled step `"$stepName`" in Runbook `"$($runbook.Name)`" inside the Project `"$($project.Name)`. ($octopusURL$runbookProcessLink)"
             }
         Write-Information -MessageData "---"
-        }       
+        }
     }
     # <-------->
 
@@ -118,7 +117,7 @@ foreach ($project in $projectList) {
     }
 
     # Find and enable/disable Steps in deployment process
-    if ($deploymentProcess.Steps.name -contains $stepName) { 
+    if ($deploymentProcess.Steps.name -contains $stepName) {
         $modifiedProcess = $deploymentProcess
         Foreach ($action in $modifiedProcess.Steps.actions | Where-Object -FilterScript { $_.Name -eq $stepName }) {
             $action.IsDisabled = $disable

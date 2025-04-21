@@ -83,10 +83,9 @@ $recordsUpdated = 0
 # Continue until we reach the end of the user list or until we go over the max records to update
 while ($True) {
     try {
-        
         Write-Information -MessageData "Pulling users starting at index $skipIndex and getting a max of $recordsToBringBack records back"
         $userList = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/users?skip=$skipIndex&take=$recordsToBringBack" -Headers $header
-    
+
         # Update to pull back the next batch of users
         $skipIndex = $skipIndex + $recordsToBringBack
 
@@ -95,7 +94,6 @@ while ($True) {
         }
 
         foreach ($user in $userList.Items) {
-            
             if ($user.IsService -eq $true -or $user.Identities.Count -eq 0) {
                 # Skip Octopus Deploy Service Accounts or users not tied to an active directory account
                 continue;
@@ -104,7 +102,7 @@ while ($True) {
             Write-Information -MessageData "Checking to see if $($user.UserName) has an active directory account."
             $foundActiveDirectoryRecordForUser = $false
 
-            for ($i = 0; $i -lt $user.Identities.Count; $i++) {            
+            for ($i = 0; $i -lt $user.Identities.Count; $i++) {
                 if ($user.Identities[$i].IdentityProviderName -ne "Active Directory") {
                     # We only care about active directory records.
                     continue;
@@ -116,7 +114,7 @@ while ($True) {
                 foreach ($claimName in $claimList) {
                     $nameValue = $claimName.Name
                     $claim = $user.Identities[$i].Claims.$nameValue
-                                
+
                     if ($claim.Value.ToLower().Contains($AD_Domain.ToLower())) {
                         Write-Information -MessageData "The claim $nameValue for $($user.UserName) has the value $($claim.Value) which matches $AD_Domain.  Updating this account."
 
@@ -128,10 +126,9 @@ while ($True) {
                 if ($foundActiveDirectoryRecordForUser -eq $true) {
                     break;
                 }
-            }        
+            }
 
-            if ($foundActiveDirectoryRecordForUser -eq $true) { 
-
+            if ($foundActiveDirectoryRecordForUser -eq $true) {
                 # This user record potentially needs to be updated, clone the user object so we can manipulate it (and so we have the original)
                 $userRecordToUpdate = $user | ConvertTo-Json -Depth 10 | ConvertFrom-Json
 
@@ -139,10 +136,10 @@ while ($True) {
                     # Grab any records that are not active directory
                     $filteredOldRecords = $user.Identities | Where-Object -FilterScript { $_.IdentityProviderName -ne "Active Directory" }
                     if ($null -ne $filteredOldRecords) {
-                        $userRecordToUpdate.Identities = @($filteredOldRecords)    
+                        $userRecordToUpdate.Identities = @($filteredOldRecords)
                     }
                     else {
-                        $userRecordToUpdate.Identities = @()    
+                        $userRecordToUpdate.Identities = @()
                     }
                 }
 
@@ -164,17 +161,17 @@ while ($True) {
 
                 Write-Information -MessageData "Looking up the LDAP account $userNameToLookup in Octopus Deploy"
                 $ldapResults = Invoke-RestMethod -Method GET -Uri "$octopusURL/api/externalusers/ldap?partialName=$([System.Web.HTTPUtility]::UrlEncode($userNameToLookUp))" -Headers $header
-                
+
                 $LdapIdentity = $null
                 # Search LDAP Identities
                 foreach ($identity in $ldapResults.Identities) {
                     if ($identity.IdentityProviderName -eq "LDAP") {
                         $claimList = $identity.Claims | Get-Member | Where-Object -FilterScript { $_.MemberType -eq "NoteProperty" } | Select-Object -Property "Name"
 
-                        foreach ($claimName in $claimList) {                  
+                        foreach ($claimName in $claimList) {
                             $claimName = $claimName.Name
                             $claim = $identity.Claims.$ClaimName
-                        
+
                             if ($null -ne $claim.Value -and $claim.Value.ToLower() -eq $expectedMatch.Tolower() -and $claim.IsIdentifyingClaim -eq $true) {
                                 Write-Information -MessageData "Found the user's LDAP record, add that to Octopus Deploy"
                                 $LdapIdentity = $identity
@@ -186,19 +183,19 @@ while ($True) {
                         if ($ldapMatchFound) {
                             break;
                         }
-                    }                
+                    }
                 }
 
                 $foundExistingUserLdapMatch = $False
                 if ($ldapMatchFound -eq $True) {
                     # Check existing user identities for a matching LDAP already being present.
-                    for ($i = 0; $i -lt $user.Identities.Count; $i++) {            
+                    for ($i = 0; $i -lt $user.Identities.Count; $i++) {
                         if ($user.Identities[$i].IdentityProviderName -ieq "LDAP") {
                             $claimList = $user.Identities[$i].Claims | Get-Member | Where-Object -FilterScript { $_.MemberType -eq "NoteProperty" } | Select-Object -Property "Name"
                             foreach ($claimName in $claimList) {
                                 $nameValue = $claimName.Name
                                 $claim = $user.Identities[$i].Claims.$nameValue
-                                            
+
                                 if ($null -ne $claim.Value -and $claim.Value.ToLower().Contains($LDAP_Domain.ToLower())) {
                                     $foundExistingUserLdapMatch = $true
                                     break;
@@ -222,12 +219,11 @@ while ($True) {
                 $removalAdUpdateRequired = $foundActiveDirectoryRecordForUser -eq $True -and $RemoveActiveDirectoryRecords -eq $True
                 $newLdapUpdateRequired = $ldapMatchFound -eq $True -and $foundExistingUserLdapMatch -eq $false
                 if ($removalAdUpdateRequired -eq $True -or $newLdapUpdateRequired) {
-                    
                     $userUpdateUri = "$OctopusUrl/api/users/$($userRecordToUpdate.Id)"
                     $UserBody = $($userRecordToUpdate | ConvertTo-Json -Depth 10 -Compress)
 
                     if ($WhatIf -eq $True) {
-                        Write-Information -MessageData "WhatIf = True. Update for user '$($userRecordToUpdate.Username)' would have been:" 
+                        Write-Information -MessageData "WhatIf = True. Update for user '$($userRecordToUpdate.Username)' would have been:"
                         Write-Information -MessageData "$($UserBody)"
                     }
                     else {
@@ -243,7 +239,7 @@ while ($True) {
                 if ($recordsUpdated -ge $maxRecordsToUpdate) {
                     break
                 }
-            }        
+            }
         }
 
         if ($recordsUpdated -ge $maxRecordsToUpdate) {

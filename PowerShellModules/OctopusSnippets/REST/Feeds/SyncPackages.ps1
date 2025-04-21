@@ -61,7 +61,7 @@ param (
 
     [Parameter(Mandatory)]
     [string] $SourceUrl,
-    
+
     [Parameter()]
     [string] $SourceDownloadUrl = $null,
 
@@ -98,7 +98,7 @@ function Push-Package([string] $fileName, $package) {
 
     $contentDispositionHeaderValue = New-Object -TypeName.Net.Http.Headers.ContentDispositionHeaderValue "form-data"
     $contentDispositionHeaderValue.Name = "fileData"
-    $contentDispositionHeaderValue.FileName = $fileName 
+    $contentDispositionHeaderValue.FileName = $fileName
 
     $streamContent = New-Object -TypeName.Net.Http.StreamContent $download
     $streamContent.Headers.ContentDisposition = $contentDispositionHeaderValue
@@ -119,8 +119,8 @@ function Push-Package([string] $fileName, $package) {
 }
 
 function Skip-Package([string] $filename, $package, $cutoffDate) {
-    if ($null -eq $cutoffDate) { 
-        return $false; 
+    if ($null -eq $cutoffDate) {
+        return $false;
     }
 
     if ($package.Published -lt $cutoffDate) {
@@ -140,7 +140,7 @@ function Get-Packages([string] $packageId, [int] $batch, [int] $skip) {
 
 function Get-PackageExists([string] $filename, $package) {
     Write-Information -MessageData "Checking if $fileName exists in destination..."
-    $checkForExistingPackageURL = "$destinationOctopusURL/api/$destinationSpaceId/packages/packages-$($package.Id).$($pkg.Version)" 
+    $checkForExistingPackageURL = "$destinationOctopusURL/api/$destinationSpaceId/packages/packages-$($package.Id).$($pkg.Version)"
     $statusCode = 500
 
     try {
@@ -152,7 +152,7 @@ function Get-PackageExists([string] $filename, $package) {
         }
         $statusCode = [int]$checkForExistingPackageResponse.BaseResponse.StatusCode
     }
-    catch [System.Net.WebException] { 
+    catch [System.Net.WebException] {
         $statusCode = [int]$_.Exception.Response.StatusCode
     }
     if ($statusCode -ne 404) {
@@ -163,11 +163,11 @@ function Get-PackageExists([string] $filename, $package) {
         else {
             Write-Error -Message "Unexpected status code $($statusCode) returned from $checkForExistingPackageURL"
         }
-    } 
+    }
     return $false;
 }
 
-# This script syncs packages from the built-in feed between two spaces. 
+# This script syncs packages from the built-in feed between two spaces.
 # The spaces can be on the same Octopus instance, or in different instances
 
 $ErrorActionPreference = "Stop"
@@ -193,7 +193,7 @@ $sourceSpaceId = ((Invoke-RestMethod -Method Get -Uri "$sourceOctopusURL/api/spa
 $destinationHeader = @{ "X-Octopus-ApiKey" = $destinationOctopusAPIKey }
 $destinationSpaceId = ((Invoke-RestMethod -Method Get -Uri "$destinationOctopusURL/api/spaces/all" -Headers $destinationHeader) | Where-Object -FilterScript { $_.Name -eq $destinationSpaceName }).Id
 
-# Create HTTP clients 
+# Create HTTP clients
 $httpClientTimeoutInMinutes = 60
 if (-not('System.Net.Http.HttpClient' -as [type])) {
     try {
@@ -227,14 +227,14 @@ foreach ($package in $packages) {
     $processedPackageCount = 0
     $skip = 0;
     $batchSize = 100;
-    
+
     if ($VersionSelection -eq 'AllVersions') {
         do {
             $packagesResponse = Get-Packages $package.Id $batchSize $skip
             foreach ($pkg in $packagesResponse.Items) {
                 Write-Information -MessageData "Processing $($pkg.PackageId).$($pkg.Version)"
                 $fileName = "$($pkg.PackageId).$($pkg.Version)$($pkg.FileExtension)"
-                
+
                 if (-not (Skip-Package $fileName $pkg $CutoffDate)) {
                     if (Get-PackageExists $fileName $package) {
                         $processedPackageCount++
@@ -242,8 +242,8 @@ foreach ($package in $packages) {
                     }
                     else {
                         Push-Package $fileName $pkg
-                        $processedPackageCount++ 
-                        $totalSyncedPackageCount++ 
+                        $processedPackageCount++
+                        $totalSyncedPackageCount++
                         $totalSyncedPackageSize += $pkg.PackageSizeBytes
                     }
                 }
@@ -267,16 +267,16 @@ foreach ($package in $packages) {
                 }
                 else {
                     Push-Package $fileName $pkg
-                    $processedPackageCount++ 
-                    $totalSyncedPackageCount++ 
+                    $processedPackageCount++
+                    $totalSyncedPackageCount++
                     $totalSyncedPackageSize += $pkg.PackageSizeBytes
                 }
-            }    
+            }
         }
     }
     elseif ($VersionSelection -eq "FileVersions") {
         $versions = $package.Versions;
-        
+
         do {
             $packagesResponse = Get-Packages $package.Id $batchSize $skip
             foreach ($pkg in $packagesResponse.Items) {
@@ -291,8 +291,8 @@ foreach ($package in $packages) {
                         }
                         else {
                             Push-Package $fileName $pkg
-                            $processedPackageCount++ 
-                            $totalSyncedPackageCount++ 
+                            $processedPackageCount++
+                            $totalSyncedPackageCount++
                             $totalSyncedPackageSize += $pkg.PackageSizeBytes
                         }
                     }

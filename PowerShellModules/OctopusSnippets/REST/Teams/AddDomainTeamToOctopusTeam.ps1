@@ -75,7 +75,7 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
         if ($team.ExternalSecurityGroups.Count -eq 0)
         {
             # Skip teams which don't have an external AD group
-            continue 
+            continue
         }
 
         Write-Information -MessageData "Checking to see if $($team.Name) is tied to an external active directory team."
@@ -83,7 +83,7 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
 
         foreach ($externalSecurityGroup in $team.ExternalSecurityGroups)
         {
-            $externalName = $externalSecurityGroup.DisplayName            
+            $externalName = $externalSecurityGroup.DisplayName
             if ($null -eq $externalName)
             {
                 continue
@@ -99,7 +99,7 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
                     Write-Information -MessageData "Found a matching team name, checking if the SID is already assigned to the team"
                     $foundMatch = $false
                     foreach ($group in $team.ExternalSecurityGroups)
-                    {                        
+                    {
                         if ($group.Id -eq $result.Id)
                         {
                             $foundMatch = $true
@@ -120,7 +120,7 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
                 }
             }
         }
-        
+
         if ($activeDirectoryRecordsToAdd.Length -gt 0)
         {
             foreach ($teamToAdd in $activeDirectoryRecordsToAdd)
@@ -132,7 +132,6 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
             Invoke-RestMethod -Method PUT -Uri "$OctopusUrl/api/teams/$($team.Id)" -Headers $header -Body $($team | ConvertTo-Json -Depth 10)
             $recordsUpdated += 1
         }
-        
     }
 
     if ($recordsUpdated -ge $maxRecordsToUpdate)

@@ -47,7 +47,7 @@ This file "RestoreDeletedListeningTentacles.ps1" is part of "OctopusSnippets".
 
 $octopusUrl = "https://local.octopusdemos.app"
 $octopusApiKey = "YOUR API KEY"
-$spaceId = "Spaces-1" 
+$spaceId = "Spaces-1"
 $startDate = "2021-07-28"
 $endDate = "2021-08-31"
 $whatIf = $false
@@ -59,36 +59,36 @@ $cachedResults = @{}
 function Write-OctopusVerbose
 {
     param ($message)
-    
-    Write-Information -MessageData $message  
+
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusInformation
 {
     param ($message)
-    
-    Write-Information -MessageData $message  
+
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusSuccess
 {
     param ($message)
 
-    Write-Information -MessageData $message 
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusWarning
 {
     param ($message)
 
-    Write-Warning -Message "$message" 
+    Write-Warning -Message "$message"
 }
 
 function Write-OctopusCritical
 {
     param ($message)
 
-    Write-Error -Message "$message" 
+    Write-Error -Message "$message"
 }
 
 function Invoke-OctopusApi
@@ -101,7 +101,7 @@ function Invoke-OctopusApi
         $apiKey,
         $method,
         $item,
-        $ignoreCache     
+        $ignoreCache
     )
 
     $octopusUrlToUse = $OctopusUrl
@@ -116,18 +116,18 @@ function Invoke-OctopusApi
     }
     else
     {
-        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"    
-    }  
+        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"
+    }
 
     try
-    {        
+    {
         if ($null -ne $item)
         {
             $body = $item | ConvertTo-Json -Depth 10
             Write-OctopusVerbose $body
 
             Write-OctopusInformation "Invoking $method $url"
-            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8' 
+            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8'
         }
 
         if (($null -eq $ignoreCache -or $ignoreCache -eq $false) -and $method.ToUpper().Trim() -eq "GET")
@@ -141,7 +141,7 @@ function Invoke-OctopusApi
         }
         else
         {
-            Write-OctopusVerbose "Ignoring cache."    
+            Write-OctopusVerbose "Ignoring cache."
         }
 
         Write-OctopusVerbose "No data to post or put, calling bog standard invoke-restmethod for $url"
@@ -155,8 +155,6 @@ function Invoke-OctopusApi
         $cachedResults.add($url, $result)
 
         return $result
-
-               
     }
     catch
     {
@@ -204,7 +202,7 @@ foreach ($auditEvent in $recentDeletedTargets.Items)
     foreach ($tenantTag in $oldMachineInformation.TenantTags)
     {
         $tenantTagSplit = $tenantTag -split "/"
-        $tagSetId = $tenantTagSplit[0]        
+        $tagSetId = $tenantTagSplit[0]
 
         $tagSet = Invoke-OctopusApi  -octopusUrl $octopusUrl -apiKey $octopusApiKey -endPoint "tagsets/$tagSetId" -method "GET" -item $null -spaceId $oldMachineInformation.SpaceId:
 
@@ -215,9 +213,9 @@ foreach ($auditEvent in $recentDeletedTargets.Items)
             $newTenantTag += $matchingTag.CanonicalTagName
         }
     }
-    
+
     $newMachineRegistration = @{
-        Id = $null        
+        Id = $null
         MachinePolicyId = $oldMachineInformation.MachinePolicyId
         Name = $oldMachineInformation.Name
         IsDisabled = $oldMachineInformation.IsDisabled
@@ -240,7 +238,7 @@ foreach ($auditEvent in $recentDeletedTargets.Items)
         TenantTags = $newTenantTag
         TenantedDeploymentParticipation = $oldMachineInformation.TenantedDeploymentParticipation
     }
-    
+
     $matchingTargetList = Invoke-OctopusApi  -octopusUrl $octopusUrl -apiKey $octopusApiKey -endPoint "machines?skip=0&take=100&partialName=$([uri]::EscapeDataString($oldMachineInformation.Name))" -method "GET" -item $null -spaceId $oldMachineInformation.SpaceId
     $matchingTarget = $matchingTargetList.Items | Where-Object -FilterScript {$_.Name.Tolower().Trim() -eq $oldMachineInformation.Name.ToLower().Trim() }
 
@@ -256,11 +254,11 @@ foreach ($auditEvent in $recentDeletedTargets.Items)
         }
         else
         {
-            Write-OctopusInformation "What if set to true, skipping."    
+            Write-OctopusInformation "What if set to true, skipping."
         }
     }
     else
     {
-        Write-OctopusInformation "The machine $($oldMachineInformation.Name) already exists.  Skipping."    
+        Write-OctopusInformation "The machine $($oldMachineInformation.Name) already exists.  Skipping."
     }
 }

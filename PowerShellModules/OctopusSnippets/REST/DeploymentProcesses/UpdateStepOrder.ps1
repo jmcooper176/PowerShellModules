@@ -53,10 +53,10 @@ $spaceName = "Default"
 $projectName = "YOUR_PROJECT_NAME"
 $stepNameToMove = "YOUR_STEP_NAME"
 $newIndexForStep = 1 #Index is n-1 from the step number in the UI
- 
+
 # Get space
 $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object -FilterScript { $_.Name -eq $spaceName }
- 
+
 # Get project
 $project = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header) | Where-Object -FilterScript { $_.Name -eq $projectName }
 
@@ -100,7 +100,7 @@ if ($oldIndexForStep -ne $newIndexForStep){
     }
     # Update steps to new order
     $deploymentProcess.Steps = $newSteps
-    
+
     # Write out new step order (for debug)
     Write-Information -MessageData "New step order:"
     foreach($step in $newSteps){

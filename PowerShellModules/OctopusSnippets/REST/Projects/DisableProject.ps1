@@ -56,11 +56,11 @@ $projectName = "MyProject"
 $projectEnabled = $False
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Get project
-$projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header 
+$projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header
 $project = $projects.Items | Where-Object -FilterScript { $_.Name -eq $projectName }
 
 # Enable/Disable project

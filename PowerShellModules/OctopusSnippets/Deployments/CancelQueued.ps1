@@ -72,7 +72,7 @@ try
     # Loop through results
     foreach ($task in $queuedDeployments)
     {
-        $repositoryForSpace.Tasks.Cancel($task)   
+        $repositoryForSpace.Tasks.Cancel($task)
     }
 }
 catch

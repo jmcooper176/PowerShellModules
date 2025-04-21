@@ -206,7 +206,6 @@ foreach ($environment in $environments.Items)
                     Write-Information -MessageData "          Used in the step $($action.Name) in the deployment process for $($project.Name)"
                 }
             }
-
         }
 
         if ($null -eq $projectTriggers[$($project.Id)])
@@ -228,7 +227,6 @@ foreach ($environment in $environments.Items)
 
         foreach ($tenant in $tenants.Items)
         {
-
             if (Get-Member -InputObject $tenant.ProjectEnvironments -Name $($project.Id) -MemberType Properties)
             {
                 if (@($tenant.ProjectEnvironments.$($project.Id)) -contains $($environment.Id))
@@ -252,7 +250,6 @@ foreach ($environment in $environments.Items)
             }
         }
 
-
         if ($null -eq $deploymentProcess[$($runbook.Id)])
         {
             $projectDeploymentProcess = Invoke-RestMethod -Method Get -Uri "$OctopusUrl/api/$spaceId/runbookProcesses/RunbookProcess-$($runbook.Id)" -Headers $header
@@ -271,7 +268,6 @@ foreach ($environment in $environments.Items)
                     Write-Information -MessageData "         Used in the step $($action.Name) in the deployment process for the runbook $($runbook.Name)"
                 }
             }
-
         }
     }
 

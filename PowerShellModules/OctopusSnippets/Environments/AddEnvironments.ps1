@@ -66,7 +66,6 @@ $space = $repository.Spaces.FindByName($spaceName)
 $repositoryForSpace = $client.ForSpace($space)
 
 foreach ($environmentName in $environments) {
-    
     $environment = $repositoryForSpace.Environments.FindByName($environmentName)
     if($null -ne $environment) {
         Write-Information -MessageData "Environment '$environmentName' already exists. Nothing to create :)"
@@ -76,7 +75,7 @@ foreach ($environmentName in $environments) {
         $environment = New-Object -TypeName Octopus.Client.Model.EnvironmentResource -Property @{
             Name = $environmentName
         }
-        
+
         $response = $repositoryForSpace.Environments.Create($environment)
         Write-Information -MessageData "EnvironmentId: $($response.Id)"
     }

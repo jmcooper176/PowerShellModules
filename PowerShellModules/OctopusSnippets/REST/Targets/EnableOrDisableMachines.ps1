@@ -62,7 +62,7 @@ $machineNames = @("MyMachine1", "MyMachine2")
 $machinesEnabled = $false
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Get all machines (paged)

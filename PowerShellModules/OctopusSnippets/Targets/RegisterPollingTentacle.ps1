@@ -58,7 +58,6 @@ $tentacleIdentifier = "PollingTentacleIdentifier" # Must match value in Tentacle
 $environmentNames = @("Development", "Production")
 $roles = @("MyRole")
 
-
 $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 $client = New-Object -TypeName Octopus.Client.OctopusClient $endpoint
@@ -82,8 +81,7 @@ try
     $tentacle = New-Object -TypeName Octopus.Client.Model.MachineResource
     $tentacle.Endpoint = $newTarget
     $tentacle.Name = $hostName
-    
-    
+
     # Add properties to host
     foreach ($environment in $environments)
     {
@@ -96,7 +94,7 @@ try
         # Add to target
         $tentacle.Roles.Add($role)
     }
-        
+
     # Add to machine to space
     $repositoryForSpace.Machines.Create($tentacle)
 }

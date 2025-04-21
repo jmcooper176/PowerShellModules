@@ -70,7 +70,7 @@ function Invoke-OctopusLogoUpload
             Add-Type -AssemblyName System.Web
 
             $mimeType = [System.Web.MimeMapping]::GetMimeMapping($InFile)
-            
+
             if ($mimeType)
             {
                 $ContentType = $mimeType
@@ -91,7 +91,7 @@ function Invoke-OctopusLogoUpload
         $httpClient.DefaultRequestHeaders.Add("X-Octopus-ApiKey", $ApiKey)
 
         $packageFileStream = New-Object -TypeName System.IO.FileStream @($InFile, [System.IO.FileMode]::Open)
-        
+
         $contentDispositionHeaderValue = New-Object -TypeName System.Net.Http.Headers.ContentDispositionHeaderValue "form-data"
         $contentDispositionHeaderValue.Name = "fileData"
         $contentDispositionHeaderValue.FileName = (Split-Path $InFile -leaf)
@@ -99,7 +99,7 @@ function Invoke-OctopusLogoUpload
         $streamContent = New-Object -TypeName System.Net.Http.StreamContent $packageFileStream
         $streamContent.Headers.ContentDisposition = $contentDispositionHeaderValue
         $streamContent.Headers.ContentType = New-Object -TypeName System.Net.Http.Headers.MediaTypeHeaderValue $ContentType
-        
+
         $content = New-Object -TypeName System.Net.Http.MultipartFormDataContent
         $content.Add($streamContent)
 

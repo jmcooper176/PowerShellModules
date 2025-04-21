@@ -58,7 +58,7 @@ $machineName = "MachineName"
 $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object -FilterScript {$_.Name -eq $spaceName}
 
 # Get machine list
-$targetList = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/machines?name=$machineName&skip=0&take=1000" -Headers $header) 
+$targetList = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/machines?name=$machineName&skip=0&take=1000" -Headers $header)
 
 # Loop through list
 foreach ($target in $targetList.Items)

@@ -56,11 +56,10 @@ $spaceName = "Default"
 $environments = @("Development", "Test", "Staging", "Production")
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 foreach ($environment in $environments) {
-    
     # Check to see if environment exists
     $environments = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments?partialName=$([uri]::EscapeDataString($environment))&skip=0&take=100" -Headers $header
     $existingEnvironment = $environments.Items | Where-Object -FilterScript { $_.Name -eq $environment }
@@ -69,13 +68,12 @@ foreach ($environment in $environments) {
         Write-Information -MessageData "Environment '$environment' already exists. Nothing to create :)"
     }
     else {
-
         $body = @{
             Name = $environment
         } | ConvertTo-Json
 
         Write-Information -MessageData "Creating environment '$environment'"
-        $response = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments" -Headers $header -Method Post -Body $body 
+        $response = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments" -Headers $header -Method Post -Body $body
         Write-Information -MessageData "EnvironmentId: $($response.Id)"
     }
 }

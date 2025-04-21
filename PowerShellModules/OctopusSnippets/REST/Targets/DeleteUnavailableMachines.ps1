@@ -52,7 +52,7 @@ $OctopusUrl = "https://your-octopus-url"
 $APIKey = "API-XXXXXXXXX"
 
 # Space where machines exist
-$spaceName = "Default" 
+$spaceName = "Default"
 
 # Should we delete machines that are disabled?
 $includeDisabledMachines = $false
@@ -75,7 +75,7 @@ foreach ($machine in $spaceMachines.Items) {
     $machineName = $machine.Name
     $machineId = $machine.Id
     Write-Information -MessageData "Found machine: $machineName ($machineId) to delete"
-    
+
     $response = Invoke-RestMethod -Uri "$OctopusUrl/api/$spaceID/machines/$machineId" -Method Delete -Headers $header
     Write-Information -MessageData "Deleted Machine $machineName ($machineId)"
 }

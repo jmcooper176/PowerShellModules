@@ -77,7 +77,7 @@ foreach ($teamId in $teamIds) {
     {
         # Filter out project
         $scopedUserRole.ProjectIds = @($scopedUserRole.ProjectIds | Where-Object -FilterScript {$_ -notcontains $project.Id})
-        
+
         # Update scoped user role
         Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/scopeduserroles/$($scopedUserRole.Id)" -Body ($scopedUserRole | ConvertTo-Json -Depth 10) -Headers $header
     }

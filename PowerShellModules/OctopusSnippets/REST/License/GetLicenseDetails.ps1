@@ -70,7 +70,7 @@ switch ($LicenseLevel)
     }
     'Team' {
         $limit = 180
-        $remaining = $limit - $Projects - $Users - $Machines        
+        $remaining = $limit - $Projects - $Users - $Machines
     }
     'Enterprise' {
     }

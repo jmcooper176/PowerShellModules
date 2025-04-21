@@ -75,7 +75,7 @@ if ($null -eq $libraryVariableSet) {
     exit
 }
 
-$LibraryVariableSetVariables = (Invoke-RestMethod -Method Get -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSet.VariableSetId)" -Headers $Header) 
+$LibraryVariableSetVariables = (Invoke-RestMethod -Method Get -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSet.VariableSetId)" -Headers $Header)
 
 for($i=0; $i -lt $LibraryVariableSetVariables.Variables.Length; $i++) {
     $existingVariable = $LibraryVariableSetVariables.Variables[$i];
@@ -85,6 +85,6 @@ for($i=0; $i -lt $LibraryVariableSetVariables.Variables.Length; $i++) {
     }
 }
 
-$existingVariable = $LibraryVariableSetVariables.Variables  | Where-Object -FilterScript {$_.name -eq $VariableName} | Select-Object -First 1 
+$existingVariable = $LibraryVariableSetVariables.Variables  | Where-Object -FilterScript {$_.name -eq $VariableName} | Select-Object -First 1
 
 $UpdatedLibraryVariableSet = Invoke-RestMethod -Method Put -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSetVariables.Id)" -Headers $Header -Body ($LibraryVariableSetVariables | ConvertTo-Json -Depth 10)

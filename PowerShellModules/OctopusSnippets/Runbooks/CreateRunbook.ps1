@@ -75,13 +75,12 @@ try
     $runbookRetentionPolicy.QuantityToKeep = 100
     $runbookRetentionPolicy.ShouldKeepForever = $false
 
-
     # Create runbook object
     $runbook = New-Object -TypeName Octopus.Client.Model.RunbookResource
     $runbook.Name = $runbookName
     $runbook.ProjectId = $project.Id
     $runbook.RunRetentionPolicy = $runbookRetentionPolicy
-    
+
     # Save
     $repositoryForSpace.Runbooks.Create($runbook)
 }

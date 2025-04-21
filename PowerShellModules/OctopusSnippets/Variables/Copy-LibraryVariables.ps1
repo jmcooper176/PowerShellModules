@@ -55,7 +55,7 @@ Example:
 -OctopusUri 'https://foo.com/api'
 
 .PARAMETER OctopusApiKey
-Note: If copying between spaces, ensure that the account corresponding to the 
+Note: If copying between spaces, ensure that the account corresponding to the
 API key has the requisite permissions in both spaces.
 
 .PARAMETER NugetPath
@@ -78,7 +78,7 @@ The ID (not name) of the space in which the destination library variable set res
 Example:
 -DestinationLibraryVariableSetId 'LibraryVariableSets-2'
 
-.PARAMETER VariableNameRegexPattern 
+.PARAMETER VariableNameRegexPattern
 A Regular Expression that dictates which variables in the source variable set will be copied, based on
 variable name. Case-insensitive.
 Example 1, copy a single variable:
@@ -110,7 +110,7 @@ function AcquireAssemblies() {
     [CmdletBinding()]
     param ()
     Write-Information -MessageData 'Acquiring dependent assemblies'
-    @('Octopus.Client') | ForEach-Object -Process { 
+    @('Octopus.Client') | ForEach-Object -Process {
         & $NugetPath install $_ -ExcludeVersion -PackageSaveMode nuspec -Framework net45 -Verbosity $script:NugetVerbosity -NonInteractive
     }
 }
@@ -124,11 +124,10 @@ function LoadAssemblies() {
     ) | ForEach-Object -Process { Add-Type -Path $_ }
 }
 
-
-if ($VerbosePreference -eq 'SilentlyContinue') { 
-    $script:NugetVerbosity = 'quiet' 
+if ($VerbosePreference -eq 'SilentlyContinue') {
+    $script:NugetVerbosity = 'quiet'
 } else {
-    $script:NugetVerbosity = 'normal' 
+    $script:NugetVerbosity = 'normal'
 }
 AcquireAssemblies
 LoadAssemblies
@@ -140,7 +139,7 @@ $headers = @{"X-Octopus-ApiKey" = $OctopusApiKey}
 function Get-OctopusResource([string]$uri, [string]$spaceId) {
     # Adapted from https://github.com/OctopusDeploy/OctopusDeploy-Api/blob/master/REST/PowerShell/Variables/MigrateVariableSetVariablesToProject.ps1
     $uriWithSpace = [string]::Join('/', @(
-            $OctopusUri.TrimEnd('/'), 
+            $OctopusUri.TrimEnd('/'),
             $spaceId))
     $fullUri = [string]::Join('/', @(
             $uriWithSpace,
@@ -152,7 +151,7 @@ function Get-OctopusResource([string]$uri, [string]$spaceId) {
 function Put-OctopusResource([string]$uri, [string]$spaceId, [object]$resource) {
     # Adapted from https://github.com/OctopusDeploy/OctopusDeploy-Api/blob/master/REST/PowerShell/Variables/MigrateVariableSetVariablesToProject.ps1
     $uriWithSpace = [string]::Join('/', @(
-            $OctopusUri.TrimEnd('/'), 
+            $OctopusUri.TrimEnd('/'),
             $spaceId))
     $fullUri = [string]::Join('/', @(
             $uriWithSpace,

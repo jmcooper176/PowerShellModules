@@ -59,8 +59,8 @@ $AllUsers = (Invoke-WebRequest -Uri $OctopusURL/api/users/all -Headers $header).
 
 foreach($user in $AllUsers){
     $apikeys = $null
-    
-    $apikeys = (Invoke-WebRequest -Uri ($OctopusURL + $user.links.apikeys.Split('{')[0]) -Headers $header).content | ConvertFrom-Json    
+
+    $apikeys = (Invoke-WebRequest -Uri ($OctopusURL + $user.links.apikeys.Split('{')[0]) -Headers $header).content | ConvertFrom-Json
 
     $obj = [PSCustomObject]@{
                     UserName = $user.Username

@@ -76,14 +76,14 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
         if ($user.IsService -eq $true -or $user.Identities.Count -eq 0)
         {
             # Skip Octopus Deploy Service Accounts or users not tied to an active directory account
-            continue 
+            continue
         }
 
         Write-Information -MessageData "Checking to see if $($user.UserName) has an active directory account."
         $replaceActiveDirectoryRecord = $false
 
         for ($i = 0; $i -lt $user.Identities.Count; $i++)
-        {            
+        {
             if ($user.Identities[$i].IdentityProviderName -ne "Active Directory")
             {
                 # We only care about active directory stuff
@@ -97,7 +97,7 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
             {
                 $nameValue = $claimName.Name
                 $claim = $user.Identities[$i].Claims.$nameValue
-                                
+
                 if ($claim.Value.ToLower().Contains($oldDomainToLookFor.ToLower()))
                 {
                     Write-Information -MessageData "The claim $nameValue for $($user.UserName) has the value $($claim.Value) which matches $oldDomainToLookFor.  Updating this account."
@@ -113,30 +113,30 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
             {
                 break
             }
-        }        
+        }
 
         if ($replaceActiveDirectoryRecord -eq $true)
-        { 
+        {
             # This user record needs to be updated, clone the user object so we can manipulate it (and so we have the original)
             $userRecordToUpdate = $user | ConvertTo-Json -Depth 10 | ConvertFrom-Json
             # Grab any records that are not active directory
             $filteredOldRecords = $user.Identities | Where-Object -FilterScript {$_.IdentityProviderName -ne "Active Directory"}
             if ($null -ne $filteredOldRecords)
             {
-                $userRecordToUpdate.Identities = @($filteredOldRecords)    
+                $userRecordToUpdate.Identities = @($filteredOldRecords)
             }
             else
             {
-                $userRecordToUpdate.Identities = @()    
+                $userRecordToUpdate.Identities = @()
             }
-                        
+
             # Now let's find the new domain account
             $userNameToLookUp = "$newDomainToLookup\$($userRecordToUpdate.Username)"
             $expectedMatch = "$($userRecordToUpdate.Username)@$newDomainToLookUp.local"
             $foundUser = $false
             Write-Information -MessageData "Looking up the new domain account $userNameToLookup in Octopus Deploy"
             $directoryServicesResults = Invoke-RestMethod -Method GET -Uri "$octopusURL/api/externalusers/directoryServices?partialName=$([System.Web.HTTPUtility]::UrlEncode($userNameToLookUp))" -Headers $header
-            
+
             foreach ($identity in $directoryServicesResults.Identities)
             {
                 if ($identity.IdentityProviderName -eq "Active Directory")
@@ -144,10 +144,10 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
                     $claimList = $identity.Claims | Get-Member | Where-Object -FilterScript {$_.MemberType -eq "NoteProperty"} | Select-Object -Property "Name"
 
                     foreach ($claimName in $claimList)
-                    {                  
+                    {
                         $claimName = $claimName.Name
                         $claim = $identity.Claims.$ClaimName
-                        
+
                         if ($claim.Value.ToLower() -eq $expectedMatch.Tolower() -and $claim.IsIdentifyingClaim -eq $true)
                         {
                             Write-Information -MessageData "Found the user's new domain record, add that to Octopus Deploy"
@@ -161,7 +161,7 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
                     {
                         break
                     }
-                }                
+                }
             }
 
             if ($foundUser -eq $true)
@@ -170,8 +170,7 @@ while (1 -eq 1) #Continue until we reach the end of the user list or until we go
                 Invoke-RestMethod -Method PUT -Uri "$OctopusUrl/api/users/$($userRecordToUpdate.Id)" -Headers $header -Body $($userRecordToUpdate | ConvertTo-Json -Depth 10)
                 $recordsUpdated += 1
             }
-
-        }        
+        }
     }
 
     if ($recordsUpdated -ge $maxRecordsToUpdate)

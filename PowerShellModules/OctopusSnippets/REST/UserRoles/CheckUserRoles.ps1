@@ -62,19 +62,17 @@ try
     Write-Information -MessageData "====== Starting comparison ======="
 
     # Get user roles from desired state (unchanged from initial install) instance of Octopus
-    $desiredStateUserRoles = (Invoke-RestMethod -Method Get -Uri "$desiredStateOctopusURL/api/userroles/all" -Headers $desiredStateHeader) | Where-Object -FilterScript {$_.CanBeDeleted -eq $false} 
-    
+    $desiredStateUserRoles = (Invoke-RestMethod -Method Get -Uri "$desiredStateOctopusURL/api/userroles/all" -Headers $desiredStateHeader) | Where-Object -FilterScript {$_.CanBeDeleted -eq $false}
+
     # Get user roles to check
-    $userRoles = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/userroles/all" -Headers $header) | Where-Object -FilterScript {$_.CanBeDeleted -eq $false} 
-    
+    $userRoles = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/userroles/all" -Headers $header) | Where-Object -FilterScript {$_.CanBeDeleted -eq $false}
 
     foreach ($userRole in $userRoles) {
         $dsUserRole = $desiredStateUserRoles | Where-Object -FilterScript { $_.Id -eq $userRole.Id }
 
-        $comparisonResult = Compare-Object -ReferenceObject $dsUserRole.GrantedSpacePermissions -DifferenceObject $userRole.GrantedSpacePermissions 
+        $comparisonResult = Compare-Object -ReferenceObject $dsUserRole.GrantedSpacePermissions -DifferenceObject $userRole.GrantedSpacePermissions
 
         if ($comparisonResult.Length -gt 0){
-            
             Write-Information -MessageData "$($userRole.Name): "
 
             foreach ($result in $comparisonResult) {
@@ -88,7 +86,6 @@ try
     }
 
     Write-Information -MessageData "====== Comparison complete. ======="
-
 }
 catch
 {

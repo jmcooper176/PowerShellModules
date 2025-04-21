@@ -89,13 +89,12 @@ $projects = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/pro
 foreach ($project in $projects)
 {
     Write-Information -MessageData "Checking project '$($project.Name)'"
-    
+
     # Get project variables
     $projectVariableSet = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header
-    
+
     # Check to see if there are any project variable values that reference any of the library set variables.
     foreach($variable in $variables) {
-        
         $matchingValueVariables = $projectVariableSet.Variables | Where-Object -FilterScript {$_.Value -like "*$($variable.Name)*"}
 
         if($null -ne $matchingValueVariables) {
@@ -117,7 +116,6 @@ foreach ($project in $projects)
 
     # Search Deployment process if configured
     if($searchDeploymentProcesses -eq $True) {
-
         # Get project deployment process
         $deploymentProcess = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/deploymentprocesses/$($project.DeploymentProcessId)" -Headers $header)
 
@@ -125,11 +123,11 @@ foreach ($project in $projects)
         foreach($step in $deploymentProcess.Steps)
         {
             $props = $step | Get-Member | Where-Object -FilterScript {$_.MemberType -eq "NoteProperty"}
-            foreach($prop in $props) 
+            foreach($prop in $props)
             {
-                $propName = $prop.Name                
+                $propName = $prop.Name
                 $json = $step.$propName | ConvertTo-Json -Compress
-                
+
                 # Check to see if any of the variableset variables are referenced in this step's properties
                 foreach($variable in $variables)
                 {
@@ -153,7 +151,6 @@ foreach ($project in $projects)
 
     # Search Runbook processes if configured
     if($searchRunbooksProcesses -eq $True) {
-        
         # Get project runbooks
         $runbooks = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks?skip=0&take=5000" -Headers $header)
 
@@ -162,16 +159,16 @@ foreach ($project in $projects)
         {
             # Get runbook process
             $runbookProcess = (Invoke-RestMethod -Method Get -Uri "$octopusURL$($runbook.Links.RunbookProcesses)" -Headers $header)
-            
+
             # Loop through steps
             foreach($step in $runbookProcess.Steps)
             {
                 $props = $step | Get-Member | Where-Object -FilterScript {$_.MemberType -eq "NoteProperty"}
-                foreach($prop in $props) 
+                foreach($prop in $props)
                 {
-                    $propName = $prop.Name                
+                    $propName = $prop.Name
                     $json = $step.$propName | ConvertTo-Json -Compress
-                    
+
                     # Check to see if any of the variableset variables are referenced in this runbook step's properties
                     foreach($variable in $variables)
                     {

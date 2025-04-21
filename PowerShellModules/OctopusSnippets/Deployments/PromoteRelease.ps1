@@ -56,7 +56,7 @@ $projectName = "Web" # Name of the project to promote
 $fromEnvironmentName = "Dev" # Name of the environment to promote from
 $toEnvironmentName = "Staging" # Name of the environment to promote to
 
-$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 
 $project = $repository.Projects.FindByName($projectName)

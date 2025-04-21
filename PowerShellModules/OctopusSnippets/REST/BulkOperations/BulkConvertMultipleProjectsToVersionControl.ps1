@@ -82,7 +82,7 @@ $gitUrl = "https://github.com/$username/$repo"
 Write-Information -MessageData "WhatIf is set to: $WhatIf" -ForegroundColor Blue
 
 # Get space
-$Spaces = Invoke-RestMethod -Uri "$OctopusURL/api/spaces?partialName=$([uri]::EscapeDataString($SpaceName))&skip=0&take=100" -Headers $Header 
+$Spaces = Invoke-RestMethod -Uri "$OctopusURL/api/spaces?partialName=$([uri]::EscapeDataString($SpaceName))&skip=0&take=100" -Headers $Header
 $Space = $Spaces.Items | Where-Object -FilterScript { $_.Name -eq $SpaceName }
 $spaceId = $Space.Id
 if ($null -eq $SpaceName) {
@@ -114,12 +114,11 @@ do {
     $projects += $response.Items
 } while ($response.Links.'Page.Next')
 
-if ($ProjectNames.Length -gt 0) {    
+if ($ProjectNames.Length -gt 0) {
     Write-Output "Filtering list of projects to work on."
     $projects = ($projects | Where-Object -FilterScript { $ProjectNames -icontains $_.Name })
 }
 else {
-   
     $ContinueResult = Read-Host "Working on ALL projects to convert to GIT. Please type y/yes to confirm."
 
     if ($ContinueResult -ieq "y" -or $ContinueResult -ieq "yes") {
@@ -174,7 +173,7 @@ foreach ($project in $projects) {
                     Url             = $gitUrl
                 }
             } | ConvertTo-Json
-            
+
             try {
                 Write-Output "Making request to $OctopusURL/api/$spaceId/projects/$projectId/git/convert"
                 Invoke-RestMethod -Uri "$OctopusURL/api/$spaceId/projects/$projectId/git/convert" -Headers $Header -Method Post -Body $body | Out-Null

@@ -69,7 +69,7 @@ foreach ($team in $teams)
 {
     # Get the scoped user role
     $scopedUserRoles = Invoke-RestMethod -Method Get -Uri ("$octopusBaseURL/teams/$($team.Id)/scopeduserroles") -Headers $headers -ErrorVariable octoError
-    
+
     # Loop through the scoped user roles
     foreach ($scopedUserRole in $scopedUserRoles)
     {
@@ -111,7 +111,7 @@ foreach ($team in $teams)
             {
                 # Get user object
                 $user = Invoke-RestMethod -Method Get -Uri ("$octopusBaseURL/users/$userId") -Headers $headers -ErrorVariable octoError
-                
+
                 # Display user
                 Write-Output "$($user.DisplayName)"
             }
@@ -130,5 +130,5 @@ foreach ($team in $teams)
                 }
             }
         }
-    }   
+    }
 }

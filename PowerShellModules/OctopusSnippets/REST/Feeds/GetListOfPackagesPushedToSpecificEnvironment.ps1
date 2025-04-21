@@ -79,7 +79,7 @@ foreach ($deployment in $deploymentList.Items)
     {
         Write-Information -MessageData "The release has packages, getting the deployment process for $releaseId for $deploymentName"
         $restUrl = $OctopusUrl + $release.Links.ProjectDeploymentProcessSnapshot
-        $deploymentProcess = Invoke-RestMethod $restUrl -Headers $header 
+        $deploymentProcess = Invoke-RestMethod $restUrl -Headers $header
 
         foreach($package in $release.SelectedPackages)
         {
@@ -91,11 +91,11 @@ foreach ($deployment in $deploymentList.Items)
                 $actionName = $package.ActionName
                 Write-Information -MessageData "The 'package' for $actionName is really a deploy a release step, skipping this package"
             }
-            else 
+            else
             {
                 foreach ($stepPackage in $action.Packages)
                 {
-                    $packageToAdd = @{                        
+                    $packageToAdd = @{
                         PackageId = $stepPackage.PackageId
                         Version = $package.Version
                     }
@@ -110,14 +110,14 @@ foreach ($deployment in $deploymentList.Items)
                         Write-Information -MessageData "Adding package $packageName.$packageVersion to your list"
                         $packageList += $packageToAdd
                     }
-                    else 
-                    {                        
+                    else
+                    {
                         Write-Information -MessageData "The package $packageName.$packageVersion has already been added to the list"
                     }
                 }
             }
         }
-    }                 
+    }
 }
 
 $packageCount = $packageList.Count

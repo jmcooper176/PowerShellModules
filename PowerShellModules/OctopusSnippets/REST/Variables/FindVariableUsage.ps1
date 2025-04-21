@@ -155,7 +155,6 @@ foreach ($project in $projects) {
 
     # Search Runbook processes if enabled
     if ($searchRunbooksProcesses -eq $True) {
-
         # Get project runbooks
         $runbooks = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks?skip=0&take=5000" -Headers $header)
 
@@ -189,7 +188,7 @@ foreach ($project in $projects) {
     }
 }
 
-if ($searchVariableSets -eq $True) { 
+if ($searchVariableSets -eq $True) {
     $VariableSets = (Invoke-RestMethod -Method Get "$OctopusURL/api/libraryvariablesets?contentType=Variables" -Headers $header).Items
 
     foreach ($VariableSet in $VariableSets) {

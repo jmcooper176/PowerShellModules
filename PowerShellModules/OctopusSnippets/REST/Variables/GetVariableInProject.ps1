@@ -125,7 +125,6 @@ try {
     Write-Information -MessageData "Should be Old: "$tempValue
     ################ GET YOUR VARIABLE AND STORE IT HERE ################
 
-
     ################ GET YOUR VARIABLE AND STORE IT HERE ################
 }
 catch {

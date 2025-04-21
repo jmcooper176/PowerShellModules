@@ -84,7 +84,6 @@ if ($includeNonActiveUsers -eq $true)
     $users = $users | Where-Object -FilterScript {$_.IsActive -eq $True}
 }
 
-
 # Loop through users
 foreach ($user in $users)
 {
@@ -98,7 +97,6 @@ foreach ($user in $users)
         EmailAddress = $user.EmailAddress
     }
 
-
     # Check to see if we're including user roles
     if ($includeUserRoles -eq $true)
     {
@@ -111,7 +109,7 @@ foreach ($user in $users)
         {
             # Get the team
             $team = $repository.Teams.Get($team.Id)
-            
+
             foreach ($role in $repository.Teams.GetScopedUserRoles($team))
             {
                 $userDetails["ScopedUserRoles"] += "$(($repository.UserRoles.Get($role.UserRoleId).Name)) ($(($repository.Spaces.Get($role.SpaceId)).Name))|"
@@ -123,14 +121,14 @@ foreach ($user in $users)
     {
         # Get the identity provider object
         $activeDirectoryIdentity = $user.Identities | Where-Object -FilterScript {$_.IdentityProviderName -eq "Active Directory"}
-        if ($null -ne $activeDirectoryIdentity) 
+        if ($null -ne $activeDirectoryIdentity)
         {
             $userDetails.Add("AD_Upn", (($activeDirectoryIdentity.Claims | ForEach-Object -Process {"$($_.upn.Value)"}) -Join "|"))
             $userDetails.Add("AD_Sam", (($activeDirectoryIdentity.Claims | ForEach-Object -Process {"$($_.sam.Value)"}) -Join "|"))
             $userDetails.Add("AD_Email", (($activeDirectoryIdentity.Claims | ForEach-Object -Process {"$($_.email.Value)"}) -Join "|"))
         }
     }
-    
+
     if ($includeAzureActiveDirectoryDetails -eq $true)
     {
         $azureAdIdentity = $user.Identities | Where-Object -FilterScript {$_.IdentityProviderName -eq "Azure AD"}
@@ -141,8 +139,7 @@ foreach ($user in $users)
         }
     }
 
-    
-    $usersList += $userDetails    
+    $usersList += $userDetails
 }
 
 # Write header

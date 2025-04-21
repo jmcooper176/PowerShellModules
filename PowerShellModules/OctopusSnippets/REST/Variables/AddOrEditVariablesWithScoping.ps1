@@ -97,7 +97,6 @@ Function Get-EnvironmentId {
 }
 
 Function Modify-Variable {
-
     # Define parameters
     param (
         $VariableSet,
@@ -109,7 +108,6 @@ Function Modify-Variable {
 
     #If given a scope parameter, find the matching variable with scope and modify the value
     if ($VariableEnvScope) {
-
         #Code to transform the environment name to environment ID.
         $SpaceId = Get-SpaceId -Space $SpaceName
         $environmentId = Get-EnvironmentId -EnvironmentName $VariableEnvScope -SpaceId $SpaceId
@@ -133,7 +131,6 @@ Function Modify-Variable {
 }
 
 Function Add-Variable {
-
     # Define parameters
     param (
         $VariableSet,
@@ -144,7 +141,7 @@ Function Add-Variable {
         $IsSensitive = $false
 
     )
-    #Create the variable object    
+    #Create the variable object
     $obj = New-Object -TypeName PSObject -Property @{
         'Name'        = $($VariableName)
         'Value'       = $($VariableValue)
@@ -196,7 +193,7 @@ Function Remove-Variable {
     )
 
     $tempVars = @()
- 
+
     foreach ($variable in $VariableSet.Variables) {
         if ($variable.Name -ne $VariableName) {
             $tempVars += $variable
@@ -216,7 +213,7 @@ Function Modify-Scope {
         $IsSensitive = $false
     )
     $tempVars = @()
-    #Create the variable object    
+    #Create the variable object
     $obj = New-Object -TypeName PSObject -Property @{
         'Name'        = $($VariableName)
         'Value'       = $($VariableValue)
@@ -281,9 +278,9 @@ Function Modify-Scope {
         if ($null -ne $tempenvlist -and $null -ne $tempExistList) {
             $envDiffs = Compare-Object -ReferenceObject $tempenvlist -DifferenceObject $tempExistList -PassThru
         }
-        
+
         $envmatch  =($null -eq $envDiffs)
-        
+
         # Same as above but for roles
         foreach ($role in $variable.Scope.Role) {
             $temprolelist += $role
@@ -300,7 +297,7 @@ Function Modify-Scope {
         # If everything matches, add the value from the matched variable and add the dummy variable to the set
         if (($variable.Name -eq $VariableName) -and ($rolematch) -and ($envmatch)) {
             $obj.Value = $variable.Value
-            
+
             # Keep original Machine/Action/Channel/ProcessOwner scopes
             if ($variable.Scope.Machine) {
                 $obj.Scope.Machine = $variable.Scope.Machine
@@ -347,10 +344,9 @@ try {
     #Modify-Variable Information
     #--------------------------
     #If you want to modify an Environmentally scoped variable, you must pass the Environment with -VariableEnvScope and the Space with -SpaceName. Note, if you have multiple environments scoped if it matches on one it will modify the variable, it doesn't need to match on all.
-    
-    #Modify-Variable -VariableSet $octopusProjectVariables -VariableName "Test" -VariableValue "New" 
+
+    #Modify-Variable -VariableSet $octopusProjectVariables -VariableName "Test" -VariableValue "New"
     #Modify-Variable -VariableSet $octopusProjectVariables -VariableName "Test2" -VariableValue "New2" -VariableEnvScope "Development" -SpaceName "Default"
-    
 
     #--------------------------
     #Add-Variable Information
@@ -359,37 +355,37 @@ try {
     #Add-Variable -VariableSet $octopusProjectVariables -VariableName "TestNewEnv2" -VariableValue "Env Scoped" -VariableEnvScope "Development"
     #Add-Variable -VariableSet $octopusProjectVariables -VariableName "TestNewRole" -VariableValue "Role Scoped" -VariableRoleScope "Web"
     #Add-Variable -VariableSet $octopusProjectVariables -VariableName "ObjectTesting2" -VariableValue "Both Env and Role Scoped" -VariableEnvScope "Development" -VariableRoleScope "Web"
-    
+
     #If you want to add a variable as sensitive, set the parameter -IsSensitive $true. It will default to $false otherwise.
 
     #Add-Variable -VariableSet $octopusProjectVariables -VariableName "SensitiveVariable" -VariableValue "SENSITIVE" -VariableEnvScope "Development" -VariableRoleScope "Web" -IsSensitive $true
     #Add-Variable -VariableSet $octopusProjectVariables -VariableName "NOTSensitiveVariable" -VariableValue "not SENSITIVE" -VariableEnvScope "Development" -VariableRoleScope "Web"
-    
+
     ###Example of adding multiple Environments or Roles###
 
     #$environments = "Development","Test","Production"
     #$roles = "Web","Web-Local"
     #Add-Variable -VariableSet $octopusProjectVariables -VariableName "ArrayTesting2" -VariableValue "multi environment and role scope" -VariableEnvScope $environments -VariableRoleScope $roles
-    
+
     #--------------------------
     #Remove-Variable Information
     #--------------------------
     #Remove-Variable will delete any variable with the name regardless of scoping
 
     #Remove-Variable -VariableSet $octopusProjectVariables -VariableName "RemoveThis"
-    
+
     #--------------------------
     #Modify-Scope Information
     #--------------------------
     #To use this function, you have to define both the existing environments+roles on the variable in array format, and the resulting environments+roles that you want it to have at the end of the function, also in array format.
-    
+
     #For example, this would find the variable with Env scope of Development, and role scope of Web, then remove both of them.
     #$newEnvironments = @()
     #$newRoles = @()
     #$existingEnvironments = @("Development")
     #$existingRoles = @("Web")
     #Modify-Scope -VariableSet $octopusProjectVariables -VariableName "ObjectTesting2" -VariableEnvScope $newEnvironments -VariableRoleScope $newRoles -ExistingEnvScope $existingEnvironments  -ExistingRoleScope $existingRoles
-    
+
     #In this example, this would find the variable with Env scope of Development, and role scope of Web, then add the Test environment, and the Windows role scopes.
     #$newEnvironments = @("Development","Test")
     #$newRoles = @("Web","Windows")
@@ -397,10 +393,8 @@ try {
     #$existingRoles = @("Web")
     #Modify-Scope -VariableSet $octopusProjectVariables -VariableName "ObjectTesting2" -VariableEnvScope $newEnvironments -VariableRoleScope $newRoles -ExistingEnvScope $existingEnvironments  -ExistingRoleScope $existingRoles
 
-
     ##### PUT ANY MODIFY AND ADD COMMANDS HERE #####
 
-    
     ##### PUT ANY MODIFY AND ADD COMMANDS HERE #####
 
     # Convert object to json to upload it
@@ -409,8 +403,6 @@ try {
     #Write-Information -MessageData $jsonBody
     # Save the variables to the variable set
     Invoke-RestMethod -Method "put" -Uri "$OctopusServerUrl/api/$spaceId/variables/$($octopusProjectVariables.Id)" -Body $jsonBody -Headers @{"X-Octopus-ApiKey" = $ApiKey }
-    
-
 }
 catch {
     $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }

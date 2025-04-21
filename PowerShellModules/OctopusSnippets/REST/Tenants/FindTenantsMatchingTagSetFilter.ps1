@@ -55,7 +55,7 @@ $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 # Space Name
 $spaceName = "Default"
 
-# Canonical TagSet Name. 
+# Canonical TagSet Name.
 # e.g. "AWS Region/California" See: https://octopus.com/docs/deployment-patterns/multi-tenant-deployments/tenant-tags#TenantTags-Referencingtenanttags
 $canonicalTagSet = "Tag Set Name/Tag Name"
 
@@ -71,12 +71,12 @@ try
 
     $tenantProperties = Get-Member -InputObject $tenants -MemberType NoteProperty
     foreach ($tenantProp in $tenantProperties)
-    {           
+    {
         $tenantId = $tenantProp.Name
         $tenant = $tenants | Select-Object -ExpandProperty $tenantProp.Name
         if($tenant.IsMatched -eq $True) {
             $matchingTenantIds += $tenantId
-        }       
+        }
     }
 }
 catch

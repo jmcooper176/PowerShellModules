@@ -55,7 +55,6 @@ $csvExportPath = "c:\temp\variable.csv"
 
 $variableTracking = @()
 
-
 $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository($endpoint)
 $client = New-Object -TypeName Octopus.Client.OctopusClient($endpoint)
@@ -90,7 +89,7 @@ foreach ($variableSet in $variableSets)
             }
             $variableTracking += $result
         }
-    }    
+    }
 }
 
 # Get all projects
@@ -115,7 +114,7 @@ foreach ($project in $projects)
                 Property = $null
                 AdditionalContext = $match.Name
             }
-            
+
             # Add to tracking list
             $variableTracking += $result
         }

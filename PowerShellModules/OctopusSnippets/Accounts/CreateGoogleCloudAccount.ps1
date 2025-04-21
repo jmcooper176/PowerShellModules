@@ -68,7 +68,7 @@ $accountTenantParticipation = "Untenanted"
 $jsonKeyPath = "/path/to/jsonkeyfile.json"
 
 # (Optional) Tenant tags e.g.: "AWS Region/California"
-$accountTenantTags = @() 
+$accountTenantTags = @()
 # (Optional) Tenant Ids e.g.: "Tenants-101"
 $accountTenantIds = @()
 # (Optional) Environment Ids e.g.: "Environments-1"
@@ -97,7 +97,7 @@ try
     $googleCloudAccount = New-Object -TypeName Octopus.Client.Model.Accounts.GoogleCloudAccountResource
     $googleCloudAccount.Name = $accountName
     $googleCloudAccount.Description = $accountDescription
-    
+
     $jsonKeySensitiveValue = New-Object -TypeName Octopus.Client.Model.SensitiveValue
     $jsonKeySensitiveValue.NewValue = $jsonKeyBase64
     $jsonKeySensitiveValue.HasValue = $True

@@ -99,7 +99,7 @@ $teams = Invoke-RestMethod -Method Get -Uri $teamsUri -Headers $headers
 foreach ($team in $teams.Items) {
     $teamRolesUri = "$octopusBaseUrl/api/$spaceId/teams/$($team.Id)/scopeduserroles"
     $teamRoles = Invoke-RestMethod -Method Get -Uri $teamRolesUri -Headers $headers
-    
+
     foreach ($role in $teamRoles.Items) {
         $matchedRole = $rolesWithPermission | Where-Object -FilterScript { $_.Id -eq $role.UserRoleId }
 

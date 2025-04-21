@@ -85,7 +85,7 @@ while ($pageNumber -le $projects.LastPageNumber) {
         if ($showProgress) {
             Write-Progress -Activity "Checking project $($project.Name)".PadRight(60) -Status "$count/$total ($per% Complete)" -PercentComplete $per
         }
-        
+
         $deploymentsUrl = "$octopusSpaceUrl/deployments?projects=$($project.Id)&take=1"
         try {
             $latestDeployment = Invoke-RestMethod -Uri $deploymentsUrl -Method Get -Headers $headers -ErrorAction Stop | Select-Object -ExpandProperty Items | Select-Object -First 1

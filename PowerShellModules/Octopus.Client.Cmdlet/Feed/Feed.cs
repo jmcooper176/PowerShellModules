@@ -1,6 +1,4 @@
-﻿using System;
-
-// ---------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------
 // <copyright file="Feed.cs" company="John Merryweather Cooper">
 //     Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper. All Rights Reserved.
 //
@@ -27,7 +25,7 @@
 // John Merryweather Cooper
 // </author>
 // <date>
-// Created:  2025-4-2
+// Created:  2025-4-7
 // </date>
 // <summary>
 // This file "Feed.cs" is part of "Octopus.Client.Cmdlet".

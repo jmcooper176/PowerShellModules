@@ -52,7 +52,7 @@ $OctopusUrl = "https://your-octopus-url"
 $APIKey = "API-XXXXXXXXX"
 
 # Space where machines exist
-$spaceName = "Default" 
+$spaceName = "Default"
 
 $header = @{ "X-Octopus-ApiKey" = $APIKey }
 
@@ -92,8 +92,8 @@ foreach($channel in $channels){
 $totalFound = $lifecyclesWithoutReleases.Count
 Write-Information -MessageData "Total Lifecyles with no releases: $totalFound"
 
-if ($totalFound -gt 0) {   
-    $tempFile = [System.IO.Path]::GetTempFileName() 
+if ($totalFound -gt 0) {
+    $tempFile = [System.IO.Path]::GetTempFileName()
     $lifecyclesWithoutReleases | Out-File -append $tempFile
     Write-Information -MessageData "Found the following lifecycles with no releases:" -ForegroundColor Red
     foreach ($lifecycle in $lifecyclesWithoutReleases) {

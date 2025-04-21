@@ -66,7 +66,7 @@ function Invoke-OctopusApi
         $spaceId,
         $apiKey,
         $method,
-        $item   
+        $item
     )
 
     $octopusUrlToUse = $OctopusUrl
@@ -81,24 +81,24 @@ function Invoke-OctopusApi
     }
     else
     {
-        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"    
-    }  
+        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"
+    }
 
     try
-    {        
+    {
         if ($null -ne $item)
         {
             $body = $item | ConvertTo-Json -Depth 10
             Write-Verbose -Message $body
 
             Write-Information -MessageData "Invoking $method $url"
-            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8' 
+            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8'
         }
 
         Write-Verbose -Message "No data to post or put, calling bog standard invoke-restmethod for $url"
         $result = Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -ContentType 'application/json; charset=utf-8'
 
-        return $result               
+        return $result
     }
     catch
     {
@@ -134,7 +134,7 @@ function Update-CategorizedMachines
         $space
     )
 
-    $machineList = Invoke-OctopusApi -octopusUrl $octopusUrl -apiKey $octopusApiKey -endPoint "machines?skip=0&take=10000" -spaceId $space.Id -method "GET"    
+    $machineList = Invoke-OctopusApi -octopusUrl $octopusUrl -apiKey $octopusApiKey -endPoint "machines?skip=0&take=10000" -spaceId $space.Id -method "GET"
 
     foreach ($machine in $machineList.Items)
     {
@@ -157,7 +157,7 @@ function Update-CategorizedMachines
             }
 
             $categorizedMachines.ListeningTentacles += $machine
-        }        
+        }
 
         if ($machine.IsDisabled -eq $true)
         {
@@ -169,7 +169,7 @@ function Update-CategorizedMachines
 
         if ($machine.HealthStatus -eq "Unavailable")
         {
-            $categorizedMachines.OfflineMachines += $machine            
+            $categorizedMachines.OfflineMachines += $machine
         }
 
         $deploymentsList = Invoke-OctopusApi -octopusUrl $octopusUrl -apiKey $octopusApiKey -endPoint "machines/$($machine.Id)/tasks?skip=0" -spaceId $space.Id -method "GET"
@@ -187,8 +187,8 @@ function Update-CategorizedMachines
 
         if ($dateDiff.TotalDays -gt $daysSinceLastDeployment)
         {
-            $categorizedMachines.OldMachines += $machine                        
-        }                 
+            $categorizedMachines.OldMachines += $machine
+        }
     }
 }
 
@@ -216,7 +216,7 @@ if ($versionParts[0] -ge 2019) {
     Write-Information -MessageData "Octopus Server version $version supports spaces, checking all spaces."
     $spaceList = Invoke-OctopusApi -octopusUrl $octopusUrl -apiKey $octopusApiKey -endPoint "spaces?skip=0&take=1000" -spaceId $null -method "GET"
     foreach ($space in $spaceList.Items)
-    {    
+    {
         Update-CategorizedMachines -categorizedMachines $categorizedMachines -space $space
     }
 } else {

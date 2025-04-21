@@ -82,7 +82,7 @@ foreach ($project in $projects)
 {
     # Get variable set
     $variableSet = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header
-    
+
     # Check for variables
     if ($variableSet.Variables.Count -gt 0)
     {
@@ -101,13 +101,13 @@ foreach ($variableSet in $variableSets)
 {
     # Get the variableset
     $variableSet = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/libraryvariablesets/$($variableSet.Id)" -Headers $header
-    
+
     # Check for variables
     if ($variableSet.Variables.Count -gt 0)
     {
         $variableSet.Variables = Clear-SensitiveVariables -VariableCollection $variableSet.Variables
 
         # Update set
-        Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/libraryvariablesets/$($variableSet.Id)" -Body ($variableSet | ConvertTo-Json -Depth 10) -Headers $header            
+        Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/libraryvariablesets/$($variableSet.Id)" -Body ($variableSet | ConvertTo-Json -Depth 10) -Headers $header
     }
 }

@@ -54,7 +54,6 @@ $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 $spaceName = "Default"
 $feedId = "Feeds-yourfeedid" # During deployment you can use system variable #{Octopus.Action.Package.FeedId}
 
-
 # Get space
 $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object -FilterScript {$_.Name -eq $spaceName}
 

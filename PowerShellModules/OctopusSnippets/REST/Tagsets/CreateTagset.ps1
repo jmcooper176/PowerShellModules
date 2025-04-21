@@ -64,7 +64,7 @@ $optionalTags.Add("Stable", "#36A766")
 $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object -FilterScript {$_.Name -eq $spaceName}
 
 # See if tagset already exists
-$tagsetResults = (Invoke-RestMethod -Method Get "$octopusURL/api/$($space.Id)/tagsets?partialName=$tagsetName" -Headers $header) 
+$tagsetResults = (Invoke-RestMethod -Method Get "$octopusURL/api/$($space.Id)/tagsets?partialName=$tagsetName" -Headers $header)
 if( $tagsetResults.TotalResults -gt 0) {
     throw "Existing tagset results found matching '$($tagsetName)'!"
 }

@@ -46,7 +46,7 @@ This file "MatchUsernamesToEmailAddress.ps1" is part of "OctopusSnippets".
 #>
 
 # =============================================================
-#      Change usernames to match email addresses (for AAD)     
+#      Change usernames to match email addresses (for AAD)
 # =============================================================
 
 $ErrorActionPreference = "Stop";

@@ -57,15 +57,15 @@ foreach ($project in $projectList.Items)
 {
     $deploymentProcessUrl = $OctopusUrl + $project.Links.DeploymentProcess
     $projectDeploymentProcess = Invoke-RestMethod $deploymentProcessUrl -Headers $header
-    
+
     foreach ($step in $projectDeploymentProcess.Steps)
-    {        
+    {
         if ($step.Properties.'Octopus.Action.TargetRoles' -contains $roleName)
         {
             $projectsWithRoles += $project.Name
             break
         }
-    } 
+    }
 }
 
 Write-Information -MessageData "The following projects have $roleName"

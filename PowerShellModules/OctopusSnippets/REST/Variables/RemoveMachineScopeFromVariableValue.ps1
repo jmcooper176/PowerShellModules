@@ -86,7 +86,6 @@ if ($variableToUpdate) {
     else {
         Write-Information -MessageData "Could not find target '$($target.Name)' in the scope for variable '$variableName' value '$variableValue'"
     }
-
 }
 else {
     Write-Information -MessageData "Could not find the variable '$variableName' in project '$projectName'"

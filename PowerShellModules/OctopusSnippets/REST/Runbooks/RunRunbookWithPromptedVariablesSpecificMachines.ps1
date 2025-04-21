@@ -62,21 +62,21 @@ $variableName = @("Project.Service.Name")     # Enter multiple comma separated v
 $newValue = @("Spooler")         # Enter multiple comma separated values if you have multiple prompted variables in the same order as the variable names above (e.g. @("value for promptedvar","value for promptedvar2"))
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 $spaceId = $space.Id
 
 # Get runbook
-$runbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/runbooks?partialName=$([uri]::EscapeDataString($runbookName))&skip=0&take=100" -Headers $header 
+$runbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/runbooks?partialName=$([uri]::EscapeDataString($runbookName))&skip=0&take=100" -Headers $header
 $runbook = $runbooks.Items | Where-Object -FilterScript { $_.Name -eq $runbookName }
 $runbookId = $runbook.Id
 
 # Get environment
-$environments = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments?partialName=$([uri]::EscapeDataString($environmentName))&skip=0&take=100" -Headers $header 
+$environments = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments?partialName=$([uri]::EscapeDataString($environmentName))&skip=0&take=100" -Headers $header
 $environment = $environments.Items | Where-Object -FilterScript { $_.Name -eq $environmentName }
 $environmentId = $environment.Id
 
-# Get machine 
+# Get machine
 $machineList = New-Object -TypeName.Collections.ArrayList
 
 foreach ($machineName in $machineNames) {
@@ -94,10 +94,10 @@ if ([string]::IsNullOrEmpty($runbookSnapshotId)) {
 }
 
 # Get runbook preview for environment
-$runbookPreview = Invoke-RestMethod -Uri "$octopusURL/api/$($spaceId)/runbooks/$($runbookId)/runbookRuns/preview/$($EnvironmentId)?includeDisabledSteps=true" -Headers $header 
+$runbookPreview = Invoke-RestMethod -Uri "$octopusURL/api/$($spaceId)/runbooks/$($runbookId)/runbookRuns/preview/$($EnvironmentId)?includeDisabledSteps=true" -Headers $header
 
 # Finds the element ID(s) you need to provide for the runbook
-$elementItems = @() 
+$elementItems = @()
 $formValues = @{ }
 foreach ($name in $variablename){
     $element = $runbookPreview.Form.Elements | Where-Object -FilterScript { $_.Control.Name -eq $name }

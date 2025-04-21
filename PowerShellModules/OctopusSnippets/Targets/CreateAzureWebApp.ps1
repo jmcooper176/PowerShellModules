@@ -58,7 +58,6 @@ $spaceName = "default"
 $environmentNames = @("Development", "Production")
 $roles = @("MyRole")
 
-
 $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 $client = New-Object -TypeName Octopus.Client.OctopusClient $endpoint
@@ -85,7 +84,7 @@ try
     $machine = New-Object -TypeName Octopus.Client.Model.MachineResource
     $machine.Endpoint = $azureWebAppTarget
     $machine.Name = $azureWebAppName
-    
+
     # Add Environments
     foreach ($environment in $environments)
     {
@@ -98,7 +97,7 @@ try
     {
         $machine.Roles.Add($role)
     }
-        
+
     # Add to machine to space
     $repositoryForSpace.Machines.Create($machine)
 }

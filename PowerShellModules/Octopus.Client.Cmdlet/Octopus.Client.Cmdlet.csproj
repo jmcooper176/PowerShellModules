@@ -43,7 +43,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.PowerShell.5.ReferenceAssemblies" Version="1.1.0" />
-    <PackageReference Include="Octopus.Client" Version="14.3.2010" />
+    <PackageReference Include="Octopus.Client" Version="14.3.2034" />
     <PackageReference Include="System.Linq" Version="4.3.0" />
   </ItemGroup>
 

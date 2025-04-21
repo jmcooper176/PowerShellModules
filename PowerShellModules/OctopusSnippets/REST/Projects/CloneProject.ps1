@@ -59,19 +59,19 @@ $destinationProjectGroupName = "Enter Project Group Name here"
 $destinationProjectDescription = "Project clone of $($sourceProjectName)"
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -ieq $spaceName }
 
 # Get source project
-$sourceProjects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($sourceProjectName))&skip=0&take=100" -Headers $header 
-$matchingSourceProjects = @($sourceProjects.Items | Where-Object -FilterScript { $_.Name -ieq $sourceProjectName }) 
+$sourceProjects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($sourceProjectName))&skip=0&take=100" -Headers $header
+$matchingSourceProjects = @($sourceProjects.Items | Where-Object -FilterScript { $_.Name -ieq $sourceProjectName })
 $firstMatchingSourceProject = $matchingSourceProjects | Select-Object -First 1
 if ($matchingSourceProjects.Count -gt 1) {
     Write-Warning -Message "Multiple projects found matching name $($sourceProjectName), choosing first one ($($firstMatchingSourceProject.Id))"
 }
 
 # Get lifecycle to use
-$lifecycles = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/lifecycles?partialName=$([uri]::EscapeDataString($sourceLifecycleToUse))&skip=0&take=100" -Headers $header 
+$lifecycles = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/lifecycles?partialName=$([uri]::EscapeDataString($sourceLifecycleToUse))&skip=0&take=100" -Headers $header
 $matchingLifecycles = @($lifecycles.Items | Where-Object -FilterScript { $_.Name -ieq $sourceLifecycleToUse })
 $firstMatchingLifecycle = $matchingLifecycles | Select-Object -First 1
 if ($matchingLifecycles.Count -gt 1) {
@@ -79,8 +79,8 @@ if ($matchingLifecycles.Count -gt 1) {
 }
 
 # Get project Group
-$projectGroups = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projectgroups?partialName=$([uri]::EscapeDataString($destinationProjectGroupName))&skip=0&take=100" -Headers $header 
-$matchingProjectGroups = @($projectGroups.Items | Where-Object -FilterScript { $_.Name -ieq $destinationProjectGroupName }) 
+$projectGroups = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projectgroups?partialName=$([uri]::EscapeDataString($destinationProjectGroupName))&skip=0&take=100" -Headers $header
+$matchingProjectGroups = @($projectGroups.Items | Where-Object -FilterScript { $_.Name -ieq $destinationProjectGroupName })
 $firstMatchingProjectGroup = $matchingProjectGroups | Select-Object -First 1
 if ($matchingProjectGroups.Count -gt 1) {
     Write-Warning -Message "Multiple project groups found matching name $($destinationProjectGroupName), choosing first one ($($firstMatchingProjectGroup.Id))"

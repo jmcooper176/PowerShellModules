@@ -69,7 +69,6 @@ $accountDetails = $repository.Accounts.FindByName($spName)
 $accountId = $accountDetails.Id
 Write-Information -MessageData "got Octopus account " $accountDetails.Name
 
-
 Login-AzureRmAccount
 Select-AzureRmSubscription $azureSubscription
 
@@ -85,7 +84,7 @@ foreach ($webApp in $webApps)
                         Name = $webApp.SiteName
                         Roles = New-Object -TypeName Octopus.Client.Model.ReferenceCollection($roleName)
                         Endpoint = New-Object -TypeName Octopus.Client.Model.Endpoints.AzureWebAppEndpointResource -Property @{
-                            AccountId = $accountId 
+                            AccountId = $accountId
                             ResourceGroupName = $webApp.ResourceGroup
                             WebAppName = $webApp.SiteName }
                         EnvironmentIds = New-Object -TypeName Octopus.Client.Model.ReferenceCollection($environmentId)

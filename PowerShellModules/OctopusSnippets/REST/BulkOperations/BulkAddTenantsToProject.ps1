@@ -54,42 +54,41 @@ $tenantTag = "TENANT TAG TO FILTER ON" #Format = [Tenant Tag Set Name]/[Tenant T
 $whatIf = $false # Set to true to test out changes before making them
 $maxNumberOfTenants = 1 # The max number of tenants you wish to change in this run
 
-
 $cachedResults = @{}
 
 function Write-OctopusVerbose
 {
     param ($message)
-    
-    Write-Verbose -Message $message  
+
+    Write-Verbose -Message $message
 }
 
 function Write-OctopusInformation
 {
     param ($message)
-    
-    Write-Information -MessageData $message  
+
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusSuccess
 {
     param ($message)
 
-    Write-Information -MessageData $message 
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusWarning
 {
     param ($message)
 
-    Write-Warning -Message "$message" 
+    Write-Warning -Message "$message"
 }
 
 function Write-OctopusCritical
 {
     param ($message)
 
-    Write-Error -Message "$message" 
+    Write-Error -Message "$message"
 }
 
 function Invoke-OctopusApi
@@ -102,7 +101,7 @@ function Invoke-OctopusApi
         $apiKey,
         $method,
         $item,
-        $ignoreCache     
+        $ignoreCache
     )
 
     $octopusUrlToUse = $OctopusUrl
@@ -117,18 +116,18 @@ function Invoke-OctopusApi
     }
     else
     {
-        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"    
-    }  
+        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"
+    }
 
     try
-    {        
+    {
         if ($null -ne $item)
         {
             $body = $item | ConvertTo-Json -Depth 10
             Write-OctopusVerbose $body
 
             Write-OctopusInformation "Invoking $method $url"
-            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8' 
+            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8'
         }
 
         if (($null -eq $ignoreCache -or $ignoreCache -eq $false) -and $method.ToUpper().Trim() -eq "GET")
@@ -142,7 +141,7 @@ function Invoke-OctopusApi
         }
         else
         {
-            Write-OctopusVerbose "Ignoring cache."    
+            Write-OctopusVerbose "Ignoring cache."
         }
 
         Write-OctopusVerbose "No data to post or put, calling bog standard invoke-restmethod for $url"
@@ -156,8 +155,6 @@ function Invoke-OctopusApi
         $cachedResults.add($url, $result)
 
         return $result
-
-               
     }
     catch
     {
@@ -172,9 +169,9 @@ function Invoke-OctopusApi
                 Write-OctopusCritical "Forbidden error returned from $url, please verify API key and try again"
             }
             else
-            {                
+            {
                 Write-OctopusVerbose -Message "Error calling $url $($_.Exception.Message) StatusCode: $($_.Exception.Response.StatusCode )"
-            }            
+            }
         }
         else
         {
@@ -191,15 +188,15 @@ function Get-OctopusItemByName
     param (
         $itemName,
         $itemType,
-        $endpoint,        
+        $endpoint,
         $spaceId,
         $defaultUrl,
         $octopusApiKey
     )
 
     Write-OctopusInformation "Attempting to find $itemType with the name of $itemName"
-    
-    $itemList = Invoke-OctopusApi -octopusUrl $defaultUrl -endPoint "$($endPoint)?partialName=$([uri]::EscapeDataString($itemName))&skip=0&take=100" -spaceId $spaceId -apiKey $octopusApiKey -method "GET"    
+
+    $itemList = Invoke-OctopusApi -octopusUrl $defaultUrl -endPoint "$($endPoint)?partialName=$([uri]::EscapeDataString($itemName))&skip=0&take=100" -spaceId $spaceId -apiKey $octopusApiKey -method "GET"
     $item = Get-FilteredOctopusItem -itemList $itemList -itemName $itemName
 
     Write-OctopusInformation "Successfully found $itemName with id of $($item.Id)"
@@ -218,9 +215,9 @@ function Get-FilteredOctopusItem
     {
         Write-OctopusCritical "Unable to find $itemName.  Exiting with an exit code of 1."
         Exit 1
-    }  
+    }
 
-    $item = $itemList.Items | Where-Object -FilterScript { $_.Name -eq $itemName}      
+    $item = $itemList.Items | Where-Object -FilterScript { $_.Name -eq $itemName}
 
     if ($null -eq $item)
     {
@@ -249,7 +246,7 @@ function Test-OctopusObjectHasProperty
     {
         Write-OctopusVerbose "$propertyName property missing."
         return $false
-    }    
+    }
 }
 
 function Add-PropertyIfMissing
@@ -259,11 +256,11 @@ function Add-PropertyIfMissing
         $propertyName,
         $propertyValue,
         $overwriteIfExists)
-    
+
     if ((Test-OctopusObjectHasProperty -objectToTest $objectToTest -propertyName $propertyName) -eq $false)
-    {            
-        $objectToTest | Add-Member -MemberType NoteProperty -Name $propertyName -Value $propertyValue        
-    }        
+    {
+        $objectToTest | Add-Member -MemberType NoteProperty -Name $propertyName -Value $propertyValue
+    }
 }
 
 #https://local.octopusdemos.app/api/Spaces-102/tenants/tag-test?tags=Tenant%20Type%2FCustomer
@@ -295,10 +292,10 @@ foreach ($tenant in $tenantList.Items)
         Write-OctopusInformation "The project $($project.Name) is not assigned to $($project.Name), adding it"
         $changeReport += "Added $($project.Name) to $($tenant.Name) with environment ids $environmentList"
 
-        Add-PropertyIfMissing -objectToTest $tenant.ProjectEnvironments -propertyName $projectId -propertyValue $environmentList        
+        Add-PropertyIfMissing -objectToTest $tenant.ProjectEnvironments -propertyName $projectId -propertyValue $environmentList
         $tenantChanged = $true
     }
-    else 
+    else
     {
         Write-OctopusInformation "Project $($project.Name) is assigned to the $($tenant.Name), let's make sure it has the environments as well"
         foreach ($environmentId in $environmentList)

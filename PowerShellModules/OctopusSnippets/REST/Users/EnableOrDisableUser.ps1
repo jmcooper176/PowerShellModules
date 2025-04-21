@@ -61,7 +61,7 @@ $enable = $false # Set to $true to enable an account, set to $false to disable a
 # Find user account
 $allUserAccounts = Invoke-RestMethod -Method GET -uri "$octopusURL/api/users/all" -Headers $header
 
-If ($usernameOrEmail -ieq "email") {  
+If ($usernameOrEmail -ieq "email") {
     $userAccount = $allUserAccounts | Where-Object -FilterScript { $_.EmailAddress -ieq $userAccountEmailAddress }
     if ($userAccount.count -gt 1) {
         Write-Warning -Message "Multiple accounts detected with the specified email. Consider specifying an account by username instead."

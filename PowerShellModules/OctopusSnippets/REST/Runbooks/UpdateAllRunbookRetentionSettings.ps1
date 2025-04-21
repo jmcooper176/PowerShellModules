@@ -62,7 +62,7 @@ $runbookName = ""
 $runbookMaxRetentionRunPerEnvironment = 5
 
 # Get spaces
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces/all" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces/all" -Headers $header
 if (![string]::IsNullOrWhitespace($spaceName)) {
     Write-Output "Filtering spaces to just $spaceName"
     $spaces = $spaces | Where-Object -FilterScript { $_.Name -ieq $spaceName }
@@ -71,7 +71,7 @@ Write-Output "Space Count: $($spaces.Length)"
 foreach ($space in $spaces) {
     Write-Output "Working on space $($space.Name)"
 
-    $projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header     
+    $projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header
     if (![string]::IsNullOrWhitespace($projectName)) {
         Write-Output "Filtering projects to just $projectName"
         $projects = $projects | Where-Object -FilterScript { $_.Name -ieq $projectName }
@@ -80,8 +80,8 @@ foreach ($space in $spaces) {
 
     foreach ($project in $projects) {
         Write-Output "Working on project $($project.Name)"
-        
-        $projectRunbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks" -Headers $header         
+
+        $projectRunbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks" -Headers $header
         if (![string]::IsNullOrWhitespace($runbookName)) {
             Write-Output "Filtering runbooks to just $runbookName"
             $runbooks = $projectRunbooks.Items | Where-Object -FilterScript { $_.Name -ieq $runbookName }
@@ -90,11 +90,11 @@ foreach ($space in $spaces) {
             $runbooks = $projectRunbooks.Items
         }
         Write-Output "Runbook Count: $($runbooks.Length)"
-        
+
         foreach ($runbook in $runbooks) {
             Write-Output "Working on runbook $($runbook.Name)"
             $currentRetentionQuantityToKeep = $runbook.RunRetentionPolicy.QuantityToKeep
-            
+
             if ($currentRetentionQuantityToKeep -gt $runbookMaxRetentionRunPerEnvironment) {
                 Write-Output "Runbook '$($runbook.Name)' ($($runbook.Id)) has a retention run policy to keep of: $($currentRetentionQuantityToKeep) which is greater than $($runbookMaxRetentionRunPerEnvironment)"
                 $runbook.RunRetentionPolicy.QuantityToKeep = $runbookMaxRetentionRunPerEnvironment

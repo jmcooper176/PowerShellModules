@@ -74,7 +74,7 @@ $tenantNames = @()
 $tenantIds = @()
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Get environment Ids
@@ -95,7 +95,7 @@ foreach ($tenantName in $tenantNames) {
 }
 
 # Get account
-$accounts = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/accounts?partialName=$([uri]::EscapeDataString($accountName))&skip=0&take=100" -Headers $header 
+$accounts = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/accounts?partialName=$([uri]::EscapeDataString($accountName))&skip=0&take=100" -Headers $header
 $account = $accounts.Items | Where-Object -FilterScript { $_.Name -eq $accountName }
 
 $sshTarget = @{

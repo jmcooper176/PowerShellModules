@@ -57,21 +57,21 @@ $projectName = "YourProject"
 $environmentName = "DEV1"
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 $spaceId = $space.Id
 
 Write-Information -MessageData "The spaceId for $spaceName is $($spaceId)"
 
 # Get project
-$projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header 
+$projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header
 $project = $projects.Items | Where-Object -FilterScript { $_.Name -eq $projectName }
 $projectId = $project.Id
 
 Write-Information -MessageData "The projectId for $spaceName is $($projectId)"
 
 # Get environment
-$environments = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments?partialName=$([uri]::EscapeDataString($environmentName))&skip=0&take=100" -Headers $header 
+$environments = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments?partialName=$([uri]::EscapeDataString($environmentName))&skip=0&take=100" -Headers $header
 $environment = $environments.Items | Where-Object -FilterScript { $_.Name -eq $environmentName } | Select-Object -First 1
 $environmentId = $environment.Id
 
@@ -81,12 +81,12 @@ $progressionInformation = Invoke-RestMethod "$octopusURL/api/$spaceId/projects/$
 Write-Information -MessageData "Found $($progressionInformation.Releases.Length) releases"
 $releaseId = ""
 
-foreach ($release in $progressionInformation.Releases) {        
-    foreach ($deployEnv in $release.Deployments) {            
+foreach ($release in $progressionInformation.Releases) {
+    foreach ($deployEnv in $release.Deployments) {
         if (Get-Member -InputObject $deployEnv -Name $environmentId -MemberType Properties) {
             $releaseId = $release.Release.Id
             break
-        }            
+        }
     }
 
     if ([string]::IsNullOrWhiteSpace($releaseId) -eq $False) {
@@ -114,7 +114,7 @@ $bodyRaw = @{
     SpecificMachineIds       = @()
     TenantId                 = $null
     UseGuidedFailure         = $false
-} 
+}
 
 $bodyAsJson = $bodyRaw | ConvertTo-Json
 
@@ -133,7 +133,6 @@ do {
         Write-Information -MessageData "Deployment is still active...checking again in 5 seconds"
         Start-Sleep -Seconds 5
     }
-
 } While ($deploymentIsActive)
 
 Write-Information -MessageData "Redeployment has finished"

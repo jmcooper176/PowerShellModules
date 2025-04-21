@@ -47,17 +47,17 @@ This file "ListMachinesInDeployment.ps1" is part of "OctopusSnippets".
 
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -AssemblyName 'Octopus.Client' 
+Add-Type -AssemblyName 'Octopus.Client'
 
 $apikey = 'API-xxx' # Get this from your profile
 $octopusURI = 'http://octopus' # Your server address
 
-$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 
 $machineIds = $OctopusParameters['Octopus.Deployment.Machines'].Split(',')
 
-foreach ($machineId in $machineIds) {    
+foreach ($machineId in $machineIds) {
     $machine = $repository.Machines.Get($machineId)
     Write-Information -MessageData $machine.Name
 }

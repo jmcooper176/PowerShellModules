@@ -47,7 +47,7 @@ This file "CreateAutoDeployTriggersForAllProjects.ps1" is part of "OctopusSnippe
 
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -AssemblyName 'Octopus.Client' 
+Add-Type -AssemblyName 'Octopus.Client'
 
 $apikey = 'API-MYAPIKEY' # Get this from your profile
 $octopusURI = 'http://MY-OCTOPUS' # Your server address
@@ -55,7 +55,7 @@ $octopusURI = 'http://MY-OCTOPUS' # Your server address
 $triggerEnvironment = "Dev" # Set this to whatever environment should auto deploy
 $triggerRole = "Web-server" # Set this to the deployment target role that should auto deploy
 
-$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 
 $environment = $repository.Environments.FindByName($triggerEnvironment)

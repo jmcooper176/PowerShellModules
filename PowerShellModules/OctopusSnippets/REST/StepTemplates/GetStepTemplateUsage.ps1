@@ -68,9 +68,8 @@ $projectsSkipped = @()
 
 # Loop through projects
 foreach ($project in $projectList) {
-    
     $deploymentProcessLink = $project.Links.DeploymentProcess
-    
+
     # Check if project is Config-as-Code
     if ($project.IsVersionControlled) {
         $defaultBranch = $project.PersistenceSettings.DefaultBranch

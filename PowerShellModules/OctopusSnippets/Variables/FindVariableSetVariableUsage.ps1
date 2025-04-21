@@ -50,7 +50,6 @@ $ErrorActionPreference = "Stop";
 # Load assembly
 Add-Type -Path 'path:\to\Octopus.Client.dll'
 
-
 # Define working variables
 $octopusURL = "https://YourURL"
 $octopusAPIKey = "API-YourAPIKey"
@@ -58,7 +57,6 @@ $spaceName = "Default"
 $searchDeploymentProcesses = $true
 $searchRunbookProcesses = $true
 $csvExportPath = "path:\to\variable.csv"
-
 
 # Specify the name of the Library VariableSet to use to find variables usage of
 $variableSetVariableUsagesToFind = "My-Variable-Set"
@@ -68,8 +66,6 @@ $searchDeploymentProcesses = $True
 
 # Search through Project's Runbook Processes?
 $searchRunbooksProcesses = $True
-
-
 
 $variableTracking = @()
 
@@ -88,8 +84,6 @@ $libraryVariableSet = $repositoryForSpace.LibraryVariableSets.FindByName($variab
 $variableSet = $repositoryForSpace.VariableSets.Get($libraryVariableSet.VariableSetId)
 $variables = $variableSet.Variables
 
-
-
 Write-Information -MessageData "Looking for usages of variables from variable set '$variableSetVariableUsagesToFind' in space: '$spaceName'"
 
 # Get all projects
@@ -99,13 +93,12 @@ $projects = $repositoryForSpace.Projects.GetAll()
 foreach ($project in $projects)
 {
     Write-Information -MessageData "Checking project '$($project.Name)'"
-    
+
     # Get project variables
     $projectVariableSet = $repositoryForSpace.VariableSets.Get($project.VariableSetId)
-    
+
     # Check to see if there are any project variable values that reference any of the library set variables.
     foreach($variable in $variables) {
-        
         $matchingValueVariables = $projectVariableSet.Variables | Where-Object -FilterScript {$_.Value -like "*$($variable.Name)*"}
 
         if($null -ne $matchingValueVariables) {
@@ -127,7 +120,6 @@ foreach ($project in $projects)
 
     # Search Deployment process if configured
     if($searchDeploymentProcesses -eq $True -and $project.IsVersionControlled -ne $true) {
-
         # Get project deployment process
         $deploymentProcess = $repositoryForSpace.DeploymentProcesses.Get($project.DeploymentProcessId)
 
@@ -153,7 +145,6 @@ foreach ($project in $projects)
                             }
                             # Add and de-dupe later
                             $variableTracking += $result
-
                         }
                     }
                 }
@@ -163,7 +154,6 @@ foreach ($project in $projects)
 
     # Search Runbook processes if configured
     if($searchRunbooksProcesses -eq $True) {
-        
         # Get project runbooks
         $runbooks = $repositoryForSpace.Projects.GetAllRunbooks($project)
 
@@ -172,7 +162,7 @@ foreach ($project in $projects)
         {
             # Get runbook process
             $runbookProcess = $repositoryForSpace.RunbookProcesses.Get($runbook.RunbookProcessId)
-            
+
             # Loop through steps
             foreach($step in $runbookProcess.Steps)
             {
@@ -198,7 +188,7 @@ foreach ($project in $projects)
                             }
                         }
                     }
-                }                
+                }
             }
         }
     }

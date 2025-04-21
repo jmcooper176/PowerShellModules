@@ -58,7 +58,6 @@ $sourceOctopusAPIKey = "API-KEY"
 
 $sourceHeader = @{ "X-Octopus-ApiKey" = $sourceOctopusAPIKey }
 
-
 $destinationPath = "<destination_folder>"
 $destinationFile = "<file_name.zip>"
 $destinationFilePath = Join-Path $destinationPath $destinationFile
@@ -88,10 +87,9 @@ $importTaskWaitForFinish = $True
 # Provide a timeout for the imports task to be canceled.
 $importTaskCancelInSeconds = 300
 
-
 $sourceOctopusURL = $sourceOctopusURL.TrimEnd('/')
 # Get Source Space
-$spaces = Invoke-RestMethod -Uri "$sourceOctopusURL/api/spaces?partialName=$([uri]::EscapeDataString($sourceSpaceName))&skip=0&take=100" -Headers $sourceHeader 
+$spaces = Invoke-RestMethod -Uri "$sourceOctopusURL/api/spaces?partialName=$([uri]::EscapeDataString($sourceSpaceName))&skip=0&take=100" -Headers $sourceHeader
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $sourceSpaceName }
 $exportTaskSpaceId = $space.Id
 
@@ -105,7 +103,7 @@ if (![string]::IsNullOrWhiteSpace($projectNames)) {
             if ([string]::IsNullOrWhiteSpace($projectName)) {
                 throw "Project name is empty'"
             }
-            $projects = Invoke-RestMethod -Uri "$sourceOctopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $sourceHeader 
+            $projects = Invoke-RestMethod -Uri "$sourceOctopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $sourceHeader
             $project = $projects.Items | Where-Object -FilterScript { $_.Name -eq $projectName }
             $exportTaskProjectIds += $project.Id
         }
@@ -137,24 +135,24 @@ if ($exportTaskWaitForFinish -eq $true) {
     $currentTime = Get-Date
     $dateDifference = $currentTime - $startTime
     $taskStatusUrl = "$sourceOctopusURL/api/$exportTaskSpaceId/tasks/$exportServerTaskId"
-    $numberOfWaits = 0    
+    $numberOfWaits = 0
     While ($dateDifference.TotalSeconds -lt $exportTaskCancelInSeconds) {
         Write-Information -MessageData "Waiting 5 seconds to check status"
         Start-Sleep -Seconds 5
-        $taskStatusResponse = Invoke-RestMethod $taskStatusUrl -Headers $sourceHeader        
+        $taskStatusResponse = Invoke-RestMethod $taskStatusUrl -Headers $sourceHeader
         $taskStatusResponseState = $taskStatusResponse.State
         if ($taskStatusResponseState -eq "Success") {
             Write-Information -MessageData "The task has finished with a status of Success"
             $artifactsUrl = "$sourceOctopusURL/api/$exportTaskSpaceId/artifacts?regarding=$exportServerTaskId"
             Write-Information -MessageData "Checking for artifacts from $artifactsUrl"
             $artifacts = Invoke-RestMethod $artifactsUrl -Method GET -Headers $sourceHeader
-            $exportArtifact = $artifacts.Items | Where-Object -FilterScript { $_.Filename -like "Octopus-Export-*.zip" } 
+            $exportArtifact = $artifacts.Items | Where-Object -FilterScript { $_.Filename -like "Octopus-Export-*.zip" }
             Write-Information -MessageData "Export task successfully completed, you can download the export archive: $sourceOctopusURL$($exportArtifact.Links.Content)"
             break
         }
         elseif ($taskStatusResponseState -eq "Failed" -or $taskStatusResponseState -eq "Canceled") {
             Write-Information -MessageData "The task has finished with a status of $taskStatusResponseState status, completing"
-            exit 1            
+            exit 1
         }
         $numberOfWaits += 1
         if ($numberOfWaits -ge 10) {
@@ -163,16 +161,16 @@ if ($exportTaskWaitForFinish -eq $true) {
         }
         else {
             Write-Information -MessageData "The task state is currently $taskStatusResponseState"
-        }  
+        }
         $startTime = $taskStatusResponse.StartTime
-        if ($null -eq $startTime -or [string]::IsNullOrWhiteSpace($startTime) -eq $true) {        
+        if ($null -eq $startTime -or [string]::IsNullOrWhiteSpace($startTime) -eq $true) {
             Write-Information -MessageData "The task is still queued, let's wait a bit longer"
             $startTime = Get-Date
         }
         $startTime = [DateTime]$startTime
         $currentTime = Get-Date
-        $dateDifference = $currentTime - $startTime        
-    } 
+        $dateDifference = $currentTime - $startTime
+    }
 
     if ($dateDifference.TotalSeconds -gt $exportTaskCancelInSeconds) {
         Write-Information -MessageData "The cancel timeout has been reached, cancelling the export task"
@@ -180,18 +178,16 @@ if ($exportTaskWaitForFinish -eq $true) {
         Write-Information -MessageData "Exiting with an error code of 1 because we reached the timeout"
         exit 1
     }
-
 }
 
 # Download ZIP
 Write-Information -MessageData "Downloading ZIP export to $destinationFilePath"
 Invoke-RestMethod -Uri $sourceOctopusURL$($exportArtifact.Links.Content) -OutFile "$destinationFilePath" -Headers $sourceHeader -Method Get
 
-
 $targetOctopusURL = $targetOctopusURL.TrimEnd('/')
 
 # Get Target Space
-$spaces = Invoke-RestMethod -Uri "$targetOctopusURL/api/spaces?partialName=$([uri]::EscapeDataString($targetSpace))&skip=0&take=100" -Headers $targetHeader 
+$spaces = Invoke-RestMethod -Uri "$targetOctopusURL/api/spaces?partialName=$([uri]::EscapeDataString($targetSpace))&skip=0&take=100" -Headers $targetHeader
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $targetSpace }
 $importTaskSpaceId = $space.Id
 
@@ -234,9 +230,7 @@ $importBody = @{
         HasValue = $True;
         NewValue = $exportTaskPassword;
     };
-
 }
-
 
 $importBodyAsJson = $importBody | ConvertTo-Json
 $importBodyPostUrl = "$targetOctopusURL/api/$($importTaskSpaceId)/projects/import-export/import"
@@ -253,11 +247,11 @@ if ($importTaskWaitForFinish -eq $true) {
     $currentTime = Get-Date
     $dateDifference = $currentTime - $startTime
     $taskStatusUrl = "$targetOctopusURL/api/$importTaskSpaceId/tasks/$importServerTaskId"
-    $numberOfWaits = 0    
+    $numberOfWaits = 0
     While ($dateDifference.TotalSeconds -lt $importTaskCancelInSeconds) {
         Write-Information -MessageData "Waiting 5 seconds to check status"
         Start-Sleep -Seconds 5
-        $taskStatusResponse = Invoke-RestMethod $taskStatusUrl -Headers $targetHeader        
+        $taskStatusResponse = Invoke-RestMethod $taskStatusUrl -Headers $targetHeader
         $taskStatusResponseState = $taskStatusResponse.State
         if ($taskStatusResponseState -eq "Success") {
             Write-Information -MessageData "The task has finished with a status of Success"
@@ -265,7 +259,7 @@ if ($importTaskWaitForFinish -eq $true) {
         }
         elseif ($taskStatusResponseState -eq "Failed" -or $taskStatusResponseState -eq "Canceled") {
             Write-Information -MessageData "The task has finished with a status of $taskStatusResponseState status, completing"
-            exit 1            
+            exit 1
         }
         $numberOfWaits += 1
         if ($numberOfWaits -ge 10) {
@@ -274,15 +268,15 @@ if ($importTaskWaitForFinish -eq $true) {
         }
         else {
             Write-Information -MessageData "The task state is currently $taskStatusResponseState"
-        }  
+        }
         $startTime = $taskStatusResponse.StartTime
-        if ($null -eq $startTime -or [string]::IsNullOrWhiteSpace($startTime) -eq $true) {        
+        if ($null -eq $startTime -or [string]::IsNullOrWhiteSpace($startTime) -eq $true) {
             Write-Information -MessageData "The task is still queued, let's wait a bit longer"
             $startTime = Get-Date
         }
         $startTime = [DateTime]$startTime
         $currentTime = Get-Date
-        $dateDifference = $currentTime - $startTime        
+        $dateDifference = $currentTime - $startTime
     }
     Write-Information -MessageData "The cancel timeout has been reached, cancelling the import task"
     Invoke-RestMethod "$targetOctopusURL/api/$importTaskSpaceId/tasks/$importTaskSpaceId/cancel" -Headers $targetHeader -Method Post | Out-Null

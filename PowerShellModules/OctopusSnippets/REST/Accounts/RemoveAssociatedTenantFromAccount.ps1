@@ -61,12 +61,12 @@ Foreach ($Tenant in $Tenants) {
     if ($Tenant -eq $TenantId) {
         Write-Information -MessageData "$($TenantId) removed from $($AccountId)"
     }
-    
+
     if ($Tenant -ne $TenantId) {
         $NewTenantList += $Tenant
     }
 }
 
 $Body.TenantIds = $NewTenantList
-   
+
 Invoke-RestMethod -Method PUT -Uri "$OctopusServerUrl/api/$($SpaceId)/accounts/$($AccountId)" -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -body ($Body | ConvertTo-Json)

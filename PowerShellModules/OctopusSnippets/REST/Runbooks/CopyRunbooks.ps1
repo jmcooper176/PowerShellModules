@@ -46,7 +46,7 @@ This file "CopyRunbooks.ps1" is part of "OctopusSnippets".
 #>
 
 ##############################################################################
-## This script is an example of how to copy runbooks from one project to 
+## This script is an example of how to copy runbooks from one project to
 ## another, even cross instance/space
 ##############################################################################
 
@@ -60,7 +60,7 @@ function Get-OctopusItems
         $ApiKey,
         $SkipCount = 0
     )
-    
+
     # Define working variables
     $items = @()
     $skipQueryString = ""
@@ -77,7 +77,7 @@ function Get-OctopusItems
     }
 
     $skipQueryString += $SkipCount
-    
+
     # Get intial set
     Write-Information -MessageData "Calling $OctopusUri$skipQueryString"
     $resultSet = Invoke-RestMethod -Uri "$($OctopusUri)$skipQueryString" -Method GET -Headers $headers
@@ -87,7 +87,7 @@ function Get-OctopusItems
     {
         # Store call results
         $items += $resultSet.Items
-    
+
         # Check to see if resultset is bigger than page amount
         if (($resultSet.Items.Count -gt 0) -and ($resultSet.Items.Count -eq $resultSet.ItemsPerPage))
         {
@@ -102,7 +102,6 @@ function Get-OctopusItems
     {
         return $resultSet
     }
-    
 
     # Return results
     return $items
@@ -172,7 +171,7 @@ foreach ($sourceRunbook in $sourceProjectRunbooks)
 {
     Write-Information -MessageData "Getting destination runbooks ..."
     $destinationProjectRunbooks = (Get-OctopusItems -OctopusUri "$destinationOctopusURL/api/$($destinationSpace.Id)/runbooks" -ApiKey $destinationOctopusAPIKey) | Where-Object -FilterScript {$_.ProjectId -eq $destinationProject.Id}
-    
+
     if ($null -ne ($destinationProjectRunbooks | Where-Object -FilterScript {$_.Name -eq $sourceRunbook.Name}))
     {
         Write-Warning -Message "Destination project ($($destinationProject.Name)) already has a runbook called $($sourceRunbook.Name), skipping ..."
@@ -182,7 +181,6 @@ foreach ($sourceRunbook in $sourceProjectRunbooks)
     # Get the runbook process
     Write-Information -MessageData "Getting process for runbook $($sourceRunbook.Name) ..."
     $runbookProcess = Get-OctopusItems -OctopusUri "$sourceOctopusURL/api/$($sourceSpace.Id)/runbookProcesses/$($sourceRunbook.RunbookProcessId)" -ApiKey $sourceOctopusAPIKey
-
 
     Write-Information -MessageData "Updating process for copy ..."
     # Make updates for destionation
@@ -234,11 +232,10 @@ foreach ($sourceRunbook in $sourceProjectRunbooks)
                     # Check to see if template exists, name is all we can use here
                     if ($null -eq ($destinationActionTemplates | Where-Object -FilterScript {$_.Name -eq $sourceActionTemplate.Name}))
                     {
-
                         # Copy the source template into the destination
                         $sourceActionTemplate.Id = $null
                         $sourceActionTemplate.SpaceId = $null
-                    
+
                         # Copy to destination
                         Write-Information -MessageData "Copying Library template $($sourceActionTemplate.Name) to $($destinationSpace.Name) ..."
                         $destinationActionTemplate = Invoke-RestMethod -Method Post -Uri "$destinationOctopusURL/api/$($destinationSpace.Id)/actiontemplates" -Body ($sourceActionTemplate | ConvertTo-Json -Depth 10) -Headers $destinationHeader
@@ -250,7 +247,7 @@ foreach ($sourceRunbook in $sourceProjectRunbooks)
                 }
 
                 $action.Properties.'Octopus.Action.Template.Id' = $destinationActionTemplate.Id
-            }         
+            }
        }
 
        $step.Id = $null

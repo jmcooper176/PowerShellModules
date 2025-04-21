@@ -1,4 +1,6 @@
-﻿// ---------------------------------------------------------------------------
+﻿using System;
+
+// ---------------------------------------------------------------------------
 // <copyright file="RetentionPolicy.cs" company="John Merryweather Cooper">
 //     Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper. All Rights Reserved.
 //
@@ -35,15 +37,9 @@
 // </remarks>
 // ---------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Octopus.Client.Cmdlet.Server
 {
-    internal class RetentionPolicy
+    public class RetentionPolicy
     {
     }
 }

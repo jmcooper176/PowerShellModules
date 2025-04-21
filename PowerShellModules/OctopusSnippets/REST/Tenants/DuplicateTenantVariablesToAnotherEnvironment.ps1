@@ -93,25 +93,25 @@ $destinationEnvironmentId = $destinationEnvironment[0].Id
 foreach ($tenant in $tenantList.Items)
 {
     $tenantId = $tenant.Id
-    $tenantProjectLink = $tenant.ProjectEnvironments.$projectId    
-    
+    $tenantProjectLink = $tenant.ProjectEnvironments.$projectId
+
     if ($null -eq $tenantProjectLink)
     {
-        Write-Information -MessageData "$($tenant.Name) is not assigned to $projectNameToDuplicate skipping"  
-        continue     
+        Write-Information -MessageData "$($tenant.Name) is not assigned to $projectNameToDuplicate skipping"
+        continue
     }
 
     if ($tenantProjectLink.Contains($sourceEnvironmentId) -eq $false -or $tenantProjectLink.Contains($destinationEnvironmentId) -eq $false)
     {
-        Write-Information -MessageData "$($tenant.Name) is not linked to both the source and destination environment, skipping"  
-        continue  
+        Write-Information -MessageData "$($tenant.Name) is not linked to both the source and destination environment, skipping"
+        continue
     }
 
     $tenantVariables = Invoke-RestMethod "$baseUrl/api/$SpaceId/tenants/$tenantId/variables" -Headers $header
 
     Write-Information -MessageData "Overwriting $destinationEnvironmentName variables with $sourceEnvironmentName for $($tenant.Name)"
     $tenantVariables.ProjectVariables.$projectId.Variables.$destinationEnvironmentId = $tenantVariables.ProjectVariables.$projectId.Variables.$sourceEnvironmentId
-    
+
     $bodyAsJson = $tenantVariables | ConvertTo-Json -Depth 10
     $tenantVariables = Invoke-RestMethod "$baseUrl/api/$SpaceId/tenants/$tenantId/variables" -Method Post -Headers $header -Body $bodyAsJson
 }

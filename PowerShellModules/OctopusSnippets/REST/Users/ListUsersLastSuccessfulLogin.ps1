@@ -110,7 +110,6 @@ do {
 
 Write-Output "Processing $($usersList.Count) user records"
 foreach($userRecord in $usersList) {
-   
     $lastLoginEvent = $events | Where-Object -FilterScript { $_.RelatedDocumentIds -icontains $userRecord.Id } | Sort-Object -Property Occurred -Descending | Select-Object -First 1
     $user = [PSCustomObject]@{
         Id = $userRecord.Id

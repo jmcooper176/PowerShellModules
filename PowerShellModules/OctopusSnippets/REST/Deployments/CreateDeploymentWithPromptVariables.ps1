@@ -74,15 +74,15 @@ $deploymentPreview = Invoke-RestMethod "$OctopusUrl/api/$spaceId/releases/$relea
 
 $deploymentFormValues = @{}
 $promptedValueList = @(($promptedVariableValue -Split "`n").Trim())
-   
+
 foreach($element in $deploymentPreview.Form.Elements)
 {
     $nameToSearchFor = $element.Control.Name
     $uniqueName = $element.Name
     $isRequired = $element.Control.Required
-    
+
     $promptedVariablefound = $false
-    
+
     Write-Information -MessageData "Looking for the prompted variable value for $nameToSearchFor"
     foreach ($promptedValue in $promptedValueList)
     {
@@ -99,7 +99,7 @@ foreach($element in $deploymentPreview.Form.Elements)
             }
         }
     }
-    
+
     if ($promptedVariableFound -eq $false -and $isRequired -eq $true)
     {
         Write-Highlight "Unable to find a value for the required prompted variable $nameToSearchFor, exiting"
@@ -108,7 +108,7 @@ foreach($element in $deploymentPreview.Form.Elements)
 }
 
 #Creating deployment and setting value to the only prompt variable I have on $p.Form.Elements. You're gonna have to do some digging if you have more variables
-$DeploymentBody = @{ 
+$DeploymentBody = @{
             ReleaseID = $releaseId #mandatory
             EnvironmentID = $EnvironmentId #mandatory
             FormValues = $deploymentFormValues
@@ -116,5 +116,5 @@ $DeploymentBody = @{
             ForcePackageRedeployment=$False
             UseGuidedFailure=$False
           } | ConvertTo-Json
-          
+
 Invoke-RestMethod -Uri "$OctopusURL/api/$spaceId/deployments" -Method Post -Headers $Header -Body $DeploymentBody

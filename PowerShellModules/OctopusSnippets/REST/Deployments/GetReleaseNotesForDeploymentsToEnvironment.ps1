@@ -56,15 +56,15 @@ $environmentName = "Production"
 $deploymentsQueuedAfter = "2021-06-01"
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Get environment
-$environmentsResources = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments?partialName=$([uri]::EscapeDataString($environmentName))&skip=0&take=100" -Headers $header 
+$environmentsResources = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments?partialName=$([uri]::EscapeDataString($environmentName))&skip=0&take=100" -Headers $header
 $environments = ($environmentsResources.Items | Where-Object -FilterScript { $_.Name -eq $environmentName } | ForEach-Object -Process {"environments=$($_.Id)"}) -Join "&"
 
 # Get Project groups
-$projectGroupsResource = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projectgroups?skip=0&take=100" -Headers $header 
+$projectGroupsResource = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projectgroups?skip=0&take=100" -Headers $header
 $projectGroups = ($projectGroupsResource.Items | ForEach-Object -Process {"projectGroups=$($_.Id)"}) -Join "&"
 
 # Get events
@@ -84,8 +84,8 @@ foreach($event in $events)
     # Get Release Id
     $releaseId = $event.RelatedDocumentIds | Where-Object -FilterScript {$_ -like "Releases-*"} | Select-Object -First 1
     $projectId = $event.RelatedDocumentIds | Where-Object -FilterScript {$_ -like "Projects*"} | Select-Object -First 1
-    $project = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$projectId" -Headers $header 
-    $release = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/releases/$releaseId" -Headers $header 
+    $project = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$projectId" -Headers $header
+    $release = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/releases/$releaseId" -Headers $header
     if(![string]::IsNullOrWhiteSpace($release.ReleaseNotes)) {
         $releaseItem = [PSCustomObject]@{
             Project = $project.Name;

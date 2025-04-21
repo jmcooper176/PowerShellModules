@@ -75,7 +75,6 @@ $environments = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id
 # Get Environment
 $environmentId = $null
 if (-not [string]::IsNullOrWhitespace($environmentName)){
-    
     $environment = $environments | Select-Object -First 1
     if($null -ne $environment) {
         Write-Information -MessageData "Found environment matching name: $($environment.Name) ($($environment.Id))"
@@ -104,31 +103,29 @@ if (-not [string]::IsNullOrWhitespace($tenantName)){
         Write-Information -MessageData "Found tenant matching name: $($tenant.Name) ($($tenant.Id))"
         $tenants += $tenant
     }
-} 
+}
 else {
     do {
         $uri = if ($tenantsResponse) { $octopusURL + $tenantsResponse.Links.'Page.Next' } else { "$octopusURL/api/$($space.Id)/tenants" }
         $tenantsResponse = Invoke-RestMethod -Method Get -Uri $uri -Headers $header
         $tenants += $tenantsResponse.Items
-        
     } while ($tenantsResponse.Links.'Page.Next')
 }
 
 # Loop through tenants
 foreach ($tenant in $tenants) {
     Write-Information -MessageData "Working on tenant: $($tenant.Name) ($($tenant.Id))"
-    
+
     # Get tenant variables
     $variables = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/tenants/$($tenant.Id)/variables" -Headers $header)
 
     # Get project templates
     $projects = $variables.ProjectVariables | Get-Member | Where-Object -FilterScript {$_.MemberType -eq "NoteProperty"} | Select-Object -ExpandProperty "Name"
-    
+
     if($null -ne $projectId){
         Write-Information -MessageData "Filtering on project: $($project.Name) ($($project.Id))"
         $projects = $projects | Where-Object -FilterScript { $_ -eq $projectId}
     }
-
 
     # Loop through projects
     foreach ($projectKey in $projects)
@@ -140,7 +137,7 @@ foreach ($tenant in $tenants) {
         }
         Write-Information -MessageData "Working on Project: $($project.ProjectName) ($projectKey)"
         $projectConnectedEnvironments = $project.Variables | Get-Member | Where-Object -FilterScript {$_.MemberType -eq "NoteProperty"} | Select-Object -ExpandProperty "Name"
-        
+
         if($null -ne $environmentId){
             Write-Information -MessageData "Filtering on project: $($project.Name) ($($project.Id))"
             $projectConnectedEnvironments = $projectConnectedEnvironments | Where-Object -FilterScript { $_ -eq $environmentId}

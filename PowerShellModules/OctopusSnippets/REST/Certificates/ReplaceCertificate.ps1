@@ -71,7 +71,7 @@ $certificate = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)
 if ($certificate -is [array])
 {
     # Throw exception
-    throw "Multiple certificates returned!"        
+    throw "Multiple certificates returned!"
 }
 
 # Create JSON payload

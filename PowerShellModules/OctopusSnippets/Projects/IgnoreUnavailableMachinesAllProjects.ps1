@@ -47,14 +47,14 @@ This file "IgnoreUnavailableMachinesAllProjects.ps1" is part of "OctopusSnippets
 
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -AssemblyName 'Octopus.Client' 
+Add-Type -AssemblyName 'Octopus.Client'
 
 $apikey = 'API-MYAPIKEY' # Get this from your profile
 $octopusURI = 'http://MY-OCTOPUS' # Your server address
 
 $roles = "web-server", "app-server" # The roles that are transient
 
-$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 
 $projects = $repository.Projects.GetAll()

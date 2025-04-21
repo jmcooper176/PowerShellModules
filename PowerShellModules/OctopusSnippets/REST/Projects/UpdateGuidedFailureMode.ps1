@@ -59,7 +59,7 @@ $octopusURI = $octopusURL
 $setting = "EnvironmentDefault"
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 $defaultSpaceId = $space.Id
 
@@ -75,7 +75,7 @@ if ($null -eq $projectDeploymentSettings) {
     Write-Warning -Message "Can't find deployment settings for $projectName, skipping this project."
     return
 }
-    
+
 if ($setting -eq $projectDeploymentSettings.DefaultGuidedFailureMode) {
     Write-Information -MessageData "$projectname guided failure setting is already set to: $setting... Skipping"
     return

@@ -52,10 +52,10 @@ $OctopusUrl = "https://your-octopus-url"
 $APIKey = "API-XXXXXXXXX"
 
 # Space where machines exist
-$spaceName = "Default" 
+$spaceName = "Default"
 
 # List of machines you want to check who created
-$machines = @("machineName1", "machineName2") 
+$machines = @("machineName1", "machineName2")
 
 $header = @{ "X-Octopus-ApiKey" = $APIKey }
 
@@ -74,16 +74,16 @@ foreach ($machine in $machines) {
         continue
     }
     $machineId = $matchingMachine.Id
-    
+
     Write-Information -MessageData "Getting list of event entries regarding machine: ${machineId}"
-    $machineCreatedEvents = (Invoke-RestMethod "$OctopusUrl/api/events?eventCategories=Created&regarding=$machineId&skip=0&take=100000" -Headers $header) 
+    $machineCreatedEvents = (Invoke-RestMethod "$OctopusUrl/api/events?eventCategories=Created&regarding=$machineId&skip=0&take=100000" -Headers $header)
     $machineCreatedItems = $machineCreatedEvents.Items | Sort-Object Occurred
     $firstMachineCreatedEvent = $machineCreatedItems | Select-Object -First 1
     if($null -eq $firstMachineCreatedEvent) {
         Write-Information -MessageData "No machine created event found for machine: $machine"
         continue
     }
-    
+
     $username = $firstMachineCreatedEvent.Username
     $userId = $firstMachineCreatedEvent.UserId
     Write-Information -MessageData "Machine $machine was created by: $username ($userId)"

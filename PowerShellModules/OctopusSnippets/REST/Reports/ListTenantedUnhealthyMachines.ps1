@@ -75,7 +75,7 @@ if ($octopusURL -eq "https://your.octopus.app" -or $octopusAPIKey -eq "API-XXXX"
 
 # Get space
 Write-Output "Retrieving space '$($spaceName)'"
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -ieq $spaceName }
 
 # Cache all tenants
@@ -124,7 +124,7 @@ foreach ($machine in $unhealthyOrDisabledMachines) {
             IsDisabled   = $machine.IsDisabled
         }
     }
-    
+
     $results += $result
 }
 

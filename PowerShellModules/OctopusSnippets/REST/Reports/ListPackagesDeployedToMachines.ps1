@@ -66,7 +66,7 @@ $csvExportPath = "" # path:\to\variable.csv
 
 # Get space
 Write-Output "Retrieving space '$($spaceName)'"
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -ieq $spaceName }
 
 # cache resources as they are retrieved
@@ -119,63 +119,63 @@ do {
 # Return the cached release or retrieve it, cache it and then return it.
 function Get-Release {
     param ($releaseId)
-    
+
     $release = @($releases | Where-Object -FilterScript { $_.Id -ieq $releaseId }) | Select-Object -First 1
     if ($null -ieq $release) {
-        $release = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/releases/$($releaseId)" -Headers $header 
+        $release = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/releases/$($releaseId)" -Headers $header
         $releases += $release
     }
-    
+
     return $release
 }
 
 function Get-Deployment {
     param ($deploymentId)
-    
+
     $deployment = @($deployments | Where-Object -FilterScript { $_.Id -ieq $deploymentId }) | Select-Object -First 1
     if ($null -ieq $deployment) {
-        $deployment = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/deployments/$($deploymentId)" -Headers $header 
+        $deployment = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/deployments/$($deploymentId)" -Headers $header
         $deployments += $deployment
     }
-    
+
     return $deployment
 }
 
 function Get-DeploymentProcess {
     param ($DeploymentProcessId)
-    
+
     $deploymentProcess = @($deploymentProcesses | Where-Object -FilterScript { $_.Id -ieq $DeploymentProcessId }) | Select-Object -First 1
     if ($null -ieq $deploymentProcess) {
-        $deploymentProcess = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/deploymentprocesses/$($DeploymentProcessId)" -Headers $header 
+        $deploymentProcess = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/deploymentprocesses/$($DeploymentProcessId)" -Headers $header
         $deploymentProcesses += $deploymentProcess
     }
-    
+
     return $deploymentProcess
 }
 
 function Get-DeploymentVariables {
     param ($ManifestVariableSetId)
-    
+
     $variables = @($manifestVariableSets | Where-Object -FilterScript { $_.Id -ieq $ManifestVariableSetId }) | Select-Object -First 1
     if ($null -ieq $variables) {
-        $variables = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/variables/$($ManifestVariableSetId)" -Headers $header 
+        $variables = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/variables/$($ManifestVariableSetId)" -Headers $header
         $manifestVariableSets += $variables
     }
-    
+
     return $variables
 }
 function Get-PackageDetails {
     param (
-        $PackageId, 
+        $PackageId,
         $PackageVersion
     )
     $Id = "packages-$($PackageId).$PackageVersion"
     $packageDetails = @($packages | Where-Object -FilterScript { $_.Id -ieq $Id }) | Select-Object -First 1
     if ($null -ieq $packageDetails) {
-        $packageDetails = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/packages/$($Id)" -Headers $header 
+        $packageDetails = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/packages/$($Id)" -Headers $header
         $packages += $packageDetails
     }
-    
+
     return $packageDetails
 }
 
@@ -217,15 +217,15 @@ foreach ($event in $events) {
     $deploymentId = $event.RelatedDocumentIds | Where-Object -FilterScript { $_ -like "Deployments*" } | Select-Object -First 1
     $environmentId = $event.RelatedDocumentIds | Where-Object -FilterScript { $_ -like "Environments*" } | Select-Object -First 1
     $taskId = $event.RelatedDocumentIds | Where-Object -FilterScript { $_ -like "ServerTasks*" } | Select-Object -First 1
-    
+
     # Get objects
     $project = $projects | Where-Object -FilterScript { $_.Id -ieq $projectId }
-    $release = Get-Release -ReleaseId $releaseId 
+    $release = Get-Release -ReleaseId $releaseId
     $deployment = Get-Deployment -DeploymentId $deploymentId
     $deploymentProcess = Get-DeploymentProcess -DeploymentProcessId $($deployment.DeploymentProcessId)
     $deploymentVariables = Get-DeploymentVariables -ManifestVariableSetId $($deployment.ManifestVariableSetId)
-    $task = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/tasks/$($taskId)" -Headers $header 
-    $environment = $environments | Where-Object -FilterScript { $_.Id -ieq $environmentId } 
+    $task = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/tasks/$($taskId)" -Headers $header
+    $environment = $environments | Where-Object -FilterScript { $_.Id -ieq $environmentId }
     $releasePackages = $release.SelectedPackages
 
     $tenantName = ""
@@ -234,16 +234,15 @@ foreach ($event in $events) {
         $tenantName = ($tenants | Where-Object -FilterScript { $_.Id -ieq $deployment.TenantId }).Name
     }
     $deployedToMachines = $deployment.DeployedToMachineIds
-    
+
     foreach ($package in $releasePackages) {
-                
-        $step = $deploymentProcess.Steps | Where-Object -FilterScript { $_.Name -ieq $package.StepName }    
+        $step = $deploymentProcess.Steps | Where-Object -FilterScript { $_.Name -ieq $package.StepName }
 
         if (-not "$($step.Properties)") {
             # No properties
             continue;
         }
-        
+
         $stepAction = ($step.Actions | Select-Object -First 1)
         $packageVersion = $package.Version
         if (-not [string]::IsNullOrWhitespace($package.PackageReferenceName)) {
@@ -257,14 +256,14 @@ foreach ($event in $events) {
 
         # Get package details
         $packageDetails = Get-PackageDetails -PackageId $packageId -PackageVersion $packageVersion
-        
+
         $targetMachinesForPackage = @()
 
-        # get target role for package 
+        # get target role for package
         if (-not [string]::IsNullOrWhitespace($step.Properties.'Octopus.Action.TargetRoles')) {
             $packageTargetRoles = ($step.Properties.'Octopus.Action.TargetRoles' -Split ",").Trim()
             foreach ($role in $packageTargetRoles) {
-                # Get machines in role 
+                # Get machines in role
                 $machinesInRole = (($deploymentVariables.Variables | Where-Object -FilterScript { $_.Name -ieq "Octopus.Environment.MachinesInRole[$($role)]" }).Value -Split ",").Trim()
                 foreach ($machineId in $machinesInRole) {
                     if ($machineId -in $deployedToMachines) {
@@ -289,8 +288,8 @@ foreach ($event in $events) {
                 PackageVersion    = $packageVersion
             }
             $results += $result
-        }   
-    }    
+        }
+    }
 }
 
 if ($results.Count -gt 0) {

@@ -56,7 +56,7 @@ $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 # Specify the Space to search in
 $spaceName = "Default"
 
-# Specify the Variable Value to find, without OctoStache syntax 
+# Specify the Variable Value to find, without OctoStache syntax
 
 $variableValueToFind = "mytestvalue"
 
@@ -77,7 +77,7 @@ $variableSets = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)
 foreach ($variableSet in $variableSets.Items)
 {
     Write-Information -MessageData "Checking variable set '$($variableSet.Name)'"
-    
+
     $variableSetVariables = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/variables/variableset-$($variableSet.Id)" -Headers $header
 
     $matchingNamedVariables = $variableSetVariables.Variables | Where-Object -FilterScript {$_.Value -like "*$variableValueToFind*"}
@@ -94,7 +94,6 @@ foreach ($variableSet in $variableSets.Items)
             $variableTracking += $result
         }
     }
-
 }
 
 # Get all projects
@@ -119,13 +118,12 @@ foreach ($project in $projects)
                 Property = $null
                 AdditionalContext = $match.Name
             }
-            
+
             # Add to tracking list
             $variableTracking += $result
         }
     }
 }
-    
 
 if($variableTracking.Count -gt 0) {
     Write-Information -MessageData ""

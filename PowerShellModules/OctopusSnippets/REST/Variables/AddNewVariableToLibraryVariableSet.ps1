@@ -62,7 +62,7 @@ $VariableIsSensitive = $False
 $VariableType = "String"
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 Write-Information -MessageData "Looking for library variable set '$libraryVariableSet'"
@@ -74,7 +74,7 @@ if ($null -eq $libraryVariableSet) {
     return
 }
 
-$LibraryVariableSetVariables = (Invoke-RestMethod -Method Get -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSet.VariableSetId)" -Headers $Header) 
+$LibraryVariableSetVariables = (Invoke-RestMethod -Method Get -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSet.VariableSetId)" -Headers $Header)
 
 $existingVariableMatches = @($LibraryVariableSetVariables.Variables | Where-Object -FilterScript { $_.Name -ieq $VariableName } )
 
@@ -84,12 +84,12 @@ if ($existingVariableMatches.Length -gt 0) {
 }
 else {
     $variable = @{
-        Name        = $VariableName  
+        Name        = $VariableName
         Value       = $VariableValue
         Type        = $VariableType
         IsSensitive = $VariableIsSensitive
         # Add Scopes if you want to include those for your value.
-        Scope       = @{ 
+        Scope       = @{
             # Environment = @(
             #     $environmentObj.Id
             #     )

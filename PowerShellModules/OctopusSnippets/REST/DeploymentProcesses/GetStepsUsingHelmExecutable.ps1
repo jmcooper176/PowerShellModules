@@ -69,9 +69,8 @@ $projects = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/pro
 
 # Loop through projects
 foreach ($project in $projects) {
-
     $deploymentProcessLink = $project.Links.DeploymentProcess
-    
+
     # Check if project is Config-as-Code
     if ($project.IsVersionControlled) {
         # Get default Git branch for Config-as-Code project
@@ -97,5 +96,4 @@ foreach ($project in $projects) {
             }
         }
     }
-    
 }

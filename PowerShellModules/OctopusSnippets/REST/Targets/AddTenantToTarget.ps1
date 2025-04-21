@@ -68,7 +68,6 @@ $allMachines = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)
 $allTenants = (Invoke-RestMethod -Method Get -Uri "$octopusUrl/api/$($space.Id)/tenants/all" -Headers $header)
 
 foreach ($machineName in $machineNames) {
-    
     # Get machine
     $machine = $allMachines | Where-Object -FilterScript { $_.Name -eq $machineName }
 

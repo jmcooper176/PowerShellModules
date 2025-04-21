@@ -53,7 +53,7 @@ $octopusAPIKey = "API-YOURAPIKEY"
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 
 # UserName of the user for which the API key will be created. You can check this value from the web portal under Configuration/Users
-$UserName = "" 
+$UserName = ""
 
 #Purpose of the API Key. This field is mandatory.
 $APIKeyPurpose = ""

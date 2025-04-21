@@ -38,11 +38,7 @@
 namespace Octopus.Client.Cmdlet.Event
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Management.Automation;
-    using System.Text;
-    using System.Threading.Tasks;
 
     [Cmdlet(VerbsCommon.Get, "Event")]
     public class GetConfiguration : PSCmdlet, IDisposable

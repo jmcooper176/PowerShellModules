@@ -80,20 +80,20 @@ $runbookTriggerStartTime = "2021-07-22T09:00:00.000Z"
 $runbookEnvironmentIds = @()
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Get project
-$projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header 
+$projects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($projectName))&skip=0&take=100" -Headers $header
 $project = $projects.Items | Where-Object -FilterScript { $_.Name -eq $projectName }
 
 # Get runbook
-$runbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks?partialName=$([uri]::EscapeDataString($runbookName))&skip=0&take=100" -Headers $header 
+$runbooks = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/runbooks?partialName=$([uri]::EscapeDataString($runbookName))&skip=0&take=100" -Headers $header
 $runbook = $runbooks.Items | Where-Object -FilterScript { $_.Name -eq $runbookName }
 
 # Get environments for runbook trigger
 foreach($runbookEnvironmentName in $runbookEnvironmentNames) {
-    $environments = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments?partialName=$([uri]::EscapeDataString($runbookEnvironmentName))&skip=0&take=100" -Headers $header 
+    $environments = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/environments?partialName=$([uri]::EscapeDataString($runbookEnvironmentName))&skip=0&take=100" -Headers $header
     $environment = $environments.Items | Where-Object -FilterScript { $_.Name -eq $runbookEnvironmentName } | Select-Object -First 1
     $runbookEnvironmentIds += $environment.Id
 }
@@ -121,6 +121,6 @@ $body = @{
 $body = $body | ConvertTo-Json -Depth 10
 
 # Create runbook scheduled trigger
-$runbookScheduledTrigger = Invoke-RestMethod -Method Post -Uri "$octopusURL/api/$($space.Id)/projecttriggers" -Body $body -Headers $header 
+$runbookScheduledTrigger = Invoke-RestMethod -Method Post -Uri "$octopusURL/api/$($space.Id)/projecttriggers" -Body $body -Headers $header
 
 Write-Information -MessageData "Created runbook trigger: $($runbookScheduledTrigger.Id) ($runbookTriggerName)"

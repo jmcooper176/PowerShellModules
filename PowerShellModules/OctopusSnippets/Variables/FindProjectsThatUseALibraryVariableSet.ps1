@@ -66,7 +66,7 @@ try
 
     # Get Library set
     $librarySet = $repositoryForSpace.LibraryVariableSets.FindByName($librarySetName)
-    
+
     # Get Projects
     $projects = $repositoryForSpace.Projects.GetAll()
 

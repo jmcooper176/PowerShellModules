@@ -65,7 +65,7 @@ $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Heade
 
 # Get EnvironmentId
 $EnvironmentID = $null
-if([string]::IsNullOrWhiteSpace($EnvironmentName) -eq $False) 
+if([string]::IsNullOrWhiteSpace($EnvironmentName) -eq $False)
 {
     $EnvironmentID += (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/environments/all" -Headers $header) | Where-Object -FilterScript {$_.Name -eq $EnvironmentName} | Select-Object -ExpandProperty Id -First 1
 }

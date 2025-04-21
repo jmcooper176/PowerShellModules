@@ -70,13 +70,13 @@ try
 
     # Get project
     $project = $repositoryForSpace.Projects.FindByName($projectName)
-    
+
     # Get team
     $team = $repositoryForSpace.Teams.FindByName($teamName)
 
     # Get scoped user roles
     $scopedUserRoles = $repositoryForSpace.ScopedUserRoles.FindMany({param ($p) $p.ProjectIds -contains $project.Id -and $p.TeamId -eq $team.Id})
-    
+
     # Loop through scoped user roles and remove where present
     foreach ($scopedUserRole in $scopedUserRoles)
     {

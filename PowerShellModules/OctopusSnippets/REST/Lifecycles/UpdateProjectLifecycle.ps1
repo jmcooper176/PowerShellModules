@@ -80,22 +80,18 @@ $projectList = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/
 
 # Loop through projects
 foreach ($project in $projectList) {
-
     # Set to false and change to identify when changes should be committed
     $changesMade = $false
 
     if ($project.LifecycleId -eq $($originalLifecycle.Id)) {
-
         Write-Information -MessageData -ForegroundColor Yellow "Project $($project.Name) is using deprecated lifecycle $($oldLifecycleName)"
 
         $project.LifecycleId = $($newLifecycle.Id)
 
         $changesMade = $true
-
     }
 
     if ($changesMade) {
-
         if ($whatIf) {
             Write-Information -MessageData -ForegroundColor Green "`tProject would be updated - '$($project.Name)' would be updated to use the lifecycle '$($newLifecycle.Name)'"
         }

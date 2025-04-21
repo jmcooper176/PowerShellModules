@@ -62,36 +62,36 @@ $cachedResults = @{}
 function Write-OctopusVerbose
 {
     param ($message)
-    
-    Write-Information -MessageData $message  
+
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusInformation
 {
     param ($message)
-    
-    Write-Information -MessageData $message  
+
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusSuccess
 {
     param ($message)
 
-    Write-Information -MessageData $message 
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusWarning
 {
     param ($message)
 
-    Write-Warning -Message "$message" 
+    Write-Warning -Message "$message"
 }
 
 function Write-OctopusCritical
 {
     param ($message)
 
-    Write-Error -Message "$message" 
+    Write-Error -Message "$message"
 }
 
 function Invoke-OctopusApi
@@ -104,7 +104,7 @@ function Invoke-OctopusApi
         $apiKey,
         $method,
         $item,
-        $ignoreCache     
+        $ignoreCache
     )
 
     $octopusUrlToUse = $OctopusUrl
@@ -119,18 +119,18 @@ function Invoke-OctopusApi
     }
     else
     {
-        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"    
-    }  
+        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"
+    }
 
     try
-    {        
+    {
         if ($null -ne $item)
         {
             $body = $item | ConvertTo-Json -Depth 10
             Write-OctopusVerbose $body
 
             Write-OctopusInformation "Invoking $method $url"
-            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8' 
+            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8'
         }
 
         if (($null -eq $ignoreCache -or $ignoreCache -eq $false) -and $method.ToUpper().Trim() -eq "GET")
@@ -144,7 +144,7 @@ function Invoke-OctopusApi
         }
         else
         {
-            Write-OctopusVerbose "Ignoring cache."    
+            Write-OctopusVerbose "Ignoring cache."
         }
 
         Write-OctopusVerbose "No data to post or put, calling bog standard invoke-restmethod for $url"
@@ -158,8 +158,6 @@ function Invoke-OctopusApi
         $cachedResults.add($url, $result)
 
         return $result
-
-               
     }
     catch
     {
@@ -199,9 +197,9 @@ function Get-FilteredOctopusItem
     {
         Write-OctopusCritical "Unable to find $itemName.  Exiting with an exit code of 1."
         return $null
-    }  
+    }
 
-    $item = $itemList.Items | Where-Object -FilterScript { $_.Name -eq $itemName}      
+    $item = $itemList.Items | Where-Object -FilterScript { $_.Name -eq $itemName}
 
     if ($null -eq $item)
     {
@@ -217,7 +215,7 @@ function Get-OctopusItemByName
     param (
         $itemName,
         $itemType,
-        $endpoint,        
+        $endpoint,
         $spaceId,
         $octopusUrl,
         $octopusApiKey
@@ -229,16 +227,16 @@ function Get-OctopusItemByName
     }
 
     Write-OctopusInformation "Attempting to find $itemType with the name of $itemName"
-    
-    $itemList = Invoke-OctopusApi -octopusUrl $octopusUrl -endPoint "$($endPoint)?partialName=$([uri]::EscapeDataString($itemName))&skip=0&take=100" -spaceId $spaceId -apiKey $octopusApiKey -method "GET"    
+
+    $itemList = Invoke-OctopusApi -octopusUrl $octopusUrl -endPoint "$($endPoint)?partialName=$([uri]::EscapeDataString($itemName))&skip=0&take=100" -spaceId $spaceId -apiKey $octopusApiKey -method "GET"
     $item = Get-FilteredOctopusItem -itemList $itemList -itemName $itemName
 
     if ($null -eq $item)
     {
-        Write-OctopusInformation "Unable to find $itemType $itemName"    
+        Write-OctopusInformation "Unable to find $itemType $itemName"
         return $null
     }
-    
+
     Write-OctopusInformation "Successfully found $itemType $itemName with an id of $($item.Id)"
 
     return $item
@@ -266,18 +264,18 @@ function Get-SplitItemIntoArray
 function Get-OctopusSpaceList
 {
     param (
-        $spaceList,        
+        $spaceList,
         $octopusUrl,
-        $octopusApiKey    
+        $octopusApiKey
     )
-    
+
     if ([string]::IsNullOrWhiteSpace($spaceList))
     {
-        $rawOctopusSpaceList = Invoke-OctopusApi -octopusUrl $octopusUrl -endPoint "spaces?skip=0&take=10000" -spaceId $null -apiKey $octopusApiKey -method "GET"    
+        $rawOctopusSpaceList = Invoke-OctopusApi -octopusUrl $octopusUrl -endPoint "spaces?skip=0&take=10000" -spaceId $null -apiKey $octopusApiKey -method "GET"
 
         return $rawOctopusSpaceList.Items
     }
-    
+
     $spaceListSplit = @(Get-SplitItemIntoArray -itemToSplit $spaceList)
     $returnList = @()
 
@@ -290,10 +288,10 @@ function Get-OctopusSpaceList
             if ($null -ne $octopusSpace)
             {
                 $returnList += $octopusSpace
-            }            
-        }        
-    }    
-    
+            }
+        }
+    }
+
     return $returnList
 }
 
@@ -310,13 +308,13 @@ function Get-OctopusItemList
 
     if ([string]::IsNullOrWhiteSpace($itemList))
     {
-        Write-Information -MessageData "The list for $itemType was empty"        
+        Write-Information -MessageData "The list for $itemType was empty"
         return @()
     }
 
     $itemListSplit = @(Get-SplitItemIntoArray -itemToSplit $itemList)
     $returnList = @()
-    
+
     foreach ($itemName in $itemListSplit)
     {
         $splitItem = $itemName -split "::"
@@ -369,10 +367,10 @@ function Get-QueuedOctopusTasks
 
     Write-OctopusInformation "Looping through the found items in reverse order because the Queue is FIFO but the return object is ordered by date DESC"
 
-    for($i = $queuedTasks.Items.Count - 1; $i -ge 0; $i--)    
+    for($i = $queuedTasks.Items.Count - 1; $i -ge 0; $i--)
     {
         $task = $queuedTasks.Items[$i]
-        
+
         if ($null -ne $task.QueueTime)
         {
             $compareTime = [DateTime]::Parse($task.QueueTime)
@@ -490,7 +488,7 @@ if ([string]::IsNullOrWhiteSpace($taskIdList))
 }
 else
 {
-    Write-OctopusSuccess "Going to look for the tasks ($($octopusInformation.TaskIdList -join ", "))"    
+    Write-OctopusSuccess "Going to look for the tasks ($($octopusInformation.TaskIdList -join ", "))"
 }
 
 $matchingTasks = @()
@@ -531,7 +529,7 @@ foreach ($task in $queuedTasks)
     else
     {
         $itemDetails = Get-DeploymentDetailsFromTask -deploymentTask $task -octopusUrl $octopusUrl -octopusApiKey $octopusApiKey
-    }        
+    }
 
     $matchesEnvironmentFilter = $octopusInformation.HasEnvironmentFilter -eq $true -and (Test-OctopusListHasId -octopusList $octopusInformation.EnvironmentList -octopusId $itemDetails.EnvironmentId)
     Write-OctopusInformation "$($task.Name) $($itemDetails.Id) Matches Environment Filter $matchesEnvironmentFilter"
@@ -585,7 +583,7 @@ $matchingTaskCounter = 0
 
 Write-OctopusInformation "Looping through all the queued tasks again to find which tasks to cancel."
 foreach ($task in $queuedTasks)
-{        
+{
     if ((Test-OctopusListHasId -octopusList $matchingTasks -octopusId $task.Id))
     {
         $matchingTaskCounter += 1
@@ -610,7 +608,7 @@ foreach ($task in $queuedTasks)
 
     $canceledTaskResult = Invoke-OctopusApi -endPoint "tasks/$($task.Id)/cancel" -octopusUrl $octopusUrl -spaceId $null -apiKey $octopusApiKey -method "POST" -ignoreCache $true
 
-    Write-OctopusSuccess "Task $($task.Description) has been successfully cancelled" 
+    Write-OctopusSuccess "Task $($task.Description) has been successfully cancelled"
 
     if ($task.Name -eq "Deploy")
     {
@@ -631,11 +629,11 @@ foreach ($task in $queuedTasks)
             SpecificMachineIds = $deploymentInfo.SpecificMachineIds
             TenantId = $deploymentInfo.TenantId
             UseGuidedFailure = $deploymentInfo.UseGuidedFailure
-        } 
+        }
 
         $newDeployment = Invoke-OctopusApi -endPoint "deployments" -spaceId $task.SpaceId -octopusUrl $octopusUrl -apiKey $octopusApiKey -method "POST" -item $bodyRaw
 
-        Write-OctopusSuccess "$($task.Description) has been successfully resubmitted with the new id $($newDeployment.TaskId)"        
+        Write-OctopusSuccess "$($task.Description) has been successfully resubmitted with the new id $($newDeployment.TaskId)"
     }
 
     if ($task.Name -eq "RunbookRun")
@@ -658,11 +656,11 @@ foreach ($task in $queuedTasks)
             TenantId = $runbookInfo.TenantId
             UseGuidedFailure = $runbookInfo.UseGuidedFailure
             FrozenRunbookProcessId = $runbookInfo.FrozenRunbookProcessId
-            RunbookSnapshotId = $runbookInfo.RunbookSnapshotId            
-        } 
+            RunbookSnapshotId = $runbookInfo.RunbookSnapshotId
+        }
 
         $newDeployment = Invoke-OctopusApi -endPoint "runbookRuns" -spaceId $task.SpaceId -octopusUrl $octopusUrl -apiKey $octopusApiKey -method "POST" -item $bodyRaw
 
-        Write-OctopusSuccess "$($task.Description) has been successfully resubmitted with the new id $($newDeployment.TaskId)" 
+        Write-OctopusSuccess "$($task.Description) has been successfully resubmitted with the new id $($newDeployment.TaskId)"
     }
 }

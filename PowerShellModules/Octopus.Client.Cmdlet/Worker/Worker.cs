@@ -38,11 +38,7 @@
 namespace Octopus.Client.Cmdlet.Worker
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Management.Automation;
-    using System.Text;
-    using System.Threading.Tasks;
 
     [Cmdlet(VerbsCommon.Get, "Worker")]
     public class GetConfiguration : PSCmdlet, IDisposable

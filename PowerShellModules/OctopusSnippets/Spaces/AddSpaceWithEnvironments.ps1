@@ -61,7 +61,6 @@ $managersTeams = @() # an array of team Ids to add to Space Managers
 $managerTeamMembers = @() # an array of user Ids to add to Space Managers
 $environments = @('Development', 'Test', 'Production')
 
-
 $space = New-Object -TypeName Octopus.Client.Model.SpaceResource -Property @{
     Name = $spaceName
     Description = $description

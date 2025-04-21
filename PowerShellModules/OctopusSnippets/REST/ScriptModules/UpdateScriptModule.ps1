@@ -47,7 +47,7 @@ This file "UpdateScriptModule.ps1" is part of "OctopusSnippets".
 
 $octopusUrl = "https://local.octopusdemos.app"
 $octopusApiKey = "YOUR API KEY"
-$spaceName = "Default" 
+$spaceName = "Default"
 $scriptModuleName = "Hello World"
 $updatedScript = @"
 function Say-Hello()
@@ -61,36 +61,36 @@ $cachedResults = @{}
 function Write-OctopusVerbose
 {
     param ($message)
-    
-    Write-Information -MessageData $message  
+
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusInformation
 {
     param ($message)
-    
-    Write-Information -MessageData $message  
+
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusSuccess
 {
     param ($message)
 
-    Write-Information -MessageData $message 
+    Write-Information -MessageData $message
 }
 
 function Write-OctopusWarning
 {
     param ($message)
 
-    Write-Warning -Message "$message" 
+    Write-Warning -Message "$message"
 }
 
 function Write-OctopusCritical
 {
     param ($message)
 
-    Write-Error -Message "$message" 
+    Write-Error -Message "$message"
 }
 
 function Invoke-OctopusApi
@@ -103,7 +103,7 @@ function Invoke-OctopusApi
         $apiKey,
         $method,
         $item,
-        $ignoreCache     
+        $ignoreCache
     )
 
     $octopusUrlToUse = $OctopusUrl
@@ -118,18 +118,18 @@ function Invoke-OctopusApi
     }
     else
     {
-        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"    
-    }  
+        $url = "$octopusUrlToUse/api/$spaceId/$EndPoint"
+    }
 
     try
-    {        
+    {
         if ($null -ne $item)
         {
             $body = $item | ConvertTo-Json -Depth 10
             Write-OctopusVerbose $body
 
             Write-OctopusInformation "Invoking $method $url"
-            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8' 
+            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8'
         }
 
         if (($null -eq $ignoreCache -or $ignoreCache -eq $false) -and $method.ToUpper().Trim() -eq "GET")
@@ -143,7 +143,7 @@ function Invoke-OctopusApi
         }
         else
         {
-            Write-OctopusVerbose "Ignoring cache."    
+            Write-OctopusVerbose "Ignoring cache."
         }
 
         Write-OctopusVerbose "No data to post or put, calling bog standard invoke-restmethod for $url"
@@ -157,8 +157,6 @@ function Invoke-OctopusApi
         $cachedResults.add($url, $result)
 
         return $result
-
-               
     }
     catch
     {
@@ -191,13 +189,13 @@ function Get-OctopusItemList
 {
     param (
         $itemType,
-        $endpoint,        
+        $endpoint,
         $spaceId,
         $octopusUrl,
         $octopusApiKey
     )
 
-    if ($null -ne $spaceId) 
+    if ($null -ne $spaceId)
     {
         Write-OctopusVerbose "Pulling back all the $itemType in $spaceId"
     }
@@ -205,7 +203,7 @@ function Get-OctopusItemList
     {
         Write-OctopusVerbose "Pulling back all the $itemType for the entire instance"
     }
-    
+
     if ($endPoint -match "\?+")
     {
         $endpointWithParams = "$($endPoint)&skip=0&take=10000"
@@ -216,12 +214,12 @@ function Get-OctopusItemList
     }
 
     $itemList = Invoke-OctopusApi -octopusUrl $octopusUrl -endPoint $endpointWithParams -spaceId $spaceId -apiKey $octopusApiKey -method "GET"
-    
+
     if ($itemList -is [array])
     {
         Write-OctopusVerbose "Found $($itemList.Length) $itemType."
 
-        return ,$itemList        
+        return ,$itemList
     }
     else
     {
@@ -251,7 +249,7 @@ function Get-OctopusItemByName
         Write-OctopusInformation "Unable to find the $itemType $itemName"
         exit 1
     }
-    
+
     return $filteredItem
 }
 

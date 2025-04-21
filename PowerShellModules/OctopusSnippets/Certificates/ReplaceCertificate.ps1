@@ -48,15 +48,15 @@ This file "ReplaceCertificate.ps1" is part of "OctopusSnippets".
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
 # Load Octopus Client assembly
-Add-Type -Path 'path\to\Octopus.Client.dll' 
+Add-Type -Path 'path\to\Octopus.Client.dll'
 
 # Provide credentials for Octopus
-$apikey = 'API-YOURAPIKEY' 
-$octopusURI = 'https://youroctourl' 
+$apikey = 'API-YOURAPIKEY'
+$octopusURI = 'https://youroctourl'
 $spaceName = "default"
 
 # Create repository object
-$endpoint = New-Object -TypeName.Client.OctopusServerEndpoint $octopusURI,$apikey 
+$endpoint = New-Object -TypeName.Client.OctopusServerEndpoint $octopusURI,$apikey
 $repository = New-Object -TypeName.Client.OctopusRepository $endpoint
 $client = New-Object -TypeName.Client.OctopusClient $endpoint
 
@@ -65,7 +65,7 @@ try
     # Get space
     $space = $repository.Spaces.FindByName($spaceName)
     $repositoryForSpace = $client.ForSpace($space)
-    
+
     # Get current certificate
     $certificateName = "MyCertificate"
     $currentCertificate = $repositoryForSpace.Certificates.FindAll() | Where-Object -FilterScript {($_.Name -eq $certificateName) -and ($null -eq $_.Archived)} # Octopus supports multiple certificates of the same name.  The FindByName() method returns the first one it finds, so it is not useful in this scenario
@@ -79,7 +79,7 @@ try
 
     # Get replacement certificate
     $replacementPfxPath = "path\to\replacement\file.pfx"
-    $pfxBase64 = [Convert]::ToBase64String((Get-Content -Path $replacementPfxPath -Encoding Byte)) 
+    $pfxBase64 = [Convert]::ToBase64String((Get-Content -Path $replacementPfxPath -Encoding Byte))
     $pfxPassword = "PFX-file-password"
 
     # Replace certificate

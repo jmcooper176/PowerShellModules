@@ -47,7 +47,7 @@ This file "RemoveProjectTenantConnection.ps1" is part of "OctopusSnippets".
 
 $Whatif = $true #set to $true for a dry run where no changes are committed, set to $false to commit changes
 
-$OctopusAPIKey = "API-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" 
+$OctopusAPIKey = "API-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 $OctopusUrl = "YOUR_OCTOPUS_URL" # No trailing slashes example = "http://octopusinstance.bla"
 $TenantId = "Tenants-XX" # Tenant ID you wish to remove Environments from
 $SpaceId = "Spaces-XX" # Space ID where the Tenant specified above resides

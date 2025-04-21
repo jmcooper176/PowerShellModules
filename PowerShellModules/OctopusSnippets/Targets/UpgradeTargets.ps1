@@ -77,10 +77,10 @@ try
     $task = New-Object -TypeName.Client.Model.TaskResource
     $task.Name = "Upgrade"
     $task.Description = "Upgrade machines"
-    $task.Arguments.Add("MachineIds", $machines)    
-    
+    $task.Arguments.Add("MachineIds", $machines)
+
     # Execute
-    $repositoryForSpace.Tasks.Create($task)   
+    $repositoryForSpace.Tasks.Create($task)
 }
 catch
 {

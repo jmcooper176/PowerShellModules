@@ -72,7 +72,7 @@ foreach ($libraryVariableSetId in $project.IncludedLibraryVariableSetIds) {
     if ($librarySet.Id -ne $libraryVariableSetId) {
         $modifiedLibraryVariableSetIds += $libraryVariableSetId
     }
-} 
+}
 
 $project.IncludedLibraryVariableSetIds = $modifiedLibraryVariableSetIds
 

@@ -65,7 +65,7 @@ foreach ($deployment in $deploymentsToEnvironment)
     $tenantName = $null
 
     if ($null -ne $deployment.TenantId)
-    {        
+    {
         $tenant = $dashboardInformation.Tenants | Where-Object -FilterScript { $_.Id -eq $deployment.TenantId }
         $tenantName = $tenant.Name
     }

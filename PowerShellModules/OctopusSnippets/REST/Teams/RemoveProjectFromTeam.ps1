@@ -72,7 +72,7 @@ foreach ($scopedUserRole in $scopedUserRoles)
 {
     # Filter out project
     $scopedUserRole.ProjectIds = ,($scopedUserRole.ProjectIds | Where-Object -FilterScript {$_ -notcontains $project.Id}) # Yes, the , is supposed to be there
-    
+
     # Update scoped user role
     Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/scopeduserroles/$($scopedUserRole.Id)" -Body ($scopedUserRole | ConvertTo-Json -Depth 10) -Headers $header
 }

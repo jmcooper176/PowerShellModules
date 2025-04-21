@@ -81,6 +81,5 @@ foreach($variable in $variables){
     }
 }
 
-
 #Save variable set
 $repository.VariableSets.Modify($variableset)

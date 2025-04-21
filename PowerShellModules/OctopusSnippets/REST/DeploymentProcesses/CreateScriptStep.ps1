@@ -58,7 +58,6 @@ $scriptBody = "Write-Information -MessageData `"Hello world`""
 # Project details
 $projectName = "MyProject"
 
-
 # Get space
 $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object -FilterScript {$_.Name -eq $spaceName}
 

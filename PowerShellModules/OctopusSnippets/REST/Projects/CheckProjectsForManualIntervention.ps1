@@ -115,10 +115,7 @@ foreach ($space in $spaceList.Items)
 "
                 }
             }
-
-            
         }
-        
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 
 // ---------------------------------------------------------------------------
-// <copyright file="ServerStatus.cs" company="John Merryweather Cooper">
+// <copyright file="Endpoint.cs" company="John Merryweather Cooper">
 //     Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper. All Rights Reserved.
 //
 //     Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -27,10 +27,10 @@
 // John Merryweather Cooper
 // </author>
 // <date>
-// Created:  2025-4-7
+// Created:  2025-4-14
 // </date>
 // <summary>
-// This file "ServerStatus.cs" is part of "Octopus.Client.Cmdlet".
+// This file "Endpoint.cs" is part of "Octopus.Client.Cmdlet".
 // </summary>
 // <remarks>
 // description
@@ -38,7 +38,7 @@
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// <copyright file="ServerStatus.cs" company="John Merryweather Cooper">
+// <copyright file="Endpoint.cs" company="John Merryweather Cooper">
 //     Copyright © 2022, 2023, 2024, 2025, John Merryweather Cooper. All Rights Reserved.
 //
 //     Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -64,19 +64,19 @@
 // John Merryweather Cooper
 // </author>
 // <date>
-// Created:  2025-4-7
+// Created:  2025-4-14
 // </date>
 // <summary>
-// This file "ServerStatus.cs" is part of "Octopus.Client.Cmdlet".
+// This file "Endpoint.cs" is part of "Octopus.Client.Cmdlet".
 // </summary>
 // <remarks>
 // description
 // </remarks>
 // ---------------------------------------------------------------------------
 
-namespace Octopus.Client.Cmdlet.Server
+namespace Octopus.Client.Cmdlet.Common
 {
-    public class ServerStatus
+    public class Endpoint
     {
     }
 }

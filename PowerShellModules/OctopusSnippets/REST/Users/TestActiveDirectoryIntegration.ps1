@@ -45,7 +45,7 @@ This file "TestActiveDirectoryIntegration.ps1" is part of "OctopusSnippets".
 =============================================================================
 #>
 
-# This will test your active directory integration within Octopus Deploy itself.  
+# This will test your active directory integration within Octopus Deploy itself.
 $octopusURL = "https://yourinstance.com"
 $octopusAPIKey = "YOUR API KEY"
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
@@ -63,10 +63,10 @@ foreach ($identity in $directoryServicesResults.Identities)
         $claimList = $identity.Claims | Get-Member | Where-Object -FilterScript {$_.MemberType -eq "NoteProperty"} | Select-Object -Property "Name"
 
         foreach ($claimName in $claimList)
-        {                  
+        {
             $claimName = $claimName.Name
             $claim = $identity.Claims.$ClaimName
-            
+
             if ($claim.Value.ToLower() -eq $expectedMatch.Tolower() -and $claim.IsIdentifyingClaim -eq $true)
             {
                 $foundUser = $true
@@ -85,7 +85,7 @@ if ($foundUser)
 {
     Write-Information -MessageData "Successfully found the user $userNameToLookUp by matching $expectedMatch"
 }
-else 
+else
 {
     Write-Information -MessageData "Unable to find user $UserNameToLookup with the claim $expectedMatch"
 }

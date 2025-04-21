@@ -47,14 +47,13 @@ This file "AddLibraryVariableSetToAllProjects.ps1" is part of "OctopusSnippets".
 
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -AssemblyName 'Octopus.Client' 
+Add-Type -AssemblyName 'Octopus.Client'
 
 $apikey = 'API-ABC123' # Get this from your profile
 $octopusURI = 'http://octopus-uri' # Your server address
 
-$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
-
 
 $libraryVariableSet = New-Object -TypeName Octopus.Client.Model.LibraryVariableSetResource
 $libraryVariableSet.Name = "Ignore config transform errors"

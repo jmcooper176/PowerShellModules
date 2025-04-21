@@ -80,7 +80,7 @@ function Set-OctopusTargetLockUpgrade {
         [ValidateSet($false,$true)]
         $LockUpgrade
     )
-    
+
     if ([string]::IsNullOrWhiteSpace($Url)) {
         throw "Octopus API URL was not specified. Make sure you provid a valid URL to the Octopus API endpoint."
     }

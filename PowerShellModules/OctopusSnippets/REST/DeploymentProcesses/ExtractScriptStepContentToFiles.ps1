@@ -71,17 +71,17 @@ foreach ($project in $projectList)
     {
         # Check for the step being a script step that doesn't use a library step template
         if ($step.Actions.ActionType -eq "Octopus.Script" -and !$step.Actions.Properties.'Octopus.Action.Template.Id' )
-        {           
-                $extension = "ps1"; 
+        {
+                $extension = "ps1";
                 switch($($step.Actions.properties.'Octopus.Action.Script.Syntax')){
                     "Bash"   { $extension = "sh"; break; }
                     "C#"     { $extension = "cs"; break; }
                     "F#"     { $extension = "fs"; break; }
                     "Python" { $extension = "py"; break; }
                  }
-                
+
                 # output script content to a file
-                $step.Actions.properties.'Octopus.Action.Script.Scriptbody' | out-file "ProjectScripts/Scripts/$($project.Name)_$($step.Name)_$($step.Actions.Id).$($extension)"                
+                $step.Actions.properties.'Octopus.Action.Script.Scriptbody' | out-file "ProjectScripts/Scripts/$($project.Name)_$($step.Name)_$($step.Actions.Id).$($extension)"
         }
     }
 }

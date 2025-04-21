@@ -47,7 +47,7 @@ This file "AddVariableToLibraryVariableSet.ps1" is part of "OctopusSnippets".
 
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -AssemblyName 'Octopus.Client' 
+Add-Type -AssemblyName 'Octopus.Client'
 
 $apikey = 'API-MCPLE1AQM2VKTRFDLIBMORQHBXA' # Get this from your profile
 $octopusURI = 'http://localhost' # Your server address
@@ -56,7 +56,7 @@ $libraryVariableSetId = "LibraryVariableSets-1" # Get this from /api/libraryvari
 $variableName = "Variable name" # Name of the new variable
 $variableValue = "Variable value" # Value of the new variable
 
-$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 
 $libraryVariableSet = $repository.LibraryVariableSets.Get($libraryVariableSetId);

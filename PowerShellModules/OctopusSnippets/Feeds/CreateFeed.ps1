@@ -84,12 +84,12 @@ try
     $feedResource.DownloadAttempts = $downloadAttempts
     $feedResource.DownloadRetryBackoffSeconds = $downloadRetryBackoffSeconds
     $feedResource.EnhancedMode = $useExtendedApi
-    
-    if(-not ([string]::IsNullOrEmpty($feedUsername))) 
+
+    if(-not ([string]::IsNullOrEmpty($feedUsername)))
     {
         $feedResource.Username = $feedUsername
     }
-    if(-not ([string]::IsNullOrEmpty($feedPassword))) 
+    if(-not ([string]::IsNullOrEmpty($feedPassword)))
     {
         $feedResource.Password = $feedPassword
     }

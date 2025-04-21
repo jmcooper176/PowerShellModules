@@ -71,7 +71,7 @@ try
 
     # Get user role
     $userRole = $repositoryForSpace.UserRoles.FindByName($userRoleName)
-    
+
     # Loop through teams
     $teamNames = @()
     foreach ($team in $teams)
@@ -93,7 +93,6 @@ try
     {
         Write-Information -MessageData "$teamName"
     }
-
 }
 catch
 {

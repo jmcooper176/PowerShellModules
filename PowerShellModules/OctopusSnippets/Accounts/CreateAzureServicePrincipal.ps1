@@ -66,7 +66,6 @@ $accountTenantIds = @()
 $accountEnvironmentIds = @()
 $spaceName = "default"
 
-
 $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint($octopusURL, $octopusAPIKey)
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository($endpoint)
 $client = New-Object -TypeName Octopus.Client.OctopusClient($endpoint)

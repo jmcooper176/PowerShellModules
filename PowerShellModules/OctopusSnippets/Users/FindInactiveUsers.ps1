@@ -58,7 +58,7 @@ $users = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/users" -Headers $he
 
 Write-Information -MessageData "Users not active in last 90 days:"
 
-foreach ($user in $users.Items) {    
+foreach ($user in $users.Items) {
     # Get events
     $audit = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/events?users=$($user.Id)&from=$($startDate)T00%3A00%3A00%2B00%3A00&to=$($endDate)T23%3A59%3A59%2B00%3A00&spaces=all&includeSystem=false&excludeDifference=true" -Headers $header
 

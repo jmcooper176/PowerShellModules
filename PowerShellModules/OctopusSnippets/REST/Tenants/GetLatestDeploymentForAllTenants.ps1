@@ -67,12 +67,12 @@ Write-Information -MessageData "Calculating the latest deployment for $($tenants
 Write-Information -MessageData "---"
 
 # Loop through each tenant to find the latest deployment
-foreach ($tenant in $tenants) 
+foreach ($tenant in $tenants)
 {
     $deploymentsUrl = "$octopusURL/api/$spaceId/deployments?tenants=$($tenant.Id)&take=1"
     $latestDeployment = Invoke-RestMethod -Uri $deploymentsUrl -Method Get -Headers $headers -ErrorAction Stop | Select-Object -ExpandProperty Items | Select-Object -First 1
 
-    if ($null -ne $latestDeployment) 
+    if ($null -ne $latestDeployment)
     {
         # Convert date
         $deploymentDate = Get-Date $latestDeployment.Created -Format "MMM-d-yyyy"
@@ -81,8 +81,8 @@ foreach ($tenant in $tenants)
             TenantID = $tenant.Id
             LastDeploymentDate = $deploymentDate
         }
-    } 
-    else 
+    }
+    else
     {
         $row = New-Object -TypeName PSObject -Property @{
             TenantName = $tenant.Name

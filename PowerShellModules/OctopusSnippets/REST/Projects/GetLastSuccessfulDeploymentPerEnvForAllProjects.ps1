@@ -66,4 +66,3 @@ foreach ($project in $projects)
         Write-Output "Last Successful Release in $($environment.Name): `t$($LastSuccessfulRelease.CompletedTime)"
     }
 }
-

@@ -124,7 +124,6 @@ function Set-OctopusVariable {
     else {
         Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
     }
-
 }
 
 Set-OctopusVariable -octopusURL "https://xxx.octopus.app/" -octopusAPIKey "API-xxx" -projectName "hello_world" -varName "name" -varValue "alex" -environment "Production" -gitRefOrBranchName $null

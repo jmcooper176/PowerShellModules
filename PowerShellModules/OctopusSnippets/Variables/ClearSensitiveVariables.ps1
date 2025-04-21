@@ -92,14 +92,13 @@ try
         # Clear the sensitive ones
         Clear-SensitiveVariables -VariableSetId $project.VariableSetId
     }
-    
+
     # Loop through library variable sets
     foreach ($libararySet in $repositoryForSpace.LibraryVariableSets.GetAll())
     {
         # Clear sensitive ones
         Clear-SensitiveVariables -VariableSetId $libararySet.VariableSetId
     }
-
 }
 catch
 {

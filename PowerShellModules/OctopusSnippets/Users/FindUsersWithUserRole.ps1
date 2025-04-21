@@ -100,7 +100,7 @@ try
                 {
                     # Get the user account
                     $user = $repository.Users.GetAll() | Where-Object -FilterScript {$_.Id -eq $member}
-                    
+
                     # Display
                     Write-Output "$($user.DisplayName)"
                 }

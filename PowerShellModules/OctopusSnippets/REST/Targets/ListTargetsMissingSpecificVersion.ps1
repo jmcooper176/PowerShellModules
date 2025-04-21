@@ -48,8 +48,8 @@ This file "ListTargetsMissingSpecificVersion.ps1" is part of "OctopusSnippets".
 <#
     This will return all machines that did not complete the deployment task, meaning they were not in the role/environment at the time of execution
     or were skipped as a decision during guided failure mode.
-    
-    Note: In guided failure mode, if ignore is chosen the task will complete on the target and the record will exist. Excluding the target will 
+
+    Note: In guided failure mode, if ignore is chosen the task will complete on the target and the record will exist. Excluding the target will
     return expected result.
 
     End result is a generic list object $missedTargets which contains machine id's. This can be output to a file or used as input for another process.
@@ -65,7 +65,6 @@ $returnMachineTasks = 100       #Number of machine tasks to return
 
 # Add key to header object for api call
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
-
 
 # Get environment list, grab environment id for named environment
 $allEnvironments = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/environments" -Headers $header)
@@ -112,10 +111,9 @@ $serverTaskIds = New-Object -TypeName System.Collections.Generic.List[System.Obj
 
 # Query task endpoint for success - for each success get task Id and add to server task list
 ForEach ($deployment in $releaseDeployment) {
-        
     $taskId = $deployment.TaskId
-    $serverTaskDetail = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/tasks/$taskId" -Headers $header) 
-    #$serverTaskDetail 
+    $serverTaskDetail = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/tasks/$taskId" -Headers $header)
+    #$serverTaskDetail
     If ($serverTaskDetail.State -eq "Success") {
         $serverTaskIds.add($serverTaskDetail.Id)
     }
@@ -125,7 +123,7 @@ $startTime = Get-Date
 $machineTaskIds = New-Object -TypeName System.Collections.Generic.List[System.Object]
 $missedTargets = @{}
 $receivedTargets = @{}
-$returnMachineTasks = 100  
+$returnMachineTasks = 100
 # Machine specific tasks
 Foreach ($machine in $targetMachines.GetEnumerator()) {
     Write-Output "Processing tasks for $($machine.Value)"
@@ -134,7 +132,6 @@ Foreach ($machine in $targetMachines.GetEnumerator()) {
     Foreach ($task in $machinetasks) {
         $machineTaskIds.Add($task.Id)
     }
-    
 
     # Use server task Id list (smaller) to poll machine task ids
     Foreach ($serverTask in $serverTaskIds) {
@@ -143,13 +140,12 @@ Foreach ($machine in $targetMachines.GetEnumerator()) {
             $missedTargets.set_item($machine.Name, $machine.Value)
         }
         else {
-            $receivedTargets.set_item($machine.Name, $machine.Value)            
+            $receivedTargets.set_item($machine.Name, $machine.Value)
         }
     }
     $machineTaskIds.Clear()
-        
 }
-$endTime = Get-Date  
+$endTime = Get-Date
 $processTime = New-TimeSpan -Start $startTime -End $endTime
 
 Write-Output "Processing Time: $processTime"

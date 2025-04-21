@@ -61,7 +61,6 @@ $TenantName = "YOUR_TENANT_NAME"
 # Find Tenant ID
 $Tenant = (Invoke-RestMethod -Method GET "$OctopusURL/api/$($SpaceId)/Tenants/all" -Headers $Header) | Where-Object -FilterScript {$_.Name -eq $TenantName}
 
-
 # Find Triggers that include $Tenant.Id
 $TriggersList = (Invoke-RestMethod -Method GET "$OctopusURL/api/$($SpaceId)/projecttriggers" -Headers $Header) | Where-Object -FilterScript {$_.Items.Action.TenantIds -contains $($Tenant.Id)}
 $Triggers = $TriggersList.items

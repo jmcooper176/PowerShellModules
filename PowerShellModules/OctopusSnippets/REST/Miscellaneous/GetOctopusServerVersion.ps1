@@ -53,4 +53,3 @@ $OctopusURL = "" #Your Octopus Server root URL
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 $ServerVersion = ((Invoke-WebRequest -Uri $OctopusURL/api -Method GET -Headers $header).content | ConvertFrom-Json).version
 $ServerVersion
-

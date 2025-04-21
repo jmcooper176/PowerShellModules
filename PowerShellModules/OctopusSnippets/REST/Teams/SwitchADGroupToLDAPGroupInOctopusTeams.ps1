@@ -60,7 +60,7 @@ $WhatIf = $True
 # Set this to $True if you want the Script to remove old Active Directory teams once the LDAP group has been found and added.
 $RemoveOldTeams = $False
 
-# Limit how may teams are retrieved/updated. 
+# Limit how may teams are retrieved/updated.
 # Use these two variables to work through if you have hundreds of teams.
 $skipIndex = 0
 $recordsToBringBack = 30
@@ -76,17 +76,17 @@ $recordsUpdated = 0
 
 foreach ($team in $teams) {
     try {
-        Write-Information -MessageData "Working on team: '$($team.Name)'$(if (![string]::IsNullOrWhiteSpace($team.SpaceId)) {" from Space '$($team.SpaceId)'"})" 
-    
+        Write-Information -MessageData "Working on team: '$($team.Name)'$(if (![string]::IsNullOrWhiteSpace($team.SpaceId)) {" from Space '$($team.SpaceId)'"})"
+
         $teamExternalGroups = $team.ExternalSecurityGroups
 
         if ($teamExternalGroups.Count -eq 0) {
             Write-Verbose -Message "Team: '$($team.Name)' doesnt have any external groups, skipping"
-            continue 
+            continue
         }
         else {
             foreach ($externalSecurityGroup in $team.ExternalSecurityGroups) {
-                $externalName = $externalSecurityGroup.DisplayName            
+                $externalName = $externalSecurityGroup.DisplayName
                 if ($null -eq $externalName) {
                     continue
                 }
@@ -106,7 +106,7 @@ foreach ($team in $teams) {
                     # Next, check to see if to find a matching group in LDAP
                     if ($matchFound -eq $True) {
                         $ldapTeamNameToFind = "$externalName"
-                
+
                         $ldapResults = Invoke-RestMethod -Method GET -Uri "$octopusURL/api/externalgroups/ldap?partialName=$([System.Web.HTTPUtility]::UrlEncode($ldapTeamNameToFind))" -Headers $header
                         foreach ($ldapResult in $ldapResults) {
                             if ($ldapResult.DisplayName -eq $externalName) {
@@ -118,7 +118,7 @@ foreach ($team in $teams) {
                         $foundExistingMatch = $False
                         if ($ldapMatchFound -eq $True) {
                             # Does the Octopus team already have this LDAP Group?
-                            foreach ($group in $team.ExternalSecurityGroups) {                        
+                            foreach ($group in $team.ExternalSecurityGroups) {
                                 if ($group.Id -eq $ldapResult.Id) {
                                     $foundExistingMatch = $true
                                     break
@@ -131,7 +131,7 @@ foreach ($team in $teams) {
                             else {
                                 Write-Information -MessageData "The LDAP group already existed on team '$($team.Name)'."
                             }
-                            
+
                             if ($RemoveOldTeams -eq $True) {
                                 Write-Information -MessageData "Existing AD Group with SID $($externalSecurityGroup.Id) in team '$($team.Name)' will be marked to be removed"
                                 $activeDirectoryRecordsToRemove += $adResult.Id
@@ -161,20 +161,20 @@ foreach ($team in $teams) {
                 Write-Information -MessageData "Filtered external groups from $($team.ExternalSecurityGroups.Length) to $($externalGroups.Length)"
                 $team.ExternalSecurityGroups = $externalGroups
             }
-             
+
             if ($ldapRecordsToAdd.Length -gt 0 -or ($RemoveOldTeams -eq $True -and $activeDirectoryRecordsToRemove.Length -gt 0)) {
                 $TeamUpdateUri = "$OctopusUrl/api/teams/$($team.Id)"
                 $TeamBody = $($team | ConvertTo-Json -Depth 10 -Compress)
 
                 if ($WhatIf -eq $True) {
-                    Write-Information -MessageData "WhatIf = True. Update for team '$($Team.Name)' would have been:" 
+                    Write-Information -MessageData "WhatIf = True. Update for team '$($Team.Name)' would have been:"
                     Write-Information -MessageData "$($TeamBody)"
                 }
                 else {
                     Write-Information -MessageData "Updating team '$($Team.Name)' in Octopus Deploy"
                     Invoke-RestMethod -Method PUT -Uri $TeamUpdateUri -Headers $header -Body $teamBody | Out-Null
                 }
-                
+
                 $recordsUpdated += 1
             }
         }

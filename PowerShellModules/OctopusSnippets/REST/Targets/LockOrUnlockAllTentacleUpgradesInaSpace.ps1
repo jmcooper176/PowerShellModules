@@ -46,9 +46,8 @@ This file "LockOrUnlockAllTentacleUpgradesInaSpace.ps1" is part of "OctopusSnipp
 #>
 
 # =======================================================================
-#      Lock or unlock Tentacle upgrades for all Tentacles in a Space     
+#      Lock or unlock Tentacle upgrades for all Tentacles in a Space
 # =======================================================================
-
 
 $ErrorActionPreference = "Stop";
 

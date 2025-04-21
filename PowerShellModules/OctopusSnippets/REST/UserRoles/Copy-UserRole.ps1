@@ -58,7 +58,6 @@ $userRole = (Invoke-RestMethod `
                 -Headers $headers -UseBasicParsing).Items `
                     | Where-Object -Property Name -eq $userRoleNameToDuplicate
 
-
 if (!$userRole) {
     throw "Error: No UserRole found with name: $userRoleNameToDuplicate"
 }

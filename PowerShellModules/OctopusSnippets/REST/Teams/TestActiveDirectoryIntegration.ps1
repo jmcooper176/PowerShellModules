@@ -45,7 +45,7 @@ This file "TestActiveDirectoryIntegration.ps1" is part of "OctopusSnippets".
 =============================================================================
 #>
 
-# This will test your active directory integration within Octopus Deploy itself.  
+# This will test your active directory integration within Octopus Deploy itself.
 $octopusURL = "https://yourinstance.com"
 $octopusAPIKey = "YOUR API KEY"
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
@@ -57,19 +57,19 @@ $directoryServicesResults = Invoke-RestMethod -Method GET -Uri "$octopusURL/api/
 
 $teamId = $null
 foreach ($teamFound in $directoryServicesResults)
-{    
+{
     If ($teamFound.DisplayName -eq $expectedMatch)
-    {        
+    {
         $teamId = $teamFound.Id
         break
-    }    
+    }
 }
 
 if ($null -ne $teamId)
 {
     Write-Information -MessageData "Successfully found the team $teamNameToLookUp matching $expectedMatch. The id is $teamId"
 }
-else 
+else
 {
     Write-Information -MessageData "Unable to find team $teamNameToLookUp matching $expectedMatch"
 }

@@ -95,14 +95,13 @@ $triggers = New-Object -TypeName 'System.Collections.ArrayList';
 
 # Get spaces
 $spaces = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header
-    
+
 foreach ($space in $spaces) {
     try {
         # Get projects
-        $projects = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header) 
+        $projects = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header)
 
         foreach ($project in $projects) {
-            
             # Get project triggers
             $projectTriggers = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/triggers" -Headers $header
 
@@ -122,8 +121,8 @@ foreach ($space in $spaces) {
                         FilterType = $projectTrigger.Filter.FilterType;
                         CronExpression = $projectTrigger.Filter.CronExpression;
                     })
-                } 
-                
+                }
+
                 If ($projectTrigger.Filter.FilterType -eq "OnceDailySchedule"){
                     $triggers.Add(@{
                         SpaceName = $space.Name;
@@ -149,7 +148,6 @@ foreach ($space in $spaces) {
                         Timezone = $projectTrigger.Filter.Timezone;
                     })
                 }
-                
             }
         }
     }

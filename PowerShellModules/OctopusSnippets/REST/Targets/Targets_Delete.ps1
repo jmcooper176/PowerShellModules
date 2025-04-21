@@ -57,7 +57,3 @@ Function Delete-OctopusTarget([string]$ID) {
 
 # Invoke delete function
 Delete-OctopusTarget -ID $MachineID
-
-
-
-

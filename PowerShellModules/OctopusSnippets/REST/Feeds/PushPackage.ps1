@@ -65,7 +65,7 @@ $httpClient.DefaultRequestHeaders.Add("X-Octopus-ApiKey", $octopusAPIKey)
 $httpClient.Timeout = $timeout
 
 # Get space
-$space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object -FilterScript {$_.Name -eq $spaceName} 
+$space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object -FilterScript {$_.Name -eq $spaceName}
 
 # Open file stream
 $fileStream = New-Object -TypeName System.IO.FileStream($packageFile, [System.IO.FileMode]::Open)

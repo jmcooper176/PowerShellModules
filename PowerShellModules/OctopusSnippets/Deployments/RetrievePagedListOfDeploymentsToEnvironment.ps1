@@ -56,7 +56,6 @@ $environmentName = "Development"
 $endpoint = New-Object -TypeName.Client.OctopusServerEndpoint $octopusURL, $octopusAPIKey
 $repository = New-Object -TypeName.Client.OctopusRepository $endpoint
 
-
 # Get space id
 $space = $repository.Spaces.FindByName($spaceName)
 Write-Information -MessageData "Using Space named $($space.Name) with id $($space.Id)"
@@ -70,12 +69,12 @@ $environment = $repositoryForSpace.Environments.FindByName($environmentName)
 # Get deployments to environment
 $projects = @()
 $environments = @($environment.Id)
-$deployments = New-Object -TypeName.Collections.Generic.List[System.Object] 
-    
-$repositoryForSpace.Deployments.Paginate($projects, $environments, {param ($page) 
+$deployments = New-Object -TypeName.Collections.Generic.List[System.Object]
+
+$repositoryForSpace.Deployments.Paginate($projects, $environments, {param ($page)
     Write-Information -MessageData "Found $($page.Items.Count) deployments.";
-    $deployments.AddRange($page.Items); 
-    return $True; 
+    $deployments.AddRange($page.Items);
+    return $True;
 })
 
 Write-Information -MessageData "Retrieved $($deployments.Count) deployments to environment $($environmentName)"

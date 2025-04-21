@@ -85,7 +85,7 @@ function Get-Name {
 
 # Get space
 Write-Output "Retrieving space '$($spaceName)'"
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -ieq $spaceName }
 
 # Get all project groups
@@ -136,7 +136,7 @@ $response = $null
 do {
     $uri = if ($response) { $octopusURL + $response.Links.'Page.Next' } else { "$octopusURL/api/$($space.Id)/deployments" }
     $response = Invoke-RestMethod -Method Get -Uri $uri -Headers $header
-    
+
     foreach ($deployment in $response.Items) {
         if ($deploymentsSeenBefore.Contains($deployment.Id)) {
             continue
@@ -150,7 +150,7 @@ do {
             $release = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/releases/$($deployment.ReleaseId)" -Headers $header
             $releasesSeenBefore.Add($deployment.ReleaseId, $release) | Out-Null
         }
-       
+
         $deploymentsSeenBefore.Add($deployment.Id) | Out-Null
 
         $xml.WriteStartElement("Deployment")
@@ -165,7 +165,6 @@ do {
     }
 
     Write-Output ("Wrote {0:n0} of {1:n0} deployments..." -f $deploymentsSeenBefore.Count, $response.TotalResults)
-
 } while ($response.Links.'Page.Next')
 
 # End the XML document and flush the writer

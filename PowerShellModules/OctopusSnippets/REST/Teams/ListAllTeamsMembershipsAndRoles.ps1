@@ -80,8 +80,8 @@ foreach ($team in $teamList.Items)
     $scopedUserRoles = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/teams/$($team.Id)/scopeduserroles?skip=0&take=10000" -Headers $header
     Write-Information -MessageData "    Roles:"
     foreach ($scopedRole in $scopedUserRoles.Items)
-    {       
-        $spaceId = $scopedRole.SpaceId 
+    {
+        $spaceId = $scopedRole.SpaceId
         $space = $spaceList.Items | Where-Object -FilterScript {$_.Id -eq $spaceId}
         if ($space)
         {
@@ -100,14 +100,13 @@ foreach ($team in $teamList.Items)
         }
         else
         {
-            
             if (Get-Member -InputObject $environmentCache -Name $spaceId -MemberType Properties)
             {
                 $environmentList = $environmentCache.$spaceId
             }
             else
             {
-                $environmentList = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/$spaceId/environments?skip=0&take=10000" -Headers $header 
+                $environmentList = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/$spaceId/environments?skip=0&take=10000" -Headers $header
                 $environmentCache.$spaceId = $environmentList
             }
 
@@ -125,14 +124,13 @@ foreach ($team in $teamList.Items)
         }
         else
         {
-            
             if (Get-Member -InputObject $projectCache -Name $spaceId -MemberType Properties)
             {
                 $projectList = $projectCache.$spaceId
             }
             else
             {
-                $projectList = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/$spaceId/projects?skip=0&take=10000" -Headers $header 
+                $projectList = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/$spaceId/projects?skip=0&take=10000" -Headers $header
                 $projectCache.$spaceId = $projectList
             }
 
@@ -150,14 +148,13 @@ foreach ($team in $teamList.Items)
         }
         else
         {
-            
             if (Get-Member -InputObject $projectGroupCache -Name $spaceId -MemberType Properties)
             {
                 $projectGroupList = $projectGroupCache.$spaceId
             }
             else
             {
-                $projectGroupList = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/$spaceId/projectgroups?skip=0&take=10000" -Headers $header 
+                $projectGroupList = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/$spaceId/projectgroups?skip=0&take=10000" -Headers $header
                 $projectGroupCache.$spaceId = $projectGroupList
             }
 
@@ -175,14 +172,13 @@ foreach ($team in $teamList.Items)
         }
         else
         {
-            
             if (Get-Member -InputObject $tenantCache -Name $spaceId -MemberType Properties)
             {
                 $tenantList = $projectGroupCache.$spaceId
             }
             else
             {
-                $tenantList = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/$spaceId/tenants?skip=0&take=10000" -Headers $header 
+                $tenantList = Invoke-RestMethod -Method GET -Uri "$OctopusUrl/api/$spaceId/tenants?skip=0&take=10000" -Headers $header
                 $tenantCache.$spaceId = $tenantList
             }
 
@@ -193,6 +189,5 @@ foreach ($team in $teamList.Items)
                 Write-Information -MessageData "                    $($tenant.Name)"
             }
         }
-        
     }
 }

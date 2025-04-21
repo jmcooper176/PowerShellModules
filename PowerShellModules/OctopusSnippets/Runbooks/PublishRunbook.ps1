@@ -73,7 +73,7 @@ try
 
     # Get runbook
     $runbook = $repositoryForSpace.Runbooks.FindByName($project, $runbookName)
-    
+
     # Get the runbook snapshot
     $runbookSnapshot = $repositoryForSpace.RunbookSnapshots.FindOne({param ($r) $r.Name -eq $snapshotName -and $r.ProjectId -eq $project.Id})
 

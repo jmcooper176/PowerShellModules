@@ -69,7 +69,7 @@ $jsonPayload = @{
     RunRetentionPolicy = @{
         QuantityToKeep = 100
         ShouldKeepForever = $false
-    }   
+    }
 }
 
 # Create the runbook

@@ -67,7 +67,7 @@ $accountTenantParticipation = "Untenanted"
 $jsonKeyPath = "/path/to/jsonkeyfile.json"
 
 # (Optional) Tenant tags e.g.: "AWS Region/California"
-$accountTenantTags = @() 
+$accountTenantTags = @()
 # (Optional) Tenant Ids e.g.: "Tenants-101"
 $accountTenantIds = @()
 # (Optional) Environment Ids e.g.: "Environments-1"
@@ -83,7 +83,7 @@ else {
 }
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Create JSON payload

@@ -49,7 +49,6 @@ This file "GetMaintenanceModeStatus.ps1" is part of "OctopusSnippets".
 $OctopusAPIkey = "" #Your Octopus API Key
 $OctopusURL = "" #Your Octopus Server root URL
 
-
 ##PROCESS##
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 $MaintenanceConfig = ((Invoke-WebRequest -Uri $OctopusURL/api/maintenanceconfiguration -Method GET -Headers $header).content | ConvertFrom-Json).IsInMaintenanceMode

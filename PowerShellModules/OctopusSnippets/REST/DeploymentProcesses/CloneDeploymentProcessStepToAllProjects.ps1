@@ -81,11 +81,11 @@ foreach ($project in $destinationProjectList.Items)
     {
         $deploymentProcessUrl = $OctopusUrl + $project.Links.DeploymentProcess
         $projectDeploymentProcess = Invoke-RestMethod $deploymentProcessUrl -Headers $header
-        
+
         $projectDeploymentProcess.Steps += $stepToClone
-        
+
         $deploymentProcessAsJson = $projectDeploymentProcess | ConvertTo-Json -Depth 8
 
-        Invoke-WebRequest -Uri $deploymentProcessUrl -Headers $updateHeader -Method Put -Body $deploymentProcessAsJson -ContentType "application/json"        
+        Invoke-WebRequest -Uri $deploymentProcessUrl -Headers $updateHeader -Method Put -Body $deploymentProcessAsJson -ContentType "application/json"
     }
 }

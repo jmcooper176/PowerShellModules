@@ -155,7 +155,7 @@ function AcquireAssemblies() {
     } else {
         $nugetSourceArg = ''
     }
-    @('Octopus.Client', 'Octostache') | ForEach-Object -Process { 
+    @('Octopus.Client', 'Octostache') | ForEach-Object -Process {
         & $NugetPath install $_ $nugetSourceArg $NugetSource -ExcludeVersion -PackageSaveMode nuspec -Framework net40 -Verbosity $script:NugetVerbosity -NonInteractive
     }
 }
@@ -163,12 +163,12 @@ function AcquireAssemblies() {
 function LoadAssemblies() {
     [CmdletBinding()]
     param ()
-    @('Markdig', 'Sprache') | ForEach-Object -Process { 
+    @('Markdig', 'Sprache') | ForEach-Object -Process {
         Copy-Item ".\$_\lib\net40\$_.dll" '.\Octostache\lib\net40\' -Force -WhatIf:$false -Confirm:$false
     }
 Write-Verbose -Message 'Loading dependent assemblies'
     @(
-        '.\Newtonsoft.Json\lib\net40\Newtonsoft.Json.dll', 
+        '.\Newtonsoft.Json\lib\net40\Newtonsoft.Json.dll',
         '.\Octopus.Client\lib\net452\Octopus.Client.dll'
         '.\Octostache\lib\net40\Octostache.dll'
     ) | ForEach-Object -Process { Add-Type -Path $_ }
@@ -177,7 +177,7 @@ Write-Verbose -Message 'Loading dependent assemblies'
 function Get-InUsePackages {
     [CmdletBinding()] # Enable -Verbose switch
     [OutputType('System.Collections.Generic.Dictionary[string, Octopus.Client.Model.PackageResource]')]
-    Param ( 
+    Param (
         [parameter(Mandatory=$true)][Octopus.Client.Model.ReleaseResource]$Release
     )
     $packageVersions = @{}
@@ -186,9 +186,9 @@ function Get-InUsePackages {
     }
     $headers = @{ "X-Octopus-ApiKey" = $OctopusApiKey }
     $uri = [string]::Join('/', @(
-        $OctopusUri.TrimEnd('/'), 
+        $OctopusUri.TrimEnd('/'),
         $SpaceId,
-        'deploymentprocesses', 
+        'deploymentprocesses',
         $Release.ProjectDeploymentProcessSnapshotId))
     $progPref = $ProgressPreference
     $ProgressPreference = 'SilentlyContinue'
@@ -230,7 +230,7 @@ function Test-FeedId {
         } elseif (
             ($script:AllFeeds[$FeedId].FeedUri -match $ExcludeFeedRegex) -or `
             ($script:AllFeeds[$FeedId].FeedUri -notmatch $IncludeFeedRegex)
-            ) {		
+            ) {
             Write-Verbose -Message "Skipping feed '$FeedId'. Its URL ($($script:AllFeeds[$FeedId].FeedUri)) does not comply with the ExcludeFeedRegex or IncludeFeedRegex parameters."
         } elseif ($script:AllFeeds[$FeedId].SpaceId -ne $SpaceId) {
             Write-Verbose -Message "Skipping feed '$FeedId' ($($script:AllFeeds[$FeedId].FeedUri)) from space '($script:AllFeeds[$FeedId].SpaceId)'. Only feeds in space '$SpaceId' are being processed, based on the SpaceId parameter (or its default value)."
@@ -254,9 +254,9 @@ function Test-PackagesWentMissingAfterPreviousRunStarted {
     param (
         [parameter(Mandatory=$true)][Octopus.Client.Model.PackageResource[]]$Packages,
         [parameter(Mandatory=$true)][Octopus.Client.Model.NugetFeedResource[]]$Feeds
-    )		
+    )
     Write-Information -MessageData 'Querying Octopus for any packages that may be missing from applicable feeds.'
-    $packagesMissingNow = @{ 
+    $packagesMissingNow = @{
         IncludedFeedIds = $null;
         PackagesMissing = Get-PackagesMissingFromFeeds -Packages $Packages -Feeds $Feeds
     }
@@ -274,11 +274,11 @@ function Test-PackagesWentMissingAfterPreviousRunStarted {
     $regrets = @()
     foreach ($packageMissingNow in $packagesMissingNow.PackagesMissing) {
         if ($packagesMissingWhenPreviousRunStarted.IncludedFeedIds.Contains($packageMissingNow.FeedId) `
-            -and @($packagesMissingWhenPreviousRunStarted.PackagesMissing | Where-Object -FilterScript { 
+            -and @($packagesMissingWhenPreviousRunStarted.PackagesMissing | Where-Object -FilterScript {
                 ($_.FeedId -eq $packageMissingNow.FeedId) `
                 -and ($_.PackageId -eq $packageMissingNow.PackageId) `
                 -and ($_.Version -eq $packageMissingNow.Version)
-            }).Count -eq 0) {			
+            }).Count -eq 0) {
             $regrets += $packageMissingNow
         }
     }
@@ -308,8 +308,8 @@ function Get-PackagesMissingFromFeeds {
     # too long."
     $packagesOnAffectedFeeds = $Packages | Where-Object -FilterScript { Test-FeedId $_.FeedId }
     $packagesMissingFromFeeds = New-Object -TypeName 'System.Collections.Generic.List[Octopus.Client.Model.PackageResource]'
-    $headers = @{ 
-        'X-Octopus-ApiKey' = $OctopusApiKey; 
+    $headers = @{
+        'X-Octopus-ApiKey' = $OctopusApiKey;
         'Cache-Control' = 'no-cache';
         'Pragma' = 'no-cache'
      }
@@ -338,9 +338,9 @@ function Get-PackagesMissingFromFeeds {
 Get-PackageId attempts to evaluate an Octostache expression from a release's deployment process snapshot using
 the same release's variable snapshots.
 
-Get-PackageId was implemented to address this scenario: Some process steps may define Octostache expressions 
-for the names of packages, for example to define different package names to use depending on a release's 
-channel. Unfortunately, deployment process snapshots contain only the octostache variable name, not the 
+Get-PackageId was implemented to address this scenario: Some process steps may define Octostache expressions
+for the names of packages, for example to define different package names to use depending on a release's
+channel. Unfortunately, deployment process snapshots contain only the octostache variable name, not the
 evaluated package name (even though the dynamically-selected package version is recorded alongside it).
 
 Processing accounts for channels. Example:
@@ -366,18 +366,18 @@ function Get-PackageId {
         Write-Verbose -Message "Attempting to evaluate possible Octostache expression '$PossibleOctostacheExpression'"
         $headers = @{ "X-Octopus-ApiKey" = $OctopusApiKey }
         $uri = [string]::Join('/', @(
-            $OctopusUri.TrimEnd('/'), 
+            $OctopusUri.TrimEnd('/'),
             $SpaceId,
-            'variables', 
+            'variables',
             $Release.ProjectVariableSetSnapshotId))
         $progPref = $ProgressPreference
         $ProgressPreference = 'SilentlyContinue'
         $variableSetSnapshots = @(Invoke-WebRequest -Uri $uri -Headers $headers -Method Get -Verbose:$false | ConvertFrom-Json)
         foreach ($libraryVariableSetSnapshotId in $Release.LibraryVariableSetSnapshotIds) {
             $uri = [string]::Join('/', @(
-                $OctopusUri.TrimEnd('/'), 
+                $OctopusUri.TrimEnd('/'),
                 $SpaceId,
-                'variables', 
+                'variables',
                 $libraryVariableSetSnapshotId))
                 $variableSetSnapshots += Invoke-WebRequest -Uri $uri -Headers $headers -Method Get -Verbose:$false | ConvertFrom-Json
             }
@@ -392,7 +392,7 @@ function Get-PackageId {
                 ) {
                     $snapshottedVariables[$variable.Name] = $variable.Value
                 }
-            }			
+            }
         }
         $evaluated = $snapshottedVariables.Evaluate($PossibleOctostacheExpression)
         Write-Verbose -Message "'$PossibleOctostacheExpression' evaluated to '$evaluated'"
@@ -431,9 +431,9 @@ function Get-PackageIdAndVersion {
     # - PackageManagement PowerShell module (Find-Package): not available on all environments; requires
     #   PowerShell 5.0
     # - Package Manager Console: Lacks a command to list packages without specifying a package ID
-    
+
     $uri = [string]::Join('/', @(
-        $Feed.FeedUri.TrimEnd('/'), 
+        $Feed.FeedUri.TrimEnd('/'),
         'Packages?$skip=0&$select=Id,NormalizedVersion,Published&$orderby=Id,NormalizedVersion&$filter=Listed%20eq%20true')
     )
         # ref: https://www.odata.org/documentation/odata-version-2-0/uri-conventions/
@@ -546,10 +546,10 @@ function PurgeNugetFeeds() {
     }
 }
 
-if ($VerbosePreference -eq 'SilentlyContinue') { 
-    $script:NugetVerbosity = 'quiet' 
+if ($VerbosePreference -eq 'SilentlyContinue') {
+    $script:NugetVerbosity = 'quiet'
 } else {
-    $script:NugetVerbosity = 'normal' 
+    $script:NugetVerbosity = 'normal'
 }
 AcquireAssemblies
 LoadAssemblies

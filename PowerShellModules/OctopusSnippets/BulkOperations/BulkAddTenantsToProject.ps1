@@ -103,7 +103,7 @@ foreach ($tenant in $tenants)
     {
         # Get existing project connections
         $projectEnvironments = $tenant.ProjectEnvironments | Where-Object -FilterScript {$_.Keys -eq $project.Id}
-        
+
         # Compare environment list
         $missingEnvironments = @()
         foreach ($environment in $environments)
@@ -131,7 +131,6 @@ foreach ($tenant in $tenants)
 
         $tenantsUpdated ++
     }
-    
 
     if ($tenantsUpdated -ge $maxNumberOfTenants)
     {

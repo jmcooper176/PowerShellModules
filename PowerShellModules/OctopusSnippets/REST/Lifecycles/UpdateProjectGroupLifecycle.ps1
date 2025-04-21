@@ -81,7 +81,6 @@ $projectList = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)
 
 # Loop through projects
 foreach ($project in $projectList.Items) {
-
     $project.LifecycleId = $($newLifecycle.Id)
 
     if (!$whatIf) {

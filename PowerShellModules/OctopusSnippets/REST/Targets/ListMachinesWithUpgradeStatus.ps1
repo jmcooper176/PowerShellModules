@@ -55,4 +55,4 @@ $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 $allMachines = (Invoke-WebRequest -Uri $OctopusURL/api/machines/all -Method Get -Headers $header -UseBasicParsing).content | ConvertFrom-Json
 $healthyMachines = $allMachines | Where-Object -FilterScript {$_.HealthStatus -eq "Healthy"}
 
-$healthyMachines | ForEach-Object -Process { "Machine $($_.Name): UpgradeSuggested=$($_.Endpoint.TentacleVersionDetails.UpgradeSuggested), UpgradeRequired=$($_.Endpoint.TentacleVersionDetails.UpgradeRequired)"} 
+$healthyMachines | ForEach-Object -Process { "Machine $($_.Name): UpgradeSuggested=$($_.Endpoint.TentacleVersionDetails.UpgradeSuggested), UpgradeRequired=$($_.Endpoint.TentacleVersionDetails.UpgradeRequired)"}

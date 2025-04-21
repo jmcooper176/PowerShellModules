@@ -87,4 +87,4 @@ $projectDeploymentProcess.Steps += $stepToClone
 
 $deploymentProcessAsJson = $projectDeploymentProcess | ConvertTo-Json -Depth 8
 
-Invoke-WebRequest -Uri $deploymentProcessUrl -Headers $updateHeader -Method Put -Body $deploymentProcessAsJson -ContentType "application/json"        
+Invoke-WebRequest -Uri $deploymentProcessUrl -Headers $updateHeader -Method Put -Body $deploymentProcessAsJson -ContentType "application/json"

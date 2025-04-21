@@ -73,4 +73,3 @@ $APIKeyResource = $allAPIKeys | Where-Object -FilterScript {$_.purpose -eq $APIK
 
 #Deleting API Key
 Invoke-WebRequest -Uri "$OctopusURL/api/users/$($user.id)/ApiKeys/$($APIKeyResource.id)" -Headers $header -Method Delete
-

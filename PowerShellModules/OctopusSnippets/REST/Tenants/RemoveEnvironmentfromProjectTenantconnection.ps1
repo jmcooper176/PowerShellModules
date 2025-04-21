@@ -47,7 +47,7 @@ This file "RemoveEnvironmentfromProjectTenantconnection.ps1" is part of "Octopus
 
 $whatif = $false #set to $true for a dry run where no changes are committed, set to $false to commit changes
 
-$OctopusAPIKey = "API-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" 
+$OctopusAPIKey = "API-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 $OctopusUrl = "YOUR_OCTOPUS_URL" # No trailing slashes example = "http://octopusinstance.bla"
 $TenantId = "Tenants-XX" # Tenant ID you wish to remove Environments from
 $SpaceId = "Spaces-XX" # Space ID where the Tenant specified above resides
@@ -73,7 +73,6 @@ foreach ($Obj in $tenant.ProjectEnvironments.PSObject.Properties) {
     }
     $projectEnvironments.Add($Obj.Name,$environmentIds)
 }
-
 
 # Build json payload
 $jsonPayload = @{

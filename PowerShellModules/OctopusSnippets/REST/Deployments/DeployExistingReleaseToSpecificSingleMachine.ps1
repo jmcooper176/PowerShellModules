@@ -49,7 +49,7 @@ This file "DeployExistingReleaseToSpecificSingleMachine.ps1" is part of "Octopus
 
 $apiKey = "" #Octopus API Key
 $OctopusURL = "" #Octopus URL
- 
+
 $ProjectName = "" #project name
 $EnvironmentName = "" #environment name
 
@@ -57,11 +57,10 @@ $MachineName = "" #Machine name in Octopus. Accepts only 1 Machine.
 
 $ReleaseVersion = "" #Version of the release you want to deploy. Put 'Latest' if you want to deploy the latest version without having to know its number.
 
-
 ##PROCESS##
 
 $Header =  @{ "X-Octopus-ApiKey" = $apiKey }
- 
+
 #Getting Project
 Try{
     $Project = Invoke-WebRequest -Uri "$OctopusURL/api/projects/$ProjectName" -Headers $Header -ErrorAction Ignore| ConvertFrom-Json
@@ -74,7 +73,7 @@ Catch{
 
 #Getting environment
 $Environment = Invoke-WebRequest -Uri "$OctopusURL/api/Environments/all" -Headers $Header| ConvertFrom-Json
- 
+
 $Environment = $Environment | Where-Object -FilterScript {$_.name -eq $EnvironmentName}
 
 If($Environment.count -eq 0){
@@ -107,12 +106,12 @@ else{
         throw $Error[0]
     }
 }
- 
+
 #Creating deployment
-$DeploymentBody = @{ 
+$DeploymentBody = @{
             ReleaseID = $release.Id
             EnvironmentID = $Environment.id
             SpecificMachineIDs = @($machine.id)
           } | ConvertTo-Json
-          
+
 $d = Invoke-WebRequest -Uri $OctopusURL/api/deployments -Method Post -Headers $Header -Body $DeploymentBody

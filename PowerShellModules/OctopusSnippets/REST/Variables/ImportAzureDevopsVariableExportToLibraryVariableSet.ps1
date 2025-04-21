@@ -54,7 +54,6 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
     [switch]$ForceUpdateVariablesWithMultipleScopes
 )
 {
-
     Write-Information -MessageData "OctopusURL: $OctopusURL"
     Write-Information -MessageData "OctopusAPIKey: API-********"
     Write-Information -MessageData "SpaceName: $SpaceName"
@@ -63,14 +62,14 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
     if(-not (Test-Path $Path)) {
         Write-Warning -Message "$Path could not be found!"
     }
-    else 
+    else
     {
         Write-Information -MessageData "Found file: $Path"
         $StopWatch =  [System.Diagnostics.Stopwatch]::StartNew()
         $Headers = @{ "X-Octopus-ApiKey" = $OctopusAPIKey }
-        
+
         # Check Space
-        $Spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $Headers 
+        $Spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $Headers
         $Space = $Spaces.Items | Where-Object -FilterScript { $_.Name -eq $SpaceName }
 
         if($null -eq $Space) {
@@ -78,14 +77,14 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
         }
 
         Write-Information -MessageData "Found SpaceId '$($Space.Id)' for '$($SpaceName)'."
-        
+
         $BaseName = (Get-Item $Path).Basename
         $BaseNameParts = $BaseName.Split("_")
         $VariableSetName = $BaseNameParts[0]
         $EnvironmentName = $BaseNameParts[1]
 
         # Check Environment
-        $Environments = Invoke-RestMethod -Uri "$octopusURL/api/$($Space.Id)/environments?partialName=$([uri]::EscapeDataString($EnvironmentName))&skip=0&take=100" -Headers $Headers 
+        $Environments = Invoke-RestMethod -Uri "$octopusURL/api/$($Space.Id)/environments?partialName=$([uri]::EscapeDataString($EnvironmentName))&skip=0&take=100" -Headers $Headers
         $Environment = $Environments.Items | Where-Object -FilterScript { $_.Name -eq $EnvironmentName }
 
         if($null -eq $Environment) {
@@ -94,7 +93,7 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
         Write-Information -MessageData "Found EnvironmentId '$($Environment.Id)' for '$($EnvironmentName)'."
 
         # Check Variable Set Name
-        $LibraryVariableSets = Invoke-RestMethod -Uri "$OctopusURL/api/$($Space.Id)/libraryvariablesets?partialName=$([uri]::EscapeDataString($VariableSetName))&skip=0&take=100" -Headers $Headers 
+        $LibraryVariableSets = Invoke-RestMethod -Uri "$OctopusURL/api/$($Space.Id)/libraryvariablesets?partialName=$([uri]::EscapeDataString($VariableSetName))&skip=0&take=100" -Headers $Headers
         $LibraryVariableSet = $LibraryVariableSets.Items | Where-Object -FilterScript { $_.Name -eq $VariableSetName }
 
         if($null -eq $LibraryVariableSet) {
@@ -109,8 +108,8 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
         Write-Information -MessageData "Found Library variable set '$($LibraryVariableSet.Id)' for '$($VariableSetName)'."
 
         # Get Variable set variables
-        $LibraryVariableSetVariables = Invoke-RestMethod -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSet.VariableSetId)" -Headers $Headers 
-        
+        $LibraryVariableSetVariables = Invoke-RestMethod -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSet.VariableSetId)" -Headers $Headers
+
         # Work through variables
         $FileContent = Get-Content -Path $Path
         $ADO_Output = ($FileContent | ConvertFrom-Json)
@@ -123,13 +122,13 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
             foreach($VariableName in $VariableNames) {
                 Write-Information -MessageData "Working on variable: $VariableName."
                 $VariableValue = $Variables.$VariableName.value
-                
+
                 $Variable = @{
                     Name = $VariableName
                     Value = $VariableValue
                     Type = "String"
                     IsSensitive = $false
-                    Scope = @{ 
+                    Scope = @{
                         Environment = @($Environment.Id)
                     }
                 }
@@ -150,10 +149,10 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
 
                     # Add to collection
                     $LibraryVariableSetVariables.Variables += $variableToUpdate
-                }        
+                }
                 else {
                     Write-Information -MessageData "Variable '$($Variable.Name)' exists ($($MatchingVariables.Count) found), updating."
-                    
+
                     $matchingVariablesWithEnvironmentScope = $MatchingVariables | Where-Object -FilterScript {$_.Scope.Environment -icontains $Environment.Id}
                     foreach($matchingVariable in $matchingVariablesWithEnvironmentScope) {
                         # Update variable value if it's a single environment scope OR if Force=True
@@ -162,9 +161,9 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
                             $matchingVariable.Value = $Variable.Value
                         }
                     }
-                    
+
                     $matchingVariablesWithSameValue = $MatchingVariables | Where-Object -FilterScript {$_.Value -eq $Variable.Value}
-                    
+
                     foreach($matchingVariable in $matchingVariablesWithSameValue) {
                         if($matchingVariable.Scope.Environment -inotcontains $Environment.Id) {
                             Write-Information -MessageData "Matching variable ($($matchingVariable.Id)) has same value, but doesn't include environment scope, adding."
@@ -173,10 +172,10 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
                     }
                     # Lastly check if we have at least one matching variable with the same value and environment scope.
                     $matchingVariablesWithValueAndEnvironment = $MatchingVariables | Where-Object -FilterScript {$_.Value -eq $Variable.Value -and $_.Scope.Environment -icontains $Environment.Id}
-                    
+
                     if($null -eq $matchingVariablesWithValueAndEnvironment) {
                         Write-Information -MessageData "Matching variable '$($Variable.Name)' has no matching value with this Environment scope, adding new."
-                        
+
                         # Create new object
                         $variableToUpdate = New-Object -TypeName PSObject
                         $variableToUpdate | Add-Member -MemberType NoteProperty -Name "Name" -Value $Variable.Name
@@ -193,10 +192,10 @@ function ImportAzureDevopsVariableExportToLibraryVariableSet(
             $Count += 1
         }
         Write-Information -MessageData "Updating library variable set."
-        
+
         # Update the library variable set
-        $UpdatedLibraryVariableSet = Invoke-RestMethod -Method Put -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSetVariables.Id)" -Headers $Headers -Body ($LibraryVariableSetVariables | ConvertTo-Json -Depth 10)   
-        
+        $UpdatedLibraryVariableSet = Invoke-RestMethod -Method Put -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSetVariables.Id)" -Headers $Headers -Body ($LibraryVariableSetVariables | ConvertTo-Json -Depth 10)
+
         $StopWatch.Stop()
         Write-Information -MessageData "Completed in $($StopWatch.Elapsed)."
     }

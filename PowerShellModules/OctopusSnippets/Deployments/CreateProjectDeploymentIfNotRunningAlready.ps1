@@ -51,11 +51,11 @@ Add-Type -AssemblyName 'Octopus.Client'
 
 $octopusURL = 'http://youroctopusserver' # Your Octopus Server address
 $apikey = 'API-xxxxx'  # Get this from your profile
-$projectName = 'ChildProject' # The name of the project that you want to create a deployment for 
+$projectName = 'ChildProject' # The name of the project that you want to create a deployment for
 $environmentName = 'Development' # The environment you want to deploy to
 $spaceName = "Default"  # The space that the $projectName is in
 
-$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURL,$apikey 
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURL,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 $Header =  @{ "X-Octopus-ApiKey" = $apiKey }
 
@@ -65,7 +65,7 @@ $spaceId = ($spaces.Items | Where-Object{($_.Name -eq $spaceName)}).Id
 
 # Getting environment
 $Environment = Invoke-WebRequest -Uri "$OctopusURL/api/Environments/all" -Headers $Header| ConvertFrom-Json
- 
+
 $Environment = $Environment | Where-Object{$_.name -eq $environmentName}
 
 If($Environment.count -eq 0){
@@ -83,7 +83,7 @@ if ((($tasksForProjAndEnv -is [array]) -and ($tasksForProjAndEnv.length -ge 2)) 
 }
 
 Write-output "Creating deployment for: $projectName"
-    
+
 #--- Will only continue if no running deployment for project.
 
 # Getting Project
@@ -94,7 +94,6 @@ Catch{
     $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
     Throw $Error[0]
 }
-
 
 # Getting Release - latest
 
@@ -110,5 +109,3 @@ $deployment.EnvironmentId = $environment.Id
 
 # Create deployment
 $repository.Deployments.Create($deployment)
-
-

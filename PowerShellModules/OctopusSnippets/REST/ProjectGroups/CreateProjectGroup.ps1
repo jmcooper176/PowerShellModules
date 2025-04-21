@@ -55,7 +55,7 @@ function Get-OctopusItems
         $ApiKey,
         $SkipCount = 0
     )
-    
+
     # Define working variables
     $items = @()
     $skipQueryString = ""
@@ -72,7 +72,7 @@ function Get-OctopusItems
     }
 
     $skipQueryString += $SkipCount
-    
+
     # Get intial set
     $resultSet = Invoke-RestMethod -Uri "$($OctopusUri)$skipQueryString" -Method GET -Headers $headers
 
@@ -81,7 +81,7 @@ function Get-OctopusItems
     {
         # Store call results
         $items += $resultSet.Items
-    
+
         # Check to see if resultset is bigger than page amount
         if (($resultSet.Items.Count -gt 0) -and ($resultSet.Items.Count -eq $resultSet.ItemsPerPage))
         {
@@ -96,12 +96,10 @@ function Get-OctopusItems
     {
         return $resultSet
     }
-    
 
     # Return results
     return $items
 }
-
 
 # Define working variables
 $octopusURL = "https://YourURL"

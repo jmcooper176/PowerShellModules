@@ -68,27 +68,27 @@ try
 
     # Tweak this to change the number of machine tasks returned
     $machineTaskCount = 100
-    
+
     # Get machine tasks
     $machineTaskSearch = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/machines/$($machine.Id)/tasks?skip=0&take=$machineTaskCount" -Headers $header)
     $machineTaskDeploymentIds = $machineTaskSearch.Items | Select-Object -Property @{Name="DeploymentIds"; Expression={ $_.Arguments.DeploymentId}} | Select-Object -ExpandProperty DeploymentIds
-    
+
     # Get project details
     $project = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$projectSlug" -Headers $header)
 
     # Get matching project channel
     $channels = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/channels?partialName=$channelName" -Headers $header)
     $channel = $channels.Items | Select-Object -First 1
-    
+
     # Tweak this to change the number of release records returned
     $releaseCount = 100
-    
+
     # Get project releases
     $releases = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/releases?skip=0&take=$releaseCount" -Headers $header)
-    
+
     # Get latest release matching project channel
     $latestRelease = $releases.Items | Where-Object -FilterScript {$_.ChannelId -eq $($channel.Id)} | Select-Object -First 1
-        
+
     # Tweak this to change the number of deployment records returned
     $deploymentCount = 100
 
@@ -110,7 +110,7 @@ try
     {
         Write-Information -MessageData "Couldnt find release $($latestRelease.Version) for machine $($machine.Name)"
     }
-}   
+}
 catch
 {
     $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }

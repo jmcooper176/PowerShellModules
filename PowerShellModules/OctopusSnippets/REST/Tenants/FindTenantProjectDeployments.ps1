@@ -80,7 +80,7 @@ foreach($projectId in $projectIds)
 {
     # Get project
     $project = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$projectId" -Headers $header)
-    
+
     # Get deployments for project + environment
     $deployments = @()
     $response = $null
@@ -94,15 +94,15 @@ foreach($projectId in $projectIds)
         Write-Information -MessageData "No deployments found for '$($project.Name)' ($($projectId)) to $environmentName"
     }
     else {
-        # Get last deployment 
+        # Get last deployment
         $lastDeployment = $deployments | Sort-Object -Property Created -Descending | Select-Object -First 1
-        
+
         # Get server task
         $lastdeploymentTask = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/tasks/$($lastDeployment.TaskId)" -Headers $header)
-        
+
         # Augment the last deployment with the task status (success/failed/canceled etc)
         $lastDeployment | Add-Member -NotePropertyName DeploymentState -NotePropertyValue $lastdeploymentTask.State
-        
+
         # Create summary
         $summaryItem = [PsCustomObject]@{
             ProjectId = $project.Id
@@ -114,7 +114,7 @@ foreach($projectId in $projectIds)
             WebLink = "$octopusURL$($lastdeploymentTask.Links.Web)"
         }
         $summaryItems += $summaryItem
-        
+
         # Add deployment to another list
         $projectDeployments += $lastDeployment
     }

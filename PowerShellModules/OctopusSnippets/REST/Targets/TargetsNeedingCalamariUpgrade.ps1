@@ -72,8 +72,8 @@ if ($octopusURL -eq "https://your.octopus.app" -or $octopusAPIKey -eq "API-XXXX"
 
 # Get space
 Write-Verbose -Message "Retrieving all spaces"
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?skip=0&take=100" -Headers $header 
-$spaces = $spaces.Items 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?skip=0&take=100" -Headers $header
+$spaces = $spaces.Items
 
 $machines = @()
 

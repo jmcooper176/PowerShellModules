@@ -90,16 +90,16 @@ $projectListToIgnore = $projectIdsToIgnore.Split(",")
 # ---- Utility Functions --------------------------
 # Create custom object
 function Get-TargetObject($targetRoleName){
-    return [pscustomobject] @{   
+    return [pscustomobject] @{
         'Name' = $targetRoleName
         'CountOfTargets' = 0
     }
 }
 
 function Get-ProjectObject($projectId, $projectName, $projectWebUrl, $space)
-{      
-    return [pscustomobject] @{    
-        'Id' = $projectId 
+{
+    return [pscustomobject] @{
+        'Id' = $projectId
         'Name' = $projectName
         'WebUrl' = $projectWebUrl
         'space' = $space
@@ -123,14 +123,12 @@ function Get-ProjectTargetCount(){
         $projectList = (Invoke-WebRequest -Uri "$OctopusUrl/api/$spaceId/projects/all" -Headers $header).content | ConvertFrom-Json
         $projectCount = $taskList.Count
 
-
         Write-Information -MessageData "Found $projectCount projects in $spaceId space"
         foreach ($project in $projectList)
         {
             $projectWebUrl = $OctopusUrl + $project.Links.Web
             $projectObj = Get-ProjectObject $project.Id $project.Name $projectWebUrl $spaceId
             $targets = @();
-
 
             if ($projectListToIgnore -contains $projectObj.Id)
             {
@@ -144,9 +142,9 @@ function Get-ProjectTargetCount(){
 
                 foreach ($step in $projectProcess.Steps)
                 {
-                    if($step.properties.'Octopus.Action.TargetRoles'){ 
+                    if($step.properties.'Octopus.Action.TargetRoles'){
                         $roles = $step.properties.'Octopus.Action.TargetRoles'
-                        
+
                         if ($targets.Name -notcontains $roles)
                         {
                             $tRole = Get-TargetObject $roles
@@ -167,9 +165,7 @@ function Get-ProjectTargetCount(){
                 $projectObj.CountOfTargets = $targetCountForProject
             }
             $projects += $projectObj
-            
         }
-
     }
 
     $projects | ConvertTo-Json

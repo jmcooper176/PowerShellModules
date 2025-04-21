@@ -45,10 +45,10 @@ This file "UpdateVariablesThenRedeploy.ps1" is part of "OctopusSnippets".
 =============================================================================
 #>
 
-$octopusUrl = "https://YOUR URL" 
+$octopusUrl = "https://YOUR URL"
 $apiKey = "YOUR API KEY"
 $projectName = "YOUR PROJECT NAME"
-$sourceEnvironmentName = "Staging" 
+$sourceEnvironmentName = "Staging"
 $destinationEnvironmentName = "Test"
 $spaceName = "YOUR SPACE NAME"
 $variableNameToUpdate = "MyVariableToFind"
@@ -63,7 +63,7 @@ function Invoke-OctopusApi
         $spaceId,
         $apiKey,
         $method,
-        $item     
+        $item
     )
 
     if ([string]::IsNullOrWhiteSpace($SpaceId))
@@ -72,24 +72,24 @@ function Invoke-OctopusApi
     }
     else
     {
-        $url = "$OctopusUrl/api/$spaceId/$EndPoint"    
-    }  
+        $url = "$OctopusUrl/api/$spaceId/$EndPoint"
+    }
 
     try
-    {        
+    {
         if ($null -ne $item)
         {
             $body = $item | ConvertTo-Json -Depth 10
             Write-Information -MessageData $body
 
             Write-Information -MessageData "Invoking $method $url"
-            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8' 
+            return Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -Body $body -ContentType 'application/json; charset=utf-8'
         }
 
         Write-Information -MessageData "No data to post or put, calling bog standard invoke-restmethod for $url"
         $result = Invoke-RestMethod -Method $method -Uri $url -Headers @{"X-Octopus-ApiKey" = "$ApiKey" } -ContentType 'application/json; charset=utf-8'
 
-        return $result               
+        return $result
     }
     catch
     {

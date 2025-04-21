@@ -72,14 +72,13 @@ try
 
     # Create or modify tagset
     $tagsetEditor = $repositoryForSpace.TagSets.CreateOrModify($tagsetName, $tagsetDescription)
-    
+
     # Add optional tags
     if($optionalTags.Count -gt 0)
     {
         foreach ($tagName in $optionalTags.Keys) {
             $tagsetEditor.AddOrUpdateTag($tagName, "", $optionalTags.Item($tagName))
         }
-        
     }
     $tagsetEditor.Save()
 }

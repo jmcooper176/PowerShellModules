@@ -74,11 +74,11 @@ $body = @{
     Name = $feedName
     FeedUri = $feedURI
 }
-if(-not ([string]::IsNullOrEmpty($feedUsername))) 
+if(-not ([string]::IsNullOrEmpty($feedUsername)))
 {
     $body.Username = $feedUsername
 }
-if(-not ([string]::IsNullOrEmpty($feedPassword))) 
+if(-not ([string]::IsNullOrEmpty($feedPassword)))
 {
     $body.Password =  @{
     	HasValue = $True;

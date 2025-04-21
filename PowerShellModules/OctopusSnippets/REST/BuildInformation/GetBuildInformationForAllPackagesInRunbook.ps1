@@ -64,10 +64,9 @@ foreach ($packageIdKey in $packageIdKeys) {
     # It's possible to have multiple packages of the same version.
     $existingPackageBuildInfo = $packageBuildInfos | Where-Object -FilterScript { $_.PackageId -eq $packageId -and $_.PackageVersion -eq $packageVersion } | Select-Object -First 1
     if ($null -eq $existingPackageBuildInfo) {
-        
         Write-Information -MessageData "Getting build info for $packageId - ($packageVersion)"
         $buildInfoResults = (Invoke-RestMethod -Method Get -Uri "$OctopusServerUrl/api/$($spaceId)/build-information?packageId=$([uri]::EscapeDataString($packageId))&filter=$([uri]::EscapeDataString($packageVersion))" -Headers $header)
-    
+
         if ($buildInfoResults.Items.Count -gt 0) {
             Write-Information -MessageData "Build Info found for $packageId - ($packageVersion)"
 

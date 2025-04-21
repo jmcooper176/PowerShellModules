@@ -48,7 +48,7 @@ This file "CreateChannel.ps1" is part of "OctopusSnippets".
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
 # Load Octopus Client assembly
-Add-Type -Path 'path\to\Octopus.Client.dll' 
+Add-Type -Path 'path\to\Octopus.Client.dll'
 
 $octopusURL = "https://YourUrl"
 $octopusAPIKey = "API-YourAPIKey"

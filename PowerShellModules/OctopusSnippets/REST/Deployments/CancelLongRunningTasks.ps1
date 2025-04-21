@@ -78,17 +78,17 @@ foreach ($space in $spaceList.Items)
                 foreach ($event in $eventList.Items){
                     if ($event.Category -eq "DeploymentStarted"){
                         $startTime = (Get-Date $event.Occurred)
-                        
+
                         # We found the most recent deployment event started we are curious about, stop looping through
                         break;
-                    }            
+                    }
                 }
             }
             else{
                 $startTime = (Get-Date $task.StartTime)
             }
 
-            $currentTime = Get-Date                        
+            $currentTime = Get-Date
             $dateDiff = $currentTime - $startTime
 
             Write-Information -MessageData "The task $taskDescription has been running for $dateDiff"
@@ -101,7 +101,7 @@ foreach ($space in $spaceList.Items)
                 $cancelledTask = $true
                 $cancelledTaskList += $taskDescription + "
                 "
-            }            
+            }
         }
     }
 }

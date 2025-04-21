@@ -55,11 +55,11 @@ $spaceName = "Default"
 $projectGroupName = "Your project Group name"
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Get project group
-$projectGroups = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projectgroups?partialName=$([uri]::EscapeDataString($projectGroupName))&skip=0&take=100" -Headers $header 
+$projectGroups = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projectgroups?partialName=$([uri]::EscapeDataString($projectGroupName))&skip=0&take=100" -Headers $header
 $projectGroup = $projectGroups.Items | Where-Object -FilterScript { $_.Name -eq $projectGroupName }
 
 # Get projects

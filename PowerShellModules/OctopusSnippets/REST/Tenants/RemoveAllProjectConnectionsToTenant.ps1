@@ -62,6 +62,6 @@ $TenantToDisconnectFromProjects = "TENANT_NAME_HERE"
 $Tenant = (Invoke-RestMethod -Method GET "$OctopusURL/api/$($SpaceId)/Tenants/all" -Headers $Header) | Where-Object -FilterScript {$_.Name -eq $TenantToDisconnectFromProjects}
 
 $Tenant.ProjectEnvironments = @{}
-   
+
 Invoke-RestMethod -Method PUT "$OctopusURL/api/$($SpaceId)/Tenants/$($Tenant.Id)" -Body ($Tenant | ConvertTo-Json -Depth 10) -Headers $Header
 Write-Information -MessageData "Done!"

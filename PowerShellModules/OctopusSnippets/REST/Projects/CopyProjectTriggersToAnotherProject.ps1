@@ -56,18 +56,18 @@ $sourceProjectName = "Source project"
 $destProjectName = "Destination project"
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Get source project
-$sourceProjects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($sourceProjectName))&skip=0&take=100" -Headers $header 
+$sourceProjects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($sourceProjectName))&skip=0&take=100" -Headers $header
 $sourceProject = $sourceProjects.Items | Where-Object -FilterScript { $_.Name -eq $sourceProjectName }
 
 # Get source project triggers
 $sourceProjectTriggers = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$($sourceProject.Id)/triggers" -Headers $header
 
 # Get destination project
-$destProjects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($destProjectName))&skip=0&take=100" -Headers $header 
+$destProjects = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/projects?partialName=$([uri]::EscapeDataString($destProjectName))&skip=0&take=100" -Headers $header
 $destProject = $destProjects.Items | Where-Object -FilterScript { $_.Name -eq $destProjectName }
 
 # Get destination project triggers

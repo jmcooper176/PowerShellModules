@@ -49,7 +49,7 @@ This file "DeployExistingReleaseToSpecificSingleTenant.ps1" is part of "OctopusS
 
 $apiKey = "" #Octopus API Key
 $OctopusURL = "" #Octopus URL
- 
+
 $ProjectName = "" #project name
 $EnvironmentName = "" #environment name
 $TenantID = "" #tenant ID, can be found in /api/tenants
@@ -59,7 +59,7 @@ $ReleaseVersion = "" #Version of the release you want to deploy. Put 'Latest' if
 ##PROCESS##
 
 $Header =  @{ "X-Octopus-ApiKey" = $apiKey }
- 
+
 #Getting Project
 Try{
     $Project = Invoke-WebRequest -Uri "$OctopusURL/api/projects/$ProjectName" -Headers $Header -ErrorAction Ignore| ConvertFrom-Json
@@ -72,7 +72,7 @@ Catch{
 
 #Getting environment
 $Environment = Invoke-WebRequest -Uri "$OctopusURL/api/Environments/all" -Headers $Header| ConvertFrom-Json
- 
+
 $Environment = $Environment | Where-Object -FilterScript {$_.name -eq $EnvironmentName}
 
 If($Environment.count -eq 0){
@@ -104,12 +104,12 @@ else{
         throw $Error[0]
     }
 }
- 
+
 #Creating deployment
-$DeploymentBody = @{ 
+$DeploymentBody = @{
             ReleaseID = $release.Id
             EnvironmentID = $Environment.id
             TenantID = $tenant.id
           } | ConvertTo-Json
-          
+
 $d = Invoke-WebRequest -Uri $OctopusURL/api/deployments -Method Post -Headers $Header -Body $DeploymentBody

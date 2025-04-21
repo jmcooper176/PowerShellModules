@@ -52,7 +52,7 @@ $octopusURL = "https://your.octopus.app"
 $octopusAPIKey = "API-KEY"
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 $spaceName = "Default"
-$communicationsStyle = "TentacleActive" 
+$communicationsStyle = "TentacleActive"
 $hostName = "your-worker"
 $workerPoolNames = @("Your worker pool")
 $workerPoolIds = @()
@@ -60,7 +60,7 @@ $tentacleThumbprint = "TentacleThumbprint"
 $tentacleIdentifier = "PollingTentacleIdentifier" # Must match value in Tentacle.config file on tentacle machine; ie poll://RandomCharacters
 
 # Get space
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -eq $spaceName }
 
 # Get workerpools

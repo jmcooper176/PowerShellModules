@@ -72,7 +72,7 @@ function Convert-SourceIdListToDestinationIdList {
     )
 
     $NewIdList = @()
-    Write-Information -MessageData "Converting id list with $($IdList.Length) item(s) over to destination space"     
+    Write-Information -MessageData "Converting id list with $($IdList.Length) item(s) over to destination space"
     foreach ($idValue in $idList) {
         $ConvertedId = Convert-SourceIdToDestinationId -SourceList $SourceList -DestinationList $DestinationList -IdValue $IdValue
 
@@ -98,7 +98,7 @@ function Convert-SourceIdToDestinationId {
             return $IdValue
         }
     }
-    
+
     Write-Information -MessageData "Getting Name of $IdValue"
     $sourceItem = Get-OctopusItemById -ItemList $SourceList -ItemId $IdValue
 
@@ -113,9 +113,9 @@ function Convert-SourceIdToDestinationId {
         return $null
     }
 
-    Write-Information -MessageData "The name of $IdValue is $nameToUse, attempting to find in destination list"    
+    Write-Information -MessageData "The name of $IdValue is $nameToUse, attempting to find in destination list"
 
-    $destinationItem = Get-OctopusItemByName -ItemName $nameToUse -ItemList $DestinationList    
+    $destinationItem = Get-OctopusItemByName -ItemName $nameToUse -ItemList $DestinationList
 
     if ($null -eq $destinationItem) {
         Write-Information -MessageData "Unable to find $nameToUse in the destination list"
@@ -127,13 +127,12 @@ function Convert-SourceIdToDestinationId {
     }
 }
 
-
 function Get-OctopusItemById {
     param (
         $ItemList,
         $ItemId
-    ) 
-        
+    )
+
     Write-Information -MessageData "Attempting to find $ItemId in the item list of $($ItemList.Length) item(s)"
 
     foreach ($item in $ItemList) {
@@ -145,14 +144,14 @@ function Get-OctopusItemById {
     }
 
     Write-Information -MessageData "No match found returning null"
-    return $null    
+    return $null
 }
 
 function Get-OctopusItemByName {
     param (
         $ItemList,
         $ItemName
-    )    
+    )
 
     return ($ItemList | Where-Object -FilterScript { $_.Name -eq $ItemName })
 }
@@ -206,13 +205,13 @@ try {
         if (Get-Member -InputObject $octopusVariable.Scope -Name "Environment" -MemberType Properties) {
             Write-Information -MessageData "$variableName has environment scoping, converting to destination values"
             $NewEnvironmentIds = @(Convert-SourceIdListToDestinationIdList -SourceList $sourceEnvironmentList -DestinationList $destinationEnvironmentList -IdList $octopusVariable.Scope.Environment)
-            $octopusVariable.Scope.Environment = @($NewEnvironmentIds)            
+            $octopusVariable.Scope.Environment = @($NewEnvironmentIds)
         }
 
         if (Get-Member -InputObject $octopusVariable.Scope -Name "Channel" -MemberType Properties) {
             Write-Information -MessageData "$variableName has channel scoping, converting to destination values"
             $NewChannelIds = @(Convert-SourceIdListToDestinationIdList -SourceList $sourceChannelList -DestinationList $destinationProjectChannelList -IdList $octopusVariable.Scope.Channel)
-            $octopusVariable.Scope.Channel = @($NewChannelIds)            
+            $octopusVariable.Scope.Channel = @($NewChannelIds)
         }
 
         if (Get-Member -InputObject $octopusVariable.Scope -Name "ProcessOwner" -MemberType Properties) {
@@ -233,28 +232,28 @@ try {
                 }
 
                 Write-Information -MessageData "The new process owner ids are $NewOwnerIds"
-                
-                $octopusVariable.Scope.ProcessOwner = @($NewOwnerIds)            
+
+                $octopusVariable.Scope.ProcessOwner = @($NewOwnerIds)
             }
             else {
-                $octopusVariable.Scope.PSObject.Properties.Remove('ProcessOwner')    
+                $octopusVariable.Scope.PSObject.Properties.Remove('ProcessOwner')
             }
         }
 
         if ($octopusVariable.Type -match ".*Account") {
             if ($keepSourceAccountVariableValues -eq $false) {
-                Write-Information -MessageData "Warning: Cannot convert account type to destination account as keepSourceAccountVariableValues set to false. Setting to DUMMY VALUE" -ForegroundColor Yellow  
+                Write-Information -MessageData "Warning: Cannot convert account type to destination account as keepSourceAccountVariableValues set to false. Setting to DUMMY VALUE" -ForegroundColor Yellow
                 $octopusVariable.Value = "DUMMY VALUE"
             }
         }
 
         if ($octopusVariable.IsSensitive -eq $true) {
-            Write-Information -MessageData "Warning: Setting sensitive value for $($variableName) to DUMMY VALUE" -ForegroundColor Yellow  
+            Write-Information -MessageData "Warning: Setting sensitive value for $($variableName) to DUMMY VALUE" -ForegroundColor Yellow
             $octopusVariable.Value = "DUMMY VALUE"
         }
 
-        $trackingName = $variableName -replace "\.", ""        
-        
+        $trackingName = $variableName -replace "\.", ""
+
         Write-Information -MessageData "Cloning $variableName"
         if ($null -eq $variableTracker[$trackingName]) {
             Write-Information -MessageData "This is the first time we've seen $variableName"
@@ -267,8 +266,8 @@ try {
 
         $foundCounter = 0
         $foundIndex = -1
-        $variableExistsOnDestination = $false        
-        for ($i = 0; $i -lt $destinationVariableSetVariables.Variables.Length; $i++) {            
+        $variableExistsOnDestination = $false
+        for ($i = 0; $i -lt $destinationVariableSetVariables.Variables.Length; $i++) {
             if ($destinationVariableSetVariables.Variables[$i].Name -eq $variableName) {
                 $variableExistsOnDestination = $true
                 $foundCounter += 1
@@ -286,19 +285,19 @@ try {
         }
         elseif ($OverwriteExistingVariables -eq $false) {
             Write-Information -MessageData "The variable $variableName already exists on the host and you elected to only copy over new items, skipping this one."
-        }                                         
+        }
         elseif ($foundIndex -gt -1 -and $destinationVariableSetVariables.Variables[$foundIndex].IsSensitive -eq $true) {
             Write-Information -MessageData "The variable $variableName at value index $($variableTracker[$trackingName]) is sensitive, leaving as is on the destination."
         }
         elseif ($foundIndex -gt -1) {
             $destinationVariableSetVariables.Variables[$foundIndex].Value = $octopusVariable.Value
             $destinationVariableSetVariables.Variables[$foundIndex].Scope = $octopusVariable.Scope
-            if ($octopusVariable.Value -eq "Dummy Value") {                
-                Write-Information -MessageData "The variable $variableName is a sensitive variable, value set to 'Dummy Value'" -ForegroundColor Yellow  
+            if ($octopusVariable.Value -eq "Dummy Value") {
+                Write-Information -MessageData "The variable $variableName is a sensitive variable, value set to 'Dummy Value'" -ForegroundColor Yellow
             }
-        }  
+        }
     }
-    Write-Information -MessageData "Saving variables to $octopusURL$($destinationProject.Links.Variables)"       
+    Write-Information -MessageData "Saving variables to $octopusURL$($destinationProject.Links.Variables)"
     Invoke-RestMethod -Method Put -Uri "$octopusURL$($destinationProject.Links.Variables)" -Body ($destinationVariableSetVariables | ConvertTo-Json -Depth 10) -Headers $header | Out-Null
 }
 catch {

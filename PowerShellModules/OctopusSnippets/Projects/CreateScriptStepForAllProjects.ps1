@@ -82,9 +82,7 @@ $step.Actions.Add($scriptAction) # Adds the step action to the step
 
 # Foreach project in all projects: Get the deployment process, add the step we just built, modify deployment process with added step
 foreach ($a in $allProjects) {
-
     $process = $repository.DeploymentProcesses.Get($a.DeploymentProcessId)
     $process.Steps.Add($step)
     $repository.DeploymentProcesses.Modify($process)
-
 }

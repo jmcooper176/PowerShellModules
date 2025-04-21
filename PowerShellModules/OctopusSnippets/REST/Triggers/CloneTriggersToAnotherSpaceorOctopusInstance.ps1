@@ -94,12 +94,12 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
     $SourceTriggerChannel = ($SourceTriggerProjectChannelsList | Where-Object -FilterScript { $_.Id -eq $SourceTrigger.Action.ChannelId })
     $SourceTriggerSourceEnvironment = ($SourceEnvironments | Where-Object -FilterScript { $_.Id -eq $SourceTrigger.Action.SourceEnvironmentIds })
     $SourceTriggerDestinationEnvironment = ($SourceEnvironments | Where-Object -FilterScript { $_.Id -eq $SourceTrigger.Action.DestinationEnvironmentId })
-    
+
     $SourceTriggerTenants = @()
     Foreach ($TenantId in $SourceTrigger.Action.TenantIds) {
         $SourceTriggerTenants += ($SourceTenants | Where-Object -FilterScript { $_.Id -eq $TenantId })
     }
-    
+
     $SourceTriggerTenantTags = @()
     Foreach ($TenantTag in $SourceTrigger.Action.TenantTags) {
         $SourceTriggerTenantTags += ($SourceTenantTags | Where-Object -FilterScript { $_.Id -eq $TenantTag })
@@ -112,14 +112,14 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         Write-Information -MessageData "-"
         $NoMatchingProject += $SourceTrigger
     }
-    
+
     If ($DestinationTriggerProject) {
         $DestinationTriggerProjectChannelsListRaw = (Invoke-RestMethod -Method GET "$DestinationOctopusURL/api/$($DestinationSpaceId)/Projects/$($DestinationTriggerProject.Id)/channels" -Headers $DestinationHeader)
         $DestinationTriggerProjectChannelsList = $DestinationTriggerProjectChannelsListRaw.items
         $DestinationTriggerProjectChannel = ($DestinationTriggerProjectChannelsList | Where-Object -FilterScript { $_.name -eq $SourceTriggerChannel.name })
         $DestinationTriggerSourceEnvironments = ($DestinationEnvironments | Where-Object -FilterScript { $_.name -eq $SourceTriggerSourceEnvironment.name })
         $DestinationTriggerDestinationEnvironment = ($DestinationEnvironments | Where-Object -FilterScript { $_.name -eq $SourceTriggerDestinationEnvironment.name })
-        
+
         $DestinationTriggerTenants = @()
         Foreach ($SourceTriggerTenant in $SourceTriggerTenants) {
             $DestinationTriggerTenants += ($DestinationTenants | Where-Object -FilterScript { $_.name -eq $SourceTriggerTenant.name })
@@ -138,7 +138,7 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         $DestinationTriggerJSON.ProjectId = $DestinationTriggerProject.Id
         $DestinationTriggerJSON.Action.ChannelId = $DestinationTriggerProjectChannel.Id
         $DestinationTriggerJSON.Action.DestinationEnvironmentId = $DestinationTriggerDestinationEnvironment.Id
-        
+
         $DestinationTriggerJSON.Action.SourceEnvironmentIds = @()
         Foreach ($DestinationTriggerSourceEnvironment in $DestinationTriggerSourceEnvironments) {
             $DestinationTriggerJSON.Action.SourceEnvironmentIds += $DestinationTriggerSourceEnvironment.Id
@@ -148,7 +148,7 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         Foreach ($DestinationTriggerTenant in $DestinationTriggerTenants) {
             $DestinationTriggerJSON.Action.TenantIds += $DestinationTriggerTenant.Id
         }
-        
+
         $DestinationTriggerJSON.Action.TenantTags = @()
         Foreach ($DestinationTriggerTenantTag in $DestinationTriggerTenantTags) {
             $DestinationTriggerJSON.Action.TenantTags += $DestinationTriggerTenantTag.Id
@@ -175,12 +175,12 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
     $SourceTriggerProjectChannelsList = $SourceTriggerProjectChannelsListRaw.items
     $SourceTriggerChannel = ($SourceTriggerProjectChannelsList | Where-Object -FilterScript { $_.Id -eq $SourceTrigger.Action.ChannelId })
     $SourceTriggerEnvironment = ($SourceEnvironments | Where-Object -FilterScript { $_.Id -eq $SourceTrigger.Action.EnvironmentId })
-    
+
     $SourceTriggerTenants = @()
     Foreach ($TenantId in $SourceTrigger.Action.TenantIds) {
         $SourceTriggerTenants += ($SourceTenants | Where-Object -FilterScript { $_.Id -eq $TenantId })
     }
-    
+
     $SourceTriggerTenantTags = @()
     Foreach ($TenantTag in $SourceTrigger.Action.TenantTags) {
         $SourceTriggerTenantTags += ($SourceTenantTags | Where-Object -FilterScript { $_.Id -eq $TenantTag })
@@ -193,18 +193,18 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         Write-Information -MessageData "-"
         $NoMatchingProject += $SourceTrigger
     }
-    
+
     If ($DestinationTriggerProject) {
         $DestinationTriggerProjectChannelsListRaw = (Invoke-RestMethod -Method GET "$DestinationOctopusURL/api/$($DestinationSpaceId)/Projects/$($DestinationTriggerProject.Id)/channels" -Headers $DestinationHeader)
         $DestinationTriggerProjectChannelsList = $DestinationTriggerProjectChannelsListRaw.items
         $DestinationTriggerProjectChannel = ($DestinationTriggerProjectChannelsList | Where-Object -FilterScript { $_.name -eq $SourceTriggerChannel.name })
         $DestinationTriggerEnvironment = ($DestinationEnvironments | Where-Object -FilterScript { $_.name -eq $SourceTriggerEnvironment.name })
-        
+
         $DestinationTriggerTenants = @()
         Foreach ($SourceTriggerTenant in $SourceTriggerTenants) {
             $DestinationTriggerTenants += ($DestinationTenants | Where-Object -FilterScript { $_.name -eq $SourceTriggerTenant.name })
         }
-        
+
         $DestinationTriggerTenantTags = @()
         Foreach ($SourceTriggerTenantTag in $SourceTriggerTenantTags) {
             $DestinationTriggerTenantTags += ($DestinationTenantTags | Where-Object -FilterScript { $_.name -eq $SourceTriggerTenantTag.name })
@@ -224,7 +224,7 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         Foreach ($DestinationTriggerTenant in $DestinationTriggerTenants) {
             $DestinationTriggerJSON.Action.TenantIds += $DestinationTriggerTenant.Id
         }
-        
+
         $DestinationTriggerJSON.Action.TenantTags = @()
         Foreach ($DestinationTriggerTenantTag in $DestinationTriggerTenantTags) {
             $DestinationTriggerJSON.Action.TenantTags += $DestinationTriggerTenantTag.Id
@@ -256,7 +256,7 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         Write-Information -MessageData "-"
         $NoMatchingProject += $SourceTrigger
     }
-    
+
     If ($DestinationTriggerProject) {
         $DestinationTriggerEnvironments = ($DestinationEnvironments | Where-Object -FilterScript { $_.name -eq $SourceTriggerEnvironments.name })
 
@@ -267,7 +267,7 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         $DestinationTriggerJSON.SpaceId = $DestinationSpaceId
         $DestinationTriggerJSON.name = $SourceTrigger.name
         $DestinationTriggerJSON.ProjectId = $DestinationTriggerProject.Id
-        
+
         $DestinationTriggerJSON.Filter.EnvironmentIds = @()
         Foreach ($DestinationTriggerEnvironment in $DestinationTriggerEnvironments) {
             $DestinationTriggerJSON.Filter.EnvironmentIds += $DestinationTriggerEnvironments.Id
@@ -293,17 +293,16 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
     $SourceTriggerProjectRunbooksList = (Invoke-RestMethod -Method GET "$SourceOctopusURL/api/$($SourceSpaceId)/Projects/$($SourceTriggerProject.Id)/runbooks/all" -Headers $SourceHeader)
     $SourceTriggerRunbook = ($SourceTriggerProjectRunbooksList | Where-Object -FilterScript { $_.Id -eq $SourceTrigger.Action.RunbookId })
     $SourceTriggerEnvironments = ($SourceEnvironments | Where-Object -FilterScript { $_.Id -eq $SourceTrigger.Action.EnvironmentIds })
-    
+
     $SourceTriggerTenants = @()
     Foreach ($TenantId in $SourceTrigger.Action.TenantIds) {
         $SourceTriggerTenants += ($SourceTenants | Where-Object -FilterScript { $_.Id -eq $TenantId })
     }
-    
+
     $SourceTriggerTenantTags = @()
     Foreach ($TenantTag in $SourceTrigger.Action.TenantTags) {
         $SourceTriggerTenantTags += ($SourceTenantTags | Where-Object -FilterScript { $_.Id -eq $TenantTag })
     }
-    
 
     # Match $SourceTrigger___ names to Destination info
     $DestinationTriggerProject = ($DestinationProjects | Where-Object -FilterScript { $_.name -eq $SourceTriggerProject.name })
@@ -312,22 +311,22 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         Write-Information -MessageData "-"
         $NoMatchingProject += $SourceTrigger
     }
-    
+
     If ($DestinationTriggerProject) {
         $DestinationTriggerProjectRunbooksList = (Invoke-RestMethod -Method GET "$DestinationOctopusURL/api/$($DestinationSpaceId)/Projects/$($DestinationTriggerProject.Id)/runbooks/all" -Headers $DestinationHeader)
         $DestinationTriggerProjectRunbooks = ($DestinationTriggerProjectRunbooksList | Where-Object -FilterScript { $_.name -eq $SourceTriggerRunbook.name })
         $DestinationTriggerEnvironments = ($DestinationEnvironments | Where-Object -FilterScript { $_.name -eq $SourceTriggerEnvironments.name })
-        
+
         $DestinationTriggerTenants = @()
         Foreach ($SourceTriggerTenant in $SourceTriggerTenants) {
             $DestinationTriggerTenants += ($DestinationTenants | Where-Object -FilterScript { $_.name -eq $SourceTriggerTenant.name })
         }
-        
+
         $DestinationTriggerTenantTags = @()
         Foreach ($SourceTriggerTenantTag in $SourceTriggerTenantTags) {
             $DestinationTriggerTenantTags += ($DestinationTenantTags | Where-Object -FilterScript { $_.name -eq $SourceTriggerTenantTag.name })
         }
-                
+
         $DestinationTriggerJSON = $SourceTrigger
         $DestinationTriggerJSON.Id = $null
         $DestinationTriggerJSON.Links = $null
@@ -335,7 +334,7 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         $DestinationTriggerJSON.name = $SourceTrigger.name
         $DestinationTriggerJSON.ProjectId = $DestinationTriggerProject.Id
         $DestinationTriggerJSON.Action.RunbookId = $DestinationTriggerProjectRunbooks.Id
-        
+
         $DestinationTriggerJSON.Action.EnvironmentIds = @()
         Foreach ($DestinationTriggerEnvironment in $DestinationTriggerEnvironments) {
             $DestinationTriggerJSON.Action.EnvironmentIds += $DestinationTriggerEnvironment.Id
@@ -345,7 +344,7 @@ Foreach ($SourceTrigger in ($SourceTriggers | Where-Object -FilterScript { $_.Ac
         Foreach ($DestinationTriggerTenant in $DestinationTriggerTenants) {
             $DestinationTriggerJSON.Action.TenantIds += $DestinationTriggerTenant.Id
         }
-        
+
         $DestinationTriggerJSON.Action.TenantTags = @()
         Foreach ($DestinationTriggerTenantTag in $DestinationTriggerTenantTags) {
             $DestinationTriggerJSON.Action.TenantTags += $DestinationTriggerTenantTag.Id

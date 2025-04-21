@@ -83,14 +83,12 @@ $AllLifecycles = (Invoke-WebRequest -Uri $OctopusURL/api/lifecycles/all -Headers
 
 # Loop through each lifecycle
 foreach ($lifecycle in $AllLifecycles){
-
     Write-Information -MessageData "Working on lifecycle: [$($lifecycle.Name)]" -ForegroundColor Yellow
     # Update Lifecycle retention policy if configured.
     if($UpdateLifecycleRetentionPolicy -eq $True){
         Write-Information -MessageData "`tModifying lifecycle retention policy for: [$($lifecycle.Name)]" -ForegroundColor DarkBlue
         $lifecycle.ReleaseRetentionPolicy = $releaseRetentionPolicy
         $lifecycle.TentacleRetentionPolicy = $tentacleRetentionPolicy
-
     }
     else {
         Write-Information -MessageData "Skipping lifecycle retention policy update for: [$($lifecycle.Name)] as UpdateLifecycleRetentionPolicy = False" -ForegroundColor Yellow

@@ -66,7 +66,6 @@ $certificateTenantedDeploymentParticipation = "Untenanted"
 # Convert PFX file to base64
 $certificateContent = [Convert]::ToBase64String((Get-Content -Path $certificateFilePath -Encoding Byte))
 
-
 # Get space
 $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object -FilterScript {$_.Name -eq $spaceName}
 

@@ -35,15 +35,157 @@
 // </remarks>
 // ---------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Octopus.Client.Cmdlet.Common
 {
-    internal class Client
+    using System;
+    using System.Management.Automation;
+
+    [Cmdlet(VerbsCommon.Close, "Client")]
+    [OutputType(typeof(void))]
+    [CmdletBinding(SupportsShouldProcess = true, ConfirmImpact = ConfirmImpact.Low)]
+    public class CloseClient : PSCmdlet, IDisposable
     {
+        #region Public Properties
+
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true)]
+        public OctopusClient? Client { get; set; }
+
+        public SwitchParameter Force { get; set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion Public Methods
+
+        #region Protected Methods
+
+        protected override void BeginProcessing()
+        {
+            if (Force.IsPresent)
+            {
+                this.SessionState.PSVariable.Set("ConfirmPreference", ConfirmImpact.None);
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Client?.Dispose();
+                }
+
+                Client = null;
+                disposedValue = true;
+            }
+        }
+
+        protected override void ProcessRecord()
+        {
+            if (this.ShouldProcess(nameof(Client), nameof(CloseClient)))
+            {
+                Dispose();
+            }
+        }
+
+        protected override void StopProcessing()
+        {
+            Dispose();
+            this.WriteFatal(new PipelineStoppedException(), ErrorCategory.OperationStopped, this, nameof(CloseClient), 0);
+        }
+
+        #endregion Protected Methods
+
+        #region Private Fields
+
+        private bool disposedValue;
+
+        #endregion Private Fields
+    }
+
+    [Cmdlet(VerbsCommon.New, "Client")]
+    [OutputType(typeof(OctopusClient))]
+    [CmdletBinding(SupportsShouldProcess = true, ConfirmImpact = ConfirmImpact.Low)]
+    public class NewClient : PSCmdlet, IDisposable
+    {
+        #region Private Fields
+
+        private OctopusClient? client;
+
+        private bool disposedValue;
+
+        #endregion Private Fields
+
+        #region Public Properties
+
+        public SwitchParameter Force { get; set; }
+
+        [Parameter(Mandatory = true)]
+        [ValidateNotNullOrEmpty()]
+        public string OctopusApiKey { get; set; }
+
+        [Parameter(Mandatory = true)]
+        [ValidateNotNullOrEmpty()]
+        public string OctopusUrl { get; set; }
+
+        #endregion Public Properties
+
+        #region Protected Methods
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected override void BeginProcessing()
+        {
+            if (Force.IsPresent)
+            {
+                this.SessionState.PSVariable.Set("ConfirmPreference", ConfirmImpact.None);
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    client?.Dispose();
+                }
+
+                client = null;
+                disposedValue = true;
+            }
+        }
+
+        protected override void ProcessRecord()
+        {
+            // Create repository object
+            if (this.ShouldProcess(OctopusUrl, nameof(NewClient)) {
+                var endpoint = new OctopusServerEndpoint(OctopusUrl, OctopusApiKey);
+                client = new OctopusClient(endpoint);
+                this.WriteObject(client);
+            }
+        }
+
+        protected override void StopProcessing()
+        {
+            Dispose();
+            this.WriteFatal(new PipelineStoppedException(), ErrorCategory.OperationStopped, this, nameof(NewClient), 0);
+        }
+
+        #endregion Protected Methods
     }
 }

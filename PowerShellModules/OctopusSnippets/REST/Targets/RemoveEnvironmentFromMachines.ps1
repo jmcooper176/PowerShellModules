@@ -67,7 +67,7 @@ foreach ($machine in $machines.Items) {
                     $environmentIds += $environment
                 }
             }
-            
+
             $machine.EnvironmentIds = $environmentIds
             $modifiedMachines += $machine.Name
             Invoke-RestMethod -Method PUT "$OctopusUrl/api/machines/$($machine.Id)" -Headers $header -Body ($machine | ConvertTo-Json -Depth 10)
@@ -76,7 +76,7 @@ foreach ($machine in $machines.Items) {
             # Add machine to list of machines with only 1 environment so it can be manually inspected
             $machinesToCheck += $machine.Name
         }
-    }   
+    }
 }
 
 Write-Information -MessageData "Modified machines list: " $modifiedMachines

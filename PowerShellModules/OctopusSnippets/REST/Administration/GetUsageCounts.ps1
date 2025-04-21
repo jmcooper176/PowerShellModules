@@ -100,16 +100,16 @@ function Invoke-OctopusApi
     (
         $endPoint,
         $spaceId,
-        $octopusUrl,        
+        $octopusUrl,
         $apiKey
-    )    
+    )
 
     try
-    {        
+    {
         $url = Get-OctopusUrl -EndPoint $endPoint -SpaceId $spaceId -OctopusUrl $octopusUrl
 
         Write-Information -MessageData "Invoking $url"
-        return Invoke-RestMethod -Method Get -Uri $url -Headers @{"X-Octopus-ApiKey" = "$apiKey" } -ContentType 'application/json; charset=utf-8' -TimeoutSec 60        
+        return Invoke-RestMethod -Method Get -Uri $url -Headers @{"X-Octopus-ApiKey" = "$apiKey" } -ContentType 'application/json; charset=utf-8' -TimeoutSec 60
     }
     catch
     {
@@ -139,7 +139,7 @@ function Invoke-OctopusApi
 
         Write-Error -Message "Stopping the script from proceeding" -ErrorAction Continue
         throw $Error[0]
-    }    
+    }
 }
 
 function Get-OctopusObjectCount
@@ -148,7 +148,7 @@ function Get-OctopusObjectCount
     (
         $endPoint,
         $spaceId,
-        $octopusUrl,        
+        $octopusUrl,
         $apiKey
     )
 
@@ -167,15 +167,15 @@ function Get-OctopusObjectCount
         foreach ($item in $itemList.Items)
         {
             if ($null -ne (Get-Member -InputObject $item -Name "IsDisabled" -MemberType Properties))
-            {          
+            {
                 if ($item.IsDisabled -eq $false)
                 {
                     $itemCount += 1
                 }
             }
-            else 
+            else
             {
-                $itemCount += 1    
+                $itemCount += 1
             }
         }
 
@@ -188,10 +188,10 @@ function Get-OctopusObjectCount
         }
         else
         {
-            $haveReachedEndOfList = $true    
+            $haveReachedEndOfList = $true
         }
     }
-    
+
     return $itemCount
 }
 
@@ -200,37 +200,37 @@ function Get-OctopusDeploymentTargetsCount
     param
     (
         $spaceId,
-        $octopusUrl,        
+        $octopusUrl,
         $apiKey
     )
 
     $targetCount = @{
-        TargetCount = 0 
+        TargetCount = 0
         ActiveTargetCount = 0
-        UnavailableTargetCount = 0        
+        UnavailableTargetCount = 0
         DisabledTargets = 0
         ActiveListeningTentacleTargets = 0
         ActivePollingTentacleTargets = 0
-        ActiveSshTargets = 0        
+        ActiveSshTargets = 0
         ActiveKubernetesCount = 0
         ActiveAzureWebAppCount = 0
         ActiveAzureServiceFabricCount = 0
         ActiveAzureCloudServiceCount = 0
-        ActiveOfflineDropCount = 0    
+        ActiveOfflineDropCount = 0
         ActiveECSClusterCount = 0
-        ActiveCloudRegions = 0  
+        ActiveCloudRegions = 0
         ActiveFtpTargets = 0
         DisabledListeningTentacleTargets = 0
         DisabledPollingTentacleTargets = 0
-        DisabledSshTargets = 0        
+        DisabledSshTargets = 0
         DisabledKubernetesCount = 0
         DisabledAzureWebAppCount = 0
         DisabledAzureServiceFabricCount = 0
         DisabledAzureCloudServiceCount = 0
-        DisabledOfflineDropCount = 0    
+        DisabledOfflineDropCount = 0
         DisabledECSClusterCount = 0
-        DisabledCloudRegions = 0  
-        DisabledFtpTargets = 0            
+        DisabledCloudRegions = 0
+        DisabledFtpTargets = 0
     }
 
     $currentPage = 1
@@ -250,7 +250,7 @@ function Get-OctopusDeploymentTargetsCount
 
             if ($item.IsDisabled -eq $true)
             {
-                $targetCount.DisabledTargets += 1                  
+                $targetCount.DisabledTargets += 1
 
                 if ($item.EndPoint.CommunicationStyle -eq "None")
                 {
@@ -306,7 +306,7 @@ function Get-OctopusDeploymentTargetsCount
                 }
                 else
                 {
-                    $targetCount.UnavailableTargetCount += 1    
+                    $targetCount.UnavailableTargetCount += 1
                 }
 
                 if ($item.EndPoint.CommunicationStyle -eq "None")
@@ -354,7 +354,7 @@ function Get-OctopusDeploymentTargetsCount
                 {
                     $targetCount.ActiveECSClusterCount += 1
                 }
-            }                                
+            }
         }
 
         if ($currentPage -lt $itemList.NumberOfPages)
@@ -366,10 +366,10 @@ function Get-OctopusDeploymentTargetsCount
         }
         else
         {
-            $haveReachedEndOfList = $true    
+            $haveReachedEndOfList = $true
         }
     }
-    
+
     return $targetCount
 }
 
@@ -379,33 +379,33 @@ function Get-OctopusDeploymentTargetsCount
 
 $ObjectCounts = @{
     ProjectCount = 0
-    TenantCount = 0        
-    TargetCount = 0 
+    TenantCount = 0
+    TargetCount = 0
     DisabledTargets = 0
     ActiveTargetCount = 0
     UnavailableTargetCount = 0
     ActiveListeningTentacleTargets = 0
     ActivePollingTentacleTargets = 0
-    ActiveSshTargets = 0        
+    ActiveSshTargets = 0
     ActiveKubernetesCount = 0
     ActiveAzureWebAppCount = 0
     ActiveAzureServiceFabricCount = 0
     ActiveAzureCloudServiceCount = 0
-    ActiveOfflineDropCount = 0    
+    ActiveOfflineDropCount = 0
     ActiveECSClusterCount = 0
     ActiveCloudRegions = 0
-    ActiveFtpTargets = 0 
+    ActiveFtpTargets = 0
     DisabledListeningTentacleTargets = 0
     DisabledPollingTentacleTargets = 0
-    DisabledSshTargets = 0        
+    DisabledSshTargets = 0
     DisabledKubernetesCount = 0
     DisabledAzureWebAppCount = 0
     DisabledAzureServiceFabricCount = 0
     DisabledAzureCloudServiceCount = 0
-    DisabledOfflineDropCount = 0    
+    DisabledOfflineDropCount = 0
     DisabledECSClusterCount = 0
-    DisabledCloudRegions = 0  
-    DisabledFtpTargets = 0             
+    DisabledCloudRegions = 0
+    DisabledFtpTargets = 0
     WorkerCount = 0
     ListeningTentacleWorkers = 0
     PollingTentacleWorkers = 0
@@ -438,7 +438,7 @@ if ($hasSpaces -eq $true)
 }
 else
 {
-    $spaceIdList += $null    
+    $spaceIdList += $null
 }
 
 if ($hasLicenseSummary -eq $true)
@@ -469,9 +469,8 @@ if ($hasLicenseSummary -eq $true)
     }
 }
 
-
 foreach ($spaceId in $spaceIdList)
-{    
+{
     Write-Information -MessageData "Getting project counts for $spaceId"
     $activeProjectCount = Get-OctopusObjectCount -endPoint "projects" -spaceId $spaceId -octopusUrl $OctopusDeployUrl -apiKey $OctopusDeployApiKey
 
@@ -497,7 +496,7 @@ foreach ($spaceId in $spaceIdList)
     $ObjectCounts.DisabledTargets += $infrastructureSummary.DisabledTargets
 
     Write-Information -MessageData "$spaceId has $($infrastructureSummary.UnavailableTargetCount) Unhealthy Targets"
-    $ObjectCounts.UnavailableTargetCount += $infrastructureSummary.UnavailableTargetCount    
+    $ObjectCounts.UnavailableTargetCount += $infrastructureSummary.UnavailableTargetCount
 
     Write-Information -MessageData "$spaceId has $($infrastructureSummary.ActiveListeningTentacleTargets) Active Listening Tentacles Targets"
     $ObjectCounts.ActiveListeningTentacleTargets += $infrastructureSummary.ActiveListeningTentacleTargets
@@ -568,28 +567,28 @@ foreach ($spaceId in $spaceIdList)
     if ($hasWorkers -eq $true)
     {
         Write-Information -MessageData "Getting worker information for $spaceId"
-        $workerPoolSummary = Invoke-OctopusApi -endPoint "workerpools/summary" -spaceId $spaceId -octopusUrl $OctopusDeployUrl -apiKey $OctopusDeployApiKey 
+        $workerPoolSummary = Invoke-OctopusApi -endPoint "workerpools/summary" -spaceId $spaceId -octopusUrl $OctopusDeployUrl -apiKey $OctopusDeployApiKey
 
         Write-Information -MessageData "$spaceId has $($workerPoolSummary.TotalMachines) Workers"
         $ObjectCounts.WorkerCount += $workerPoolSummary.TotalMachines
 
         Write-Information -MessageData "$spaceId has $($workerPoolSummary.MachineHealthStatusSummaries.Healthy) Healthy Workers"
         $ObjectCounts.ActiveWorkerCount += $workerPoolSummary.MachineHealthStatusSummaries.Healthy
-    
+
         Write-Information -MessageData "$spaceId has $($workerPoolSummary.MachineHealthStatusSummaries.HasWarnings) Healthy with Warning Workers"
         $ObjectCounts.ActiveWorkerCount += $workerPoolSummary.MachineHealthStatusSummaries.HasWarnings
-    
+
         Write-Information -MessageData "$spaceId has $($workerPoolSummary.MachineHealthStatusSummaries.Unhealthy) Unhealthy Workers"
         $ObjectCounts.UnavailableWorkerCount += $workerPoolSummary.MachineHealthStatusSummaries.Unhealthy
-    
+
         Write-Information -MessageData "$spaceId has $($workerPoolSummary.MachineHealthStatusSummaries.Unknown) Workers with a Status of Unknown"
         $ObjectCounts.UnavailableWorkerCount += $workerPoolSummary.MachineHealthStatusSummaries.Unknown
-        
+
         Write-Information -MessageData "$spaceId has $($workerPoolSummary.MachineEndpointSummaries.TentaclePassive) Listening Tentacles Workers"
         $ObjectCounts.ListeningTentacleWorkers += $workerPoolSummary.MachineEndpointSummaries.TentaclePassive
 
         Write-Information -MessageData "$spaceId has $($workerPoolSummary.MachineEndpointSummaries.TentacleActive) Polling Tentacles Workers"
-        $ObjectCounts.PollingTentacleWorkers += $workerPoolSummary.MachineEndpointSummaries.TentacleActive        
+        $ObjectCounts.PollingTentacleWorkers += $workerPoolSummary.MachineEndpointSummaries.TentacleActive
 
         if ($null -ne (Get-Member -InputObject $workerPoolSummary.MachineEndpointSummaries -Name "Ssh" -MemberType Properties))
         {
@@ -604,7 +603,7 @@ $ObjectCounts.WindowsLinuxMachineCount = $ObjectCounts.ActivePollingTentacleTarg
 
 if ($hasLicenseSummary -eq $false)
 {
-    $ObjectCounts.LicensedTargetCount = $ObjectCounts.TargetCount - $ObjectCounts.ActiveCloudRegions - $ObjectCounts.DisabledTargets    
+    $ObjectCounts.LicensedTargetCount = $ObjectCounts.TargetCount - $ObjectCounts.ActiveCloudRegions - $ObjectCounts.DisabledTargets
 }
 
 # Get node information
@@ -616,8 +615,8 @@ Write-Information -MessageData "    Server Version: $($apiInformation.Version)"
 Write-Information -MessageData "    Number of Server Nodes: $($nodeInfo.TotalResults)"
 Write-Information -MessageData "    Licensed Target Count: $($ObjectCounts.LicensedTargetCount) (these are active targets de-duped across the instance if running a modern version of Octopus)" -ForegroundColor Green
 Write-Information -MessageData "    Project Count: $($ObjectCounts.ProjectCount)"
-Write-Information -MessageData "    Tenant Count: $($ObjectCounts.TenantCount)" 
-Write-Information -MessageData "    Machine Counts (Active Linux and Windows Tentacles and SSH Connections): $($ObjectCounts.WindowsLinuxMachineCount)" 
+Write-Information -MessageData "    Tenant Count: $($ObjectCounts.TenantCount)"
+Write-Information -MessageData "    Machine Counts (Active Linux and Windows Tentacles and SSH Connections): $($ObjectCounts.WindowsLinuxMachineCount)"
 Write-Information -MessageData "    Deployment Target Count: $($ObjectCounts.TargetCount)"
 Write-Information -MessageData "        Active and Available Targets: $($ObjectCounts.ActiveTargetCount)" -ForegroundColor Green
 Write-Information -MessageData "        Active but Unavailable Targets: $($ObjectCounts.UnavailableTargetCount)" -ForegroundColor Yellow
@@ -647,7 +646,7 @@ Write-Information -MessageData "            Offline Target Count: $($ObjectCount
 Write-Information -MessageData "            Cloud Region Target Count: $($ObjectCounts.DisabledCloudRegions)"
 Write-Information -MessageData "            Ftp Target Count: $($ObjectCounts.DisabledFtpTargets)"
 Write-Information -MessageData "    Worker Count: $($ObjectCounts.WorkerCount)"
-Write-Information -MessageData "        Active Workers: $($ObjectCounts.ActiveWorkerCount)" 
+Write-Information -MessageData "        Active Workers: $($ObjectCounts.ActiveWorkerCount)"
 Write-Information -MessageData "        Unavailable Workers: $($ObjectCounts.UnavailableWorkerCount)"
 Write-Information -MessageData "        Worker Breakdown"
 Write-Information -MessageData "            Listening Tentacle Target Count: $($ObjectCounts.ListeningTentacleWorkers)"

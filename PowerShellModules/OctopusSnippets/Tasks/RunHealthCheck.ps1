@@ -47,7 +47,7 @@ This file "RunHealthCheck.ps1" is part of "OctopusSnippets".
 
 # You can get this dll from NuGet
 # https://www.nuget.org/packages/Octopus.Client/
-Add-Type -AssemblyName .\Octopus.Client.dll 
+Add-Type -AssemblyName .\Octopus.Client.dll
 
 $octopusURL = "https://youroctourl"
 $octopusAPIKey = "API-YOURAPIKEY"
@@ -72,18 +72,18 @@ try
 
     # Get EnvironmentId
     $EnvironmentID = $null
-    if([string]::IsNullOrWhiteSpace($EnvironmentName) -eq $False) 
+    if([string]::IsNullOrWhiteSpace($EnvironmentName) -eq $False)
     {
         $EnvironmentID = $repositoryForSpace.Environments.FindByName($EnvironmentName).Id
     }
-    
+
     # Get MachineIds
     $MachineIds = $null
     if($MachineNames.Count -gt 0)
     {
         $MachineIds = ($repositoryForSpace.Machines.GetAll() | Where-Object -FilterScript {$MachineNames -contains $_.Name} | Select-Object -ExpandProperty Id) -Join ", "
     }
-    
+
     # Execute health check
     $repositoryForSpace.Tasks.ExecuteHealthCheck($Description,$TimeOutAfterMinutes,$MachineTimeoutAfterMinutes,$EnvironmentID,$MachineIds)
 }

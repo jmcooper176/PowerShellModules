@@ -46,7 +46,7 @@ This file "GetAllPackageSizes.ps1" is part of "OctopusSnippets".
 #>
 
 $octopusApiKey = "YOUR API KEY"
-$octopusUrl = "YOUR URL" 
+$octopusUrl = "YOUR URL"
 $header = @{ "X-Octopus-ApiKey" = $octopusApiKey }
 
 $spaceResults = Invoke-RestMethod -Method Get -Uri "$OctopusUrl/api/spaces?skip=0&take=100000" -Headers $header
@@ -62,7 +62,7 @@ foreach ($space in $spaceResults.Items)
             continue
         }
 
-        $packageList = Invoke-RestMethod -Method Get -Uri "$OctopusUrl/api/$spaceId/feeds/$($feed.Id)/packages/search" -Headers $header     
+        $packageList = Invoke-RestMethod -Method Get -Uri "$OctopusUrl/api/$spaceId/feeds/$($feed.Id)/packages/search" -Headers $header
         foreach ($package in $packageList.Items)
         {
             Write-Information -MessageData "    $($package.Name)"

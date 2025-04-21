@@ -89,7 +89,7 @@ if ($octopusURL -eq "https://your.octopus.app" -or $octopusAPIKey -eq "API-XXXX"
 
 # Get space
 Write-Output "Retrieving space '$($spaceName)'"
-$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header 
+$spaces = Invoke-RestMethod -Uri "$octopusURL/api/spaces?partialName=$([uri]::EscapeDataString($spaceName))&skip=0&take=100" -Headers $header
 $space = $spaces.Items | Where-Object -FilterScript { $_.Name -ieq $spaceName }
 
 # cache certain resources as they are retrieved if enabled
@@ -143,57 +143,57 @@ do {
 # Return the cached release or retrieve it, cache it and then return it.
 function Get-Release {
     param ($releaseId)
-    
+
     $release = @($releases | Where-Object -FilterScript { $_.Id -ieq $releaseId }) | Select-Object -First 1
     if ($null -ieq $release) {
-        $release = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/releases/$($releaseId)" -Headers $header 
+        $release = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/releases/$($releaseId)" -Headers $header
         if ($cacheItems) {
             $releases += $release
         }
     }
-    
+
     return $release
 }
 
 function Get-Deployment {
     param ($deploymentId)
-    
+
     $deployment = @($deployments | Where-Object -FilterScript { $_.Id -ieq $deploymentId }) | Select-Object -First 1
     if ($null -ieq $deployment) {
-        $deployment = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/deployments/$($deploymentId)" -Headers $header 
+        $deployment = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/deployments/$($deploymentId)" -Headers $header
         if ($cacheItems) {
             $deployments += $deployment
         }
     }
-    
+
     return $deployment
 }
 
 function Get-ServerTask {
     param ($taskId)
-    
+
     $serverTask = @($serverTasks | Where-Object -FilterScript { $_.Id -ieq $taskId }) | Select-Object -First 1
     if ($null -ieq $serverTask) {
-        $serverTask = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/tasks/$($taskId)" -Headers $header 
+        $serverTask = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/tasks/$($taskId)" -Headers $header
         if ($cacheItems) {
             $serverTasks += $serverTask
         }
     }
-    
+
     return $serverTask
 }
 
 function Get-ServerTaskDetails {
     param ($taskId)
-    
+
     $serverTaskDetail = @($serverTaskDetails | Where-Object -FilterScript { $_.Id -ieq $taskId }) | Select-Object -First 1
     if ($null -ieq $serverTask) {
-        $serverTaskDetail = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/tasks/$($taskId)/details?verbose=false&tail=50&ranges=" -Headers $header 
+        $serverTaskDetail = Invoke-RestMethod -Uri "$octopusURL/api/$($space.Id)/tasks/$($taskId)/details?verbose=false&tail=50&ranges=" -Headers $header
         if ($cacheItems) {
             $serverTaskDetails += $serverTaskDetail
         }
     }
-    
+
     return $serverTaskDetail
 }
 
@@ -202,14 +202,14 @@ $eventsUrl = "$octopusURL/api/events?includeSystem=false&spaces=$($space.Id)&eve
 # Check for optional projects filter
 if ($projectNames.Length -gt 0) {
     Write-Verbose -Message "Filtering events to projects '$($projectNames -Join ",")'"
-    $filteredProjects = @($projects | Where-Object -FilterScript { $projectNames -icontains $_.Name } | ForEach-Object -Process { "$($_.Id)" }) 
+    $filteredProjects = @($projects | Where-Object -FilterScript { $projectNames -icontains $_.Name } | ForEach-Object -Process { "$($_.Id)" })
     $projectsOperator = $filteredProjects -Join ","
     $eventsUrl += "&projects=$projectsOperator"
 }
 # Check for optional environments filter
 if ($environmentNames.Length -gt 0) {
     Write-Verbose -Message "Filtering events to environments '$($environmentNames -Join ",")'"
-    $filteredEnvironments = @($environments | Where-Object -FilterScript { $environmentNames -icontains $_.Name } | ForEach-Object -Process { "$($_.Id)" }) 
+    $filteredEnvironments = @($environments | Where-Object -FilterScript { $environmentNames -icontains $_.Name } | ForEach-Object -Process { "$($_.Id)" })
     $environmentsOperator = $filteredEnvironments -Join ","
     $eventsUrl += "&environments=$environmentsOperator"
 }
@@ -234,16 +234,16 @@ foreach ($event in $events) {
     $deploymentId = $event.RelatedDocumentIds | Where-Object -FilterScript { $_ -like "Deployments*" } | Select-Object -First 1
     $environmentId = $event.RelatedDocumentIds | Where-Object -FilterScript { $_ -like "Environments*" } | Select-Object -First 1
     $taskId = $event.RelatedDocumentIds | Where-Object -FilterScript { $_ -like "ServerTasks*" } | Select-Object -First 1
-    
+
     # Get objects
     $project = $projects | Where-Object -FilterScript { $_.Id -ieq $projectId }
-    $environment = $environments | Where-Object -FilterScript { $_.Id -ieq $environmentId } 
-    $release = Get-Release -ReleaseId $releaseId 
+    $environment = $environments | Where-Object -FilterScript { $_.Id -ieq $environmentId }
+    $release = Get-Release -ReleaseId $releaseId
     $deployment = Get-Deployment -DeploymentId $deploymentId
-    $task = Get-ServerTask -TaskId $TaskId 
+    $task = Get-ServerTask -TaskId $TaskId
     $taskDetails = Get-ServerTaskDetails -TaskId $taskId
     $activityLogs = $taskDetails.ActivityLogs | Select-Object -First 1
-      
+
     $tenantName = ""
 
     if (-not [string]::IsNullOrWhitespace($deployment.TenantId)) {
@@ -258,7 +258,7 @@ foreach ($event in $events) {
         $stepDetails = [string]::Empty
 
         # Each stepLog could have a .Status property of "Skipped", "Pending", "Success" or "Failed".
-        $stepLogs = $activityLogs.Children 
+        $stepLogs = $activityLogs.Children
         foreach ($stepLog in $stepLogs) {
             # There should be at least one child-entry per machine, including when doing a rolling deployment
             $firstMatchingFailedLogEntryForMachine = $stepLog.Children | Where-Object -FilterScript { $_.Name -ieq $machineName -and $_.Status -ieq "Failed" } | Select-Object -First 1
@@ -283,7 +283,7 @@ foreach ($event in $events) {
                 $machineStatus = "Fail"
                 $stepDetails = "Skipped—$($stepLog.Name)"
                 break;
-            }   
+            }
         }
 
         if ([string]::IsNullOrWhiteSpace($machineStatus)) {

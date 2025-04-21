@@ -62,7 +62,7 @@ $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Heade
 $machine = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/machines/all" -Headers $header) | Where-Object -FilterScript {$_.Name -eq $machineName}
 
 # Get specified proxy ID
-$machineProxy = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/proxies/all" -Headers $header) | Where-Object -FilterScript { $_.Name -eq $machineProxyName } 
+$machineProxy = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/proxies/all" -Headers $header) | Where-Object -FilterScript { $_.Name -eq $machineProxyName }
 
 # Update machine object
 $machine.Endpoint.ProxyId = $machineProxy.Id

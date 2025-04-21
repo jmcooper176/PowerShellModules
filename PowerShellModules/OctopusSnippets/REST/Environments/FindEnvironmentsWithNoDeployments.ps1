@@ -52,7 +52,7 @@ $OctopusUrl = "https://your-octopus-url"
 $APIKey = "API-XXXXXXXXX"
 
 # Space where machines exist
-$spaceName = "Default" 
+$spaceName = "Default"
 
 $header = @{ "X-Octopus-ApiKey" = $APIKey }
 
@@ -88,9 +88,9 @@ $spaceEnvironmentids = $environments | ForEach-Object -Process {"$($_.Id)"}
 
 $result = $spaceEnvironmentids | Where-Object -FilterScript {!($foundEnvironments -contains $_)}
 $total = $result.Count
-Write-Information -MessageData "Found $total environments without deployments." 
+Write-Information -MessageData "Found $total environments without deployments."
 if($result.Count -gt 0) {
-    $tempFile = [System.IO.Path]::GetTempFileName() 
+    $tempFile = [System.IO.Path]::GetTempFileName()
     $result | Out-File -append $tempFile
     Write-Information -MessageData "Written environments with no deployments to: $tempFile"
 }

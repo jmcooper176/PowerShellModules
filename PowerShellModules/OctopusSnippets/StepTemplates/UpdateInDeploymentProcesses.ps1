@@ -86,7 +86,6 @@ Function Update-StepTemplatesOnDeploymentProcesses
     Begin
     {
         if(!(Test-Path "$OctopusClientDLLPath")){
-
             Write-Warning -Message "Octopus Tentacle doesnt seem to be insalled on '$OctopusClientDLLPath'. Please use the parameter -OctopusClientDLLPath to specify the path where the Octopus Tentacle was installed. `nTIP - This path should be the parent directory of: Octopus.Client.dll"
             break
         }
@@ -98,8 +97,6 @@ Function Update-StepTemplatesOnDeploymentProcesses
         #Create endpoint connection
         $endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint "$($OctopusURI)","$($apikey)"
         $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
-
-
     }
     Process
     {
@@ -110,7 +107,6 @@ Function Update-StepTemplatesOnDeploymentProcesses
         Else{$templates = Invoke-WebRequest -Uri "$($OctopusURI)/api/actiontemplates/All" -Method Get -Headers $headers | Select-Object -ExpandProperty content| ConvertFrom-Json}
 
         Foreach ($template in $templates){
-
             $usage = Invoke-WebRequest -Uri "$($OctopusURI)/api/actiontemplates/$($template.ID)/usage" -Method Get -Headers $headers | Select-Object -ExpandProperty content | ConvertFrom-Json
 
             #Getting all the DeploymentProcesses that need to be updated
@@ -119,15 +115,11 @@ Function Update-StepTemplatesOnDeploymentProcesses
             Write-Information -MessageData "Template: $($template.name)" -ForegroundColor Magenta
 
             If($null -eq $deploymentprocesstoupdate){
-
                 Write-Information -MessageData "`t--All deployment processes up to date" -ForegroundColor Green
-
             }
 
             Else{
-
                 Foreach($d in $deploymentprocesstoupdate){
-
                     #Getting DeploymentProcess obj
                     $process = $repository.DeploymentProcesses.Get($d.DeploymentProcessId)
 
@@ -135,9 +127,7 @@ Function Update-StepTemplatesOnDeploymentProcesses
                     $steps = $process.Steps | Where-Object -FilterScript {$_.actions.properties.values.value -eq $template.Id}
 
                     try{
-
                         foreach($step in $steps){
-
                             Write-Information -MessageData "`t--Updating Step [$($step.name)] of project [$($d.projectname)]" -ForegroundColor Yellow
 
                             $step.Actions.properties.'Octopus.Action.Script.Scriptbody' = $template.Properties.'Octopus.Action.Script.ScriptBody'
@@ -175,12 +165,9 @@ Function Update-StepTemplatesOnDeploymentProcesses
                         Write-Error -Message "Error updating Process template for Octopus project: $($d.projectname)"
                         $Error | ForEach-Object -Process { Write-Error -ErrorRecord $_ -ErrorAction Continue }
                     }
-
                 }
-
             }
         }
-
     }
     End
     {

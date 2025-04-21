@@ -74,7 +74,7 @@ $variables = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/t
 $libraryVariableSets = $variables.LibraryVariables
 
 # Get variable Id from template
-$variableValueId = $null 
+$variableValueId = $null
 foreach ($template in $libraryVariableSets.$librarySetId.Templates) {
     if ($template.Name -eq $variableTemplateName) {
         $variableValueId = $template.Id

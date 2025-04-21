@@ -74,7 +74,6 @@ $octopusServerNodesResponse = Invoke-RestMethod -Method Get -Uri "$octopusURL/ap
 $octopusServerNodes = $octopusServerNodesResponse.Nodes
 
 for ($i = 0; $i -lt $octopusServerNodes.Length; $i++) {
-
     $octopusServerNode = $octopusServerNodes[$i]
     $nodeName = $octopusServerNode.Name
 
@@ -100,7 +99,6 @@ for ($i = 0; $i -lt $octopusServerNodes.Length; $i++) {
     $nodeModuloResult = $nodeNumber % 2
     $ContinueDrainOperation = ($DrainEvenNodes -eq $True -and $nodeModuloResult -eq 0) -or ($DrainEvenNodes -eq $False -and $nodeModuloResult -eq 1)
     if ($ContinueDrainOperation) {
-
         if ($octopusServerNode.IsInMaintenanceMode -eq $True) {
             Write-Message "Skipping drain of node: $nodeName as it's already in a draining/drained state"
             Continue;

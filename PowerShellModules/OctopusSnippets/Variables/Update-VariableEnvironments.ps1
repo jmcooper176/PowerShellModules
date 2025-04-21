@@ -114,7 +114,6 @@ function LoadAssemblies() {
     ) | ForEach-Object -Process { Add-Type -Path $_ }
 }
 
-
 if ($VerbosePreference -eq 'SilentlyContinue') {
     $script:NugetVerbosity = 'quiet'
 } else {

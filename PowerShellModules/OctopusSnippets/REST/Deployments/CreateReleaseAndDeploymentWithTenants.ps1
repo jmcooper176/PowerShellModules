@@ -58,7 +58,6 @@ $environmentName = "Dev"
 $channelName = "Default"
 $tenantNames = @("Customer A Name", "Customer B Name")
 
-
 # Get space id
 $spaces = Invoke-WebRequest -Uri "$octopusBaseURL/spaces/all" -Headers $headers -ErrorVariable octoError | ConvertFrom-Json
 $space = $spaces | Where-Object -FilterScript { $_.Name -eq $spaceName }

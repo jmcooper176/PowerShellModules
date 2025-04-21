@@ -53,7 +53,6 @@ $OctopusAPIKey = "" #Octopus API Key
 $ProjectName = "" #Name of the project that owns the deployment
 $EnvironmentName = "" #Name of the environment where the deployment is taking place
 
-
 ##PROCESS##
 
 $header = @{ "X-Octopus-ApiKey" = $OctopusAPIKey }
@@ -67,7 +66,6 @@ $Project = $dashboard.Projects | Where-Object -FilterScript {$_.name -eq $Projec
 
 #Get the deployment
 $Deployment = $dashboard.Items | Where-Object -FilterScript {($_.ProjectID -eq $Project.Id) -and ($_.EnvironmentID -eq $Environment.id)} | Sort-Object -Descending -Property Created |Select-Object -First 1
-
 
 #Cancel the task asociated with the deployment
 Invoke-WebRequest -Uri ("$OctopusURL" + $Deployment.links.Task + "/cancel") -Method Post -Headers $header

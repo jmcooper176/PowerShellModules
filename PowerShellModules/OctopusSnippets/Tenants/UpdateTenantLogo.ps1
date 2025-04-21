@@ -72,7 +72,7 @@ function Invoke-OctopusLogoUpload
             Add-Type -AssemblyName System.Web
 
             $mimeType = [System.Web.MimeMapping]::GetMimeMapping($InFile)
-            
+
             if ($mimeType)
             {
                 $ContentType = $mimeType
@@ -93,7 +93,7 @@ function Invoke-OctopusLogoUpload
         $httpClient.DefaultRequestHeaders.Add("X-Octopus-ApiKey", $ApiKey)
 
         $packageFileStream = New-Object -TypeName.IO.FileStream @($InFile, [System.IO.FileMode]::Open)
-        
+
         $contentDispositionHeaderValue = New-Object -TypeName.Net.Http.Headers.ContentDispositionHeaderValue "form-data"
         $contentDispositionHeaderValue.Name = "fileData"
         $contentDispositionHeaderValue.FileName = (Split-Path $InFile -leaf)
@@ -101,7 +101,7 @@ function Invoke-OctopusLogoUpload
         $streamContent = New-Object -TypeName.Net.Http.StreamContent $packageFileStream
         $streamContent.Headers.ContentDisposition = $contentDispositionHeaderValue
         $streamContent.Headers.ContentType = New-Object -TypeName.Net.Http.Headers.MediaTypeHeaderValue $ContentType
-        
+
         $content = New-Object -TypeName.Net.Http.MultipartFormDataContent
         $content.Add($streamContent)
 
@@ -148,11 +148,11 @@ $octopusUri = "https://your.octopus.url"
 # API Key
 $apiKey = "API-AKEY"
 # Enter tenant name
-$tenantName = 'MyTenant' 
+$tenantName = 'MyTenant'
 $spaceName="Default"
 
 # any supported image format
-$imageFilePath = "C:\temp\logo.png" 
+$imageFilePath = "C:\temp\logo.png"
 
 $endpoint = New-Object -TypeName.Client.OctopusServerEndpoint $octopusURI, $apiKey
 $repository = New-Object -TypeName.Client.OctopusRepository $endpoint

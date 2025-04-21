@@ -59,7 +59,7 @@ $AccountName = "Your Account Name" #Name of the account that you want to find
 
 Add-Type -AssemblyName 'Octopus.Client'
 
-$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey 
+$endpoint = New-Object -TypeName Octopus.Client.OctopusServerEndpoint $octopusURI,$apikey
 $repository = New-Object -TypeName Octopus.Client.OctopusRepository $endpoint
 
 $AllProjects = $Repository.Projects.FindAll()
